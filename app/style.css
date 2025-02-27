@@ -64,42 +64,7 @@ body {
     transform: rotate(0deg);
   }
 }
-.containerMax .main .containerMain .a {
-  display: flex;
-  position: absolute;
-  width: 50px;
-  height: 50px;
-  bottom: 50px;
-  left: 60px;
-  animation: float 3s ease-in-out infinite;
-}
-.containerMax .main .containerMain .b {
-  display: flex;
-  position: absolute;
-  width: 50px;
-  height: 50px;
-  top: 00px;
-  left: -90px;
-  animation: float 3s ease-in-out infinite;
-}
-.containerMax .main .containerMain .c {
-  display: flex;
-  position: absolute;
-  width: 50px;
-  height: 50px;
-  top: 100px;
-  right: -60px;
-  animation: float 3s ease-in-out infinite;
-}
-.containerMax .main .containerMain .d {
-  display: flex;
-  position: absolute;
-  width: 50px;
-  height: 50px;
-  top: 55%;
-  right: 11%;
-  animation: wobble 1.5s ease-in-out infinite;
-}
+
 .nav {
   display: flex;
   position: relative;
@@ -264,12 +229,49 @@ body {
   height: 100%;
   background-color: none;
   align-items: center;
+  padding-right: 0px !important;
   justify-content: start;
   position: relative;
   display: flex;
   flex-direction: column;
   background-color: none;
   background-color: none;
+}
+.containerMax .main .containerMain .a {
+  display: flex;
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  bottom: 50px;
+  left: 60px;
+  animation: float 3s ease-in-out infinite;
+}
+.containerMax .main .containerMain .b {
+  display: flex;
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  top: 00px;
+  left: -90px;
+  animation: float 3s ease-in-out infinite;
+}
+.containerMax .main .containerMain .c {
+  display: flex;
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  top: 100px;
+  right: -60px;
+  animation: float 3s ease-in-out infinite;
+}
+.containerMax .main .containerMain .d {
+  display: flex;
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  top: 55%;
+  right: 11%;
+  animation: wobble 1.5s ease-in-out infinite;
 }
 
 .main .containerMain .textTop {
@@ -327,7 +329,7 @@ body {
   left: 0;
   right: 0;
   margin: auto;
-  padding-right: 15px;
+  padding-right: 5px;
 }
 
 .input Input {
@@ -372,13 +374,22 @@ body {
 .main .containerMain .testimonial {
   display: flex;
   position: relative;
-  align-items: center;
-  justify-content: center;
+  align-items: center !important;
+  justify-content: center !important;
   flex-direction: row;
   margin-top: 100px;
   height: fit-content;
-  width: 100%;
+  width: fit-content;
+  background-color: none;
+  margin-right: -10px;
   scale: 0.8;
+}
+
+.testimonialExtra {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
 }
 /*CAUSING PREFIX PROBLEM (FIX IS @MehulNegi)*/
 
@@ -529,6 +540,16 @@ body {
     display: none;
   }
 }
+@media (max-width: 330px) {
+  .testimonialExtra {
+    flex-direction: column;
+    width: 100vw;
+    height: fit-content;
+    gap: 00px;
+    align-items: center;
+    justify-content: center;
+  }
+}
 @media (max-width: 560px) {
   .main .input {
     flex-direction: column !important;
@@ -578,6 +599,9 @@ body {
     z-index: 5;
   }
   .main Button {
+    z-index: 5;
+  }
+  .main Input {
     z-index: 5;
   }
 }
@@ -636,5 +660,25 @@ body {
   }
 }
 
-@media (max-width: 380px) {
+@media (max-width: 570px) {
+  .main .textBottom {
+    max-width: 90vw;
+  }
+}
+
+@media (max-width: 400px) {
+  .containerMax .main .containerMain .b {
+    top: -30px !important;
+    left: 50px !important;
+    z-index: 1;
+  }
+  .containerMax .main .containerMain .c {
+    top: 170px;
+    z-index: 1;
+  }
+  .containerMax .main .containerMain .d {
+    z-index: 1;
+    top: 70%;
+    right: 9%;
+  }
 }
