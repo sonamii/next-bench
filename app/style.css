@@ -327,6 +327,7 @@ body {
   left: 0;
   right: 0;
   margin: auto;
+  padding-right: 15px;
 }
 
 .input Input {
@@ -536,7 +537,7 @@ body {
     width: fit-content;
   }
 
-  .input Button{
+  .input Button {
     width: 140px;
   }
 }
@@ -589,6 +590,51 @@ body {
   }
 }
 
-@media (max-width: 560px) {
+@media (max-width: 780px) {
+  .footer {
+    flex-direction: column !important;
+    gap: 40px;
+  }
 
+  .footer .left {
+    flex-direction: row !important;
+    width: fit-content;
+    gap: 20vw;
+  }
+}
+
+@media (max-width: 550px) {
+  .footer .right {
+    flex-direction: row;
+    height: fit-content !important;
+    width: fit-content !important;
+    flex-wrap: wrap;
+    align-items: start;
+    justify-content: start;
+  }
+}
+@media (max-width: 450px) {
+  .footer .left {
+    flex-direction: column !important;
+    gap: 40px;
+  }
+
+  .nav .logoCont {
+    flex-direction: row !important;
+  }
+}
+
+@media (max-width: 420px) {
+  .nav .logoContainer .location {
+    display: none !important;
+  }
+}
+@media (max-width: 430px) {
+  .footer .right {
+    align-items: start;
+    justify-content: start;
+  }
+}
+
+@media (max-width: 380px) {
 }
