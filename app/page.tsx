@@ -1,6 +1,6 @@
 import Image from "next/image";
 import "./style.css";
-import { Instagram, Linkedin, MapPin, User } from "lucide-react";
+import { MapPin, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
