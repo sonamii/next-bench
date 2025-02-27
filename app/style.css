@@ -17,7 +17,7 @@ body {
   justify-content: center;
   flex-direction: column;
   overflow-x: hidden;
-  overflow-y: ausfdto;
+  overflow-y: auto;
 }
 
 .containerMax {
@@ -76,8 +76,7 @@ body {
   padding-left: 50px;
   padding-right: 50px;
   font-family: "Plus Jakarta Sans", sans-serif;
-
-  background-color: none;
+  background-color: #fff;
 }
 
 .nav .logoContainer {
@@ -87,7 +86,7 @@ body {
   align-items: center;
   justify-content: center;
   width: fit-content;
-  background-color: none;
+  background-color: transparent;
   font-family: "Onest", sans-serif;
   gap: 10px;
 }
@@ -115,7 +114,7 @@ body {
   justify-content: center;
   height: 30%;
   flex-direction: row;
-  background-color: none;
+  background-color: transparent;
   margin-top: 3px;
 }
 .nav .right {
@@ -123,7 +122,7 @@ body {
   position: relative;
   width: fit-content;
   height: fit-content;
-  background-color: none;
+  background-color: transparent;
   align-items: center;
   justify-content: space-between;
   min-width: 220px;
@@ -183,7 +182,7 @@ body {
 .nav .midCont {
   display: flex;
   position: relative;
-  background-color: none;
+  background-color: transparent;
   height: 70px;
   width: fit-content;
   padding: 0;
@@ -212,7 +211,7 @@ body {
 
 .containerMax .main {
   height: fit-content;
-  background-color: none;
+  background-color: transparent;
   position: relative;
   display: flex;
   flex-direction: column;
@@ -227,15 +226,15 @@ body {
 .main .containerMain {
   width: fit-content;
   height: 100%;
-  background-color: none;
+  background-color: transparent;
   align-items: center;
   padding-right: 0px !important;
   justify-content: start;
   position: relative;
   display: flex;
   flex-direction: column;
-  background-color: none;
-  background-color: none;
+  background-color: transparent;
+  background-color: transparent;
 }
 .containerMax .main .containerMain .a {
   display: flex;
@@ -288,7 +287,7 @@ body {
   justify-content: center;
   flex-direction: column;
   white-space: normal; /* Allows line breaks */
-  background-color: none;
+  background-color: transparent;
 }
 
 .main .containerMain .textTop span {
@@ -313,7 +312,7 @@ body {
   justify-content: center;
   flex-direction: column;
   white-space: normal; /* Allows line breaks */
-  background-color: none;
+  background-color: transparent;
 }
 
 .main .containerMain .input {
@@ -380,7 +379,7 @@ body {
   margin-top: 100px;
   height: fit-content;
   width: fit-content;
-  background-color: none;
+  background-color: transparent;
   margin-right: -10px;
   scale: 0.8;
 }
@@ -414,7 +413,7 @@ body {
   width: 30%;
   height: fit-content;
   flex-direction: column;
-  background-color: none;
+  background-color: transparent;
   gap: 40px;
 }
 .left .top {
@@ -424,7 +423,7 @@ body {
   height: 50%;
   max-width: 100px;
   flex-direction: column;
-  background-color: none;
+  background-color: transparent;
   h1 {
     font-size: 50px;
     font-family: "Inter", sans-serif;
@@ -441,7 +440,7 @@ body {
   height: 50%;
   flex-direction: column;
   gap: 10px;
-  background-color: none;
+  background-color: transparent;
 
   h1 {
     font-size: 15px;
@@ -469,7 +468,7 @@ body {
   flex-direction: row;
   gap: 50px;
   padding-right: 50px;
-  background-color: none;
+  background-color: transparent;
 }
 
 .right .item {
@@ -553,7 +552,7 @@ body {
 @media (max-width: 560px) {
   .main .input {
     flex-direction: column !important;
-    background-color: none;
+    background-color: transparent;
     height: 120px !important;
     width: fit-content;
   }
@@ -570,7 +569,7 @@ body {
     min-width: 50px !important;
     max-width: fit-content;
     gap: 0;
-    background-color: none;
+    background-color: transparent;
   }
   .containerMax .main .containerMain .c {
     right: 100px;
