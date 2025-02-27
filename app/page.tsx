@@ -1,33 +1,36 @@
 import Image from "next/image";
 import "./style.css";
 import { Instagram, Linkedin, MapPin, User } from "lucide-react";
-
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 export default function Home() {
   return (
     <>
       <div className="containerMax">
+        
         <div className="nav">
           <div className="logoContainer">
-            <div className="logo">NEXTBENCH</div>
+            <div className="logo">NEXT BENCH</div>
             <div className="location">
               <MapPin
                 size={13}
                 color="#52525B"
-                style={{ marginBottom: "2.3px" }}
+                style={{ marginBottom: "4px" }}
               />
               Dehradun
             </div>
           </div>
 
           <div className="midCont">
-            <div className="links">Admission</div>
+            <div className="links">Admission Tracker</div>
             <div className="links">Comparison</div>
             <div className="links">Explore</div>
           </div>
 
           <div className="right">
             <div className="button">Shortlist</div>
+
             <div className="profile">
               <User size={20} />
             </div>
@@ -36,20 +39,102 @@ export default function Home() {
 
         {/*main start*/}
         <div className="main">
-          <div className="textTop">
-            Find <span>schools</span> that fits for your <br />
-            child.
-          </div>
-          <div className="textBottom">
-            Finding the right school shouldn't be hard. From K-12 to college to
-            grad school, we make it School Search easy.
+          <div className="containerMain">
+            <div className="a">
+              <Image
+                src={"./vector1.svg"}
+                alt="v1"
+                width={200}
+                height={200}
+                style={{ scale: "3.1" }}
+              />
+            </div>
+            <div className="b">
+              <Image
+                src={"./vector3.svg"}
+                alt="v1"
+                width={200}
+                height={200}
+                style={{ scale: "1.1" }}
+              />
+            </div>
+            <div className="c">
+              <Image
+                src={"./vector2.svg"}
+                alt="v1"
+                width={200}
+                height={200}
+                style={{ scale: "1.1" }}
+              />
+            </div>
+            <div className="d">
+              <Image
+                src={"./vector4.svg"}
+                alt="v1"
+                width={200}
+                height={200}
+                style={{ scale: "1.8" }}
+              />
+            </div>
+            <div className="textTop">
+              Find <span>schools</span> that fits for your <br />
+              child.
+            </div>
+            <div className="textBottom">
+              Finding the right school shouldn't be hard. From K-12 to college
+              to grad school, we make it School Search easy.
+            </div>{" "}
+            <div className="input">
+              {" "}
+              <Input type="text" placeholder="Enter school's name/locality" />
+              <Button type="submit">Search</Button>{" "}
+            </div>
+            <div className="testimonial">
+              <div
+                data-layer="Frame 282"
+                className="Frame282 h-16 justify-start items-center gap-10 inline-flex"
+              >
+                <div
+                  data-layer="Fact 1"
+                  className="Fact1 h-16 justify-start items-center gap-0.5 inline-flex"
+                >
+                  <div
+                    data-layer="300+"
+                    className="w-32 text-zinc-900 text-5xl font-medium font-['Plus_Jakarta_Sans'] leading-10"
+                  >
+                    300+
+                  </div>
+                  <div
+                    data-layer="Happy Parents"
+                    className="HappyParents w-20 text-zinc-900 text-xs font-normal font-['Plus_Jakarta_Sans'] leading-tight"
+                  >
+                    Happy <br />
+                    Parents
+                  </div>
+                </div>
+                <div
+                  data-layer="Fact 2"
+                  className="Fact2 h-16 justify-start items-center gap-4 inline-flex"
+                >
+                  <div
+                    data-layer="80+"
+                    className="w-24 text-right text-zinc-900 text-5xl font-medium font-['Plus_Jakarta_Sans'] leading-10"
+                  >
+                    80+
+                  </div>
+                  <div
+                    data-layer="Applied Schools"
+                    className="AppliedSchools w-20 text-zinc-900 text-xs font-normal font-['Plus_Jakarta_Sans'] leading-tight"
+                  >
+                    Applied
+                    <br />
+                    Schools
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>{" "}
-          
-          <InputWithButton/>
         </div>
-        {/*main end*/}
-
-        {/*Footer start*/}
         <div className="footer">
           <div className="footerStyle">
             <div className="info">
@@ -92,33 +177,14 @@ export default function Home() {
 
           <div className="socialLinks">
             <a href="#">
-              <Linkedin /> {/*LUCIDE REACT ICONS */}
+              <Linkedin />
             </a>
             <a href="#">
-              <Instagram /> {/*LUCIDE REACT ICONS */}x
+              <Instagram />
             </a>
           </div>
         </div>
-        {/*Footer end*/}
-        {/*containerMax end*/}
-        {/*TRASH AREA 
-
-        */}
-\
       </div>
     </>
   );
-}
-
-
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-
-export function InputWithButton() {
-  return (
-    <div className="flex w-full max-w-sm items-center space-x-2">
-      <Input type="email" placeholder="Email" />
-      <Button type="submit">Subscribe</Button>
-    </div>
-  )
 }
