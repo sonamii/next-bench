@@ -1,101 +1,236 @@
 import Image from "next/image";
+import "./style.css";
+import { MapPin, User } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import Link from "next/link";
 
 export default function Home() {
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+    <>
+      <div className="containerMax">
+        <div className="nav">
+          <div className="logoContainer">
+            <div className="logo">NEXT BENCH</div>
+            <div className="location">
+              <MapPin
+                size={13}
+                color="#52525B"
+                style={{ marginBottom: "4px" }}
+              />
+              Dehradun
+            </div>
+          </div>
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+          <div className="midCont">
+            <div className="links">Admission Tracker</div>
+            <div className="links">Comparison</div>
+            <div className="links">Explore</div>
+          </div>
+
+          <div className="right">
+            <div className="button">Shortlist</div>
+
+            <div className="profile">
+              <User size={20} />
+            </div>
+          </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+
+        {/*main start*/}
+        <div className="main">
+          <div className="containerMain">
+            <div className="a">
+              <Image
+                src={"./vector1.svg"}
+                alt="v1"
+                width={200}
+                height={200}
+                style={{ scale: "3.1" }}
+              />
+            </div>
+            <div className="b">
+              <Image
+                src={"./vector3.svg"}
+                alt="v1"
+                width={200}
+                height={200}
+                style={{ scale: "1.1" }}
+              />
+            </div>
+            <div className="c">
+              <Image
+                src={"./vector2.svg"}
+                alt="v1"
+                width={200}
+                height={200}
+                style={{ scale: "1.1" }}
+              />
+            </div>
+            <div className="d">
+              <Image
+                src={"./vector4.svg"}
+                alt="v1"
+                width={200}
+                height={200}
+                style={{ scale: "1.8" }}
+              />
+            </div>
+            <div className="textTop">
+              Find <span>schools</span> that fits for your child.
+            </div>
+            <div className="textBottom">
+              Finding the right school shouldn&apos;t be hard. From K-12 to
+              college to grad school, we make it School Search easy.
+            </div>{" "}
+            <div className="input">
+              {" "}
+              <Input type="text" placeholder="Enter school's name/locality" />
+              <Button type="submit">Search</Button>{" "}
+            </div>
+            <div className="testimonial" style={{ marginLeft: "10px" }}>
+              <div className="testimonialExtra">
+                <div
+                  data-layer="Frame 282"
+                  className="Frame282 h-16 justify-start items-center gap-10 inline-flex"
+                >
+                  <div
+                    data-layer="Fact 1"
+                    className="Fact1 h-16 justify-start items-center gap-0.5 inline-flex"
+                  >
+                    <div
+                      data-layer="300+"
+                      className="w-32 text-zinc-900 text-5xl font-medium font-['Plus_Jakarta_Sans'] leading-10"
+                    >
+                      300+
+                    </div>
+                    <div
+                      data-layer="Happy Parents"
+                      className="HappyParents w-20 text-zinc-900 text-xs font-normal font-['Plus_Jakarta_Sans'] leading-tight"
+                    >
+                      Happy <br />
+                      Parents
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <div
+                    data-layer="Fact 2"
+                    className="Fact2 h-16 justify-start items-center gap-0 inline-flex"
+                  >
+                    <div
+                      data-layer="80+"
+                      className="w-24 text-right text-zinc-900 text-5xl font-medium font-['Plus_Jakarta_Sans'] leading-10"
+                    >
+                      80+
+                    </div>
+                    <div
+                      data-layer="Applied Schools"
+                      className="AppliedSchools w-20 text-zinc-900 text-xs font-normal font-['Plus_Jakarta_Sans'] leading-tight"
+                    >
+                      Applied
+                      <br />
+                      Schools
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>{" "}
+        </div>
+        <div className="footer">
+          {/* <div className="footerStyle">
+            <div className="info">
+              <h1>NEXT BENCH</h1>
+              <br />
+              <h2>About Us</h2>
+              <br />
+              <p>Lorem Ipsum</p>
+            </div>
+
+            <div className="footerLinks">
+              <div className="company">
+                <h3>Company</h3>
+                <br />
+                <Link href="#">About</Link>
+                <Link href="#">Admission Taker</Link>
+                <Link href="#">Comparison</Link>
+                <Link href="#">Shortlisted School</Link>
+              </div>
+
+              <div className="help">
+                <h3>Help</h3>
+                <br />
+                <Link href="#">Customer Support</Link>
+                <Link href="#">For teachers</Link>
+                <Link href="#">Terms and Condition</Link>
+                <Link href="#">Privacy Policy</Link>
+              </div>
+
+              <div className="resources">
+                <h3>Resources</h3>
+                <br />
+                <Link href="#">Schools</Link>
+                <Link href="#">College</Link>
+                <Link href="#">Universities</Link>
+                <Link href="#">Others</Link>
+              </div>
+            </div>
+          </div> */}
+
+          {/* <div className="socialLinks">
+            <Link href="#">
+              <Linkedin />
+            </Link>
+            <Link href="#">
+              <Instagram />
+            </Link>
+          </div> */}
+
+          <div className="left">
+            <div className="top">
+              <h1>NEXT BENCH</h1>
+            </div>
+            <div className="bottom">
+              <h1>About us</h1>
+              <p>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam
+                dictum aliquet accumsan porta lectus ridiculus in mattis. Netus
+                sodales in volutpat ullamcorper amet adipiscing fermentum.
+              </p>
+            </div>
+          </div>
+          <div className="right">
+            <div className="item">
+              <h1>Product</h1>
+              <div className="p">
+                <Link href="/">About</Link>
+                <Link href="/">Admisison Tracker</Link>
+                <Link href="/">Comparison</Link>
+                <Link href="/">Shortlisted Schools</Link>
+              </div>
+            </div>
+            <div className="item">
+              <h1>Help</h1>
+              <div className="p">
+                <Link href="/">Customer Support</Link>
+                <Link href="/">For Teachers</Link>
+                <Link href="/">Terms and Conditions</Link>
+                <Link href="/">Privacy Policy</Link>
+              </div>
+            </div>
+            <div className="item">
+              <h1>Resource</h1>
+              <div className="p">
+                <Link href="/">School</Link>
+                <Link href="/">College</Link>
+                <Link href="/">Universities</Link>
+                <Link href="/">Others</Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
   );
 }
