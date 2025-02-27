@@ -8,7 +8,6 @@ export default function Home() {
   return (
     <>
       <div className="containerMax">
-        
         <div className="nav">
           <div className="logoContainer">
             <div className="logo">NEXT BENCH</div>
@@ -77,7 +76,7 @@ export default function Home() {
               />
             </div>
             <div className="textTop">
-              Find <span>schools</span> that fits for your <br />
+              Find <span>schools</span> that fits for your
               child.
             </div>
             <div className="textBottom">
@@ -136,7 +135,7 @@ export default function Home() {
           </div>{" "}
         </div>
         <div className="footer">
-          <div className="footerStyle">
+          {/* <div className="footerStyle">
             <div className="info">
               <h1>NEXT BENCH</h1>
               <br />
@@ -173,15 +172,58 @@ export default function Home() {
                 <a href="#">Others</a>
               </div>
             </div>
-          </div>
+          </div> */}
 
-          <div className="socialLinks">
+          {/* <div className="socialLinks">
             <a href="#">
               <Linkedin />
             </a>
             <a href="#">
               <Instagram />
             </a>
+          </div> */}
+
+          <div className="left">
+            <div className="top">
+              <h1>NEXT BENCH</h1>
+            </div>
+            <div className="bottom">
+              <h1>About us</h1>
+              <p>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam
+                dictum aliquet accumsan porta lectus ridiculus in mattis. Netus
+                sodales in volutpat ullamcorper amet adipiscing fermentum.
+              </p>
+            </div>
+          </div>
+          <div className="right">
+            <div className="item">
+              <h1>Product</h1>
+              <div className="p">
+                <a href="/">About</a>
+                <a href="/">Admisison Tracker</a>
+                <a href="/">Comparison</a>
+                <a href="/">Shortlisted Schools</a>
+              </div>
+            </div>
+            <div className="item">
+              <h1>Help</h1>
+              <div className="p">
+                <a href="/">Customer Support</a>
+                <a href="/">For Teachers</a>
+                <a href="/">Terms and Conditions</a>
+                <a href="/">Privacy Policy</a>
+              </div>
+            </div>
+            <div className="item">
+              <h1>Resource</h1>
+              <div className="p">
+                <a href="/">School</a>
+                <a href="/">College</a>
+                <a href="/">Universities</a>
+                <a href="/">Others</a>
+              </div>
+            </div>
           </div>
         </div>
       </div>
