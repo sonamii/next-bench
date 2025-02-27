@@ -3,6 +3,7 @@ import "./style.css";
 import { MapPin, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import Link from "next/link";
 
 export default function Home() {
   return (
@@ -39,7 +40,7 @@ export default function Home() {
         {/*main start*/}
         <div className="main">
           <div className="containerMain">
-            <div className="a">
+            <div className="Link">
               <Image
                 src={"./vector1.svg"}
                 alt="v1"
@@ -80,7 +81,7 @@ export default function Home() {
               child.
             </div>
             <div className="textBottom">
-              Finding the right school shouldn't be hard. From K-12 to college
+              Finding the right school shouldn&apos;t be hard. From K-12 to college
               to grad school, we make it School Search easy.
             </div>{" "}
             <div className="input">
@@ -148,39 +149,39 @@ export default function Home() {
               <div className="company">
                 <h3>Company</h3>
                 <br />
-                <a href="#">About</a>
-                <a href="#">Admission Taker</a>
-                <a href="#">Comparison</a>
-                <a href="#">Shortlisted School</a>
+                <Link href="#">About</Link>
+                <Link href="#">Admission Taker</Link>
+                <Link href="#">Comparison</Link>
+                <Link href="#">Shortlisted School</Link>
               </div>
 
               <div className="help">
                 <h3>Help</h3>
                 <br />
-                <a href="#">Customer Support</a>
-                <a href="#">For teachers</a>
-                <a href="#">Terms and Condition</a>
-                <a href="#">Privacy Policy</a>
+                <Link href="#">Customer Support</Link>
+                <Link href="#">For teachers</Link>
+                <Link href="#">Terms and Condition</Link>
+                <Link href="#">Privacy Policy</Link>
               </div>
 
               <div className="resources">
                 <h3>Resources</h3>
                 <br />
-                <a href="#">Schools</a>
-                <a href="#">College</a>
-                <a href="#">Universities</a>
-                <a href="#">Others</a>
+                <Link href="#">Schools</Link>
+                <Link href="#">College</Link>
+                <Link href="#">Universities</Link>
+                <Link href="#">Others</Link>
               </div>
             </div>
           </div> */}
 
           {/* <div className="socialLinks">
-            <a href="#">
+            <Link href="#">
               <Linkedin />
-            </a>
-            <a href="#">
+            </Link>
+            <Link href="#">
               <Instagram />
-            </a>
+            </Link>
           </div> */}
 
           <div className="left">
@@ -200,28 +201,28 @@ export default function Home() {
             <div className="item">
               <h1>Product</h1>
               <div className="p">
-                <a href="/">About</a>
-                <a href="/">Admisison Tracker</a>
-                <a href="/">Comparison</a>
-                <a href="/">Shortlisted Schools</a>
+                <Link href="/">About</Link>
+                <Link href="/">Admisison Tracker</Link>
+                <Link href="/">Comparison</Link>
+                <Link href="/">Shortlisted Schools</Link>
               </div>
             </div>
             <div className="item">
               <h1>Help</h1>
               <div className="p">
-                <a href="/">Customer Support</a>
-                <a href="/">For Teachers</a>
-                <a href="/">Terms and Conditions</a>
-                <a href="/">Privacy Policy</a>
+                <Link href="/">Customer Support</Link>
+                <Link href="/">For Teachers</Link>
+                <Link href="/">Terms and Conditions</Link>
+                <Link href="/">Privacy Policy</Link>
               </div>
             </div>
             <div className="item">
               <h1>Resource</h1>
               <div className="p">
-                <a href="/">School</a>
-                <a href="/">College</a>
-                <a href="/">Universities</a>
-                <a href="/">Others</a>
+                <Link href="/">School</Link>
+                <Link href="/">College</Link>
+                <Link href="/">Universities</Link>
+                <Link href="/">Others</Link>
               </div>
             </div>
           </div>
