@@ -40,7 +40,7 @@ export default function Home() {
         {/*main start*/}
         <div className="main">
           <div className="containerMain">
-            <div className="Link">
+            <div className="a">
               <Image
                 src={"./vector1.svg"}
                 alt="v1"
