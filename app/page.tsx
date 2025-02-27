@@ -1,7 +1,8 @@
 import Image from "next/image";
 import "./style.css";
-import { brotliCompress } from "zlib";
 import { Instagram, Linkedin, MapPin, User } from "lucide-react";
+
+
 export default function Home() {
   return (
     <>
@@ -35,8 +36,16 @@ export default function Home() {
 
         {/*main start*/}
         <div className="main">
-          <div className="textTop">Find <span>schools</span> that fits for your <br/>child.</div>
-          <div className="textBottom">Finding the right school shouldn't be hard. From K-12 to college to grad school, we make it School Search easy.</div>
+          <div className="textTop">
+            Find <span>schools</span> that fits for your <br />
+            child.
+          </div>
+          <div className="textBottom">
+            Finding the right school shouldn't be hard. From K-12 to college to
+            grad school, we make it School Search easy.
+          </div>{" "}
+          
+          <InputWithButton/>
         </div>
         {/*main end*/}
 
@@ -95,17 +104,21 @@ export default function Home() {
         {/*TRASH AREA 
 
         */}
+\
       </div>
     </>
   );
 }
 
-//What extension are you using? mien are not working?
-//auto-complete tag,error lens,prettier code formatter.
-//ok
 
-// for  prettier code formatter, you can try to install it and press shift+alt+f to format the code
-//ok
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
 
-// CURRENTLY WE WILL MAKE ONLY HOME > COMING SOON PAGE > FOOTER
-//ok
+export function InputWithButton() {
+  return (
+    <div className="flex w-full max-w-sm items-center space-x-2">
+      <Input type="email" placeholder="Email" />
+      <Button type="submit">Subscribe</Button>
+    </div>
+  )
+}

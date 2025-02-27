@@ -1,5 +1,5 @@
 {
-  "name": "next-bench",
+  "name": "z-next-bench-final",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -25,11 +25,9 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "autoprefixer": "^10.4.20",
     "eslint": "^9",
     "eslint-config-next": "15.2.0",
-    "postcss": "^8.5.3",
-    "tailwindcss": "^4.0.9",
+    "tailwindcss": "^4",
     "typescript": "^5"
   }
 }
