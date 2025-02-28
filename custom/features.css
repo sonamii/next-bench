@@ -1,8 +1,87 @@
-.features{
-    display: flex;
-    position: relative;
-    padding-top: 100px;
-    padding-bottom: 100px;
-    min-height: 500px;
-    background-color: red;    
+.features {
+  display: flex;
+  position: relative;
+  padding-top: 100px;
+  padding-bottom: 75px;
+  min-height: fit-content;
+  background-color: transparent;
+  align-items: center;
+  justify-content: start;
+  flex-direction: column;
+}
+
+.features .textTop {
+  display: block;
+  width: 90vw;
+  max-width: 870px;
+  font-size: 60px;
+  line-height: 1em;
+  color: #18181b;
+  font-family: "Plus Jakarta Sans", sans-serif;
+  font-weight: 900;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  white-space: normal; /* Allows line breaks */
+  background-color: transparent;
+}
+
+.textTop span {
+  font-family: "Finger Paint", cursive;
+  background: linear-gradient(to right, #ec5c0f, #f2c439);
+  -webkit-background-clip: text;
+  color: transparent;
+  font-weight: 300;
+}
+
+.features .textBottom {
+  display: block;
+  width: 100%;
+  font-size: 14px;
+  line-height: 1.2em;
+  color: #52525b;
+  font-family: "Plus Jakarta Sans", sans-serif;
+  font-weight: 400;
+  margin-top: 20px;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  white-space: normal; /* Allows line breaks */
+  background-color: transparent;
+}
+
+.features .cardContainer {
+  display: flex;
+  width: 80vw;
+  height: fit-content;
+  background-color: transparent;
+  align-items: center;
+  justify-content: space-evenly;
+  flex-direction: row;
+  margin-top: 70px;
+}
+
+.cardContainer .item {
+  display: flex;
+  position: relative;
+  width: 200px;
+  height: 250px;
+  background-color: #f1f1f1;
+  border-radius: 14px;
+  align-items: start;
+  justify-content: start;
+  flex-direction: column;
+  padding: 30px;
+}
+
+.item .text {
+  display: flex;
+  position: relative;
+  font-family: "Plus Jakarta Sans", sans-serif;
+  font-size: 23px;
+  font-weight: bold;
+  line-height: 1em;
+  color: #242428;
 }

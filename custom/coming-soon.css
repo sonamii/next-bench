@@ -1,7 +1,14 @@
 .comingContainer {
   padding-top: 100px;
-  padding-bottom: 100px;
-  margin-bottom: 50px;
+  padding-bottom: 175px;
+  width: 100vw;
+  display: flex;
+  align-items: center;
+  justify-content: start;
+  position: relative;
+  flex-direction: column;
+  background: linear-gradient(180deg, #fff 0%, #f3f8ee 50%, #fff0c5 100%);
+
 }
 
 .comingContainer .textTop {
