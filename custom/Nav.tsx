@@ -1,4 +1,4 @@
-import "./style.css";
+import "../../app/style.css";
 import { MapPin, User } from "lucide-react";
 
 
