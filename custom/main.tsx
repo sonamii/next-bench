@@ -53,7 +53,7 @@ export function  Main(){
           </div>
           <div className="textBottom">
             Finding the right school shouldn&apos;t be hard. From K-12 to
-            college to grad school, we make it School Search easy.
+            college to graduation school, we make school search easy.
           </div>{" "}
           <div className="input">
             {" "}
@@ -74,7 +74,7 @@ export function  Main(){
                     data-layer="300+"
                     className="w-32 text-zinc-900 text-5xl font-medium font-['Plus_Jakarta_Sans'] leading-10"
                   >
-                    300+
+                    30+*
                   </div>
                   <div
                     data-layer="Happy Parents"
@@ -94,7 +94,7 @@ export function  Main(){
                     data-layer="80+"
                     className="w-24 text-right text-zinc-900 text-5xl font-medium font-['Plus_Jakarta_Sans'] leading-10"
                   >
-                    80+
+                    8+*
                   </div>
                   <div
                     data-layer="Applied Schools"

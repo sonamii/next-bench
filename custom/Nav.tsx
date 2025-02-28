@@ -15,7 +15,7 @@ export function Navbar() {
                 color="#52525B"
                 style={{ marginBottom: "4px" }}
               />
-              Dehradun
+              Earth
             </div>
           </div>
 
