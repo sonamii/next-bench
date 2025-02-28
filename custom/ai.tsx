@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import "./ai.css";
+import "../custom/Styles/ai.css";
 
 export function NextAI() {
   return (

@@ -1,4 +1,4 @@
-import "./nav.css";
+import "../custom/Styles/nav.css";
 import { MapPin, User } from "lucide-react";
 
 export function Navbar() {
