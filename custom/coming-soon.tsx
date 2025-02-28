@@ -65,7 +65,7 @@ export function ComingSoon() {
               required
             />
             <Button type="submit" onClick={sendEmail}>
-              Notify me
+              Notify us
             </Button>
           </form>
         </div>
