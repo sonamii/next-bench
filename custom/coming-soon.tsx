@@ -1,7 +1,7 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import "./coming-soon.css";
+import "../custom/Styles/coming-soon.css";
 import { useState } from "react";
 import { toast } from "sonner";
 

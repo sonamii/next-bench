@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import "./features.css";
+import "../custom/Styles/features.css";
 
 export function Features() {
   return (

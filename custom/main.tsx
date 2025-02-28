@@ -1,7 +1,8 @@
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import "./main.css"
+import Link from "next/link";
+import "../custom/Styles/main.css"
 export function  Main(){
 
     return(<>
@@ -57,7 +58,7 @@ export function  Main(){
           <div className="input">
             {" "}
             <Input type="text" placeholder="Enter school's name/locality" />
-            <Button type="submit">Search</Button>{" "}
+            <Link href="#comingSoonSection"><Button type="submit">Search</Button></Link>{" "}
           </div>
           <div className="testimonial" style={{ marginLeft: "10px" }}>
             <div className="testimonialExtra">
