@@ -1,21 +1,25 @@
 import Image from "next/image";
 import "./style.css";
-import { MapPin, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
 
-import {Navbar} from './../custom/Nav';
-import {Footer} from './../custom/footer';
+import { Navbar } from "../custom/nav";
+import { Footer } from "./../custom/footer";
+import { ComingSoon } from "./../custom/coming-soon";
+
 export default function Home() {
-  return (    
-  <>
-    <div className="containerMax">
-        
-      <Navbar/>
+  return (
+    <>
+      <div className="containerMax">
+        <Navbar />
 
         {/*main start*/}
-        <section className="mainSection" id="mainSection" style={{width: '100%'}}>
+        <section
+          className="mainSection"
+          id="mainSection"
+          style={{ width: "100%" }}
+        >
           <div className="main">
             <div className="containerMain">
               <div className="a">
@@ -115,31 +119,13 @@ export default function Home() {
                 </div>
               </div>
             </div>{" "}
+            <ComingSoon/>
           </div>
         </section>
 
-        <section className="comingSoonSection" id="comingSoonSection">
-          <div className="comingSoon">
-            <h1>Coming Soon...</h1>
+        <Footer />
 
-            <div className="email">
-              <div className="emailHeading">
-                <p>Enter your email below to be notified as soon as our website is fully complete and ready to use!</p>
-              </div>
-              <div className="emailInput">
-                <div className="emailTextBox">
-                  <Input type="email" placeholder="Email"></Input>
-                </div>
-                <div className="emailButton">
-                  <Button type="submit">Submit</Button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-<Footer/>
-        </div>
+      </div>
     </>
   );
 }

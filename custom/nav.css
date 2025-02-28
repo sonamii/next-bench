@@ -1,0 +1,185 @@
+
+.nav {
+    display: flex;
+    position: relative;
+    width: 100%;
+    height: 75px;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #fff;
+    padding-left: 50px;
+    padding-right: 50px;
+    font-family: "Plus Jakarta Sans", sans-serif;
+    background-color: #fff;
+  }
+  
+  .nav .logoContainer {
+    display: flex;
+    position: relative;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+    width: fit-content;
+    background-color: transparent;
+    font-family: "Onest", sans-serif;
+    gap: 10px;
+  }
+  
+  .logoContainer .logo {
+    width: fit-content;
+    display: flex;
+    position: relative;
+    color: #18181b;
+    font-weight: 600;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+    font-size: 27px;
+  }
+  
+  .logoContainer .location {
+    height: 100%;
+    width: fit-content;
+    display: flex;
+    position: relative;
+    font-size: 13px;
+    color: #52525b !important;
+    align-items: end;
+    justify-content: center;
+    height: 30%;
+    flex-direction: row;
+    background-color: transparent;
+    margin-top: 3px;
+  }
+  .nav .right {
+    display: flex;
+    position: relative;
+    width: fit-content;
+    height: fit-content;
+    background-color: transparent;
+    align-items: center;
+    justify-content: space-between;
+    min-width: 220px;
+  }
+  
+  .right .button {
+    display: flex;
+    position: relative;
+    align-items: center;
+    justify-content: center;
+    background-color: #18181b;
+    cursor: pointer;
+  
+    padding: 13px 28px;
+    border-radius: 10px;
+    color: #f3f3f3;
+    font-weight: 400;
+    font-family: "Onest", sans-serif;
+    font-size: 14px;
+    cursor: pointer;
+  
+    &:hover {
+      background-color: #232328;
+      transform: translateY(-2px);
+    }
+  }
+  
+  /* .right .profile {
+    display: none;
+    position: relative;
+    width: 43px;
+    border-radius: 10px;
+    height: 43px;
+    background-color: #fff0c5;
+    color: #ec6a25;
+    align-items: center;
+    justify-content: center;
+  } */
+  /* HTML: <div class="hexagon"></div> */
+  .profile {
+    height: 43px; /* adjust to control the size  */
+    aspect-ratio: cos(30deg);
+    clip-path: polygon(-50% 50%, 50% 100%, 150% 50%, 50% 0);
+    background: #fff0c5;
+    border-radius: 5px;
+    color: #ec6a25;
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    cursor: pointer;
+  
+    &:hover {
+      background-color: #f5e2ac;
+    }
+  }
+  /*wtf   is happeneing*/
+  .nav .midCont {
+    display: flex;
+    position: relative;
+    background-color: transparent;
+    height: 70px;
+    width: fit-content;
+    padding: 0;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 50px;
+    right: calc(2vw);
+  }
+  
+  .midCont .links {
+    display: flex;
+    position: relative;
+    align-items: center;
+    font-size: 14px;
+    color: #18181b;
+    font-weight: 400;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+  
+    &:hover {
+      transform: translateY(-2px);
+    }
+  }
+
+
+  @media (max-width: 1020px) {
+    
+    .nav .midCont {
+      display: none;
+    }
+  }
+ 
+  @media (max-width: 540px) {
+    .nav .button {
+      display: none;
+    }
+    .nav .right {
+      min-width: 50px !important;
+      max-width: fit-content;
+      gap: 0;
+      background-color: transparent;
+    }
+   
+  }
+  
+  @media (max-width: 720px) {
+    body {
+      background-color: #f0f0f0;
+    }
+    
+  }
+ 
+  
+  @media (max-width: 450px) {
+    .nav .logoCont {
+      flex-direction: row !important;
+    }
+  }
+  
+  @media (max-width: 420px) {
+    .nav .logoContainer .location {
+      display: none !important;
+    }
+  }
