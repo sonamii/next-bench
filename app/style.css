@@ -27,7 +27,7 @@ body {
   left: 0;
   right: 0;
   margin: auto;
-  max-width: 1200px !important;
+  max-width: 100vw;
   height: fit-content;
   max-height: fit-content;
   align-items: center;
