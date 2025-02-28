@@ -390,146 +390,97 @@ body {
   justify-content: center;
   align-items: center;
 }
-/*CAUSING PREFIX PROBLEM (FIX IS @MehulNegi)*/
 
-.footer {
-  top: 0px;
-  background-color: #18181b;
-  color: #f3f3f3;
-  display: flex;
-  position: relative;
-  width: 100%;
-  height: fit-content;
-  align-items: start;
-  justify-content: space-between;
-  padding-top: 50px;
-  padding-bottom: 50px;
-  padding-inline: 50px;
-}
+/*CAUSING PREFIX PROBLEM (FIX IT @MehulNegi)*/
 
-.footer .left {
+.comingSoonSection {
   display: flex;
-  position: relative;
-  width: 30%;
-  height: fit-content;
-  flex-direction: column;
-  background-color: transparent;
-  gap: 40px;
-}
-.left .top {
-  display: flex;
-  position: relative;
-  width: 100%;
-  height: 50%;
-  max-width: 100px;
-  flex-direction: column;
-  background-color: transparent;
-  h1 {
-    font-size: 50px;
-    font-family: "Inter", sans-serif;
-    color: #eaeaea;
-    font-weight: 700;
-    line-height: 1em;
-  }
-}
-
-.left .bottom {
-  display: flex;
-  position: relative;
-  width: 100%;
-  height: 50%;
-  flex-direction: column;
-  gap: 10px;
-  background-color: transparent;
-
-  h1 {
-    font-size: 15px;
-    font-family: "Onest", sans-serif;
-    color: #eaeaea;
-    font-weight: normal;
-    line-height: 1em;
-  }
-  p {
-    font-size: 12px;
-    font-family: "Onest", sans-serif;
-    color: #d9d9d9;
-    font-weight: lighter;
-    line-height: 1em;
-  }
-}
-
-.footer .right {
-  display: flex;
-  position: relative;
+  justify-content: start;
   width: fit-content;
-  height: fit-content;
-  align-items: center;
-  justify-content: space-evenly;
-  flex-direction: row;
-  gap: 50px;
-  padding-right: 50px;
-  background-color: transparent;
-}
-
-.right .item {
-  display: flex;
-  width: fit-content;
-  height: fit-content;
-  flex-direction: column;
   position: relative;
 
-  h1 {
-    margin-bottom: 20px;
-    font-style: 16px;
-    font-weight: 600;
-    color: #eaeaea;
+  .comingSoon {
+    background-color: #fff0c5;
+    width: 90vw;
+    margin: 20px;
+    padding: 50px;
+    border-radius: 50px;
+    h1 {
+      font-size: 60px;
+      line-height: 1em;
+      color: #18181b;
+      font-family: "Plus Jakarta Sans", sans-serif;
+      font-weight: 900;
+      padding-bottom: 80px;
+      text-align: center;
+    }
   }
-  .p {
-    font-size: 12px;
-    color: #d9d9d9;
-    gap: 10px;
+
+  .email {
     display: flex;
-    position: relative;
     flex-direction: column;
+    justify-self: center;
+    justify-content: center;
+    background-color: #fff;
+    gap: 20px;
+    padding: 50px 20px;
+    width: 75%;
+    border-radius: 50px;
 
-    a:hover {
-      color: #fff;
-      scale: 1.02;
+    .emailHeading {
+      text-align: center;
+      font-size: 20px;
+      padding-bottom: 20px;
+      font-family: "Plus Jakarta Sans", sans-serif;
+    }
+
+    .emailInput {
+      display: flex;
+      position: relative;
+      align-items: center;
+      justify-content: start;
+      gap: 20px;
+      flex-direction: row;
+      width: fit-content;
+      margin: auto;
+      padding-right: 5px;
+
+      .emailTextBox {
+        align-self: center;
+        Input {
+          height: 50px;
+          padding-inline: 20px;
+          font-size: 13px;
+          min-width: 350px;
+          background-color: #fefefe;
+          color: #18181b;
+          border: 1px solid #18181b90;
+          font-family: "Plus Jakarta Sans", sans-serif;
+
+          &::placeholder {
+            color: #18181b;
+          }
+        }
+      }
+
+      .emailButton {
+        align-self: center;
+        Button {
+          height: 50px;
+          padding-inline: 25px;
+          cursor: pointer;
+
+          font-family: "Plus Jakarta Sans", sans-serif;
+          font-size: 15px;
+
+          &:checked {
+            animation: focus 0.5s ease-in-out;
+          }
+        }
+      }
     }
   }
 }
-
-/* 
-.footerStyle h1 {
-  color: #fff;
-  font-size: 50px;
-}
-.footerStyle :any-link {
-  color: #fff;
-  font-size: small;
-  padding: 5px;
-  text-decoration: none;
-}
-.footerLinks {
-  display: flex;
-  gap: 75px;
-  padding: 10px;
-  padding-top: 50px;
-  display: flex;
-  position: relative;
-}
-.company {
-  display: flex;
-  flex-direction: column;
-}
-.help {
-  display: flex;
-  flex-direction: column;
-}
-.resources {
-  display: flex;
-  flex-direction: column;
-} */
 
 @media (max-width: 1020px) {
   body {
