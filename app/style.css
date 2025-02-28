@@ -34,6 +34,7 @@ body {
   align-items: center;
   justify-content: start;
   flex-direction: column;
+  
   /*copilot:create a linear gradient from  top to bottm with 0% FFF0C5 and 50% F3F8EE and 100% FFF*/
 }
 
