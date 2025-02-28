@@ -213,11 +213,7 @@
   
   /*CAUSING PREFIX PROBLEM (FIX IT @MehulNegi)*/
   
-  @media (max-width: 1020px) {
-    body {
-      background-color: #f0f0f0;
-    }
-  }
+
   @media (max-width: 330px) {
     .testimonialExtra {
       flex-direction: column;
@@ -274,11 +270,7 @@
       z-index: 5;
     }
   }
-  @media (max-width: 720px) {
-    body {
-      background-color: #f0f0f0;
-    }
-  }
+ 
   
   @media (max-width: 570px) {
     .main .textBottom {

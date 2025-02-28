@@ -58,7 +58,9 @@
   height: fit-content;
   background-color: transparent;
   align-items: center;
-  justify-content: space-evenly;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 30px;
   flex-direction: row;
   margin-top: 70px;
 }

@@ -107,3 +107,18 @@
     animation: focus 0.5s ease-in-out;
   }
 }
+
+
+@media (max-width: 560px) {
+     .input {
+      flex-direction: column !important;
+      background-color: transparent;
+      height: 120px !important;
+      width: fit-content;
+      max-width: 90vw;
+    }
+  
+    .input Button {
+      width: 140px;
+    }
+  }

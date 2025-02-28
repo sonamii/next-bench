@@ -164,13 +164,7 @@
    
   }
   
-  @media (max-width: 720px) {
-    body {
-      background-color: #f0f0f0;
-    }
-    
-  }
- 
+
   
   @media (max-width: 450px) {
     .nav .logoCont {
