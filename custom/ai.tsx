@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import Link from "next/link";
 import "../custom/Styles/ai.css";
 
 export function NextAI() {
@@ -15,7 +16,9 @@ export function NextAI() {
               strong academic profile to crafting standout applications, gaining
               extracurricular achievements.
             </div>
-            <div className="button">Start now</div>
+            <Link href="#comingSoonSection">
+              <div className="button">Start now</div>
+            </Link>
           </div>
         </div>
       </section>

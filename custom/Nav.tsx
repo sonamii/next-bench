@@ -1,4 +1,5 @@
 import "../custom/Styles/nav.css";
+import Link from "next/link";
 import { MapPin, User } from "lucide-react";
 
 export function Navbar() {
@@ -19,17 +20,21 @@ export function Navbar() {
           </div>
 
           <div className="midCont">
-            <div className="links">Admission Tracker</div>
-            <div className="links">Comparison</div>
-            <div className="links">Explore</div>
+            <div className="links"><Link href="#comingSoonSection">Admission Tracker</Link></div>
+            <div className="links"><Link href="#comingSoonSection">Comparison</Link></div>
+            <div className="links"><Link href="#comingSoonSection">Explore</Link></div>
           </div>
 
           <div className="right">
-            <div className="button">Shortlist</div>
+            <Link href="#comingSoonSection">
+              <div className="button">Shortlist</div>
+            </Link>
 
-            <div className="profile">
-              <User size={20} />
-            </div>
+            <Link href="#comingSoonSection">
+              <div className="profile">
+                <User size={20} />
+              </div>
+            </Link>
           </div>
         </div>
       </div>
