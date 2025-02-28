@@ -7,6 +7,8 @@ import Link from "next/link";
 import { Navbar } from "../custom/nav";
 import { Footer } from "./../custom/footer";
 import { ComingSoon } from "./../custom/coming-soon";
+import { NextAI } from "./../custom/ai";
+import { Features } from "./../custom/features";
 
 export default function Home() {
   return (
@@ -119,12 +121,12 @@ export default function Home() {
                 </div>
               </div>
             </div>{" "}
-            <ComingSoon/>
           </div>
         </section>
-
+        <Features />
+        <NextAI />
+        <ComingSoon />
         <Footer />
-
       </div>
     </>
   );

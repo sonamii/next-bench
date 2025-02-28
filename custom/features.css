@@ -1,0 +1,8 @@
+.features{
+    display: flex;
+    position: relative;
+    padding-top: 100px;
+    padding-bottom: 100px;
+    min-height: 500px;
+    background-color: #fff;    
+}

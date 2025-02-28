@@ -11,7 +11,8 @@ export function ComingSoon() {
             Coming Soon <span>...</span>
           </div>
           <div className="textBottom">
-          Enter your email below to be notified as soon as our website is ready for beta use.
+            Enter your email below to be notified as soon as our website is
+            ready for beta use.
           </div>{" "}
           <div className="input">
             {" "}
@@ -19,6 +20,7 @@ export function ComingSoon() {
             <Button type="submit">Notify</Button>{" "}
           </div>
         </div>
+        <div></div>
       </section>
     </>
   );
