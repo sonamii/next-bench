@@ -51,10 +51,11 @@ export function ComingSoon() {
           Enter your email below to be notified as soon as our website is ready
           for beta use.
         </div>
-        <div className="input">
+        <div className="">
           <form
             style={{ display: "flex", gap: "20px" }}
             onSubmit={(e) => e.preventDefault()}
+            className="input"
           >
             <Input
               type="email"
