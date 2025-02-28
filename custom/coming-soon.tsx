@@ -24,14 +24,20 @@ export function ComingSoon() {
       const result = await response.json();
 
       if (response.ok && result.success) {
-        toast.success("✅ Email sent successfully!");
+        toast("Email sent to the host", {
+          description: "Sunday, December 03, 2023 at 9:00 AM",
+          action: {
+            label: "Okay",
+            onClick: () => console.log("Okay"),
+          },
+        });
         setUserEmail(""); // Clear input after successful submission
       } else {
-        toast.error(`❌ Error: ${result.error || "Failed to send email."}`);
+        toast.error(`Error: ${result.error || "Failed to send email."}`);
       }
     } catch (error) {
-      toast.error("❌ Something went wrong. Please try again.");
-      console.error("❌ Error:", error);
+      toast.error("Something went wrong. Please try again.");
+      console.error("Error:", error);
     }
   }
 
