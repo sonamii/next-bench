@@ -4,7 +4,6 @@ import { Navbar } from "../custom/nav";
 import { Footer } from "./../custom/footer";
 import { ComingSoon } from "./../custom/coming-soon";
 import { NextAI } from "./../custom/ai";
-import { Features } from "./../custom/features";
 import { Main } from "./../custom/main";
 
 export default function Home() {
@@ -14,9 +13,11 @@ export default function Home() {
         <Navbar />
         <Main />
         <div className="line"></div>
-        <Features /> <div className="line"></div>
-        <NextAI /> <div className="line"></div>
-        <ComingSoon /> 
+        {/* <Features />
+        <div className="line"></div> */}
+        <NextAI />
+        <div className="line"></div>
+        <ComingSoon />
         <Footer />
       </div>
     </>

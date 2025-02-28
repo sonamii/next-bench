@@ -35,7 +35,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  background: linear-gradient(180deg, #fff0c5 0%, #f3f8ee 50%, #fff 100%);
+  background: linear-gradient(180deg, #fff0c5 -20%, #f3f8ee 50%, #fff 100%);
   width: 100%;
   justify-content: start;
   padding-top: 100px;
