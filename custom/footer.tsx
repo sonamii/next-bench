@@ -10,9 +10,10 @@ return  (<><div className="footer">
       <div className="bottom">
         <h1>About us</h1>
         <p>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam
-          dictum aliquet accumsan porta lectus ridiculus in mattis. Netus
-          sodales in volutpat ullamcorper amet adipiscing fermentum.
+        Next Bench is a startup that helps parents explore, compare, and apply to schools. 
+        It simplifies the admission process by offering a seamless application system. 
+        The platform provides end-to-end services,It ensures parents make informed decisions with easy access to school details. 
+        Next Bench offer Ai which helps students get personalize roadmap to their dream University.
         </p>
       </div>
     </div>
