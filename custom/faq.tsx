@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import "../custom/Styles/faq.css"; // Importing a separate CSS file for FAQ
+import Link from "next/link";
 
 export const FAQ = () => {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
@@ -20,28 +21,30 @@ export const FAQ = () => {
   };
 
   return (
-    <section className="faq-container">
-      {/* SEO Optimized Title */}
-      <h2 className="faq-title">Frequently Asked Questions</h2>
-      <p className="faq-subtitle">Everything you need to know about the platform and its usage.</p>
+    <div className="faqContainer">
+      <section className="faqSection">
+        {/* SEO Optimized Title */}
+        <h2 className="faq-title">Frequently Asked Questions</h2>
+        <p className="faq-subtitle">Everything you need to know about the platform and its usage.</p>
 
-      <div className="faq-list">
-        {faqs.map((faq, index) => (
-          <div key={index} className={`faq-item ${openIndex === index ? "active" : ""}`}>
-            <button className="faq-question" onClick={() => toggleFAQ(index)}>
-              {faq.question}
-              <span className="faq-icon">{openIndex === index ? "−" : "+"}</span>
-            </button>
-            <div className="faq-answer">{openIndex === index && <p>{faq.answer}</p>}</div>
-          </div>
-        ))}
-      </div>
+        <div className="faq-list">
+          {faqs.map((faq, index) => (
+            <div key={index} className={`faq-item ${openIndex === index ? "active" : ""}`}>
+              <button className="faq-question" onClick={() => toggleFAQ(index)}>
+                {faq.question}
+                <span className="faq-icon">{openIndex === index ? "−" : "+"}</span>
+              </button>
+              <div className="faq-answer">{openIndex === index && <p>{faq.answer}</p>}</div>
+            </div>
+          ))}
+        </div>
 
-      {/* Additional Support */}
-      <div className="faq-support">
-        <p>Still have questions?</p>
-        <button className="faq-support-btn">Get in touch</button>
-      </div>
-    </section>
+        {/* Additional Support */}
+        <div className="faq-support">
+          <p>Still have questions?</p>
+          <button className="faq-support-btn"><Link href="#comingSoonSection">Get in touch</Link></button>
+        </div>
+      </section>
+    </div>
   );
 };

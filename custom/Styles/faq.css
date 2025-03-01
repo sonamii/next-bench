@@ -1,6 +1,10 @@
 /* FAQ Section Styling */
-.faq-container {
-    max-width: 900px;
+.faqContainer{
+  width: 100%;
+  background: linear-gradient(180deg, #fff 0%, #f3f8ee 50%, #fff0c5 100%);
+}
+.faqSection {
+    max-width: 700px;
     margin: 50px auto;
     padding: 20px;
     background: #f9f9f9;
