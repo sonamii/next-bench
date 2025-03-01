@@ -1,0 +1,92 @@
+/* FAQ Section Styling */
+.faq-container {
+    max-width: 900px;
+    margin: 50px auto;
+    padding: 20px;
+    background: #f9f9f9;
+    border-radius: 12px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Title & Subtitle */
+  .faq-title {
+    font-size: 26px;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 10px;
+  }
+  
+  .faq-subtitle {
+    font-size: 16px;
+    color: #666;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  /* FAQ Items */
+  .faq-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .faq-item {
+    background: white;
+    border-radius: 8px;
+    padding: 10px 15px;
+    transition: 0.3s;
+  }
+  
+  .faq-question {
+    width: 100%;
+    background: none;
+    border: none;
+    font-size: 18px;
+    font-weight: 600;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    padding: 10px;
+  }
+  
+  .faq-icon {
+    font-size: 20px;
+    color: #ff7b00;
+  }
+  
+  /* Answer Section */
+  .faq-answer {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease-in-out;
+  }
+  
+  .faq-item.active .faq-answer {
+    max-height: 100px;
+  }
+  
+  /* Support Section */
+  .faq-support {
+    margin-top: 20px;
+    text-align: center;
+    font-size: 16px;
+    color: #333;
+  }
+  
+  .faq-support-btn {
+    margin-top: 10px;
+    padding: 8px 15px;
+    background: #ff7b00;
+    border: none;
+    color: white;
+    font-size: 14px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+  
+  .faq-support-btn:hover {
+    background: #e66900;
+  }
+  
