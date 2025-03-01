@@ -1,25 +1,25 @@
 .comingContainer {
   padding-top: 100px;
-  padding-bottom: 175px;
+  padding-bottom: 10px;
   width: 100vw;
   display: flex;
   align-items: center;
   justify-content: start;
   position: relative;
   flex-direction: column;
-  background: linear-gradient(180deg, #fff 0%, #f3f8ee 50%, #fff0c5 100%);
-
+  background-color: transparent;
 }
 
 .comingContainer .textTop {
   display: block;
   width: 90vw;
   max-width: 870px;
-  font-size: 60px;
-  line-height: 1em;
-  color: #18181b;
+  font-size: 70px;
+  line-height: 1.1em;
+  color: #212121;
   font-family: "Plus Jakarta Sans", sans-serif;
-  font-weight: 900;
+  font-weight: 700;
+  letter-spacing: -3px;
   text-align: center;
   align-items: center;
   justify-content: center;
@@ -38,19 +38,21 @@
 
 .comingContainer .textBottom {
   display: block;
-  width: 100%;
-  font-size: 14px;
+  width: 800px;
+  font-size: 20px;
+  max-width: 90vw;
   line-height: 1.2em;
-  color: #52525b;
-  font-family: "Plus Jakarta Sans", sans-serif;
+  color: #333333;
+  font-family: "Space Mono", sans-serif;
   font-weight: 400;
-  margin-top: 20px;
+  margin-top: 30px;
   text-align: center;
   align-items: center;
   justify-content: center;
   flex-direction: column;
   white-space: normal; /* Allows line breaks */
   background-color: transparent;
+  margin-bottom: 50px;
 }
 
 .comingContainer .input {
@@ -60,27 +62,28 @@
   justify-content: center;
   gap: 20px;
   flex-direction: row;
-  top: 70px;
-  height: 50px;
+  margin-top: 40px;
+  height: 70px;
   width: fit-content;
   left: 0;
   right: 0;
   margin: auto;
   padding-right: 5px;
+  margin-bottom: 75px;
 }
 
 .input Input {
-  height: 50px;
-  padding-inline: 20px;
-  font-size: 13px;
-  min-width: 350px;
+  height: 60px;
+  padding-inline: 30px;
+  font-size: 14px;
+  min-width: 400px;
   background-color: #fefefe;
-  color: #18181b;
-  border: 1px solid #18181b90;
-  font-family: "Plus Jakarta Sans", sans-serif;
+  color: #212121;
+  border: 1px solid #21212190;
+  font-family: "Geist Mono", sans-serif;
 
   &::placeholder {
-    color: #18181b;
+    color: #212121;
   }
 }
 @keyframes focus {
@@ -96,29 +99,33 @@
 }
 
 .input Button {
-  height: 50px;
-  padding-inline: 25px;
+  height: 60px;
+  padding-inline: 35px;
   cursor: pointer;
-
-  font-family: "Plus Jakarta Sans", sans-serif;
-  font-size: 15px;
+  background-color: #212121;
+  font-family: "Geist Mono", sans-serif;
+  font-weight: 400;
+  font-size: 14px;
 
   &:checked {
     animation: focus 0.5s ease-in-out;
   }
+  &:hover{
+    scale: 0.97;
+    background-color: #181818;
+  }
 }
 
-
 @media (max-width: 560px) {
-     .input {
-      flex-direction: column !important;
-      background-color: transparent;
-      height: 120px !important;
-      width: fit-content;
-      max-width: 90vw;
-    }
-  
-    .input Button {
-      width: 140px;
-    }
+  .input {
+    flex-direction: column !important;
+    background-color: transparent;
+    height: 200px !important;
+    width: fit-content;
+    max-width: 90vw;
   }
+
+  .input Button {
+    width: 140px;
+  }
+}

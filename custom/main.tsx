@@ -1,16 +1,33 @@
-import Image from "next/image"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
+"use client";
+import Image from "next/image";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import Link from "next/link";
-import "../custom/Styles/main.css"
-export function  Main(){
+import "../custom/styles/main.css";
+// import { useGlitch } from "react-powerglitch";
+// import { Txtrvl } from "txtrvl";
 
-    return(<>
-     <section
-              className="mainSection"
-              id="mainSection"
-              style={{ width: "100%" }}
-            ><div className="main">
+/* <Txtrvl
+          text="Lorem ipsum dolor sit amet cons ectetlit."
+          delayPerRow={200} // each row = +200ms delay
+          duration={1500}
+          onChange={(isVisible) => console.log(isVisible)}
+          manualTrigger={{
+            // optional config
+            isVisible: true, // true | false
+          }}
+          scrollTrigger={{
+            offsetY: 500,
+            disabled: false, // true | undefined
+            resetPolicy: "above", // "no-reset" | "both"
+            threshold: 0.5, // % of visible txt
+            delay: 0,
+          }}
+        /> */
+export function Main() {
+  return (
+    <section className="mainSection" id="mainSection" style={{ width: "100%" }}>
+      <div className="main">
         <div className="containerMain">
           <div className="a">
             <Image
@@ -49,69 +66,30 @@ export function  Main(){
             />
           </div>
           <div className="textTop">
-            Find <span>schools</span> that fits for your child.
+            Find the perfect&nbsp;
+            <span>&nbsp;school&nbsp;</span>&nbsp;that fits your child.
           </div>
           <div className="textBottom">
-            Finding the right school shouldn&apos;t be hard. From K-12 to
-            college to graduation school, we make school search easy.
+            Finding the right school shouldn't be hard. Whether you're searching
+            for the perfect K-12 school, the best college for your future, or
+            the right graduate program to advance your career, we simplify the
+            process.
           </div>{" "}
           <div className="input">
             {" "}
             <Input type="text" placeholder="Enter school's name/locality" />
-            <Link href="#comingSoonSection"><Button type="submit">Search</Button></Link>{" "}
-          </div>
-          <div className="testimonial" style={{ marginLeft: "10px" }}>
-            <div className="testimonialExtra">
-              <div
-                data-layer="Frame 282"
-                className="Frame282 h-16 justify-start items-center gap-10 inline-flex"
-              >
-                <div
-                  data-layer="Fact 1"
-                  className="Fact1 h-16 justify-start items-center gap-0.5 inline-flex"
-                >
-                  <div
-                    data-layer="300+"
-                    className="w-32 text-zinc-900 text-5xl font-medium font-['Plus_Jakarta_Sans'] leading-10"
-                  >
-                    30+*
-                  </div>
-                  <div
-                    data-layer="Happy Parents"
-                    className="HappyParents w-20 text-zinc-900 text-xs font-normal font-['Plus_Jakarta_Sans'] leading-tight"
-                  >
-                    Happy <br />
-                    Parents
-                  </div>
-                </div>
-              </div>
-              <div>
-                <div
-                  data-layer="Fact 2"
-                  className="Fact2 h-16 justify-start items-center gap-0 inline-flex"
-                >
-                  <div
-                    data-layer="80+"
-                    className="w-24 text-right text-zinc-900 text-5xl font-medium font-['Plus_Jakarta_Sans'] leading-10"
-                  >
-                    8+*
-                  </div>
-                  <div
-                    data-layer="Applied Schools"
-                    className="AppliedSchools w-20 text-zinc-900 text-xs font-normal font-['Plus_Jakarta_Sans'] leading-tight"
-                  >
-                    Applied
-                    <br />
-                    Schools
-                  </div>
-                </div>
-              </div>
-            </div>
+            <Link href="#comingSoonSection">
+              <Button type="submit">Search it</Button>
+            </Link>{" "}
+          </div>{" "}
+          {/* <div className="line"></div> */}
+          {/* DISPLAY IS SET TO NONE */}
+          <div className="tile"></div>
+          <div className="testimonial">
+            Trusted by 300+ parents and students*
           </div>
         </div>{" "}
       </div>
-      </section>
-
-      </>
-      )
+    </section>
+  );
 }

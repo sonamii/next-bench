@@ -1,7 +1,6 @@
 @import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Onest:ital,wght@0,200..800;1,200..800&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Finger+Paint&display=swap");
-/*font-family:"Plus Jakarta Sans",sans-serif;*/
 
 * {
   padding: 0;
@@ -25,7 +24,6 @@ html {
 }
 .containerMax {
   display: flex;
-  width: 100vw;
   position: relative;
   left: 0;
   right: 0;
@@ -38,7 +36,16 @@ html {
   justify-content: start;
   flex-direction: column;
 
-  /*copilot:create a linear gradient from  top to bottm with 0% FFF0C5 and 50% F3F8EE and 100% FFF*/
+  background-image: linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 0.1),
+      rgba(255, 255, 255, 0)
+    ),
+    /* Fading Effect */
+      radial-gradient(rgba(0, 0, 0, 0.2) 1.1px, transparent 1.1px); /* Grid */
+
+  background-size: 100% 100%, 20px 20px; /* First layer covers whole section, second layer defines grid size */
+  background-color: transparent; /* Base color */
 }
 
 .line {
@@ -50,4 +57,23 @@ html {
   margin: auto;
   height: 1px;
   border: 1px solid #3c3c43;
+}
+
+/* Custom scrollbar styles */
+::-webkit-scrollbar {
+  width: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 0;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #bbb;
+  border-radius: 0;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #999;
 }
