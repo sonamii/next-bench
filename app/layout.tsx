@@ -23,14 +23,14 @@ export const metadata: Metadata = {
     title: "Next Bench by Sonamii",
     description:
       "Next Bench is a user-friendly web application that helps students to find the best institutions, offering advanced search and school comparisons.",
-    images: ["/og2.png"], // Assuming the image is at /public/thumbnail.png
+    images: ["/og.png"], // Assuming the image is at /public/thumbnail.png
   },
   twitter: {
     card: "summary_large_image",
     title: "Next Bench by Sonamii",
     description:
       "Next Bench is a user-friendly web application that helps students to find the best institutions, offering advanced search and school comparisons.",
-    images: ["/og2.png"],
+    images: ["/og.png"],
   },
 };
 
@@ -39,7 +39,6 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-
   return (
     <html lang="en">
       <body
@@ -60,8 +59,6 @@ export default function RootLayout({
             border: "1px solid #414141",
           }}
         />
-
-       
 
         {children}
       </body>
