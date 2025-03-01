@@ -51,7 +51,7 @@ export function Main() {
               />
             </div>
             <div className="textTop">
-              Find the perfect school that fits your child.
+              Find the perfect<span>school</span> that fits your child.
             </div>
             <div className="textBottom">
               Finding the right school shouldn't be hard. Whether you're

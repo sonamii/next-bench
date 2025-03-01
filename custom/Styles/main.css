@@ -112,13 +112,13 @@
   background-color: transparent;
 }
 
-/* .main .containerMain .textTop span {
+.main .containerMain .textTop span {
   font-family: "Finger Paint", cursive;
   background: linear-gradient(to right, #ec5c0f, #f2c439);
   -webkit-background-clip: text;
   color: transparent;
   font-weight: 300;
-} */
+} 
 
 .main .containerMain .textBottom {
   display: block;
