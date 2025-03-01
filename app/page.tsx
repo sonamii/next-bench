@@ -13,8 +13,6 @@ export default function Home() {
         <Navbar />
         <Main />
         <div className="line"></div>
-        {/* <Features />
-        <div className="line"></div> */}
         <NextAI />
         <div className="line"></div>
         <ComingSoon />
@@ -23,3 +21,5 @@ export default function Home() {
     </>
   );
 }
+
+
