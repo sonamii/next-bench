@@ -57,7 +57,7 @@
   height: fit-content;
   background-color: transparent;
 }
- .containerMax .main .containerMain .a {
+.containerMax .main .containerMain .a {
   display: flex;
   position: absolute;
   width: 50px;
@@ -92,7 +92,7 @@
   top: 280px;
   right: 60px;
   animation: wobble 1.5s ease-in-out infinite;
-} 
+}
 
 .main .containerMain .textTop {
   display: block;
@@ -207,12 +207,12 @@
   justify-content: center;
   border-radius: 20px;
 
-  &::before{
-    content: '🐻‍❄️';
+  &::before {
+    content: "🐻‍❄️";
     font-size: 80px;
     display: flex;
     bottom: 15px;
-    position: relative
+    position: relative;
   }
 }
 
@@ -289,7 +289,7 @@
   }
 
   .main .containerMain .tile {
-  width: 80vw;
+    width: 80vw;
   }
   .main .textTop {
     z-index: 5;
