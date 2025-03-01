@@ -39,7 +39,6 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const manualTextRevealState = false; // Define the variable
 
   return (
     <html lang="en">
