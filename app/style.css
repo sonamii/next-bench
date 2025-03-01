@@ -1,7 +1,6 @@
 @import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Onest:ital,wght@0,200..800;1,200..800&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Finger+Paint&display=swap");
-/*font-family:"Plus Jakarta Sans",sans-serif;*/
 
 * {
   padding: 0;
@@ -25,7 +24,6 @@ html {
 }
 .containerMax {
   display: flex;
-  width: 100vw;
   position: relative;
   left: 0;
   right: 0;
@@ -38,7 +36,6 @@ html {
   justify-content: start;
   flex-direction: column;
 
-  /* background: linear-gradient(to bottom, #ff7e61 -30%,  #FFFFFF 50%); */
   background-color: #fff;
 }
 
@@ -51,4 +48,23 @@ html {
   margin: auto;
   height: 1px;
   border: 1px solid #3c3c43;
+}
+
+/* Custom scrollbar styles */
+::-webkit-scrollbar {
+  width: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 0;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #bbb;
+  border-radius: 0;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #999;
 }

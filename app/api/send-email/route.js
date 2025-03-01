@@ -4,7 +4,7 @@ export async function POST(req) {
   try {
     const { userEmail } = await req.json();
 
-    if (!userEmail || !userEmail.includes("@") || !userEmail.includes(".")) {
+    if (!userEmail?.includes?.("@") || !userEmail?.includes?.(".")) {
       return new Response(JSON.stringify({ error: "Invalid email address" }), {
         status: 400,
       });

@@ -7,7 +7,6 @@
   justify-content: start;
   position: relative;
   flex-direction: column;
-  /* background: linear-gradient(180deg, #fff 0%, #f3f8ee 50%, #fff0c5 100%); */
   background-color: transparent;
 }
 
@@ -110,6 +109,11 @@
 
   &:checked {
     animation: focus 0.5s ease-in-out;
+  }
+  &:hover{
+    scale: 1;
+    transform: translateY(-3px);
+    background-color: #181818;
   }
 }
 

@@ -1,11 +1,8 @@
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import Link from "next/link";
-import "../custom/Styles/ai.css";
+import "../custom/styles/ai.css";
 
 export function NextAI() {
   return (
-    <>
       <section className="nextai" id="nextai">
         <div className="nextContainer">
           <div className="left">
@@ -22,6 +19,5 @@ export function NextAI() {
           </div>
         </div>
       </section>
-    </>
   );
 }

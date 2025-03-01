@@ -51,11 +51,9 @@
   position: relative;
   display: flex;
   flex-direction: column;
-  background-color: transparent;
-  background-color: transparent;
+
   width: fit-content;
   height: fit-content;
-  background-color: transparent;
 }
 .containerMax .main .containerMain .a {
   display: flex;
@@ -65,6 +63,7 @@
   top: 320px;
   left: 50px;
   animation: float 3s ease-in-out infinite;
+  animation-delay: 2s;
 }
 .containerMax .main .containerMain .b {
   display: flex;
@@ -74,6 +73,7 @@
   top: 00px;
   left: -90px;
   animation: float 3s ease-in-out infinite;
+  animation-delay: 0.5s;
 }
 .containerMax .main .containerMain .c {
   display: flex;
@@ -83,6 +83,7 @@
   top: 100px;
   right: -60px;
   animation: float 3s ease-in-out infinite;
+  animation-delay: 0s;
 }
 .containerMax .main .containerMain .d {
   display: flex;
@@ -97,7 +98,7 @@
 .main .containerMain .textTop {
   display: block;
   width: 90vw;
-  max-width: 870px;
+  max-width: 940px;
   font-size: 70px;
   line-height: 1.1em;
   color: #212121;
@@ -110,15 +111,20 @@
   flex-direction: column;
   white-space: normal; /* Allows line breaks */
   background-color: transparent;
+  line-break:strict;
+  white-space: normal; /* Allows line breaks */
 }
 
 .main .containerMain .textTop span {
   font-family: "Finger Paint", cursive;
-  background: linear-gradient(to right, #ec5c0f, #f2c439);
+  background: linear-gradient(to left, #ec5c0f, #f7bf1a);
   -webkit-background-clip: text;
   color: transparent;
   font-weight: 300;
-} 
+  white-space: normal; /* Allows line breaks */
+  word-break: normal; /* Prevents breaking words */
+  display: inline-block; /* Ensures span respects line breaks */
+}
 
 .main .containerMain .textBottom {
   display: block;
@@ -214,7 +220,6 @@
     bottom: 15px;
     position: relative;
     animation: wobble 1.5s ease-in-out infinite;
-
   }
 }
 
@@ -337,8 +342,6 @@
   }
 }
 
-
-
 @media (max-width: 450px) {
   .containerMax .main .containerMain .d {
     display: flex;
@@ -349,7 +352,13 @@
     right: 60px;
     animation: wobble 1.5s ease-in-out infinite;
   }
-  .textBottom{
+  .textBottom {
     z-index: 9;
+  }
+}
+
+@media (max-width: 750px) {
+  .main .containerMain .textTop {
+    max-width: 60vw;
   }
 }

@@ -8,18 +8,14 @@ import { Main } from "./../custom/main";
 
 export default function Home() {
   return (
-    <>
-      <div className="containerMax">
-        <Navbar />
-        <Main />
-        <div className="line"></div>
-        <NextAI />
-        <div className="line"></div>
-        <ComingSoon />
-        <Footer />
-      </div>
-    </>
+    <div className="containerMax">
+      <Navbar />
+      <Main />
+      <div className="line"></div>
+      <NextAI />
+      <div className="line"></div>
+      <ComingSoon />
+      <Footer />
+    </div>
   );
 }
-
-

@@ -1,7 +1,7 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import "../custom/Styles/coming-soon.css";
+import "../custom/styles/coming-soon.css";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -25,7 +25,7 @@ export function ComingSoon() {
 
       if (response.ok && result.success) {
         toast("Email sent to the host", {
-          description: "Sunday, December 03, 2023 at 9:00 AM",
+          description: "You will be notified as soon.",
           action: {
             label: "Okay",
             onClick: () => console.log("Okay"),

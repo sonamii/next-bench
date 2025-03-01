@@ -1,10 +1,7 @@
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import "../custom/Styles/features.css";
+import "../custom/styles/features.css";
 
 export function Features() {
   return (
-    <>
       <section className="features" id="features">
         <div className="textTop">
           What are you <span>looking</span> for?
@@ -30,6 +27,5 @@ export function Features() {
           </div>
         </div>
       </section>
-    </>
   );
 }

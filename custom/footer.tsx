@@ -1,8 +1,8 @@
 import Link from "next/link";
-import '../custom/Styles/footer.css';
+import '../custom/styles/footer.css';
 export function Footer() {
 
-return  (<><div className="footer">
+return  (<div className="footer">
     <div className="left">
       <div className="top">
         <h1>NEXT BENCH</h1>
@@ -46,6 +46,6 @@ return  (<><div className="footer">
         </div>
       </div>
     </div>
-  </div></>)
+  </div>)
 
 }

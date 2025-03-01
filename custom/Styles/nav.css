@@ -37,7 +37,6 @@
 }
 
 .logoContainer .location {
-  height: 100%;
   width: fit-content;
   display: flex;
   position: relative;
@@ -76,7 +75,6 @@
   font-weight: 400;
   font-family: "Geist Mono", sans-serif;
   font-size: 14px;
-  cursor: pointer;
 
   &:hover {
     background-color: #232328;
@@ -89,7 +87,7 @@
   position: relative;
   align-items: center;
   justify-content: center;
-  background-color: #fff;
+  background-color: transparent;
   color: #212121;
   cursor: pointer;
   padding: 13px 28px;
@@ -160,21 +158,28 @@
   align-items: center;
   cursor: pointer;
   font-family: "Geist Mono", sans-serif;
-  &:hover {
-    color: #ec6a25;
-  }
+  transition: 0.3s !important;
+
   &:hover {
     transform: translateY(-2px);
+    color: #ec6a25;
+
   }
 }
 
-@media (max-width: 1020px) {
-  .nav .midCont {
+@media (max-width: 1120px) {
+  .nav .midCont .links:nth-child(1) {
     display: none;
   }
 }
 
-@media (max-width: 540px) {
+@media (max-width: 900px) {
+  .nav .midCont  {
+    display: none;
+  }
+}
+
+@media (max-width: 694px) {
   .nav .button {
     display: none;
   }
@@ -186,11 +191,13 @@
   }
 }
 
-@media (max-width: 450px) {
+@media (max-width: 510px) {
   .nav .logoContainer {
     flex-direction: row !important;
   }
-
+.nav .logo{
+  margin-right: 7vw;
+}
   .nav {
     flex-direction: column !important;
     padding-top: 15px;
