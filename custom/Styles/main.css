@@ -46,7 +46,7 @@
 .main .containerMain {
   background-color: transparent;
   align-items: center;
-  padding-right: 0px !important;
+  padding-left: 0px !important;
   justify-content: start;
   position: relative;
   display: flex;
@@ -213,6 +213,8 @@
     display: flex;
     bottom: 15px;
     position: relative;
+    animation: wobble 1.5s ease-in-out infinite;
+
   }
 }
 
@@ -322,5 +324,32 @@
     z-index: 1;
     top: 70%;
     right: 9%;
+  }
+}
+
+@media (max-width: 435px) {
+  .input {
+    width: 90vw !important;
+  }
+
+  .input Input {
+    min-width: 90vw !important;
+  }
+}
+
+
+
+@media (max-width: 450px) {
+  .containerMax .main .containerMain .d {
+    display: flex;
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    top: 40%;
+    right: 60px;
+    animation: wobble 1.5s ease-in-out infinite;
+  }
+  .textBottom{
+    z-index: 9;
   }
 }

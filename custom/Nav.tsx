@@ -34,7 +34,8 @@ export function Navbar() {
           <div className="right">
             {" "}
             <div className="button2">
-              <u>Try it now </u>&nbsp;<ArrowUpRight size={15} color="#212121"/>
+              <u>Try it now </u>&nbsp;
+              <ArrowUpRight size={15} color="#212121" />
             </div>
             <div className="button">Shortlist</div>
             <Link href="#comingSoonSection">
