@@ -36,7 +36,16 @@ html {
   justify-content: start;
   flex-direction: column;
 
-  background-color: #fff;
+  background-image: linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 0.1),
+      rgba(255, 255, 255, 0)
+    ),
+    /* Fading Effect */
+      radial-gradient(rgba(0, 0, 0, 0.2) 1.1px, transparent 1.1px); /* Grid */
+
+  background-size: 100% 100%, 20px 20px; /* First layer covers whole section, second layer defines grid size */
+  background-color: transparent; /* Base color */
 }
 
 .line {

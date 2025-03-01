@@ -4,8 +4,10 @@ import { Input } from "@/components/ui/input";
 import "../custom/styles/coming-soon.css";
 import { useState } from "react";
 import { toast } from "sonner";
+import { useGlitch } from "react-powerglitch";
 
 export function ComingSoon() {
+  const glitch = useGlitch();
   const [userEmail, setUserEmail] = useState("");
 
   async function sendEmail() {
@@ -44,9 +46,7 @@ export function ComingSoon() {
   return (
     <section className="comingSoonSection" id="comingSoonSection">
       <div className="comingContainer">
-        <div className="textTop">
-          Coming very soon... 
-        </div>
+        <div className="textTop">Coming very soon...</div>
         <div className="textBottom">
           Enter your email below to be notified as soon as our website is ready
           for beta use.
@@ -64,7 +64,7 @@ export function ComingSoon() {
               onChange={(e) => setUserEmail(e.target.value)}
               required
             />
-            <Button type="submit" onClick={sendEmail}>
+            <Button type="submit" onClick={sendEmail} ref={glitch.ref}>
               Notify us
             </Button>
           </form>

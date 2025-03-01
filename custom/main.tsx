@@ -1,9 +1,29 @@
+"use client";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import "../custom/styles/main.css";
+// import { useGlitch } from "react-powerglitch";
+// import { Txtrvl } from "txtrvl";
 
+/* <Txtrvl
+          text="Lorem ipsum dolor sit amet cons ectetlit."
+          delayPerRow={200} // each row = +200ms delay
+          duration={1500}
+          onChange={(isVisible) => console.log(isVisible)}
+          manualTrigger={{
+            // optional config
+            isVisible: true, // true | false
+          }}
+          scrollTrigger={{
+            offsetY: 500,
+            disabled: false, // true | undefined
+            resetPolicy: "above", // "no-reset" | "both"
+            threshold: 0.5, // % of visible txt
+            delay: 0,
+          }}
+        /> */
 export function Main() {
   return (
     <section className="mainSection" id="mainSection" style={{ width: "100%" }}>
@@ -46,8 +66,8 @@ export function Main() {
             />
           </div>
           <div className="textTop">
-            Find the perfect&nbsp;<span>&nbsp;school&nbsp;</span>&nbsp;that fits
-            your child.
+            Find the perfect&nbsp;
+            <span>&nbsp;school&nbsp;</span>&nbsp;that fits your child.
           </div>
           <div className="textBottom">
             Finding the right school shouldn't be hard. Whether you're searching

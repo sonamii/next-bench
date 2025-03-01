@@ -111,13 +111,14 @@
   flex-direction: column;
   white-space: normal; /* Allows line breaks */
   background-color: transparent;
-  line-break:strict;
+  line-break: strict;
   white-space: normal; /* Allows line breaks */
+  z-index: 9;
 }
 
 .main .containerMain .textTop span {
   font-family: "Finger Paint", cursive;
-  background: linear-gradient(to left, #ec5c0f, #f7bf1a);
+  background: linear-gradient(to left, #e36e2f, #fcc110);
   -webkit-background-clip: text;
   color: transparent;
   font-weight: 300;
@@ -142,6 +143,7 @@
   white-space: normal; /* Allows line breaks */
   background-color: transparent;
   margin-bottom: 50px;
+  z-index: 9;
 }
 
 .main .containerMain .input {
@@ -170,6 +172,7 @@
   color: #212121;
   border: 1px solid #21212190;
   font-family: "Geist Mono", sans-serif;
+  z-index: 9;
 
   &::placeholder {
     color: #212121;
@@ -195,6 +198,7 @@
   font-family: "Geist Mono", sans-serif;
   font-weight: 400;
   font-size: 14px;
+  z-index: 9;
 
   &:checked {
     animation: focus 0.5s ease-in-out;
@@ -309,12 +313,6 @@
   }
 }
 
-@media (max-width: 570px) {
-  .main .textBottom {
-    max-width: 90vw;
-  }
-}
-
 @media (max-width: 400px) {
   .containerMax .main .containerMain .b {
     top: -30px !important;
@@ -360,5 +358,14 @@
 @media (max-width: 750px) {
   .main .containerMain .textTop {
     max-width: 60vw;
+  }
+  .containerMax .main .containerMain .d {
+    z-index: 1;
+  }
+}
+
+@media (max-width: 810px) {
+  .main .textBottom {
+    max-width: 90vw;
   }
 }
