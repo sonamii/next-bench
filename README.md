@@ -1,15 +1,15 @@
-# Next Bench README
+# [Next Bench](https://next-bench-snowy.vercel.app/) README
 
 ## Introduction to Next Bench  
-  >- Next Bench is a startup designed to overhaul the school admissions process for parents.  
-   >- We aim to eliminate the stress and inefficiency of finding and applying to schools by offering a unified platform.  
+  >- [Next Bench](https://next-bench-snowy.vercel.app/) is a startup designed to overhaul the school admissions process for parents.  
+   >-<code style="color:white">We aim to eliminate the stress and inefficiency of finding and applying to schools by offering a unified platform.</code>
    >- Our vision extends beyond admissions, providing individually tailored roadmaps to students' dream universities.
 
-## Why Next Bench Exists
+## Why Next Bench Exists?
   >- Parents often struggle with fragmented school information spread across websites, brochures, and word-of-mouth.  
   >- Applying to schools can mean filling out repetitive forms and chasing deadlines with little guidance.  
   >- Students lack clear pathways connecting their current education to future goals like university admission.  
-  >- Schools could benefit from a better way to reach their desired school by providing admissions pipeline. also highlight feature of Next bench is `NEXT-AI` specifically designed to give step by step roadmap to the users desired institute providing all the details and recommendations on resume building, application letter, and more. 
+  >- Schools could benefit from a better way to reach their desired school by providing admissions pipeline. also highlight feature of Next bench is __**`NEXT-AI`**__ specifically designed to give step by step roadmap to the users desired institute providing all the details and recommendations on resume building, application letter, and more. 
 
 ## Core Features of the Platform  
 
@@ -27,7 +27,7 @@
     >- Future integrations may include uniform ordering or study material delivery.  
 
   - AI-Powered University Roadmap:  
-    >- Analyze a student’s academic record, interests, and goals using advanced AI.  
+    >- Analyze a student’s academic record, interests, and goals using ***ADVANCED AI.***  
     >- Generate a personalized plan with milestones to reach their dream university.  
     >- Offer actionable advice, like recommended courses or extracurriculars, tailored to each student.
 
@@ -39,5 +39,5 @@
 
 ## Our Unique Value 
   >- Centralizes a scattered process into one reliable platform, unlike basic school directories.  
-  >- Combines immediate utility (admissions) with long-term vision (AI roadmaps).  
-  >- Prioritizes user trust with accurate, up-to-date data and a smooth experience. 
+  >- Combines immediate utility (admissions) with long-term vision **(AI roadmaps).**  
+  >- Prioritizes user trust with accurate, up-to-date data and a smooth experience.
