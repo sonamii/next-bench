@@ -1,5 +1,8 @@
-# 🪑 Next Bench by 🌕 Sonamii
-🌟 [**Next Bench**](https://next-bench-snowy.vercel.app/) is a user-friendly **`web`** application that helps 🧑‍🎓 students to find the best 🏫 **`institutions`**, offering advanced search and school comparisons. In short, **`Next Bench`** is a **`startup`** designed to overhaul the 🎒 **`school admissions`** process for 👩‍🦰 **`parents`**. Our vision **`extends`** beyond admissions, providing individually tailored 🗺️ **`roadmaps`** to students' dream 🍁 **`universities`**.
+# 🪑 Next Bench — Sonamii
+
+<Br>
+
+🌟 [**Next Bench**](https://next-bench-snowy.vercel.app/) is a user-friendly **`web`** application that helps 🧑‍🎓 students to find the best 🏫 **`institutions`**, offering advanced search and school comparisons. It is a **`startup`** designed to overhaul the school admission process for 👩‍🦰 **`parents`**. Our vision **`extends`** beyond admissions, providing individually tailored 🗺️ **`roadmaps`** to students' dream 🍁 **`universities`**.
 
   <br>
   
