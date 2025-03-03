@@ -1,7 +1,7 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import "../custom/styles/coming-soon.css";
+import "@custom/styles/coming-soon.css";
 import { useState } from "react";
 import { toast } from "sonner";
 import { useGlitch } from "react-powerglitch";
@@ -27,7 +27,7 @@ export function ComingSoon() {
 
       if (response.ok && result.success) {
         toast("Email sent to the host", {
-          description: "You will be notified as soon.",
+          description: "You will be notified soon.",
           action: {
             label: "Okay",
             onClick: () => console.log("Okay"),

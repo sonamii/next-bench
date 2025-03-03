@@ -1,5 +1,5 @@
 import Link from "next/link";
-import '../custom/styles/footer.css';
+import '@custom/styles/footer.css';
 export function Footer() {
 
 return  (<div className="footer">

@@ -1,4 +1,4 @@
-import "../custom/styles/features.css";
+import "@custom/styles/features.css";
 
 export function Features() {
   return (

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import "../custom/styles/ai.css";
+import "@custom/styles/ai.css";
 
 export function NextAI() {
   return (

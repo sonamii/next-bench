@@ -3,7 +3,7 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
-import "../custom/styles/main.css";
+import "@custom/styles/main.css";
 // import { useGlitch } from "react-powerglitch";
 // import { Txtrvl } from "txtrvl";
 

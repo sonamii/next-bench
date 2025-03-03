@@ -1,7 +1,7 @@
-import "../custom/styles/nav.css";
+import "@custom/styles/nav.css";
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowUpRight, User } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 
 export function Navbar() {
   return (
