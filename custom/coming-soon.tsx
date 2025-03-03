@@ -1,7 +1,7 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import "@custom/styles/coming-soon.css";
+import "@/custom/styles/coming-soon.css";
 import { useState } from "react";
 import { toast } from "sonner";
 import { useGlitch } from "react-powerglitch";
