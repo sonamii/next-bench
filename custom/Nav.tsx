@@ -34,12 +34,12 @@ export function Navbar() {
 
         <div className="right">
           {" "}
-          <Link href={"#comingSoonSection"}>
+          <a href={"/auth/signup"}>
             <div className="button2">
               <u>Try it now </u>&nbsp;
               <ArrowUpRight size={15} color="#212121" />
             </div>
-          </Link>
+          </a>
           <Link href={"#comingSoonSection"}>
             {" "}
             <div className="button">Shortlisted</div>
