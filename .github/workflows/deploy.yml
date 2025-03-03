@@ -15,23 +15,27 @@ jobs:
       - name: Cancel Previous Runs (Only Latest Commit Deploys)
         uses: styfle/cancel-workflow-action@0.12.0
         with:
-          access_token: ${{ secrets.GITHUB_TOKEN }}
+          access_token: ${{ secrets.GITHUB_TOKEN }}  # Kept default token
 
       - name: Checkout Code
         uses: actions/checkout@v4
 
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Build Project
+        run: npm run build
+
       - name: Install Vercel CLI
         run: npm install -g vercel
 
-      - name: Pull Vercel Environment
-        run: vercel pull --token=${{ secrets.VERCEL_TOKEN }} --yes
+      - name: Link Vercel Project
+        run: vercel link --token=${{ secrets.VERCEL_TOKEN }}
 
       - name: Deploy to Production (Main Branch)
         if: github.ref == 'refs/heads/main'
-        run: |
-          vercel deploy --prod --token=${{ secrets.VERCEL_TOKEN }}
+        run: vercel deploy --prod --token=${{ secrets.VERCEL_TOKEN }}
 
       - name: Deploy to Preview (Other Branches)
         if: github.ref != 'refs/heads/main'
-        run: |
-          vercel deploy --token=${{ secrets.VERCEL_TOKEN }}
+        run: vercel deploy --token=${{ secrets.VERCEL_TOKEN }}
