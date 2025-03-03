@@ -2,8 +2,11 @@ import "@/custom/styles/nav.css";
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowUpRight } from "lucide-react";
+import { useGlitch } from "react-powerglitch";
 
 export function Navbar() {
+  const glitch = useGlitch();
+
   return (
     <div className="containerMax">
       <div className="nav">
@@ -34,12 +37,12 @@ export function Navbar() {
 
         <div className="right">
           {" "}
-          <Link href={"#comingSoonSection"}>
+          <a href={"/auth/signup"} ref={glitch.ref}>
             <div className="button2">
               <u>Try it now </u>&nbsp;
               <ArrowUpRight size={15} color="#212121" />
             </div>
-          </Link>
+          </a>
           <Link href={"#comingSoonSection"}>
             {" "}
             <div className="button">Shortlisted</div>

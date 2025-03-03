@@ -39,7 +39,6 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-
   return (
     <html lang="en">
       <body
@@ -55,13 +54,13 @@ export default function RootLayout({
           outerAlpha={0}
           innerStyle={{
             backgroundColor: "#EF9720",
+            zIndex: "9999 !important",
           }}
           outerStyle={{
             border: "1px solid #414141",
+            zIndex: "9999 !important",
           }}
         />
-
-       
 
         {children}
       </body>

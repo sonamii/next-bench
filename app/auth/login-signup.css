@@ -1,0 +1,61 @@
+body {
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  padding: 0;
+  margin: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background-image: linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 0.1),
+      rgba(255, 255, 255, 0)
+    ),
+    /* Fading Effect */
+      radial-gradient(rgba(0, 0, 0, 0.1) 1.1px, transparent 1.1px); /* Grid */
+
+  background-size: 100% 100%, 20px 20px; /* First layer covers whole section, second layer defines grid size */
+  background-color: transparent; /* Base color */
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.containerMax {
+  display: flex;
+  position: relative;
+  width: 700px;
+
+  align-items: center;
+  justify-content: center;
+}
+
+.cardContainer {
+  min-width: 700px;
+  max-height: 445px;
+  min-height: 445px;
+}
+
+@media (max-width: 767px) {
+  .containerMax {
+    max-width: 50vw !important;
+  }
+
+  .cardContainer {
+    min-width: 50vw;
+  }
+}
+
+@media (max-width: 580px) {
+  .cardContainer {
+    min-width: 300px;
+  }
+}
+
+@media (max-width: 525px) {
+  .cardContainer {
+    min-width: 300px;
+  }
+}
