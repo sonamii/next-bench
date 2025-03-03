@@ -8,7 +8,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { ArrowLeft } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
-import supabase from "@/services/supabase";
+import supabase from "./../services/supabase";
 import { toast } from "sonner";
 
 import {
@@ -154,11 +154,13 @@ export function LoginForm({
             </div>
           </form>
           <div className="bg-muted relative hidden md:block overflow-hidden justify-center">
-            <img
+            <Image
               src="/logo.png"
               alt="Image"
+              width={400}
+              height={400}
               className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
-              style={{ width: "100%", height: "100%" }}
+              style={{ width: "100% !important", height: "100% !important" }}
             />
           </div>
         </CardContent>
