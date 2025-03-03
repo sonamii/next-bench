@@ -1,0 +1,34 @@
+name: Deploy to Vercel
+
+on:
+  push:
+    branches:
+      - "**"
+  pull_request:
+    branches:
+      - "**"
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cancel Previous Runs (Only Latest Commit Deploys)
+        uses: styfle/cancel-workflow-action@0.12.0
+        with:
+          access_token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Install Vercel CLI
+        run: npm install -g vercel
+
+      - name: Deploy to Production (Main Branch)
+        if: github.ref == 'refs/heads/main'
+        run: |
+          vercel --prod --confirm --token=${{ secrets.VERCEL_TOKEN }} --project-id=${{ secrets.VERCEL_PROJECT_ID }}
+
+      - name: Deploy to Preview (Other Branches)
+        if: github.ref != 'refs/heads/main'
+        run: |
+          vercel --token=${{ secrets.VERCEL_TOKEN }} --project-id=${{ secrets.VERCEL_PROJECT_ID }}
