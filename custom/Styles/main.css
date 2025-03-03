@@ -357,7 +357,7 @@
 
 @media (max-width: 750px) {
   .main .containerMain .textTop {
-    max-width: 60vw;
+    max-width: 70vw;
   }
   .containerMax .main .containerMain .d {
     z-index: 1;
