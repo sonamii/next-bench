@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import "./../app/auth/login-signup.css";
+import Image from "next/image";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   Select,
@@ -221,11 +222,13 @@ export function SignUpForm({
             </div>
           </form>
           <div className="bg-muted relative hidden md:block overflow-hidden justify-center">
-            <img
+            <Image
               src="/logo.png"
               alt="Image"
+              width={400}
+              height={400}
               className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
-              style={{ width: "100%", height: "100%" }}
+              style={{ width: "100% !important", height: "100% !important" }}
             />
           </div>
         </CardContent>
