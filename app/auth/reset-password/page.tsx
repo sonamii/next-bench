@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export default function ResetPassword() {
   return (
     <div>
@@ -7,11 +9,11 @@ export default function ResetPassword() {
       <p>Please enter your new password below.</p>
       <p>If you have any issues, please contact support.</p>
       <br></br>
-      <a href="/">
+      <Link href="/">
         <i>
           <u>Back to Home</u>
         </i>
-      </a>
+      </Link>
     </div>
   );
 }

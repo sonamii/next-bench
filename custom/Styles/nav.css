@@ -89,11 +89,14 @@
   position: relative;
   align-items: center;
   justify-content: center;
-  background-color: transparent;
+  background-color: rgb(243, 227, 214);
   color: #212121;
   cursor: pointer;
-  padding: 13px 28px;
-  border-radius: 0px;
+  padding: 4px 0;
+  margin-right: 20px;
+  border-radius: 10px;
+  padding-left: 10px;
+  padding-right: 5px;
   font-weight: 400;
   font-family: "Geist Mono", sans-serif;
   font-size: 14px;
@@ -101,7 +104,6 @@
   flex-direction: row;
 
   &:hover {
-    background-color: #fff;
     transform: translateY(-2px);
   }
 }

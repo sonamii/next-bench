@@ -1,3 +1,4 @@
+import  Link  from "next/link";
 export default function Callback() {
   return (
     <div>
@@ -10,11 +11,11 @@ export default function Callback() {
       </p>
       <p>If you have any issues, please contact support.</p>
       <br></br>
-      <a href="/">
+      <Link href="/">
         <i>
           <u>Back to Home</u>
         </i>
-      </a>
+      </Link>
     </div>
   );
 }

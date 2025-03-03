@@ -20,7 +20,6 @@ import {
 } from "@/components/ui/hover-card";
 import { useState } from "react";
 import supabase from "@/services/supabase";
-import { useEffect } from "react";
 
 export function SignUpForm({
   className,
@@ -201,10 +200,10 @@ export function SignUpForm({
                     </HoverCard>{" "}
                   </Label>
                   <a
-                    href="#"
+                    href="/auth/reset-password"
                     className="ml-auto text-sm underline-offset-2 hover:underline"
                   >
-                    <a href="/auth/reset-password">Reset your password?</a>
+                    Reset your password?
                   </a>
                 </div>
                 <Input
