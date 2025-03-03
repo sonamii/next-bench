@@ -3,10 +3,10 @@ name: Deploy to Vercel
 on:
   push:
     branches:
-      - "**"
+      - "test-auto-deploy-to-vercel-important"
   pull_request:
     branches:
-      - "**"
+      - "test-auto-deploy-to-vercel-important"
 
 jobs:
   deploy:
@@ -15,7 +15,7 @@ jobs:
       - name: Cancel Previous Runs (Only Latest Commit Deploys)
         uses: styfle/cancel-workflow-action@0.12.0
         with:
-          access_token: ${{ secrets.GITHUB_TOKEN }}  # Kept default token
+          access_token: ${{ secrets.GITHUB_TOKEN }} # Kept default token
 
       - name: Checkout Code
         uses: actions/checkout@v4
