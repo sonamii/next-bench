@@ -20,7 +20,7 @@ import {
   HoverCardTrigger,
 } from "@/components/ui/hover-card";
 import { useState } from "react";
-import supabase from "@/services/supabase";
+import supabase from "./../services/supabase";
 
 export function SignUpForm({
   className,

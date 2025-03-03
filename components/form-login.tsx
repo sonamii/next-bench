@@ -8,7 +8,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { ArrowLeft } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
-import supabase from "@/services/supabase";
+import supabase from "./../services/supabase";
 import { toast } from "sonner";
 
 import {
