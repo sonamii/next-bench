@@ -1,3 +1,4 @@
+"use client";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -6,6 +7,10 @@ import "./../app/auth/login-signup.css";
 import { Card, CardContent } from "@/components/ui/card";
 import { ArrowLeft } from "lucide-react";
 import Image from "next/image";
+import { useState } from "react";
+import supabase from "@/services/supabase";
+import { toast } from "sonner";
+
 import {
   HoverCard,
   HoverCardContent,
@@ -15,11 +20,44 @@ export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  function getDataFromSupabase() {
+    console.log(email);
+    console.log(password);
+    supabase.auth
+      .signInWithPassword({ email, password })
+      .then(({ data, error }) => {
+        if (error) {
+          console.error("Error logging in:", error.message);
+          toast("Error logging in", {
+            description: `Please try again - ${error.message}`,
+            action: {
+              label: "Okay",
+              onClick: () => console.log("Okay"),
+            },
+          });
+        } else {
+          console.log("Logged in successfully:", data.user);
+          toast("Logged in successfully", {
+            description: `Welcome back, ${data.user.email}`,
+            action: {
+              label: "Hello",
+              onClick: () => console.log("Hello"),
+            },
+          });
+          setTimeout(() => {
+            window.location.href = "/auth/callback";
+          }, 2500);
+        }
+      });
+  }
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card className="overflow-hidden p-0 cardContainer">
         <CardContent className="grid p-0 md:grid-cols-2">
-          <form className="p-6 md:p-8">
+          <form className="p-6 md:p-8" onSubmit={(e) => e.preventDefault()}>
             <div className="flex flex-col gap-6">
               <div className="flex flex-col items-center text-center">
                 <h1 className="text-2xl font-bold">Welcome back!</h1>
@@ -51,6 +89,8 @@ export function LoginForm({
                   type="email"
                   placeholder="m@example.com"
                   required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                 />
               </div>
 
@@ -61,7 +101,7 @@ export function LoginForm({
                     href="#"
                     className="ml-auto text-sm underline-offset-2 hover:underline"
                   >
-                    Forgot your password?
+                    <a href="/auth/reset-password">Forgot your password?</a>
                   </a>
                 </div>
                 <Input
@@ -69,9 +109,11 @@ export function LoginForm({
                   type="password"
                   placeholder="Password"
                   required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                 />
               </div>
-              <Button type="submit" className="w-full">
+              <Button className="w-full" onClick={getDataFromSupabase}>
                 LogIn
               </Button>
               <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
@@ -80,7 +122,13 @@ export function LoginForm({
                 </span>
               </div>
               <div className="grid grid-cols-3 gap-4">
-                <Button variant="outline" className="w-full">
+                <Button
+                  variant="outline"
+                  className="w-full"
+                  onClick={() => {
+                    window.location.href = "/auth/signup";
+                  }}
+                >
                   <ArrowLeft />
                   <span className="sr-only">Login with Apple</span>
                 </Button>
