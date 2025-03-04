@@ -46,7 +46,7 @@ export function ComingSoon() {
   return (
     <section className="comingSoonSection" id="comingSoonSection">
       <div className="comingContainer">
-        <div className="textTop">Coming very soon</div>
+        <div className="textTop">Coming soon</div>
         <div className="textBottom">
           Enter your email below to be notified as soon as our website is ready
           for beta use.

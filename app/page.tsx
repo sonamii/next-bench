@@ -13,7 +13,6 @@ import "@/custom/styles/main.css";
 
 export default function Home() {
   return (
-    <>
       <div className="containerMax">
         <Navbar />
         <Main />
@@ -34,6 +33,5 @@ export default function Home() {
         <ComingSoon />
         <Footer />
       </div>
-    </>
   );
 }

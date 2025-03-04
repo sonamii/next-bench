@@ -91,7 +91,7 @@ const Faq3 = ({
         <Accordion
           type="single"
           collapsible
-          className="mx-auto w-full lg:max-w-3xl"
+          className="mx-auto w-full lg:max-w-3xl faqAccordion"
           style={{ backgroundColor: "#ffffff00", paddingInline: "20px" }}
         >
           {items.map((item) => (
