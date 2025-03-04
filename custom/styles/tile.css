@@ -1,0 +1,61 @@
+.tileContainer {
+  top: 0px;
+  background-color: none;
+  color: #18181b;
+  display: flex;
+  position: relative;
+  width: 100%;
+  height: fit-content;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding-top: 40px;
+  padding-bottom: 80px;
+  padding-inline: 0px;
+  gap: 50px;
+}
+.tile {
+  width: 900px;
+  margin-top: 70px;
+  height: 400px;
+  display: flex;
+  position: relative;
+  bottom: 0;
+  background-color: #ff7e61;
+  align-items: center;
+  justify-content: center;
+  border-radius: 20px;
+
+  &::before {
+    content: "🐻‍❄️";
+    font-size: 80px;
+    display: flex;
+    bottom: 15px;
+    position: relative;
+    animation: wobble 1.5s ease-in-out infinite;
+  }
+}
+
+.testimonial {
+  display: flex;
+  position: relative;
+  align-items: center !important;
+  justify-content: center !important;
+  flex-direction: row;
+  margin-top: 40px;
+  font-size: 17px;
+  color: #212121;
+  font-family: "Geist Mono", sans-serif;
+  height: fit-content;
+  width: fit-content;
+  background-color: transparent;
+  margin-right: -10px;
+  scale: 0.8;
+}
+
+.testimonialExtra {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}

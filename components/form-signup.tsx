@@ -237,7 +237,9 @@ export function SignUpForm({
         By clicking continue, you agree to our <a href="#">Terms of Service</a>{" "}
         and <a href="#">Privacy Policy</a>. Click to{" "}
         <u>
-          <a href="/auth/login">Login</a>
+          <a href="/auth/login">
+            <b>Login</b>
+          </a>
         </u>
       </div>
     </div>

@@ -40,7 +40,7 @@
   width: 100%;
   justify-content: start;
   padding-top: 90px;
-  padding-bottom: 70px;
+  padding-bottom: 40px;
 }
 
 .main .containerMain {
@@ -357,7 +357,7 @@
 
 @media (max-width: 750px) {
   .main .containerMain .textTop {
-    max-width: 60vw;
+    max-width: 70vw;
   }
   .containerMax .main .containerMain .d {
     z-index: 1;

@@ -6,7 +6,8 @@ body {
   margin: 0;
   width: 100vw;
   height: 100vh;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
   background-image: linear-gradient(
       to bottom,
       rgba(255, 255, 255, 0.1),
@@ -50,12 +51,19 @@ body {
 
 @media (max-width: 580px) {
   .cardContainer {
-    min-width: 300px;
+    min-width: 320px;
   }
 }
 
 @media (max-width: 525px) {
-  .cardContainer {
-    min-width: 300px;
+  .containerMax {
+    min-width: 320px;
+    scale: 1.05;
+  }
+}
+
+@media (max-width: 525px) {
+  body {
+    height: 100svh;
   }
 }
