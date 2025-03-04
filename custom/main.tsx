@@ -84,10 +84,7 @@ export function Main() {
           </div>{" "}
           {/* <div className="line"></div> */}
           {/* DISPLAY IS SET TO NONE */}
-          <div className="tile"></div>
-          <div className="testimonial">
-            Trusted by 300+ parents and students*
-          </div>
+          
         </div>{" "}
       </div>
     </section>

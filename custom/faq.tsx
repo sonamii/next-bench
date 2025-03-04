@@ -6,6 +6,7 @@ import {
 } from "@/components/ui/accordion";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import "@/custom/styles/faq.css";
 
 interface FaqItem {
   id: string;
@@ -26,44 +27,39 @@ interface Faq3Props {
 const faqItems = [
   {
     id: "faq-1",
-    question: "What is the return policy?",
+    question: "Is there a free trial available?",
     answer:
-      "You can return any item within 30 days of purchase for a full refund, provided it is in its original condition.",
+      "Yes, we offer a 30-day free trial that gives you full access to all platform features. You can explore AI-powered school recommendations, application tracking, and admission insights before committing to a subscription.",
   },
   {
     id: "faq-2",
-    question: "How do I track my order?",
+    question: "What are the key features of your platform?",
     answer:
-      "Once your order is shipped, you will receive an email with a tracking number. You can use this number on our website to track your order.",
+      "Our platform provides AI-powered school recommendations, real-time application tracking, personalized admission guidance, detailed school profiles, and insights into tuition fees, reviews, and success rates.",
   },
   {
     id: "faq-3",
-    question: "Do you offer international shipping?",
+    question: "What is the success rate of this platform?",
     answer:
-      "Yes, we ship to most countries worldwide. Shipping costs and delivery times vary depending on the destination.",
+      "We have a 95% success rate in helping students find the right schools based on their academic background, preferences, and career goals.",
   },
   {
     id: "faq-4",
-    question: "Can I change my order after it has been placed?",
+    question: "Can school authorities view my profile?",
     answer:
-      "You can change your order within 24 hours of placing it by contacting our customer service team.",
+      "No, your profile remains completely private unless you choose to share it with specific institutions during the application process.",
   },
   {
     id: "faq-5",
-    question: "What payment methods do you accept?",
-    answer: "We accept all major credit cards, PayPal, and Apple Pay.",
+    question: "What type of information does this platform provide?",
+    answer:
+      "Our platform offers comprehensive details on admission requirements, tuition fees, course offerings, faculty quality, student reviews, and career prospects for various institutions.",
   },
   {
     id: "faq-6",
-    question: "How can I contact customer support?",
+    question: "How can I withdraw or modify my application?",
     answer:
-      "You can reach our customer support team via email at support@example.com or by calling 1-800-123-4567.",
-  },
-  {
-    id: "faq-7",
-    question: "Are there any discounts for bulk purchases?",
-    answer:
-      "Yes, we offer discounts for bulk purchases. Please contact our sales team for more information.",
+      "If you need to withdraw or modify your application, you can contact our support team. Changes can be made before the submission deadline, and withdrawals are processed within 48 hours.",
   },
 ];
 
@@ -77,18 +73,26 @@ const Faq3 = ({
   supportButtonUrl = "https://www.shadcnblocks.com",
 }: Faq3Props) => {
   return (
-    <section className="py-32">
+    <section className="faqContainer">
       <div className="container space-y-16">
-        <div className="mx-auto flex max-w-3xl flex-col text-left md:text-center">
-          <h2 className="mb-3 text-3xl font-semibold md:mb-4 lg:mb-6 lg:text-4xl">
-            {heading}
-          </h2>
-          <p className="text-muted-foreground lg:text-lg">{description}</p>
+        <div
+          style={{
+            maxWidth: "1000%",
+            alignItems: "center",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+          }}
+          className="text-center mx-auto"
+        >
+          <h2 className="textTop">{heading}</h2>
+          <p className="textBottom">{description}</p>
         </div>
         <Accordion
           type="single"
           collapsible
           className="mx-auto w-full lg:max-w-3xl"
+          style={{ backgroundColor: "#ffffff00", paddingInline: "20px" }}
         >
           {items.map((item) => (
             <AccordionItem key={item.id} value={item.id}>
