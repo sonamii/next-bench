@@ -64,7 +64,6 @@ export function Main() {
           </div>{" "}
           {/* <div className="line"></div> */}
           {/* DISPLAY IS SET TO NONE */}
-          
         </div>{" "}
       </div>
     </section>

@@ -1,18 +1,16 @@
-import { Navbar } from "../../../custom/Nav";
-import { Footer } from "../../../custom/footer";
+import  {Navbar} from "@/custom/nav";
+import { Footer } from "@/custom/footer";
 import "./compare.css";
-import { Input } from "@/components/ui/input";
 
-export default function compare(){
-  return(
+export default function Compare() {
+  return (
     <div className="containerMax">
       <Navbar />
-      
       <div className="selectorContainer">
         <div className="selector">
-          <input type="text" placeholder="Search"/>
+          <input type="text" placeholder="Search" />
           <div className="lineBreak">
-            <div className="line"/>
+            <div className="line" />
             <div className="or">OR</div>
             <div className="line"></div>
           </div>
@@ -25,12 +23,12 @@ export default function compare(){
           </div>
         </div>
 
-        <div className="lineVertical"/>
+        <div className="lineVertical" />
 
         <div className="selector">
-          <input type="text" placeholder="Search"/>
+          <input type="text" placeholder="Search" />
           <div className="lineBreak">
-            <div className="line"/>
+            <div className="line" />
             <div className="or">OR</div>
             <div className="line"></div>
           </div>
@@ -43,12 +41,12 @@ export default function compare(){
           </div>
         </div>
 
-        <div className="lineVertical"/>
+        <div className="lineVertical" />
 
         <div className="selector">
-          <input type="text" placeholder="Search"/>
+          <input type="text" placeholder="Search" />
           <div className="lineBreak">
-            <div className="line"/>
+            <div className="line" />
             <div className="or">OR</div>
             <div className="line"></div>
           </div>
@@ -64,12 +62,10 @@ export default function compare(){
 
       <div className="main">
         <div className="textTop">Ready to find what suits you?</div>
-        <div className="textBottom">
-          Select schools to get started
-        </div>
+        <div className="textBottom">Select schools to get started</div>
       </div>
 
-      <Footer/>
+      <Footer />
     </div>
-  )
+  );
 }
