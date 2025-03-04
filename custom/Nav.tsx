@@ -1,3 +1,5 @@
+'use client'
+
 import "@/custom/styles/nav.css";
 import Link from "next/link";
 import Image from "next/image";
@@ -28,7 +30,7 @@ export function Navbar() {
             <Link href="#comingSoonSection">Admission Tracker</Link>
           </div>
           <div className="links">
-            <Link href="#comingSoonSection">Comparison</Link>
+            <Link href={"/screens/compare"}>Comparison</Link>
           </div>
           <div className="links">
             <Link href="#comingSoonSection">Explore</Link>
