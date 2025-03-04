@@ -132,7 +132,7 @@ const Faq3 = ({
           </p>
           <div className="flex w-full flex-col justify-center gap-2 sm:flex-row">
             <Button className="w-full sm:w-auto" asChild>
-              <a href={supportButtonUrl} target="_blank">
+              <a href={"#"} target="_blank">
                 {supportButtonText}
               </a>
             </Button>
