@@ -15,15 +15,6 @@
   position: relative;
   gap: 50px;
   overflow: hidden;
-  /* background-image: linear-gradient(
-      to bottom,
-      rgba(255, 255, 255, 0.1),
-      rgba(255, 255, 255, 0)
-    ),
-      radial-gradient(#ec6a2550 1.1px, transparent 1.1px); 
-
-  background-size: 100% 100%, 20px 20px;
-  background-position: 2px 0; */
 }
 
 .nextContainer::before {

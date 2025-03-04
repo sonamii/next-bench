@@ -62,7 +62,6 @@
   justify-content: center;
   gap: 20px;
   flex-direction: row;
-  margin-top: 40px;
   height: 70px;
   width: fit-content;
   left: 0;
@@ -77,7 +76,7 @@
   padding-inline: 30px;
   font-size: 14px;
   min-width: 400px;
-  background-color: #fefefe;
+  background-color: #fafafa;
   color: #212121;
   border: 1px solid #21212190;
   font-family: "Geist Mono", sans-serif;

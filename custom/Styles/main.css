@@ -35,8 +35,6 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  /* background: linear-gradient(180deg, #fff0c5 -20%, #f3f8ee 50%, #fff 100%); */
-  background-color: transparent;
   width: 100%;
   justify-content: start;
   padding-top: 90px;
@@ -56,7 +54,7 @@
   height: fit-content;
 }
 .containerMax .main .containerMain .a {
-  display: flex;
+  display: none;
   position: absolute;
   width: 50px;
   height: 50px;
@@ -66,7 +64,7 @@
   animation-delay: 2s;
 }
 .containerMax .main .containerMain .b {
-  display: flex;
+  display: none;
   position: absolute;
   width: 50px;
   height: 50px;
@@ -76,7 +74,7 @@
   animation-delay: 0.5s;
 }
 .containerMax .main .containerMain .c {
-  display: flex;
+  display: none;
   position: absolute;
   width: 50px;
   height: 50px;
@@ -88,8 +86,8 @@
 .containerMax .main .containerMain .d {
   display: flex;
   position: absolute;
-  width: 50px;
-  height: 50px;
+  width: 55px;
+  height: 55px;
   top: 280px;
   right: 60px;
   animation: wobble 1.5s ease-in-out infinite;
@@ -112,7 +110,6 @@
   white-space: normal; /* Allows line breaks */
   background-color: transparent;
   line-break: strict;
-  white-space: normal; /* Allows line breaks */
   z-index: 9;
 }
 
@@ -153,12 +150,11 @@
   justify-content: center;
   gap: 20px;
   flex-direction: row;
-  margin-top: 40px;
+  margin-top: 0px;
   height: 70px;
   width: fit-content;
   left: 0;
   right: 0;
-  margin: auto;
   padding-right: 5px;
   margin-bottom: 75px;
 }
@@ -168,7 +164,7 @@
   padding-inline: 30px;
   font-size: 14px;
   min-width: 400px;
-  background-color: #fefefe;
+  background-color: #fafafa;
   color: #212121;
   border: 1px solid #21212190;
   font-family: "Geist Mono", sans-serif;

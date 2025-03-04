@@ -1,19 +1,17 @@
 "use client";
 import "./style.css";
-import { Navbar } from "@/custom/nav";
+import  {Navbar} from "@/custom/nav";
 import { Footer } from "@/custom/footer";
 import { ComingSoon } from "@/custom/coming-soon";
 import { NextAI } from "@/custom/ai";
 import { Main } from "@/custom/main";
 import { TrustedBy } from "@/custom/trustedby";
-// import { Tile } from "@/custom/tile";
 import { Faq3 } from "../custom/faq";
 
 import "@/custom/styles/main.css";
 
 export default function Home() {
   return (
-    <>
       <div className="containerMax">
         <Navbar />
         <Main />
@@ -34,6 +32,5 @@ export default function Home() {
         <ComingSoon />
         <Footer />
       </div>
-    </>
   );
 }
