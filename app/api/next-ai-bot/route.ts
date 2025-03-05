@@ -1,26 +1,22 @@
-// TEMPORARY CLOSED DUE TO NO PUBLIC SERVERS
+import { NextResponse } from "next/server";
+import axios from "axios";
 
-require("dotenv").config();
-const express = require("express");
-const axios = require("axios");
-
-const app = express();
-app.use(express.json());
-
-const API_KEY = process.env.NEXT_PUBLIC_MISTRAL_API_KEY;
-
-app.post("/ask-next-ai", async (req, res) => {
+export async function POST(req: Request) {
   try {
-    const userMessage = req.body.message;
-
-    if (!userMessage) {
-      return res.status(400).json({ error: "⚠️ Message is required." });
+    const { message } = await req.json();
+    if (!message) {
+      return NextResponse.json(
+        { error: "⚠️ Message is required." },
+        { status: 400 }
+      );
     }
 
+    const API_KEY = process.env.NEXT_PUBLIC_MISTRAL_API_KEY;
     if (!API_KEY) {
-      return res
-        .status(500)
-        .json({ error: "⚠️ API key is missing in .env file." });
+      return NextResponse.json(
+        { error: "⚠️ API key is missing in .env file." },
+        { status: 500 }
+      );
     }
 
     const response = await axios.post(
@@ -31,7 +27,6 @@ app.post("/ask-next-ai", async (req, res) => {
           {
             role: "system",
             content: `You are **Next AI**, a professional virtual assistant designed to help users/parents/students with the Next Bench website.  
-
              -  🚀 Next Bench is an innovative platform designed to help parents find the best schools for their children. It allows users to explore, compare, and evaluate schools based on location, curriculum, and facilities.
              🔍 Key Features:
              🌍 Location-Based Search: Find nearby schools easily.
@@ -39,7 +34,6 @@ app.post("/ask-next-ai", async (req, res) => {
              🏫 Detailed School Profiles: Get insights on academics, infrastructure, and extracurriculars.
              🤖 Next AI Assistance: A smart chatbot (created by 🛠 Sonamii) to guide users.
              Next Bench simplifies school selection, making the process faster, smarter, and stress-free for parents.
-
             - 🛠 **Created by Sonamii** to assist users on **Next Bench**.  
             - 💡 Your job is to **help users navigate and use Next Bench** effectively.  
             - 🎯 Only answer **Next Bench-related questions**.  
@@ -47,14 +41,13 @@ app.post("/ask-next-ai", async (req, res) => {
             - 😊 Include **friendly emojis** for an engaging experience.  
             - 🛑 If a user asks an unrelated question, politely inform them that you only assist with Next Bench.`,
           },
-          { role: "user", content: userMessage },
+          { role: "user", content: message },
         ],
       },
       { headers: { Authorization: `Bearer ${API_KEY}` } }
     );
 
-    // Format AI response to improve readability
-    const formatResponse = (text) => {
+     const formatResponse = (text: string) => {
       return text
         .replace(/\n+/g, "<br>🔹 ")
         .replace(/Step/g, "📝 Step")
@@ -223,17 +216,17 @@ app.post("/ask-next-ai", async (req, res) => {
         .replace(/Luxury/g, "💎 Luxury");
     };
 
-    res.json({
+    return NextResponse.json({
       reply: formatResponse(response.data.choices[0].message.content),
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error(
       "Error:",
       error.response ? error.response.data : error.message
     );
-    res.status(500).json({ error: "❌ Failed to get response from Next AI." });
+    return NextResponse.json(
+      { error: "❌ Failed to get response from Next AI." },
+      { status: 500 }
+    );
   }
-});
-
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+}
