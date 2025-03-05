@@ -21,28 +21,28 @@ return  (<div className="footer">
       <div className="item">
         <h1>Product</h1>
         <div className="p">
-          <Link href="#comingSoonSection">About</Link>
-          <Link href="#comingSoonSection">Admisison Tracker</Link>
-          <Link href="#comingSoonSection">Comparison</Link>
-          <Link href="#comingSoonSection">Shortlisted Schools</Link>
+          <Link href={"/#comingSoonSection"}>About</Link>
+          <Link href={"/#comingSoonSection"}>Admisison Tracker</Link>
+          <Link href={"/#comingSoonSection"}>Comparison</Link>
+          <Link href={"/#comingSoonSection"}>Shortlisted Schools</Link>
         </div>
       </div>
       <div className="item">
         <h1>Help</h1>
         <div className="p">
-          <Link href="#comingSoonSection">Customer Support</Link>
-          <Link href="#comingSoonSection">For Teachers</Link>
-          <Link href="#comingSoonSection">Terms and Conditions</Link>
-          <Link href="#comingSoonSection">Privacy Policy</Link>
+          <Link href={"/#comingSoonSection"}>Customer Support</Link>
+          <Link href={"/#comingSoonSection"}>For Teachers</Link>
+          <Link href={"/#comingSoonSection"}>Terms and Conditions</Link>
+          <Link href={"/#comingSoonSection"}>Privacy Policy</Link>
         </div>
       </div>
       <div className="item">
         <h1>Resource</h1>
         <div className="p">
-          <Link href="#comingSoonSection">School</Link>
-          <Link href="#comingSoonSection">College</Link>
-          <Link href="#comingSoonSection">Universities</Link>
-          <Link href="#comingSoonSection">Others</Link>
+          <Link href={"/#comingSoonSection"}>School</Link>
+          <Link href={"/#comingSoonSection"}>College</Link>
+          <Link href={"/#comingSoonSection"}>Universities</Link>
+          <Link href={"/#comingSoonSection"}>Others</Link>
         </div>
       </div>
     </div>
