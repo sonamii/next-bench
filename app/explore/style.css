@@ -240,8 +240,8 @@ html {
 
 .containerMax .profileCard {
   display: flex;
-  height: 100%;
   width: 300px;
+  height: fit-content;
   background-color: transparent;
   border-left: 1.5px solid #dfdfe880;
   border-right: 1.5px solid #dfdfe880;
@@ -249,8 +249,16 @@ html {
   justify-content: start;
   flex-direction: column;
   padding-top: 20px;
+  background-color: transparent;
   overflow-x: hidden;
-  overflow-y: scroll;
+  overflow-y: auto;
+  padding-inline: 30px;
+  text-align: center !important;
+  flex-grow: 1;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 .profileCard .pfp {
@@ -260,4 +268,100 @@ html {
   background-color: lightsalmon;
   align-items: center;
   justify-content: center;
+  align-items: center;
+  justify-content: center;
+}
+
+.profileCard .name {
+  display: flex;
+  position: relative;
+  width: 100%;
+  height: fit-content;
+  align-items: center;
+  justify-content: center;
+  font-family: "Geist Mono", sans-serif;
+  font-size: 23px;
+  font-weight: 600;
+  color: #212121;
+  margin-top: 10px;
+}
+
+.profileCard .tagline {
+  display: flex;
+  position: relative;
+  width: 100%;
+  height: fit-content;
+  align-items: center;
+  justify-content: center;
+  font-family: "Plus Jakarta Sans", sans-serif;
+  font-size: 14px;
+  color: #999;
+}
+
+.profileCard .message {
+  display: flex;
+  position: relative;
+  width: fit-content;
+  height: fit-content;
+  align-items: center;
+  margin-top: 20px;
+  justify-content: center;
+  gap: 15px;
+  flex-direction: row;
+  color: #212121;
+}
+
+.profileCard .message .item {
+  padding: 10px;
+  background-color: #edecec;
+  border-radius: 10px;
+  display: flex;
+  position: relative;
+}
+
+.profileCard .about {
+  display: flex;
+  position: relative;
+  width: 100%;
+  height: fit-content;
+  align-items: start;
+  justify-content: start;
+  flex-direction: column;
+  margin-top: 20px;
+  text-align: left !important;
+}
+
+.about .title {
+  display: flex;
+  position: relative;
+  width: 100%;
+  height: fit-content;
+  align-items: start;
+  justify-content: start;
+  font-family: "Plus Jakarta Sans", sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: #212121;
+  margin-top: 10px;
+  text-align: left !important;
+}
+
+.about p {
+  display: flex;
+  position: relative;
+  width: 100%;
+  height: fit-content;
+  align-items: center;
+  justify-content: center;
+  font-family: "Plus Jakarta Sans", sans-serif;
+  font-size: 14px;
+  color: #999;
+}
+
+.profileCard .grid {
+  display: flex;
+  position: relative;
+  width: 100%;
+  height: 200px;
+  background-color: transparent;
 }

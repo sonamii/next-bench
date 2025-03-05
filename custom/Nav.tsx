@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import "@/custom/styles/nav.css";
 import Link from "next/link";
@@ -13,7 +13,7 @@ export function Navbar() {
     <div className="containerMax">
       <div className="nav">
         <div className="logoContainer">
-        <Link href={"/"}>
+          <Link href={"/"}>
             <div className="logo">
               <Image
                 src="/logo.png"
@@ -35,7 +35,7 @@ export function Navbar() {
             <Link href={"/portal/compare"}>Comparison</Link>
           </div>
           <div className="links">
-            <Link href={"/#comingSoonSection"}>Explore</Link>
+            <Link href={"/explore"}>Explore</Link>
           </div>
         </div>
 
