@@ -96,15 +96,6 @@ html {
   padding-top: 20px;
 }
 
-.containerMax .profileCard {
-  display: flex;
-  height: 100%;
-  width: 300px;
-  background-color: transparent;
-  border-left: 1.5px solid #dfdfe880;
-  border-right: 1.5px solid #dfdfe880;
-}
-
 .searchMain .container {
   height: 100%;
   width: 100%;
@@ -245,4 +236,28 @@ html {
   position: relative;
   background-color: #fafafa;
   border-bottom: 1px solid #dfdfe8;
+}
+
+.containerMax .profileCard {
+  display: flex;
+  height: 100%;
+  width: 300px;
+  background-color: transparent;
+  border-left: 1.5px solid #dfdfe880;
+  border-right: 1.5px solid #dfdfe880;
+  align-items: center;
+  justify-content: start;
+  flex-direction: column;
+  padding-top: 20px;
+  overflow-x: hidden;
+  overflow-y: scroll;
+}
+
+.profileCard .pfp {
+  width: 150px;
+  height: 150px;
+  border-radius: 100%;
+  background-color: lightsalmon;
+  align-items: center;
+  justify-content: center;
 }

@@ -21,6 +21,7 @@
     "@supabase/supabase-js": "^2.49.1",
     "@tanstack/react-table": "^8.21.2",
     "@vercel/analytics": "^1.5.0",
+    "avvvatars-react": "^0.4.2",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "embla-carousel-auto-scroll": "^8.5.2",
