@@ -86,8 +86,10 @@ html {
   font-family: "Plus Jakarta Sans", sans-serif;
   color: #212121;
   background-color: #ededef90;
-  font-weight: lighter !important;
-  font-weight: 500;
+  font-weight: 400 !important;
+  &:hover {
+    background-color: #ededef;
+  }
 }
 .containerMax .search .searchMain {
   display: flex;
@@ -227,6 +229,13 @@ html {
   position: relative;
   background-color: #f4f4f5;
   border-bottom: 1px solid #dfdfe8;
+  align-items: center;
+  padding-inline: 30px;
+  font-family: "Geist Mono", sans-serif;
+  font-size: 14px;
+  color: #999;
+  font-weight: 600;  flex-direction: row;
+
 }
 
 .tableContainer .tuples {
@@ -237,6 +246,17 @@ html {
   position: relative;
   background-color: #fafafa;
   border-bottom: 1px solid #dfdfe8;
+  align-items: center;
+  padding-inline: 30px;
+  font-family: "Geist Mono", sans-serif;
+  font-size: 14px;
+  color: #434343;
+  font-weight: 500;
+  flex-direction: row;
+
+  &:hover {
+    background-color: #f4f4f5;
+  }
 }
 
 .containerMax .profileCard {

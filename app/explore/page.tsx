@@ -8,6 +8,7 @@ import {
   FilterIcon,
   Mail,
   MessageCircleIcon,
+  MoreHorizontal,
   NotepadTextDashedIcon,
   PhoneCall,
   School,
@@ -21,16 +22,11 @@ export default function Explore() {
         <Navbar /> {/* Navbar component */}
         <div className="search">
           <div className="sideBar">
+            <div className="item">S </div> {/* Sidebar item */}
+            <div className="item">U </div> {/* Sidebar item */}
+            <div className="item">T </div> {/* Sidebar item */}
             <div className="item">
-              <School size={23} />
-            </div>{" "}
-            {/* Sidebar item */}
-            <div className="item">
-              <Building2 size={23} />
-            </div>{" "}
-            {/* Sidebar item */}
-            <div className="item">
-              <NotepadTextDashedIcon size={23} />
+              <MoreHorizontal size={20} />{" "}
             </div>{" "}
             {/* Sidebar item */}
           </div>
@@ -48,17 +44,28 @@ export default function Explore() {
                     flexDirection: "row",
                   }}
                 >
-                  <Input placeholder="Latest in your area..." type="text" />{" "}
+                  <Input
+                    placeholder="Latest in your area..."
+                    type="text"
+                    spellCheck={false}
+                  />{" "}
                   {/* Search input */}
                   <Button>
                     <FilterIcon size={26} /> {/* Filter button */}
                   </Button>
                 </div>
               </div>
-              <div className="filters">{/* Filters section */}</div>
+              <div className="filters"></div>
               <div className="tableContainer">
-                <div className="attributes"></div> {/* Table attributes */}
-                <div className="tuples"></div> {/* Table row */}
+                <div className="attributes">
+                  Name&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ID&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Board&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Class&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Streams&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Transport&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Labs&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Ratings&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Add
+                </div>{" "}
+                {/* Table attributes */}
+                <div className="tuples">
+                  {" "}
+                  Woodland&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4285-AF&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ICSE&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LKG-12th&nbsp;&nbsp;&nbsp;&nbsp;PCMBH&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Bus/Van&nbsp;Labs&nbsp;&nbsp;&nbsp;&nbsp;PCMB&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4.5/5&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;✅
+                </div>{" "}
+                {/* Table row */}
                 <div className="tuples"></div> {/* Table row */}
                 <div className="tuples"></div> {/* Table row */}
                 <div className="tuples"></div> {/* Table row */}
