@@ -3,102 +3,119 @@ import { Footer } from "@/custom/footer"; // Importing Footer component
 import { Button } from "@/components/ui/button"; // Importing Button component
 import { Input } from "@/components/ui/input"; // Importing Input component
 import "./style.css"; // Importing CSS styles
-import { FilterIcon, Mail, MessageCircleIcon, PhoneCall } from "lucide-react"; // Importing icons from lucide-react
+import {
+  Building2,
+  FilterIcon,
+  Mail,
+  MessageCircleIcon,
+  NotepadTextDashedIcon,
+  PhoneCall,
+  School,
+} from "lucide-react"; // Importing icons from lucide-react
 import Avvvatars from "avvvatars-react"; // Importing Avvvatars component
 
 export default function Explore() {
-    return (
-        <>
-            <div className="containerMax">
-                <Navbar /> {/* Navbar component */}
-                <div className="search">
-                    <div className="sideBar">
-                        <div className="item">{/* <School /> */}S</div> {/* Sidebar item */}
-                        <div className="item">{/* <University /> */}U</div> {/* Sidebar item */}
-                        <div className="item">{/* <BookHeadphonesIcon size={20}/> */}</div> {/* Sidebar item */}
-                        <div className="item"></div> {/* Empty sidebar item */}
-                    </div>
-                    <div className="searchMain">
-                        <div className="container">
-                            <div className="heading">
-                                <div className="text"> Search:</div> {/* Search heading */}
-                                <div
-                                    style={{
-                                        display: "flex",
-                                        alignItems: "center",
-                                        gap: "30px",
-                                        width: "400px",
-                                        justifyContent: "end",
-                                        flexDirection: "row",
-                                    }}
-                                >
-                                    <Input placeholder="Latest in your area..." type="text" /> {/* Search input */}
-                                    <Button>
-                                        <FilterIcon size={26} /> {/* Filter button */}
-                                    </Button>
-                                </div>
-                            </div>
-                            <div className="filters">{/* Filters section */}</div>
-                            <div className="tableContainer">
-                                <div className="attributes"></div> {/* Table attributes */}
-                                <div className="tuples"></div> {/* Table row */}
-                                <div className="tuples"></div> {/* Table row */}
-                                <div className="tuples"></div> {/* Table row */}
-                                <div className="tuples"></div> {/* Table row */}
-                                <div className="tuples"></div> {/* Table row */}
-                                <div className="tuples"></div> {/* Table row */}
-                                <div className="tuples"></div> {/* Table row */}
-                                <div className="tuples"></div> {/* Table row */}
-                                <div className="tuples"></div> {/* Table row */}
-                                <div className="tuples"></div> {/* Table row */}
-                                <div className="tuples"></div> {/* Table row */}
-                                <div className="tuples"></div> {/* Table row */}
-                                <div className="tuples"></div> {/* Table row */}
-                                <div className="tuples"></div> {/* Table row */}
-                                <div className="tuples"></div> {/* Table row */}
-                                <div className="tuples"></div> {/* Table row */}
-                            </div>
-                        </div>
-                    </div>
-                    <div className="profileCard">
-                        <div className="pfp">
-                            <Avvvatars value="tim@apple.com" style="shape" /> {/* Profile picture */}
-                        </div>
-                        <div className="name">Woodland School</div> {/* School name */}
-                        <div className="tagline">
-                            A school from future shaping your child
-                        </div> {/* School tagline */}
-
-                        <div className="message">
-                            <div className="item">
-                                <PhoneCall size={19} /> {/* Phone call icon */}
-                            </div>
-                            <div className="item">
-                                <MessageCircleIcon size={19} /> {/* Message icon */}
-                            </div>
-                            <div className="item">
-                                <Mail size={19} /> {/* Mail icon */}
-                            </div>
-                        </div>
-
-                        <div className="about">
-                            <div className="title">ABOUT</div> {/* About section title */}
-                            <p>
-                                Woodland School is dedicated to providing a nurturing and
-                                innovative learning environment. Our mission is to shape the
-                                future by fostering creativity, critical thinking, and a love
-                                for learning in every student.
-                            </p>
-                            <br />
-                            <div className="grid">
-                                <div className="item">A</div> {/* Grid item */}
-                                <div className="item">B</div> {/* Grid item */}
-                                <div className="item">C</div> {/* Grid item */}
-                                <div className="item">D</div> {/* Grid item */}
-                            </div>
-                            <br />
-                            {/* Additional information sections commented out */}
-                            {/*<div className="information">
+  return (
+    <>
+      <div className="containerMax">
+        <Navbar /> {/* Navbar component */}
+        <div className="search">
+          <div className="sideBar">
+            <div className="item">
+              <School size={23} />
+            </div>{" "}
+            {/* Sidebar item */}
+            <div className="item">
+              <Building2 size={23} />
+            </div>{" "}
+            {/* Sidebar item */}
+            <div className="item">
+              <NotepadTextDashedIcon size={23} />
+            </div>{" "}
+            {/* Sidebar item */}
+          </div>
+          <div className="searchMain">
+            <div className="container">
+              <div className="heading">
+                <div className="text"> Search:</div> {/* Search heading */}
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "30px",
+                    width: "400px",
+                    justifyContent: "end",
+                    flexDirection: "row",
+                  }}
+                >
+                  <Input placeholder="Latest in your area..." type="text" />{" "}
+                  {/* Search input */}
+                  <Button>
+                    <FilterIcon size={26} /> {/* Filter button */}
+                  </Button>
+                </div>
+              </div>
+              <div className="filters">{/* Filters section */}</div>
+              <div className="tableContainer">
+                <div className="attributes"></div> {/* Table attributes */}
+                <div className="tuples"></div> {/* Table row */}
+                <div className="tuples"></div> {/* Table row */}
+                <div className="tuples"></div> {/* Table row */}
+                <div className="tuples"></div> {/* Table row */}
+                <div className="tuples"></div> {/* Table row */}
+                <div className="tuples"></div> {/* Table row */}
+                <div className="tuples"></div> {/* Table row */}
+                <div className="tuples"></div> {/* Table row */}
+                <div className="tuples"></div> {/* Table row */}
+                <div className="tuples"></div> {/* Table row */}
+                <div className="tuples"></div> {/* Table row */}
+                <div className="tuples"></div> {/* Table row */}
+                <div className="tuples"></div> {/* Table row */}
+                <div className="tuples"></div> {/* Table row */}
+                <div className="tuples"></div> {/* Table row */}
+                <div className="tuples"></div> {/* Table row */}
+              </div>
+            </div>
+          </div>
+          <div className="profileCard">
+            <div className="pfp">
+              {/* <Avvvatars value="tim@apple.com" style="shape" />{" "} */}
+              {/* Profile picture */}
+            </div>
+            <div className="name">Woodland School</div> {/* School name */}
+            <div className="tagline">
+              A school from future shaping your child
+            </div>{" "}
+            {/* School tagline */}
+            <div className="message">
+              <div className="item">
+                <PhoneCall size={19} /> {/* Phone call icon */}
+              </div>
+              <div className="item">
+                <MessageCircleIcon size={19} /> {/* Message icon */}
+              </div>
+              <div className="item">
+                <Mail size={19} /> {/* Mail icon */}
+              </div>
+            </div>
+            <div className="about">
+              <div className="title">ABOUT</div> {/* About section title */}
+              <p>
+                Woodland School is dedicated to providing a nurturing and
+                innovative learning environment. Our mission is to shape the
+                future by fostering creativity, critical thinking, and a love
+                for learning in every student.
+              </p>
+              <br />
+              <div className="grid">
+                <div className="item">A</div> {/* Grid item */}
+                <div className="item">B</div> {/* Grid item */}
+                <div className="item">C</div> {/* Grid item */}
+                <div className="item">D</div> {/* Grid item */}
+              </div>
+              <br />
+              {/* Additional information sections commented out */}
+              {/*<div className="information">
                                 <div className="title">Streams</div>
                                 <p></p>
                             </div>
@@ -144,11 +161,11 @@ export default function Explore() {
                                 <div className="title">Scholarships</div>
                                 <p></p>
                             </div>*/}
-                        </div>
-                    </div>
-                </div>
-                <Footer /> {/* Footer component */}
             </div>
-        </>
-    );
+          </div>
+        </div>
+        <Footer /> {/* Footer component */}
+      </div>
+    </>
+  );
 }
