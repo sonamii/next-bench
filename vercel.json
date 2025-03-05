@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 3,
   "functions": {
     "api/next-ai-bot.js": {
       "runtime": "nodejs18.x"
@@ -7,7 +7,7 @@
   },
   "routes": [
     {
-      "src": "/ask-next-ai",
+      "src": "/api/next-ai-bot",
       "dest": "/api/next-ai-bot.js"
     }
   ]
