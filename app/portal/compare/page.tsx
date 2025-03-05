@@ -1,4 +1,4 @@
-import  {Navbar} from "@/custom/nav";
+import  {Navbar} from "@/custom/Nav";
 import { Footer } from "@/custom/footer";
 import "./compare.css";
 
