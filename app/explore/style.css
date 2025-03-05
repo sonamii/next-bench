@@ -54,7 +54,6 @@ html {
   align-items: center;
   justify-content: space-between;
   flex-direction: row;
-  max-width: 1424px !important;
 }
 
 .containerMax .sideBar {
@@ -234,8 +233,8 @@ html {
   font-family: "Geist Mono", sans-serif;
   font-size: 14px;
   color: #999;
-  font-weight: 600;  flex-direction: row;
-
+  font-weight: 600;
+  flex-direction: row;
 }
 
 .tableContainer .tuples {
