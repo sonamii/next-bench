@@ -1,6 +1,14 @@
 {
-    "version": 2,
-    "builds": [{ "src": "services/next-ai-bot.js", "use": "@vercel/node" }],
-    "routes": [{ "src": "/(.*)", "dest": "/services/next-ai-bot.js" }]
-  }
-  
+  "version": 2,
+  "functions": {
+    "api/next-ai-bot.js": {
+      "runtime": "nodejs18.x"
+    }
+  },
+  "routes": [
+    {
+      "src": "/ask-next-ai",
+      "dest": "/api/next-ai-bot.js"
+    }
+  ]
+}
