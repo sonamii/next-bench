@@ -39,7 +39,8 @@ export async function POST(req: Request) {
             - 🎯 Only answer **Next Bench-related questions**.  
             - 🔍 Use **short, clear paragraphs** with **line breaks** for readability.  
             - 😊 Include **friendly emojis** for an engaging experience.  
-            - 🛑 If a user asks an unrelated question, politely inform them that you only assist with Next Bench.`,
+            - 🛑 If a user asks an unrelated question, politely inform them that you only assist with Next Bench.,
+            - 🚨 Render the bold and italic using <b> and <i> instead of using markdown. Do not use markdown. Use html tags`,
           },
           { role: "user", content: message },
         ],
@@ -47,7 +48,7 @@ export async function POST(req: Request) {
       { headers: { Authorization: `Bearer ${API_KEY}` } }
     );
 
-     const formatResponse = (text: string) => {
+    const formatResponse = (text: string) => {
       return text
         .replace(/\n+/g, "<br>🔹 ")
         .replace(/Step/g, "📝 Step")
@@ -219,11 +220,12 @@ export async function POST(req: Request) {
     return NextResponse.json({
       reply: formatResponse(response.data.choices[0].message.content),
     });
-  } catch (error: any) {
-    console.error(
-      "Error:",
-      error.response ? error.response.data : error.message
-    );
+  } catch (error: unknown) {
+    if (axios.isAxiosError(error)) {
+      console.error("Error:", error.response ? error.response.data : error.message);
+    } else {
+      console.error("Error:", error);
+    }
     return NextResponse.json(
       { error: "❌ Failed to get response from Next AI." },
       { status: 500 }

@@ -90,6 +90,7 @@ export default function NextAIBot() {
           padding: 10px;
           background: #f1f1f1;
           border-radius: 5px;
+          text-align: left !important;
         }
       `}</style>
     </div>
