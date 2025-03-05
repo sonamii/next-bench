@@ -61,6 +61,7 @@ html {
   display: flex;
   height: 100%;
   width: 70px;
+  min-width: 70px !important;
   background-color: transparent;
   border-right: 1.5px solid #dfdfe880;
   border-left: 1.5px solid #dfdfe880;
@@ -202,7 +203,7 @@ html {
   max-width: 100%;
   /* for width of table */
   height: 100%;
-  background-color: rebeccapurple;
+  background-color: transparent;
   position: relative;
   align-items: center;
   justify-content: start;
@@ -241,6 +242,7 @@ html {
 .containerMax .profileCard {
   display: flex;
   width: 300px;
+  min-width: 300px !important;
   height: calc(100%);
   background-color: transparent;
   border-left: 1.5px solid #dfdfe880;
