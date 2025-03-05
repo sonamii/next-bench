@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import "@/custom/styles/nav.css";
 import Link from "next/link";
@@ -13,27 +13,29 @@ export function Navbar() {
     <div className="containerMax">
       <div className="nav">
         <div className="logoContainer">
-          <div className="logo">
-            <Image
-              src="/logo.png"
-              alt="logo"
-              width={50}
-              height={50}
-              style={{ filter: "invert(1)", marginRight: "10px" }}
-            />
-            NEXT BENCH
-          </div>
+          <Link href={"/"}>
+            <div className="logo">
+              <Image
+                src="/logo.png"
+                alt="logo"
+                width={50}
+                height={50}
+                style={{ filter: "invert(1)", marginRight: "10px" }}
+              />
+              NEXT BENCH
+            </div>
+          </Link>
         </div>
 
         <div className="midCont">
           <div className="links">
-            <Link href="#comingSoonSection">Admission Tracker</Link>
+            <Link href={"/#comingSoonSection"}>Admission Tracker</Link>
           </div>
           <div className="links">
-            <Link href={"/screens/compare"}>Comparison</Link>
+            <Link href={"/portal/compare"}>Comparison</Link>
           </div>
           <div className="links">
-            <Link href="#comingSoonSection">Explore</Link>
+            <Link href={"/explore"}>Explore</Link>
           </div>
         </div>
 
@@ -45,7 +47,7 @@ export function Navbar() {
               <ArrowUpRight size={15} color="#212121" />
             </div>
           </a>
-          <Link href={"#comingSoonSection"}>
+          <Link href={"/#comingSoonSection"}>
             {" "}
             <div className="button">Shortlisted</div>
           </Link>
