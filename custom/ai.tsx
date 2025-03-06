@@ -13,7 +13,7 @@ export function NextAI() {
             strong academic profile to crafting standout applications, gaining
             extracurricular achievements.
           </div>
-          <Link href={"/portal/nextai"}>
+          <Link href={"/ai"}>
             <div className="button">Start now</div>
           </Link>
         </div>
