@@ -4,6 +4,7 @@ import "./globals.css";
 import AnimatedCursor from "react-animated-cursor";
 import { Toaster } from "sonner";
 import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/next"
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -46,6 +47,7 @@ export default function RootLayout({
       >
         <Toaster />
         <Analytics />
+        <SpeedInsights/>
         <AnimatedCursor
           innerSize={6}
           outerSize={41}

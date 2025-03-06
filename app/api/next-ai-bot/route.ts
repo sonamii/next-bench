@@ -1,6 +1,19 @@
 import { NextResponse } from "next/server";
 import axios from "axios";
 
+  /**
+   * POST /api/next-ai-bot
+   * 
+   * The POST handler for the Next AI chatbot route.
+   * 
+   * @param {Request} req The incoming request object.
+   * 
+   * @returns {Promise<Response>} A promise that resolves to the response object.
+   * 
+   * @throws If there is an error with the request, such as a missing or invalid message.
+   * @throws If there is an error with the API key, such as it not being present in the environment variables.
+   * @throws If there is an error with the Mistral AI API, such as a network error or a bad response.
+   */
 export async function POST(req: Request) {
   try {
     const { message } = await req.json();
