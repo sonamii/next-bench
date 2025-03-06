@@ -16,6 +16,7 @@ export default function NextAI() {
 
   const handleSendUserInput = async () => {
     const trimmedInput = userInput.trim();
+    setUserInput("");
     if (!trimmedInput) return; // Prevent empty messages
 
     setIsSendingMessage(true);
