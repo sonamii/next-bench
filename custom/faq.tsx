@@ -15,7 +15,7 @@ interface FaqItem {
 }
 
 interface Faq3Props {
-  heading: string;
+  heading: string; 
   description: string;
   items?: FaqItem[];
   supportHeading: string;
