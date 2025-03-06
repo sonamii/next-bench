@@ -4,6 +4,7 @@ import "./globals.css";
 import AnimatedCursor from "react-animated-cursor";
 import { Toaster } from "sonner";
 import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/next"
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -13,7 +14,7 @@ const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
 });
-
+//?wh
 export const metadata: Metadata = {
   title: "Next Bench by Sonamii",
   description:
@@ -46,6 +47,7 @@ export default function RootLayout({
       >
         <Toaster />
         <Analytics />
+        <SpeedInsights/>
         <AnimatedCursor
           innerSize={6}
           outerSize={41}

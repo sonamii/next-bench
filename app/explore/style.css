@@ -54,7 +54,6 @@ html {
   align-items: center;
   justify-content: space-between;
   flex-direction: row;
-  max-width: 1424px !important;
 }
 
 .containerMax .sideBar {
@@ -70,24 +69,26 @@ html {
   justify-content: start;
   flex-direction: column;
   padding-top: 20px;
-  gap: 10px;
+  gap: 20px;
 }
 
 .sideBar .item {
-  display: none;
+  display: flex;
   /* none */
   position: relative;
   width: 40px;
   height: 40px;
-  background-color: transparent;
   border-radius: 6px;
-  color: #bbb;
   align-items: center;
   justify-content: center;
   font-size: 14px;
   font-family: "Plus Jakarta Sans", sans-serif;
   color: #212121;
-  font-weight: 500;
+  background-color: #ededef90;
+  font-weight: 400 !important;
+  &:hover {
+    background-color: #ededef;
+  }
 }
 .containerMax .search .searchMain {
   display: flex;
@@ -227,6 +228,13 @@ html {
   position: relative;
   background-color: #f4f4f5;
   border-bottom: 1px solid #dfdfe8;
+  align-items: center;
+  padding-inline: 30px;
+  font-family: "Geist Mono", sans-serif;
+  font-size: 14px;
+  color: #999;
+  font-weight: 600;
+  flex-direction: row;
 }
 
 .tableContainer .tuples {
@@ -237,6 +245,17 @@ html {
   position: relative;
   background-color: #fafafa;
   border-bottom: 1px solid #dfdfe8;
+  align-items: center;
+  padding-inline: 30px;
+  font-family: "Geist Mono", sans-serif;
+  font-size: 14px;
+  color: #434343;
+  font-weight: 500;
+  flex-direction: row;
+
+  &:hover {
+    background-color: #f4f4f5;
+  }
 }
 
 .containerMax .profileCard {

@@ -1,13 +1,21 @@
 import { Resend } from "resend";
 
+/**
+ * Handles the POST request to send an email to the host.
+ * @param {Request} req The incoming request.
+ * @returns {Response} The response.
+ */
 export async function POST(req) {
   try {
     const { userEmail } = await req.json();
 
-    if (!userEmail?.includes?.("@") || !userEmail?.includes?.(".")) {
-      return new Response(JSON.stringify({ error: "Invalid email address" }), {
-        status: 400,
-      });
+    if (!userEmail || !userEmail.includes("@") || !userEmail.includes(".")) {
+      return new Response(
+        JSON.stringify({ error: "Invalid email address" }),
+        {
+          status: 400,
+        }
+      );
     }
 
     const resend = new Resend(process.env.NEXT_PUBLIC_RESEND_API_KEY);
