@@ -1,98 +1,106 @@
 "use client";
+
 import { useState } from "react";
 
-export default function NextAIBot() {
-  const [message, setMessage] = useState("");
-  const [response, setResponse] = useState("");
-  const [loading, setLoading] = useState(false);
+import { Navbar } from "@/custom/Nav";
+import { Footer } from "@/custom/footer";
+import { Button } from "@/components/ui/button";
+import TextareaAutosize from "react-textarea-autosize";
+import "./style.css";
+import { Send, Trash2 } from "lucide-react";
 
-  const handleSendMessage = async () => {
-    if (!message.trim()) return; // Prevent empty messages
+export default function NextAI() {
+  const [userInput, setUserInput] = useState("");
+  const [aiResponses, setAIResponses] = useState<string[]>([]);
+  const [isSendingMessage, setIsSendingMessage] = useState(false);
 
-    setLoading(true);
-    setResponse(""); // Clear previous response
+  const handleSendUserInput = async () => {
+    const trimmedInput = userInput.trim();
+    if (!trimmedInput) return; // Prevent empty messages
+
+    setIsSendingMessage(true);
+    setAIResponses((prev: string[]) => [...prev, ""]); // Add new input to messages list
 
     try {
-      const res = await fetch("/api/next-ai-bot", {
+      const response = await fetch("/api/next-ai-bot", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message }), // Use the user's input message
+        body: JSON.stringify({ message: trimmedInput }),
       });
 
-      if (!res.ok) {
-        throw new Error(`Error: ${res.status}`);
+      if (!response.ok) {
+        throw new Error(`Error: ${response.status}`);
       }
 
-      const data = await res.json();
-      setResponse(data.reply || "No response from AI.");
+      const data = await response.json();
+      setAIResponses((prev) =>
+        prev.map((response, index) => {
+          if (index === prev.length - 1) {
+            return (data?.reply || "No response from AI.") as string;
+          }
+          return response;
+        })
+      );
     } catch (error) {
       console.error("Error sending message:", error);
-      setResponse("⚠️ Failed to get a response.");
+      setAIResponses((prev) =>
+        prev.map((response, index) => {
+          if (index === prev.length - 1) {
+            return "Failed to get a response.";
+          }
+          return response;
+        })
+      );
     } finally {
-      setLoading(false);
+      setIsSendingMessage(false);
     }
   };
 
   return (
-    <div className="chat-container">
-      <h2>💬 Next AI Bot</h2>
-      <textarea
-        value={message}
-        onChange={(e) => setMessage(e.target.value)}
-        placeholder="Ask Next AI something..."
-        disabled={loading}
-      />
-      <button onClick={handleSendMessage} disabled={loading || !message.trim()}>
-        {loading ? "Thinking..." : "Send"}
-      </button>
-
-      {/* This  is the only response container, place it anywhere and change the style to make it attractive */}
-      {response && (
-        <p
-          className="response"
-          dangerouslySetInnerHTML={{ __html: `🔹 ${response}` }}
-        />
-      )}
-
-      <style jsx>{`
-        .chat-container {
-          max-width: 400px;
-          margin: auto;
-          text-align: center;
-          padding: 20px;
-          border: 1px solid #ddd;
-          border-radius: 8px;
-          background: #fff;
-        }
-        textarea {
-          width: 100%;
-          height: 60px;
-          margin-bottom: 10px;
-          padding: 8px;
-          border: 1px solid #ccc;
-          border-radius: 5px;
-          font-size: 14px;
-        }
-        button {
-          background: blue;
-          color: white;
-          padding: 8px 15px;
-          border: none;
-          cursor: pointer;
-          border-radius: 5px;
-        }
-        button:disabled {
-          background: gray;
-          cursor: not-allowed;
-        }
-        .response {
-          margin-top: 15px;
-          padding: 10px;
-          background: #f1f1f1;
-          border-radius: 5px;
-          text-align: left !important;
-        }
-      `}</style>
+    <div className="containerMax">
+      <div className="container">
+        <div className="sideBar">
+          <div className="textTop">NEXT AI</div>
+          <Button className="newChat">+ New Chat</Button>
+          <Button className="clearConvo">
+            <Trash2 />
+            Clear Conversation
+          </Button>
+        </div>
+        <div className="main">
+          <div className="navbarStyle">
+            <Navbar />
+          </div>
+          <div className="bg">NEXT BENCH AI</div>
+          {aiResponses.map((response, index) => (
+            <div key={index} className="responseContainer">
+              <div
+                className="response"
+                dangerouslySetInnerHTML={{
+                  __html: ` ${response}`,
+                }}
+              />
+              <br />
+              <br />
+            </div>
+          ))}
+          <div className="searchBar">
+            <TextareaAutosize
+              value={userInput}
+              onChange={(e) => setUserInput(e.target.value)}
+              placeholder="Ask Next AI something..."
+              disabled={isSendingMessage}
+            />
+            <Button
+              onClick={handleSendUserInput}
+              disabled={isSendingMessage || !userInput.trim()}
+            >
+              {isSendingMessage ? "Thinking..." : "Send"}
+            </Button>
+          </div>
+        </div>
+      </div>
+      <Footer />
     </div>
   );
 }
