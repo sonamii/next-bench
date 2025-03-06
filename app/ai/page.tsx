@@ -7,7 +7,7 @@ import { Footer } from "@/custom/footer";
 import { Button } from "@/components/ui/button";
 import TextareaAutosize from "react-textarea-autosize";
 import "./style.css";
-import { Send, Trash2 } from "lucide-react";
+import {Trash2 } from "lucide-react";
 
 export default function NextAI() {
   const [userInput, setUserInput] = useState("");
