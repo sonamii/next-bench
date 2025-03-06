@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
 });
-
+//?wh
 export const metadata: Metadata = {
   title: "Next Bench by Sonamii",
   description:
