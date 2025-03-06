@@ -14,6 +14,10 @@ export default function NextAI() {
   const [aiResponses, setAIResponses] = useState<string[]>([]);
   const [isSendingMessage, setIsSendingMessage] = useState(false);
 
+  const clearConversation = async () => {
+    setAIResponses([]);
+  }
+
   const handleSendUserInput = async () => {
     const trimmedInput = userInput.trim();
     setUserInput("");
@@ -62,8 +66,8 @@ export default function NextAI() {
       <div className="container">
         <div className="sideBar">
           <div className="textTop">NEXT AI</div>
-          <Button className="newChat">+ New Chat</Button>
-          <Button className="clearConvo">
+          <Button onClick={clearConversation} className="newChat">+ New Chat</Button>
+          <Button onClick={clearConversation} className="clearConvo">
             <Trash2 />
             Clear Conversation
           </Button>
