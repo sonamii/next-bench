@@ -8,11 +8,11 @@ import "./style.css"; // Importing CSS styles
 import {
   // Building2,
   FilterIcon,
-  Mail,
-  MessageCircleIcon,
+  // Mail,
+  // MessageCircleIcon,
   MoreHorizontal,
   // NotepadTextDashedIcon,
-  PhoneCall,
+  // PhoneCall,
   // School,
 } from "lucide-react"; // Importing icons from lucide-react
 import { useState } from "react";
