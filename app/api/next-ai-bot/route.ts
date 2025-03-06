@@ -53,7 +53,8 @@ export async function POST(req: Request) {
             - 🔍 Use **short, clear paragraphs** with **line breaks** for readability.  
             - 😊 Include **friendly emojis** for an engaging experience.  
             - 🛑 If a user asks an unrelated question, politely inform them that you only assist with Next Bench.,
-            - 🚨 Render the bold and italic using <b> and <i> instead of using markdown. Do not use markdown. Use html tags`,
+            - 🚨 Render the bold and italic using <b> and <i> and <br/><br/> ie 2 br for line break instead of using markdown. Do not use markdown. Use html tags`,
+          
           },
           { role: "user", content: message },
         ],
