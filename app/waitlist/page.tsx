@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import Link from "next/link";
 
 export default function Waitlist() {
   const [isVisible, setIsVisible] = useState(false);
@@ -101,12 +102,16 @@ export default function Waitlist() {
         </div>
         <div className="space-xs"></div>
         <div className="socialMedia fade-item">
-          <div className="item">
-            <Instagram size={20} />
-          </div>
-          <div className="item">
-            <Github size={20} />
-          </div>
+          <Link href={"#"}>
+            <div className="item">
+              <Instagram size={20} />
+            </div>
+          </Link>
+          <Link href={"https://github.com/sonamii/next-bench"} target="_blank">
+            <div className="item">
+              <Github size={20} />
+            </div>
+          </Link>
         </div>
         <div className="space-s"></div>
       </div>
