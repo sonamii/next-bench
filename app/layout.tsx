@@ -4,7 +4,7 @@ import "./globals.css";
 import AnimatedCursor from "react-animated-cursor";
 import { Toaster } from "sonner";
 import { Analytics } from "@vercel/analytics/react";
-import { SpeedInsights } from "@vercel/speed-insights/next"
+import { SpeedInsights } from "@vercel/speed-insights/next";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -47,8 +47,8 @@ export default function RootLayout({
       >
         <Toaster />
         <Analytics />
-        <SpeedInsights/>
-        <AnimatedCursor
+        <SpeedInsights />
+        {/* <AnimatedCursor
           innerSize={6}
           outerSize={41}
           innerScale={1}
@@ -62,7 +62,7 @@ export default function RootLayout({
             border: "1px solid #414141",
             zIndex: "9999 !important",
           }}
-        />
+        /> */}
 
         {children}
       </body>

@@ -1,0 +1,208 @@
+@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap");
+
+.nav {
+  display: flex;
+  position: relative;
+  max-width: 650px;
+  width: 100%;
+  height: 55px;
+  align-items: center;
+  justify-content: space-between;
+  font-family: "Plus Jakarta Sans", sans-serif;
+  font-weight: 400;
+  background-color: #2e2e2e;
+  opacity: 0.8;
+  backdrop-filter: blur(10px);
+  opacity: 0.8;
+  backdrop-filter: blur(10px);
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 500;
+  flex-direction: row;
+  padding-inline: 10px;
+
+  .left {
+    width: 50%;
+    height: 100%;
+    align-items: center;
+    justify-content: start;
+    flex-direction: row;
+    display: flex;
+    gap: 5px;
+
+    .item {
+      width: fit-content;
+      height: fit-content;
+      padding: 10px 15px;
+      border-radius: 8px;
+
+      background-color: #fff;
+      color: #0c0c0c;
+      display: flex;
+      position: relative;
+      flex-direction: row;
+      cursor: pointer;
+
+      &:hover {
+        background-color: #e0e0e0;
+      }
+    }
+
+    .link {
+      width: fit-content;
+      height: fit-content;
+
+      background-color: transparent;
+      padding: 10px 10px;
+      border-radius: 8px;
+      color: #f4f5f7;
+      display: flex;
+      position: relative;
+      flex-direction: row;
+      cursor: pointer;
+
+      &:hover {
+        color: #bbfe3b;
+      }
+    }
+
+    .dropdown {
+      width: fit-content;
+      height: fit-content;
+      background-color: transparent;
+      padding: 10px 10px;
+      border-radius: 8px;
+      color: #f4f5f7;
+      display: flex;
+      position: relative;
+      flex-direction: row;
+      cursor: pointer;
+
+      &:hover {
+        color: #bbfe3b;
+      }
+    }
+  }
+  .right {
+    width: 40%;
+    height: 100%;
+    align-items: center;
+    justify-content: end;
+    flex-direction: row;
+    display: flex;
+    gap: 5px;
+
+    .item {
+      width: fit-content;
+      height: fit-content;
+      padding-top: 10px;
+      padding-bottom: 10px;
+      padding-left: 35px;
+      padding-right: 15px;
+      border-radius: 8px;
+
+      background-color: #fff;
+      color: #0c0c0c;
+      display: none;
+      position: relative;
+      flex-direction: row;
+    }
+
+    .dropdown {
+      width: fit-content;
+      height: fit-content;
+      background-color: transparent;
+      padding: 10px 15px;
+      border-radius: 8px;
+      color: #f4f5f7;
+      display: flex;
+      position: relative;
+      flex-direction: row;
+      cursor: pointer;
+
+      &:hover {
+        color: #bbfe3b;
+      }
+    }
+
+    .button {
+      width: fit-content;
+      height: fit-content;
+      padding: 10px 15px;
+      border-radius: 8px;
+      background-color: #b8ff33;
+      color: #0c0c0c;
+      display: flex;
+      position: relative;
+      cursor: pointer;
+      flex-direction: row;
+      &:hover {
+        background-color: #91c929;
+      }
+    }
+  }
+
+  .mid {
+    display: flex;
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+    width: fit-content;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+
+    .logo {
+      display: flex;
+      position: relative;
+      width: 40px;
+      height: 40px;
+      background-color: rebeccapurple;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+  }
+}
+
+@font-face {
+  font-family: "CG";
+  src: url("./../../fonts/ClashGrotesk-Variable.ttf") format("truetype");
+}
+
+@media (max-width: 675px) {
+  .nav {
+    max-width: 90vw;
+  }
+
+  body {
+    background-size: 150%;
+  }
+}
+
+@media (max-width: 600px) {
+  body {
+    background-size: 200% !important;
+  }
+  .nav .right {
+    display: none;
+  }
+
+  .nav .mid {
+    display: flex;
+    position: relative;
+    background-color: transparent;
+    margin-right: 0px;
+  }
+
+  .nav {
+    justify-content: space-between !important;
+  }
+
+  .nav .left {
+    width: fit-content;
+  }
+}
