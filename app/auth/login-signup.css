@@ -1,3 +1,15 @@
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 body {
   align-items: center;
   justify-content: center;
@@ -8,16 +20,9 @@ body {
   height: 100vh;
   overflow-x: hidden;
   overflow-y: auto;
-  background-image: linear-gradient(
-      to bottom,
-      rgba(255, 255, 255, 0.1),
-      rgba(255, 255, 255, 0)
-    ),
-    /* Fading Effect */
-      radial-gradient(rgba(0, 0, 0, 0.1) 1.1px, transparent 1.1px); /* Grid */
-
-  background-size: 100% 100%, 20px 20px; /* First layer covers whole section, second layer defines grid size */
-  background-color: transparent; /* Base color */
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-image: url("/download.svg")
 }
 
 * {
@@ -28,7 +33,6 @@ body {
   display: flex;
   position: relative;
   width: 700px;
-
   align-items: center;
   justify-content: center;
 }
@@ -37,9 +41,14 @@ body {
   min-width: 700px;
   max-height: 445px;
   min-height: 445px;
+  animation: fadeInUp 0.5s ease;
 }
 
 @media (max-width: 767px) {
+  body {
+    background-size: 150%;
+  }
+
   .containerMax {
     max-width: 50vw !important;
   }
@@ -50,6 +59,10 @@ body {
 }
 
 @media (max-width: 580px) {
+  body {
+    background-size: 200%;
+  }
+
   .cardContainer {
     min-width: 320px;
   }
