@@ -14,6 +14,12 @@ export default function Callback() {
   const [securityId, setSecurityId] = useState("");
   const [uidDatabase, setUidDatabase] = useState("");
   const { isVerified, setIsVerified } = useVerificationStore();
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    setTimeout(() => setIsVisible(true), 100);
+  }, []);
+
   let emailLocalStorage = "";
   useEffect(() => {
     emailLocalStorage = localStorage.getItem("email") as string;
@@ -115,31 +121,31 @@ export default function Callback() {
     }
   };
   return (
-    <div className="containerMain">
+    <div className={`containerMain ${isVisible ? "fade-in" : ""}`}>
       {" "}
       <div className="logo fade-item">
         <Image src="/logoMain.svg" alt="Logo" width={25} height={25} />
       </div>{" "}
       <div className="space-xs"></div>
-      <div className="textTop">Security Check</div>
+      <div className="textTop fade-item">Security Check</div>
       <div className="space-xxs"></div>
-      <div className="textBottom">
+      <div className="textBottom fade-item">
         We have to perform security check to prevent bots from accessing your
         account.
       </div>
       <div className="space-s"></div>
-      <div className="inputContainer">
+      <div className="inputContainer fade-item">
         {" "}
         <Input
           type="email"
-          className="input"
+          className="input fade-item"
           placeholder="Enter your email"
           onChange={(e) => setEmail(e.target.value)}
           value={email}
         />
         <Input
           type="text"
-          className="input"
+          className="input fade-item"
           placeholder="Enter your securityID"
           onChange={(e) => setSecurityId(e.target.value)}
           value={securityId}

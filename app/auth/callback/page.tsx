@@ -32,9 +32,7 @@ export default function Callback() {
         return;
       }
       setSecurityID(userData.security_id);
-      console.log("User ID:", userData.security_id);
     }
-    console.log("Session data:", data);
   };
 
   useEffect(() => {
@@ -77,23 +75,29 @@ export default function Callback() {
     );
   };
 
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    setTimeout(() => setIsVisible(true), 100);
+  }, []);
+
   if (isSessionPresent)
     return (
-      <div className="containerMain">
+      <div className={`containerMain ${isVisible ? "fade-in" : ""}`}>
         <div className="logo fade-item">
           <Image src="/logoMain.svg" alt="Logo" width={25} height={25} />
         </div>{" "}
         <div className="space-xs"></div>
-        <div className="textTop">Callback Successful</div>
+        <div className="textTop fade-item">Callback Successful</div>
         <div className="space-xxs"></div>
-        <div className="textBottom">
+        <div className="textBottom fade-item">
           Your authentication callback was successful. You can now proceed to
           the next step.
         </div>
         <div className="space-s"></div>
-        <div className="buttonContainer">
+        <div className="buttonContainer  fade-item">
           {" "}
-          <div className="codeBlock">
+          <div className="codeBlock  fade-item">
             {securityID}{" "}
             <div className="copyButton" onClick={copyToClipboard}>
               <Copy size={15} />
