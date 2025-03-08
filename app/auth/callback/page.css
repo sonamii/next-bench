@@ -1,0 +1,199 @@
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@font-face {
+    font-family: "CG";
+    src: url("./../../../fonts/ClashGrotesk-Variable.ttf") format("truetype");
+}
+
+body {
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    padding: 0;
+    margin: 0;
+    width: 100vw;
+    height: 100vh;
+    overflow-x: hidden;
+    overflow-y: auto;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-image: url("/download.svg");
+    background-size: 100%;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+.space-s {
+    display: flex;
+    position: relative;
+    width: 0px;
+    height: 30px;
+    background-color: gainsboro;
+}
+
+.space-xs {
+    display: flex;
+    position: relative;
+    width: 0px;
+    height: 20px;
+    background-color: gainsboro;
+}
+
+.space-xxs {
+    display: flex;
+    position: relative;
+    width: 0px;
+    height: 10px;
+    background-color: gainsboro;
+}
+
+.containerMain {
+    display: flex;
+    position: relative;
+    width: 100%;
+    height: fit-content;
+    background-color: transparent;
+    align-items: center;
+    justify-content: start;
+    flex-direction: column;
+}
+
+.logo {
+    display: flex;
+    position: relative;
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(to bottom, #bbfe3b, #dbff98);
+    align-items: center;
+    justify-content: center;
+    border-radius: 30%;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.05);
+}
+
+
+
+.textTop {
+    display: flex;
+    position: relative;
+    font-family: "CG", sans-serif !important;
+    font-size: 40px;
+    font-weight: 500;
+    max-width: 550px;
+    line-height: 1em;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+    color: #0c0c0c;
+}
+
+.textBottom {
+    display: flex;
+    position: relative;
+    font-family: "Plus Jakarta Sans", sans-serif;
+    font-size: 14px;
+    max-width: 350px;
+    line-height: 1em;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+    color: #666;
+}
+
+.buttonContainer {
+    display: flex;
+    position: relative;
+    width: fit-content;
+    gap: 10px;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+}
+
+.codeBlock {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 7px 15px;
+    padding-right: 5px !important;
+    height: 40px;
+    background-color: #fff;
+    border: 1px solid #cfd1d4;
+    font-size: 15px;
+    font-family: "CG", sans-serif;
+    font-weight: 460;
+    color: #2a2a2a;
+    border-radius: 10px;
+
+    .copyButton {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 30px;
+        height: 30px;
+        background-color: #cfd1d480;
+        border: 1px solid #cfd1d480;
+        border-radius: 7px;
+        cursor: pointer;
+        margin-left: 10px;
+        transition: 0.3s;
+        color: #666;
+
+        &:hover {
+            background-color: #b5b5b685;
+            border: 1px solid #cfd1d485;
+        }
+    }
+}
+
+.button {
+    min-height: 40px;
+    padding-inline: 13px;
+    border-radius: 10px;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    position: relative;
+    font-family: "CG";
+    font-weight: 400;
+    font-size: 14px;
+    color: #f5f7f9;
+    background-color: #2a2a2a;
+    border: 1px solid #e9ecf0 !important;
+    cursor: pointer;
+    transition: 0.3s !important;
+
+    &:hover {
+        background-color: #1d1e1e;
+    }
+}
+
+.releaseDate {
+    display: flex;
+    position: relative;
+    width: fit-content;
+    padding-left: 3px;
+    padding-right: 10px;
+    border-radius: 50px;
+    height: 24px;
+    border: 1px solid #cfd1d4;
+    background-color: transparent;
+    align-items: center;
+    justify-content: center;
+    font-family: "Plus Jakarta Sans", sans-serif;
+    color: #666;
+    line-height: 1em;
+    font-size: 11px;
+    font-weight: 550;
+  }

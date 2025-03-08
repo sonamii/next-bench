@@ -22,7 +22,8 @@ body {
   overflow-y: auto;
   background-position: center center;
   background-repeat: no-repeat;
-  background-image: url("/download.svg")
+  background-image: url("/download.svg");
+  background-size: 120%;
 }
 
 * {

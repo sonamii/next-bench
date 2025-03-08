@@ -23,6 +23,20 @@ import {
   WandIcon,
   Wifi,
 } from "lucide-react";
+import * as React from "react"
+import { Minus, Plus } from "lucide-react"
+ 
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer"
+ 
 import "./style.css";
 import Image from "next/image";
 import { Nav } from "@/custom-components/nav";
@@ -419,18 +433,18 @@ export default function Waitlist() {
             ></Image>
           </div>
           <div className="bottom">
-            <a href={"/"}>
+            <a href={"#"}>
               {" "}
-              <div>© 2025 Sonamii. All rights reserved.</div>
+              <div className="text">© 2025 Sonamii. All rights reserved.</div>
             </a>
             <a href={""}>
               {" "}
-              <div className="right10vw">Privacy Policy</div>
+              <div className="right10vw text">Privacy Policy</div>
             </a>
 
             <a href={"/ai"}>
               {" "}
-              <div>Try out Next-AI</div>
+              <div className="text">Try out Next-AI</div>
             </a>
           </div>
         </div>

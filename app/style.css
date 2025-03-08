@@ -11,6 +11,9 @@ body {
   overflow-x: hidden;
   overflow-y: auto;
 }
+html{
+  scroll-behavior: smooth;
+}
 
 * {
   box-sizing: border-box;
@@ -35,8 +38,6 @@ body {
   background-position: center center;
   background-repeat: no-repeat;
   background-image: url("/download.svg")
-
-
 }
 
 .space {
@@ -63,7 +64,7 @@ body {
   background-color: gainsboro;
 }
 
-.space-sxs {
+.space-xxs {
   display: flex;
   position: relative;
   width: 0px;
@@ -173,8 +174,9 @@ body {
   cursor: pointer;
   transition: 0.3s;
 
-  &::hover {
-    scale: 0.6;
+  &:hover {
+    scale: 0.97;
+    background: linear-gradient(to top, #dbff98, #bbfe3b);
 
   }
 
@@ -222,13 +224,13 @@ body {
     font-weight: 500;
     font-size: 14px;
     color: #3a3a3a;
-    background-color: #f8f9fa !important;
+    background-color: #f8f9fa;
     border: 1px solid #e9ecf0 !important;
     cursor: pointer;
     transition: 0.3s !important;
 
     &:hover {
-      background-color: #e9ecf0;
+      background-color: #e6ebf0;
     }
   }
 
@@ -593,6 +595,9 @@ body {
       color: #666;
       border-radius: 20px;
       gap: 15px;
+      cursor: pointer;
+
+
 
       .top {
         display: flex;
@@ -653,6 +658,7 @@ body {
       color: #666;
       border-radius: 20px;
       gap: 15px;
+      cursor: pointer;
 
       .top {
         display: flex;
@@ -780,10 +786,19 @@ body {
     align-items: center;
     justify-content: space-between;
     flex-direction: row;
-    color: #757575;
-    font-family: "Plus Jakarta Sans", sans-serif;
-    font-weight: 450;
-    font-size: 13px;
+
+    .text {
+      color: #757575;
+      font-family: "Plus Jakarta Sans", sans-serif;
+      font-weight: 450;
+      font-size: 13px;
+      display: flex;
+      position: relative;
+
+      &:hover {
+        color: #bfbfbf;
+      }
+    }
   }
 }
 
