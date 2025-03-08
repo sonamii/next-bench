@@ -7,7 +7,7 @@ body {
   width: 100vw;
   display: flex;
   min-height: 100vh;
-  padding-top: 20px;
+  padding-top: 80px;
   overflow-x: hidden;
   overflow-y: auto;
 }
@@ -53,6 +53,7 @@ body {
   height: 30px;
   background-color: gainsboro;
 }
+
 .space-xs {
   display: flex;
   position: relative;
@@ -72,7 +73,7 @@ body {
   flex-direction: column;
 }
 
- .logo {
+.logo {
   display: flex;
   position: relative;
   width: 50px;
@@ -89,7 +90,7 @@ body {
   src: url("./../../fonts/ClashGrotesk-Variable.ttf") format("truetype");
 }
 
- .textTop {
+.textTop {
   display: flex;
   position: relative;
   font-family: "CG", sans-serif !important;
@@ -103,7 +104,7 @@ body {
   color: #0c0c0c;
 }
 
- .textBottom {
+.textBottom {
   display: flex;
   position: relative;
   font-family: "Plus Jakarta Sans", sans-serif;
@@ -116,7 +117,7 @@ body {
   color: #666;
 }
 
- .members {
+.members {
   display: flex;
   position: relative;
   width: fit-content;
@@ -135,7 +136,7 @@ body {
   font-weight: 500;
 }
 
- .members .pfp {
+.members .pfp {
   width: 25px;
   height: 25px;
   border-radius: 100%;
@@ -162,6 +163,7 @@ body {
     padding-inline: 20px;
     font-family: "CG";
   }
+
   Button {
     min-height: 45px;
     padding-inline: 30px;
@@ -175,7 +177,7 @@ body {
   }
 }
 
- .releaseDate {
+.releaseDate {
   display: flex;
   position: relative;
   width: fit-content;
@@ -194,7 +196,7 @@ body {
   font-weight: 600;
 }
 
- .socialMedia {
+.socialMedia {
   display: flex;
   position: relative;
   width: fit-content;
@@ -217,11 +219,13 @@ body {
     }
   }
 }
+
 @media (max-width: 800px) {
   .background {
     background-size: 150%;
   }
 }
+
 @media (max-width: 500px) {
   .background {
     background-size: 200%;
@@ -234,6 +238,7 @@ body {
     Input {
       max-width: 80vw;
     }
+
     Button {
       max-width: 80vw;
     }
@@ -268,6 +273,7 @@ body {
     opacity: 0;
     transform: translateY(30px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -278,36 +284,47 @@ body {
 .fade-item:nth-child(1) {
   animation-delay: 0.15s;
 }
+
 .fade-item:nth-child(2) {
   animation-delay: 0.3s;
 }
+
 .fade-item:nth-child(3) {
   animation-delay: 0.45s;
 }
+
 .fade-item:nth-child(4) {
   animation-delay: 0.6s;
 }
+
 .fade-item:nth-child(5) {
   animation-delay: 0.75s;
 }
+
 .fade-item:nth-child(6) {
   animation-delay: 0.9s;
 }
+
 .fade-item:nth-child(7) {
   animation-delay: 1.05s;
 }
+
 .fade-item:nth-child(8) {
   animation-delay: 1.35s;
 }
+
 .fade-item:nth-child(9) {
   animation-delay: 1.5s;
 }
+
 .fade-item:nth-child(10) {
   animation-delay: 1.65s;
 }
+
 .fade-item:nth-child(11) {
   animation-delay: 1.7s;
 }
+
 .fade-item:nth-child(12) {
   animation-delay: 1.85s;
 }
@@ -315,6 +332,7 @@ body {
 .fade-item:nth-child(12) {
   animation-delay: 2s;
 }
+
 .fade-item:nth-child(12) {
   animation-delay: 2.15s;
 }
