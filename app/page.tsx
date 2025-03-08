@@ -39,10 +39,20 @@ export default function Waitlist() {
 
   return (
     <>
+      {/* BACKGROUND IMAGE FOR GRID*/}
       <div className="background"></div>
+
+      {/* NAVBAR START*/}
       <Nav />
+      {/* NAVABR END*/}
+
       <div className="space"></div>
+
+      {/* MAIN LANDING PAGE START*/}
+
       <div className={`containerMain ${isVisible ? "fade-in" : ""}`}>
+        {/* INITIAL DETAILS START*/}
+
         <div className="logo fade-item">
           <Image src="./logoMain.svg" alt="Logo" width={25} height={25} />
         </div>
@@ -78,7 +88,9 @@ export default function Waitlist() {
           onSubmit={(e) => e.preventDefault()}
         >
           <Button>Try it now</Button>
-          <div className="buttonS"><a href={"/auth/login"}>Sign Up</a></div>
+          <div className="buttonS">
+            <a href={"/auth/login"}>Sign Up</a>
+          </div>
         </form>
         <div className="space-s"></div>
         <div className="features fade-item">
@@ -86,8 +98,11 @@ export default function Waitlist() {
           <div className="space-xs"></div>
           <MarqueeComponent />
         </div>
+        {/* INITIAL DETAILS END*/}
+
         <div className="space"></div>
         <div className="space"></div>
+
         {/*TOP FEATURES START */}
         <div className="topFeatures fade-item">
           <div className="left">
@@ -136,7 +151,6 @@ export default function Waitlist() {
                 school&apos;s name or locality to explore options.
               </div>
             </div>
-
             <div className="topFeaturesDisplay fade-item">
               <div className="top">
                 <div className="topLogo">
@@ -188,12 +202,15 @@ export default function Waitlist() {
                 is always available to help you with any questions or concerns
               </div>
             </div>
+            {/* SPACE FOR RIGHT CONTAINER (TO MAKE IT OVERFLOW SO THAT THE SCROLLING LOOKS REAL)*/}
             <div className="space"></div>
             <div className="space"></div>
           </div>
         </div>
         {/* TOP FEATURES END*/}
+
         <div className="space"></div>
+
         {/* WHY US START*/}
         <div className="topFeatures topFeatures2 fade-item">
           <div className="left">
@@ -224,7 +241,6 @@ export default function Waitlist() {
               </div>
             </div>
           </div>
-
           <div className="right right2">
             <div className="whyUsDisplay fade-item">
               <div className="top">
@@ -273,8 +289,10 @@ export default function Waitlist() {
           </div>
         </div>
         {/* WHY US END */}
+
         <div className="space"></div>
         <div className="space"></div>
+
         {/*ABOUT US START */}
         <div className="topFeatures topFeatures2 fade-item">
           <div className="left">
@@ -327,7 +345,10 @@ export default function Waitlist() {
           </div>
         </div>
         {/* ABOUT US END*/}
+
         <div className="space"></div>
+        <div className="space"></div>
+
         {/*SPONSERSHIPS START */}
         <div className="topFeatures topFeatures2 fade-item">
           <div className="left">
@@ -356,7 +377,10 @@ export default function Waitlist() {
           </div>
         </div>
         {/*SPONSERSHIPS END */}
-        <div className="space"></div> <div className="space"></div>
+
+        <div className="space"></div>
+        <div className="space"></div>
+
         {/*TESTIMONIALS START */}
         {/* <div className="topFeatures topFeatures2 fade-item">
           <div className="left">
@@ -380,18 +404,19 @@ export default function Waitlist() {
           </div>
         </div> */}
         {/*FAQS END */}
+
         <div className="space"></div>
+
+        {/* FOOTER START*/}
         <div className="footer">
-          
           <div className="top">
             {" "}
-              <Image
-                src={"/logoFooter.svg"}
-                alt="logo"
-                width={230}
-                height={230}
-              ></Image>
-              
+            <Image
+              src={"/logoFooter.svg"}
+              alt="logo"
+              width={230}
+              height={230}
+            ></Image>
           </div>
           <div className="bottom">
             <a href={"/"}>
@@ -409,8 +434,12 @@ export default function Waitlist() {
             </a>
           </div>
         </div>
+        {/* FOOTER END*/}
+
         <div className="space-s"></div>
       </div>
+
+      {/* MAIN LANDING PAGE END*/}
     </>
   );
 }
