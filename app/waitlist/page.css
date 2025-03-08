@@ -72,7 +72,7 @@ body {
   flex-direction: column;
 }
 
-.containerMain .logo {
+ .logo {
   display: flex;
   position: relative;
   width: 50px;
@@ -89,7 +89,7 @@ body {
   src: url("./../../fonts/ClashGrotesk-Variable.ttf") format("truetype");
 }
 
-.containerMain .textTop {
+ .textTop {
   display: flex;
   position: relative;
   font-family: "CG", sans-serif !important;
@@ -103,7 +103,7 @@ body {
   color: #0c0c0c;
 }
 
-.containerMain .textBottom {
+ .textBottom {
   display: flex;
   position: relative;
   font-family: "Plus Jakarta Sans", sans-serif;
@@ -116,7 +116,7 @@ body {
   color: #666;
 }
 
-.containerMain .members {
+ .members {
   display: flex;
   position: relative;
   width: fit-content;
@@ -135,7 +135,7 @@ body {
   font-weight: 500;
 }
 
-.containerMain .members .pfp {
+ .members .pfp {
   width: 25px;
   height: 25px;
   border-radius: 100%;
@@ -175,7 +175,7 @@ body {
   }
 }
 
-.containerMain .releaseDate {
+ .releaseDate {
   display: flex;
   position: relative;
   width: fit-content;
@@ -194,7 +194,7 @@ body {
   font-weight: 600;
 }
 
-.containerMain .socialMedia {
+ .socialMedia {
   display: flex;
   position: relative;
   width: fit-content;
