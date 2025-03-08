@@ -384,8 +384,31 @@ export default function Waitlist() {
         {/*FAQS END */}
         <div className="space"></div>
         <div className="footer">
-          <div className="left"></div>
-          <div className="right"></div>
+          <div className="top">
+            {" "}
+              <Image
+                src={"/logoFooter.svg"}
+                alt="logo"
+                width={230}
+                height={230}
+              ></Image>
+              
+          </div>
+          <div className="bottom">
+            <Link href={"/"}>
+              {" "}
+              <div>© 2025 Sonamii. All rights reserved.</div>
+            </Link>
+            <Link href={""}>
+              {" "}
+              <div className="right10vw">Privacy Policy</div>
+            </Link>
+
+            <Link href={"/ai"}>
+              {" "}
+              <div>Try out Next-AI</div>
+            </Link>
+          </div>
         </div>
         <div className="space-xs"></div>
       </div>
