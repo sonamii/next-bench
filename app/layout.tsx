@@ -24,14 +24,14 @@ export const metadata: Metadata = {
     title: "Next Bench by Sonamii",
     description:
       "Next Bench is a user-friendly web application that helps students to find the best institutions, offering advanced search and school comparisons.",
-    images: ["/og.png"], // Assuming the image is at /public/thumbnail.png
+    images: ["/ogFinal.png"], // Assuming the image is at /public/thumbnail.png
   },
   twitter: {
     card: "summary_large_image",
     title: "Next Bench by Sonamii",
     description:
       "Next Bench is a user-friendly web application that helps students to find the best institutions, offering advanced search and school comparisons.",
-    images: ["/og.png"],
+    images: ["/ogFinal.png"],
   },
 };
 
