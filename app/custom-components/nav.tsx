@@ -9,11 +9,11 @@ export const Nav = ({ className }: NavProps) => {
   return (
     <div className={`nav ${className}`}>
       <div className="left">
-        <div className="item">Home</div>
+        <div className="item"><a href={"/"}>Home</a></div>
         <div className="link">Explore</div>
 
         <div className="dropdown">
-          Next-AI
+          <a href={"/ai"}>Next-AI</a>
           <ChevronDown size={20} />
         </div>
       </div>
@@ -22,7 +22,7 @@ export const Nav = ({ className }: NavProps) => {
       </div>
       <div className="right">
         <div className="dropdown">Dashboard</div>
-        <div className="button">Sign Up</div>
+        <div className="button"><a href={"/auth/login"}>Sign Up</a></div>
         <div className="item">
           <MenuIcon />
         </div>

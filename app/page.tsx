@@ -78,7 +78,7 @@ export default function Waitlist() {
           onSubmit={(e) => e.preventDefault()}
         >
           <Button>Try it now</Button>
-          <div className="buttonS">Sign Up</div>
+          <div className="buttonS"><a href={"/auth/login"}>Sign Up</a></div>
         </form>
         <div className="space-s"></div>
         <div className="features fade-item">
@@ -394,19 +394,19 @@ export default function Waitlist() {
               
           </div>
           <div className="bottom">
-            <Link href={"/"}>
+            <a href={"/"}>
               {" "}
               <div>© 2025 Sonamii. All rights reserved.</div>
-            </Link>
-            <Link href={""}>
+            </a>
+            <a href={""}>
               {" "}
               <div className="right10vw">Privacy Policy</div>
-            </Link>
+            </a>
 
-            <Link href={"/ai"}>
+            <a href={"/ai"}>
               {" "}
               <div>Try out Next-AI</div>
-            </Link>
+            </a>
           </div>
         </div>
         <div className="space-s"></div>
