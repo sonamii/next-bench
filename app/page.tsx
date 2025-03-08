@@ -12,12 +12,10 @@ import {
   Grid2X2Icon,
   LucideCircuitBoard,
   Luggage,
-  MessageCircle,
   Rotate3DIcon,
   Search,
   Shapes,
   Shield,
-  ShieldQuestion,
   Slack,
   SparklesIcon,
   Star,
@@ -384,6 +382,7 @@ export default function Waitlist() {
         {/*FAQS END */}
         <div className="space"></div>
         <div className="footer">
+          
           <div className="top">
             {" "}
               <Image
@@ -410,7 +409,7 @@ export default function Waitlist() {
             </Link>
           </div>
         </div>
-        <div className="space-xs"></div>
+        <div className="space-s"></div>
       </div>
     </>
   );
