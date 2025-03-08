@@ -20,7 +20,7 @@ export default function Callback() {
         },
       });
       setTimeout(() => {
-        window.location.href = "/security/user";
+        window.location.href = "/security/verification";
       }, 3000);
     }
   }, [isVerified]);

@@ -7,7 +7,6 @@ import { useState } from "react";
 import { CheckCircle2Icon } from "lucide-react";
 import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
-import Link from "next/link";
 import { useVerificationStore } from "@/store/verificationStore";
 
 export default function Callback() {
@@ -17,6 +16,8 @@ export default function Callback() {
   const { isVerified, setIsVerified } = useVerificationStore();
   const emailLocalStorage = localStorage.getItem("email");
 
+  const [isVerificationSuccessDone, setIsVerificationSuccessDone] =
+    useState(false);
   //! ALWAYS KEEP THIS PAGE OPEN FOR ADMINS (MAY REMOVE)
 
   useEffect(() => {
@@ -29,14 +30,15 @@ export default function Callback() {
         },
       });
     } else {
-      if (isVerified) {
+      if (isVerified && !isVerificationSuccessDone) {
         toast("Account Verified", {
           description: `You are already verified as ${emailLocalStorage} `,
           action: { label: "Okay", onClick: () => console.log("Okay") },
         });
+        setIsVerificationSuccessDone(true);
       }
     }
-  }, [emailLocalStorage, isVerified]);
+  });
 
   useEffect(() => {
     const getUserIdFromSession = async () => {
