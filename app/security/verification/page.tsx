@@ -14,7 +14,10 @@ export default function Callback() {
   const [securityId, setSecurityId] = useState("");
   const [uidDatabase, setUidDatabase] = useState("");
   const { isVerified, setIsVerified } = useVerificationStore();
-  const emailLocalStorage = localStorage.getItem("email");
+  let emailLocalStorage = "";
+  useEffect(() => {
+    emailLocalStorage = localStorage.getItem("email") as string;
+  }, []);
 
   const [isVerificationSuccessDone, setIsVerificationSuccessDone] =
     useState(false);
@@ -33,12 +36,15 @@ export default function Callback() {
       if (isVerified && !isVerificationSuccessDone) {
         toast("Account Verified", {
           description: `You are already verified as ${emailLocalStorage} `,
-          action: { label: "Okay", onClick: () => console.log("Okay") },
+          action: {
+            label: "Dashboard",
+            onClick: () => (window.location.href = "/dashboard"),
+          },
         });
         setIsVerificationSuccessDone(true);
       }
     }
-  });
+  }, [isVerified]);
 
   useEffect(() => {
     const getUserIdFromSession = async () => {

@@ -24,18 +24,7 @@ import {
   Wifi,
 } from "lucide-react";
 import * as React from "react"
-import { Minus, Plus } from "lucide-react"
- 
-import {
-  Drawer,
-  DrawerClose,
-  DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerTrigger,
-} from "@/components/ui/drawer"
+
  
 import "./style.css";
 import Image from "next/image";

@@ -7,8 +7,15 @@ import { Nav } from "./../custom-components/nav";
 import Link from "next/link";
 import { toast } from "sonner";
 import { useEffect } from "react";
+import { useState } from "react";
 export default function Callback() {
   const { isVerified } = useVerificationStore();
+  
+  const [emailLocal, setEmailLocal] = useState("");
+
+  useEffect(() => {
+    setEmailLocal(localStorage.getItem("email") || "");
+  }, []);
 
   useEffect(() => {
     if (!isVerified) {
@@ -37,6 +44,10 @@ export default function Callback() {
         <div className="textTop">Dashboard</div>
         <div className="space-xxs"></div>
         <div className="textBottom">Coming soon</div>
+        <div className="space-xxs"></div>
+        <div className="textBottom">
+          <b>{emailLocal}</b>
+        </div>
         <div className="space-s"></div>
         <div className="buttonContainer">
           {" "}

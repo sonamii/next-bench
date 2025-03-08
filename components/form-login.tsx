@@ -11,7 +11,6 @@ import { useState } from "react";
 import supabase from "./../services/supabase";
 import { toast } from "sonner";
 import { useVerificationStore } from "@/store/verificationStore";
-import { useEffect } from "react";
 import {
   HoverCard,
   HoverCardContent,
@@ -23,7 +22,7 @@ export function LoginForm({
 }: React.ComponentProps<"div">) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { isVerified, setIsVerified } = useVerificationStore();
+  const { setIsVerified } = useVerificationStore();
 
   function getDataFromSupabase() {
     console.log(email);
@@ -61,7 +60,6 @@ export function LoginForm({
       });
   }
 
-  
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card className="overflow-hidden p-0 cardContainer">
