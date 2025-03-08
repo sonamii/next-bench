@@ -50,6 +50,7 @@ export default function Callback() {
     console.log("Signed out successfully");
     // Redirect to login page or home page after logout
     window.location.href = "/auth/login";
+    localStorage.setItem("email", "");
   };
 
   const copyToClipboard = () => {
@@ -66,7 +67,7 @@ export default function Callback() {
             action: { label: "Okay", onClick: () => console.log("Okay") },
           });
           setTimeout(() => {
-            window.location.href = "/";
+            window.location.href = "/dashboard";
           }, 1500);
         }, 1500);
       },
