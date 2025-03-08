@@ -2,8 +2,7 @@
 
 import { useState } from "react";
 
-import { Navbar } from "@/custom/Nav";
-import { Footer } from "@/custom/footer";
+
 import { Button } from "@/components/ui/button";
 import TextareaAutosize from "react-textarea-autosize";
 import "./style.css";
@@ -16,6 +15,7 @@ export default function NextAI() {
 
   const handleSendUserInput = async () => {
     const trimmedInput = userInput.trim();
+    setUserInput("");
     if (!trimmedInput) return; // Prevent empty messages
 
     setIsSendingMessage(true);
@@ -69,7 +69,6 @@ export default function NextAI() {
         </div>
         <div className="main">
           <div className="navbarStyle">
-            <Navbar />
           </div>
           <div className="bg">NEXT BENCH AI</div>
           {aiResponses.map((response, index) => (
@@ -100,7 +99,6 @@ export default function NextAI() {
           </div>
         </div>
       </div>
-      <Footer />
     </div>
   );
 }

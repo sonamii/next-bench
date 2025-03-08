@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import AnimatedCursor from "react-animated-cursor";
+// import AnimatedCursor from "react-animated-cursor";
 import { Toaster } from "sonner";
 import { Analytics } from "@vercel/analytics/react";
-import { SpeedInsights } from "@vercel/speed-insights/next"
+import { SpeedInsights } from "@vercel/speed-insights/next";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -24,14 +24,14 @@ export const metadata: Metadata = {
     title: "Next Bench by Sonamii",
     description:
       "Next Bench is a user-friendly web application that helps students to find the best institutions, offering advanced search and school comparisons.",
-    images: ["/og.png"], // Assuming the image is at /public/thumbnail.png
+    images: ["/ogFinal.png"], // Assuming the image is at /public/thumbnail.png
   },
   twitter: {
     card: "summary_large_image",
     title: "Next Bench by Sonamii",
     description:
       "Next Bench is a user-friendly web application that helps students to find the best institutions, offering advanced search and school comparisons.",
-    images: ["/og.png"],
+    images: ["/ogFinal.png"],
   },
 };
 
@@ -47,8 +47,8 @@ export default function RootLayout({
       >
         <Toaster />
         <Analytics />
-        <SpeedInsights/>
-        <AnimatedCursor
+        <SpeedInsights />
+        {/* <AnimatedCursor
           innerSize={6}
           outerSize={41}
           innerScale={1}
@@ -62,7 +62,7 @@ export default function RootLayout({
             border: "1px solid #414141",
             zIndex: "9999 !important",
           }}
-        />
+        /> */}
 
         {children}
       </body>
