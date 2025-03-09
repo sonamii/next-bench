@@ -20,7 +20,6 @@ import {
   HoverCardTrigger,
 } from "@/components/ui/hover-card";
 import { useState } from "react";
-import { v4 as uuidv4 } from "uuid";
 import supabase from "./../services/supabase";
 
 export function SignUpForm({
@@ -37,7 +36,7 @@ export function SignUpForm({
     console.log("User Signup Data:", { email, password, type, name, phone });
 
     // ✅ Validate type before inserting
-    const allowedTypes = ["Student", "Parent", "Teacher", "Institution"];
+    const allowedTypes = ["Student/Parent", "Teacher", "School", "University"];
     if (!allowedTypes.includes(type)) {
       console.error("Invalid user type:", type);
       toast("Invalid user type", {
@@ -58,7 +57,7 @@ export function SignUpForm({
 
     if (error) {
       toast("Error signing up", {
-        description: `Please try again or LogIn, ${error.message}`,
+        description: `Please try again, ${error.message}`,
         action: { label: "Okay", onClick: () => console.log("Okay") },
       });
       return;
@@ -72,7 +71,8 @@ export function SignUpForm({
       return;
     }
 
-    const securityId = uuidv4(); // More secure than a custom function
+    // Generate security_id
+    const securityId = crypto.randomUUID(); // More secure than a custom function
 
     // Insert user details into the 'users' table
     const { error: insertError } = await supabase.from("users").insert([
@@ -160,23 +160,23 @@ export function SignUpForm({
                 <div className="flex items-center">
                   <Label htmlFor="password">Type</Label>
                 </div>
-                <div>
-                  <Select
-                    required
-                    onValueChange={(value) => setType(value)}
-                    value={type}
-                  >
-                    <SelectTrigger id="framework" style={{ width: "100%" }}>
-                      <SelectValue placeholder="Select" />
-                    </SelectTrigger>
-                    <SelectContent position="popper">
-                      <SelectItem value="Student">Student</SelectItem>
-                      <SelectItem value="Parent">Parent</SelectItem>
-                      <SelectItem value="Teacher">Teacher</SelectItem>
-                      <SelectItem value="Institution">Institution</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
+                <Select
+                  required
+                  onValueChange={(value) => setType(value)}
+                  value={type}
+                >
+                  <SelectTrigger id="framework" style={{ width: "100%" }}>
+                    <SelectValue placeholder="Select" />
+                  </SelectTrigger>
+                  <SelectContent position="popper">
+                    <SelectItem value="Student/Parent">
+                      Student/Parent
+                    </SelectItem>
+                    <SelectItem value="Teacher">Teacher</SelectItem>
+                    <SelectItem value="School">School</SelectItem>
+                    <SelectItem value="University">University</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
               <div className="grid gap-3">
                 <div className="flex items-center">
@@ -216,11 +216,7 @@ export function SignUpForm({
                   onChange={(e) => setPassword(e.target.value)}
                 />
               </div>
-              <Button
-                className="w-full"
-                onClick={postDataToSupabase}
-                style={{ cursor: "pointer" }}
-              >
+              <Button className="w-full" onClick={postDataToSupabase}>
                 SignUp
               </Button>
             </div>

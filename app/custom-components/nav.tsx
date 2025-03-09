@@ -1,4 +1,3 @@
-import React from "react";
 import { ChevronDown, MenuIcon } from "lucide-react";
 import "./nav.css";
 import Image from "next/image";
@@ -7,29 +6,10 @@ interface NavProps {
 }
 
 export const Nav = ({ className }: NavProps) => {
-  React.useEffect(() => {
-    const handleScroll = () => {
-      const nav = document.querySelector(".nav");
-      if (nav && nav instanceof HTMLElement) {
-        if (window.scrollY > 40) {
-          nav.style.top = "20px";
-        } else {
-          nav.style.top = "70px";
-        }
-      }
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, []);
   return (
     <div className={`nav ${className}`}>
       <div className="left">
-        <div className="item">
-          <a href={"/"}>Home</a>
-        </div>
+        <div className="item"><a href={"/"}>Home</a></div>
         <div className="link">Explore</div>
 
         <div className="dropdown">
@@ -42,9 +22,7 @@ export const Nav = ({ className }: NavProps) => {
       </div>
       <div className="right">
         <div className="dropdown">Dashboard</div>
-        <div className="button">
-          <a href={"/auth/signup"}>Sign Up</a>
-        </div>
+        <div className="button"><a href={"/auth/login"}>Sign Up</a></div>
         <div className="item">
           <MenuIcon />
         </div>

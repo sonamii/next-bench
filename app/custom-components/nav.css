@@ -177,14 +177,7 @@
 
 @font-face {
   font-family: "CG";
-  src: url("./../fonts/ClashGrotesk-Variable.ttf") format("truetype");
-}
-
-@media (max-width: 500px) {
-
-  .nav {
-    top: 70px;
-  }
+  src: url("./../../fonts/ClashGrotesk-Variable.ttf") format("truetype");
 }
 
 @media (max-width: 675px) {
