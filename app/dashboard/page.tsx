@@ -3,14 +3,14 @@ import "./page.css";
 import Image from "next/image";
 import { Info } from "lucide-react";
 import { useVerificationStore } from "@/store/verificationStore";
-import { Nav } from "./../custom-components/nav";
+import { Nav } from "@/custom-components/nav";
 import Link from "next/link";
 import { toast } from "sonner";
 import { useEffect } from "react";
 import { useState } from "react";
 export default function Callback() {
   const { isVerified } = useVerificationStore();
-  
+
   const [emailLocal, setEmailLocal] = useState("");
 
   useEffect(() => {
