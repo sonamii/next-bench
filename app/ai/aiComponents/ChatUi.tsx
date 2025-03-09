@@ -56,7 +56,6 @@ export default function ChatUi() {
 
   return(
     <div className="background">
-      <Nav />
       <div className="mt-30 relative h-[85vh]">
         {aiResponses?.length == 0 && <EmptyChatUi />}
 

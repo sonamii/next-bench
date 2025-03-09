@@ -11,10 +11,12 @@ export const Nav = ({ className }: NavProps) => {
     const handleScroll = () => {
       const nav = document.querySelector(".nav");
       if (nav && nav instanceof HTMLElement) {
-        if (window.scrollY > 40) {
-          nav.style.top = "20px";
-        } else {
-          nav.style.top = "70px";
+        if (window.innerWidth < 500) {
+          if (window.scrollY > 40) {
+            nav.style.top = "20px";
+          } else {
+            nav.style.top = "70px";
+          }
         }
       }
     };
@@ -41,7 +43,9 @@ export const Nav = ({ className }: NavProps) => {
         <Image src="./logoNav.svg" alt="Logo" width={30} height={30} />
       </div>
       <div className="right">
-        <div className="dropdown"><a href={"/dashboard"}>Dashboard</a></div>
+        <div className="dropdown">
+          <a href={"/dashboard"}>Dashboard</a>
+        </div>
         <div className="button">
           <a href={"/auth/signup"}>Sign Up</a>
         </div>

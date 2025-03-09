@@ -38,7 +38,7 @@ export default function Waitlist() {
   useEffect(() => {
     setTimeout(() => setIsVisible(true), 100);
   }, []);
-
+ 
   return (
     <>
       {/* BACKGROUND IMAGE FOR GRID*/}
