@@ -1,4 +1,7 @@
 import { Resend } from "resend";
+import getConfig from "next/config";
+const { serverRuntimeConfig } = getConfig();
+
 
 /**
  * Handles the POST request to send an email to the host.
@@ -18,11 +21,11 @@ export async function POST(req) {
       );
     }
 
-    const resend = new Resend(process.env.RESEND_API_KEY);
+    const resend = new Resend(serverRuntimeConfig.RESEND_API_KEY);
 
     const data = await resend.emails.send({
       from: "notify@resend.dev",
-      to: process.env.PRIVATE_EMAIL,
+      to: serverRuntimeConfig.PRIVATE_EMAIL,
       subject: "Subscription Added",
       html: `<p>A new subscription to Next-Bench has been added. User: ${userEmail}</p>`,
     });
