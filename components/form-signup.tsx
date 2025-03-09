@@ -139,7 +139,7 @@ export function SignUpForm({
                         color: "inherit",
                       }}
                     >
-                      v0.1.0-alpha.1
+                      v0.1.0.alpha-2
                     </HoverCardContent>
                   </HoverCard>{" "}
                   account

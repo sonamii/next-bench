@@ -128,16 +128,18 @@ export default function AiPage() {
 
   useEffect(() => {
     if (!isVerified) {
-      toast("Account not verified/logged in", {
-        description: `Redirecting in 1.5 seconds`,
-        action: {
-          label: "Login",
-          onClick: () => (window.location.href = "/auth/login"),
-        },
-      });
       setTimeout(() => {
-        window.location.href = "/auth/login";
-      }, 1500);
+        toast("Account not verified/logged in", {
+          description: `Redirecting in 1.5 seconds`,
+          action: {
+            label: "Login",
+            onClick: () => (window.location.href = "/auth/login"),
+          },
+        });
+        setTimeout(() => {
+          window.location.href = "/auth/login";
+        }, 1500);
+      }, 2500);
     } else {
       toast("Account is verified and logged in", {
         description: `Chat with NextAI`,

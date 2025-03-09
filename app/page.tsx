@@ -43,18 +43,24 @@ export default function Waitlist() {
     const handleScroll = () => {
       const nav = document.querySelector(".nav");
       if (nav && nav instanceof HTMLElement) {
-        if (window.scrollY > 20) {
+        if (window.innerWidth > 500) {
           nav.style.setProperty("top", "20px", "important");
         } else {
-          nav.style.setProperty("top", "70px", "important");
+          if (window.scrollY > 20) {
+            nav.style.setProperty("top", "20px", "important");
+          } else {
+            nav.style.setProperty("top", "70px", "important");
+          }
         }
       }
     };
 
-    window.addEventListener("scroll", handleScroll);
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
+    if (window.innerWidth > 500) {
+      window.addEventListener("scroll", handleScroll);
+      return () => {
+        window.removeEventListener("scroll", handleScroll);
+      };
+    }
   }, []);
   return (
     <>
@@ -106,9 +112,11 @@ export default function Waitlist() {
           className="inputContainer  fade-item"
           onSubmit={(e) => e.preventDefault()}
         >
-          <Button>Try it now</Button>
+          <Button onClick={() => (window.location.href = "/ai")}>
+            Try it now
+          </Button>
           <div className="buttonS">
-            <a href={"/auth/login"}>Sign Up</a>
+            <a href={"/auth/signup"}>Sign Up</a>
           </div>
         </form>
         <div className="space-s"></div>
@@ -245,7 +253,7 @@ export default function Waitlist() {
               Opportunities All At ONE PLACE.
             </div>
             <div className="space-xs"></div>
-            <div className="userContainer fade-item">
+            <div className="userContainer userContainer2 fade-item">
               <div className="item">
                 <div className="text">200+</div>
                 <div className="bottomText">User Views</div>
