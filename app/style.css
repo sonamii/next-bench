@@ -1129,3 +1129,9 @@ html {
   font-weight: 500;
   color: rgb(18, 96, 8);
 }
+
+@media (max-width: 500px) {
+  .nav {
+    top: 70px !important;
+  }
+}

@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import axios from "axios";
 
-const API_KEY = process.env.MISTRAL_API_KEY;
+const API_KEY = process.env.NEXT_PUBLIC_MISTRAL_API_KEY;
 
 interface RequestBody {
   message: string;
@@ -17,14 +17,28 @@ export async function POST(req: Request): Promise<Response> {
     const userMessage = body.message?.toLowerCase();
 
     if (!userMessage) {
-      return NextResponse.json({ error: "⚠️ Message is required." }, { status: 400 });
+      return NextResponse.json(
+        { error: "⚠️ Message is required." },
+        { status: 400 }
+      );
     }
 
     if (!API_KEY) {
-      return NextResponse.json({ error: "⚠️ API key is missing." }, { status: 500 });
+      return NextResponse.json(
+        { error: "⚠️ API key is missing." },
+        { status: 500 }
+      );
     }
 
     let promptContent = `
+
+<b>IMPORTANT: USE HTML TAGS FOR BOLD,UNDERLINE,STRIKETHROUGH,ITALICS,CODE,HEADERS (H1,H2,H3,H4,H5,H6). DO NOT USE MARKDOWN RENDER.</b>
+
+<b>IMPORTANT: FOR LIST USE MARKDOWN RENDER (-)</b>
+
+<b>VERY IMPORTANT: USE  \N FOR LINE BREAK OR NEW LINE EVERYTIME.</b>
+
+
 <b>🚀 Next Bench</b> is an innovative platform helping parents find the best schools for their children.  
 It allows users to explore, compare, and evaluate schools based on <b>location, curriculum, and facilities</b>.  
 
@@ -37,7 +51,6 @@ It allows users to explore, compare, and evaluate schools based on <b>location, 
 <b>Next Bench simplifies school selection, making the process faster, smarter, and stress-free for parents.</b>  
 - 🛠 <b>Created by Sonamii</b> to assist users on <b>Next Bench</b>.  
 - 💡 Your job is to <b>help users navigate and use Next Bench</b> effectively.  
-- 🎯 Only answer <b>Next Bench-related questions</b>.  
 - 🔍 Use <b>short, clear paragraphs</b> with <b>line breaks</b> for readability.  
 - 😊 Include <b>friendly emojis</b> for engagement.  
 - 🛑 If a user asks something unrelated, politely inform them that you only assist with Next Bench.  
@@ -48,6 +61,10 @@ It allows users to explore, compare, and evaluate schools based on <b>location, 
 - 🌐 <b>Accessible Anywhere</b> - Use Next Bench on any device, anytime.  
 
 <b>Join the Next Bench community and make informed decisions for your child's education!</b>
+
+<b>IMPORTANT: FOR LIST USE MARKDOWN RENDER (-)</b>
+
+<b>IMPORTANT: USE HTML TAGS FOR BOLD,UNDERLINE,STRIKETHROUGH,ITALICS,CODE,HEADERS (H1,H2,H3,H4,H5,H6). DO NOT USE MARKDOWN RENDER.</b>
 `;
 
     const response = await axios.post<AIResponse>(
@@ -67,9 +84,14 @@ It allows users to explore, compare, and evaluate schools based on <b>location, 
     });
   } catch (error: unknown) {
     console.error("❌ API Request Failed:", {
-      error: axios.isAxiosError(error) ? error.response?.data : (error as Error).message,
+      error: axios.isAxiosError(error)
+        ? error.response?.data
+        : (error as Error).message,
       status: axios.isAxiosError(error) ? error.response?.status : "Unknown",
     });
-    return NextResponse.json({ error: "❌ Failed to get response from Next AI." }, { status: 500 });
+    return NextResponse.json(
+      { error: "❌ Failed to get response from Next AI." },
+      { status: 500 }
+    );
   }
 }

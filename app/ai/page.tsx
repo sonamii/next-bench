@@ -9,13 +9,20 @@ import Image from "next/image";
 import { useTheme } from "next-themes";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Bot, BotOff, Send } from "lucide-react";
+import { Bot, Send } from "lucide-react";
 import Avvvatars from "avvvatars-react";
 
 export default function aiPage() {
   const { resolvedTheme } = useTheme();
   const [color, setColor] = useState("#ff0000");
   const [email, setEmail] = useState("");
+  const [isVisible, setIsVisible] = useState(false);
+  const [input, setInput] = useState<string>("");
+  const [chatHistory, setChatHistory] = useState<
+    { sender: "user" | "bot"; message: string }[]
+  >([]);
+
+  const [isFirstMessageSent, setIsFirstMessageSent] = useState(false);
 
   useEffect(() => {
     const emailLocal = localStorage.getItem("email");
@@ -25,38 +32,88 @@ export default function aiPage() {
   useEffect(() => {
     setColor(resolvedTheme === "dark" ? "#ff0000" : "#000000");
   }, [resolvedTheme]);
-  const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
     setTimeout(() => setIsVisible(true), 100);
   }, []);
 
-  //BOT
-  const [input, setInput] = useState<string>("");
-  const [aiResponses, setAIResponses] = useState<string[]>([]);
+  useEffect(() => {
+    const scrollBottom = document.getElementById("scrollBottom");
+    if (scrollBottom) {
+      scrollBottom.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [chatHistory]); // Scrolls whenever chatHistory updates
 
   const onSendMessage = async () => {
+    const chatIntroHeading = document.getElementById("chatIntroHeading");
+
+    if (chatIntroHeading) {
+      chatIntroHeading.style.animation = "fadeUps 1.0s ease-in-out";
+
+      setTimeout(() => {
+        chatIntroHeading.style.display = "none";
+        const chatResponse = document.getElementById("chatResponse");
+        if (chatResponse) {
+          chatResponse.style.display = "flex";
+        }
+      }, 1000);
+    }
+
     const trimmedInput = input.trim();
-    setInput("");
-    console.log(trimmedInput);
+    if (!trimmedInput) return;
 
-    const response = await fetch("/api/next-ai-bot", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ message: trimmedInput }),
-    });
-
-    if (response.ok) {
-      const data = await response.json();
-      setAIResponses((prevResponses) => [...prevResponses, data.response]);
-      console.log(data.response);
+    if (isFirstMessageSent == true) {
+      setChatHistory((prev) => [
+        ...prev,
+        { sender: "user", message: trimmedInput },
+      ]);
     } else {
-      console.error("Failed to fetch AI response");
+      setTimeout(() => {
+        setChatHistory((prev) => [
+          ...prev,
+          { sender: "user", message: trimmedInput },
+        ]);
+      }, 800);
+      setIsFirstMessageSent(true);
+    }
+    setInput("");
+
+    try {
+      setTimeout(() => {
+        const scrollBottom = document.getElementById("scrollBottom");
+        if (scrollBottom) {
+          scrollBottom.scrollIntoView({ behavior: "smooth" });
+        }
+      }, 0);
+      const res = await fetch("/api/next-ai-bot", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: trimmedInput }),
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        setChatHistory((prev) => [
+          ...prev,
+          { sender: "bot", message: data.reply },
+        ]);
+      } else {
+        setChatHistory((prev) => [
+          ...prev,
+          { sender: "bot", message: "⚠️ Error: Unable to fetch response." },
+        ]);
+      }
+    } catch (error) {
+      setChatHistory((prev) => [
+        ...prev,
+        { sender: "bot", message: "❌ AI is currently unavailable." },
+      ]);
     }
   };
+
   return (
     <>
-      <Nav />{" "}
+      <Nav />
       <Particles
         className="absolute inset-0 z-0"
         quantity={200}
@@ -68,7 +125,11 @@ export default function aiPage() {
       <div className={`containerMain ${isVisible ? "fade-in" : ""}`}>
         <div className="chatCont">
           <div className="top">
-            {/* <div className="intro">
+            <div
+              className="intro"
+              id="chatIntroHeading"
+              style={{ display: "flex" }}
+            >
               <div className="logo fade-item">
                 <Image src="./logoMain.svg" alt="Logo" width={25} height={25} />
               </div>
@@ -78,54 +139,60 @@ export default function aiPage() {
               <div className="textBottom fade-item">
                 Start a conversation with NextAI
               </div>
-            </div> */}
-            <div className="chatResponse">
-              <div className="bot">
-                <div className="pfp">
-                  {" "}
-                  <Image src="/pfpChat.png" alt="Logo" width={35} height={35} />
+            </div>
+            <div className="chatResponse" id="chatResponse">
+              <div className="textChat">Chatting with NextAI*</div>
+              {chatHistory.map((msg, index) => (
+                <div key={index} className={msg.sender}>
+                  {msg.sender === "bot" ? (
+                    <>
+                      <div className="pfp">
+                        <Image
+                          src="/pfpChat.png"
+                          alt="Bot"
+                          width={35}
+                          height={35}
+                        />
+                      </div>
+                      <div
+                        dangerouslySetInnerHTML={{
+                          __html: msg.message.replace(/\n/g, "<br>"),
+                        }}
+                      />
+                    </>
+                  ) : (
+                    <>
+                      <div
+                        dangerouslySetInnerHTML={{
+                          __html: msg.message.replace(/\n/g, "<br>"),
+                        }}
+                      />
+                      <div className="pfp" style={{ transform: "scale(1.2)" }}>
+                        <Avvvatars value={email} />
+                      </div>
+                    </>
+                  )}
                 </div>
-                Hey brrioro owe ot wHey brrioro owe ot woetwo jwegoHey brrioro
-                owe ot woetwo jwegoHey brrioro owe ot woetwo jwegoHey brrioro
-                owe ot woetwo jwegoHey brrioro owe ot woetwo jwegoHey brrioro
-                owe ot woetwo jwegoHey brrioro owe ot woetwo jwegoHey brrioro
-                owe ot woetwo jwegoHey brrioro owe ot woetwo jwegoHey brrioro
-                owe ot woetwo jwegoHey brrioro owe ot woetwo jwegoHey brrioro
-                owe ot woetwo jwegoHey brrioro owe ot woetwo jwegoHey brrioro
-                owe ot woetwo jwegooetwo jwego v
-              </div>
-              <div className="user">
-                Hey brrioro owe ot wHey brrioro owe ot woetwo jwegoHey brrioro
-                owe ot woetwo jwegoHey brrioro owe ot woetwo jwegoHey brrioro
-                owe ot woetwo jwegoHey brrioro owe ot woetwo jwegoHey brrioro
-                owe ot woetwo jwegoHey brrioro owe ot woetwo jwegoHey brrioro
-                owe ot woetwo jwegoHey brrioro owe ot woetwo jwegoHey brrioro
-                owe ot woetwo jwegoHey brrioro owe ot woetwo jwegoHey brrioro
-                owe ot woetwo jwegoHey brrioro owe ot woetwo jwegoHey brrioro
-                owe ot woetwo jwegooetwo jwego v{" "}
-                <div className="pfp" style={{ transform: "scale(1.2)" }}>
-                  {" "}
-                  <Avvvatars value={email} />
-                </div>
-              </div>
+              ))}
+              <div className="scrollBottom" id="scrollBottom"></div>
             </div>
           </div>
+
           <div className="bottom">
             <div className="inputContainer fade-item">
               <Input
                 className="input"
                 onChange={(e) => setInput(e.target.value)}
                 value={input}
-              />
-              <Button
-                onClick={onSendMessage}
-                onKeyPress={(e) => {
+                onKeyDown={(e) => {
                   if (e.key === "Enter" && !e.shiftKey) {
                     e.preventDefault();
                     onSendMessage();
                   }
                 }}
-              >
+                placeholder="Type a message..."
+              />
+              <Button onClick={onSendMessage}>
                 <Send />
               </Button>
             </div>

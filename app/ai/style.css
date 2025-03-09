@@ -8,7 +8,7 @@ body {
   display: flex;
   min-height: 100vh;
   overflow-x: hidden;
-  overflow-y: hidden;
+  overflow-y: auto;
 }
 
 html {
@@ -230,6 +230,7 @@ html {
   justify-content: start;
   flex-direction: column;
 
+
   .top {
     display: flex;
     position: relative;
@@ -239,6 +240,7 @@ html {
     align-items: center;
     justify-content: start;
     flex-direction: column;
+    overflow-y: hidden;
 
     .intro {
       display: flex;
@@ -252,14 +254,15 @@ html {
     }
 
     .chatResponse {
-      display: flex;
+      display: none;
       position: relative;
       width: fit-content;
       padding-left: 40px;
       padding-top: 10px;
-      padding-bottom: 10px;
+      padding-bottom: 20px;
       padding-right: 40px;
-      height: 700px;
+      max-height: 100%;
+      min-height: 100%;
       background-color: transparent;
       align-items: center;
       justify-content: start;
@@ -272,30 +275,61 @@ html {
         display: none;
       }
 
+      .textChat {
+        display: flex;
+        position: relative;
+        width: fit-content;
+        height: fit-content;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 0px;
+        text-align: center;
+        font-family: "Plus Jakarta Sans", sans-serif;
+        color: #666;
+        font-size: 14px;
+        line-height: 1.5em;
+        font-weight: 550;
+
+        animation: fadeInUp 0.6s ease-out forwards;
+      }
+
+      .pfp {
+        display: flex;
+        position: relative;
+        width: 40px;
+        height: 40px;
+        background: transparent;
+        align-items: center;
+        justify-content: center;
+        border-radius: 30%;
+      }
+
       .user {
         display: flex;
         position: relative;
         width: 100%;
         max-width: 455px;
+        min-width: 455px;
         height: fit-content !important;
         border: 1px solid #cfd1d490;
         padding-bottom: 20px;
         border-radius: 14px;
         padding-right: 20px;
         padding-top: 20px;
-        align-items: start;
+        align-items: end;
         justify-content: start;
         text-align: left;
         padding-left: 70px;
         background-color: #ffffff80;
         flex-direction: row;
+        animation: fadeInUp 0.6s ease-out forwards;
 
         .pfp {
           display: flex;
           position: absolute;
           width: 40px;
           left: 20px;
-          top: 20px;
+          top: 13px;
           height: 40px;
           background: transparent;
           align-items: center;
@@ -315,6 +349,7 @@ html {
         padding-bottom: 20px;
         border-radius: 14px;
         padding-left: 20px;
+        min-width: 455px;
         padding-top: 20px;
         align-items: start;
         justify-content: start;
@@ -322,6 +357,8 @@ html {
         text-align: left;
         padding-right: 70px;
         background-color: #ffffff80;
+        animation: fadeInUp 0.6s ease-out forwards;
+
 
         .pfp {
           display: flex;
@@ -396,4 +433,55 @@ html {
   line-height: 1em;
   font-size: 11px;
   font-weight: 550;
+}
+
+
+@keyframes fadeUps {
+  0% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateY(-50px);
+    display: none !important;
+  }
+}
+
+
+@media (max-width:800px) {
+  .background {
+    background-size: 140% !important;
+  }
+}
+
+@media (max-width:500px) {
+  .background {
+    background-size: 200% !important;
+  }
+}
+
+@media (max-width:550px) {
+  .chatResponse {
+    max-width: 100vw !important;
+    min-width: 100vw !important;
+
+    .user {
+      max-width: 100% !important;
+      min-width: 100% !important;
+    }
+
+    .bot {
+      max-width: 100% !important;
+      min-width: 100% !important;
+    }
+  }
+
+  .inputContainer {
+    Input {
+      max-width: 60vw !important;
+      min-width: 60vw !important;
+    }
+  }
 }
