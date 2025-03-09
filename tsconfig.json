@@ -23,7 +23,6 @@
       "@custom/*": ["./custom/*"],
       "@services/*": ["./services/*"],
       "@custom-components/*": ["./custom-components/*"],
-      "@/custom-components/*": ["./app/custom-components/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
