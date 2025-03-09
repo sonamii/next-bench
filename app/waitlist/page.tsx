@@ -2,7 +2,7 @@
 import { Github, Info, Instagram } from "lucide-react";
 import "./page.css";
 import Image from "next/image";
-import { Nav } from "@/custom-components/nav";
+import { Nav } from "@/custom-components/nav/nav";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";

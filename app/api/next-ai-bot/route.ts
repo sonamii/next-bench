@@ -1,245 +1,101 @@
 import { NextResponse } from "next/server";
 import axios from "axios";
 
-  /**
-   * POST /api/next-ai-bot
-   * 
-   * The POST handler for the Next AI chatbot route.
-   * 
-   * @param {Request} req The incoming request object.
-   * 
-   * @returns {Promise<Response>} A promise that resolves to the response object.
-   * 
-   * @throws If there is an error with the request, such as a missing or invalid message.
-   * @throws If there is an error with the API key, such as it not being present in the environment variables.
-   * @throws If there is an error with the Mistral AI API, such as a network error or a bad response.
-   */
-export async function POST(req: Request) {
+const API_KEY = process.env.NEXT_PUBLIC_MISTRAL_API_KEY;
+
+interface RequestBody {
+  message: string;
+}
+
+interface AIResponse {
+  choices: { message: { content: string } }[];
+}
+
+export async function POST(req: Request): Promise<Response> {
   try {
-    const { message } = await req.json();
-    if (!message) {
+    const body = (await req.json()) as Partial<RequestBody>;
+    const userMessage = body.message?.toLowerCase();
+
+    if (!userMessage) {
       return NextResponse.json(
         { error: "⚠️ Message is required." },
         { status: 400 }
       );
     }
 
-    const API_KEY = process.env.NEXT_PUBLIC_MISTRAL_API_KEY;
     if (!API_KEY) {
       return NextResponse.json(
-        { error: "⚠️ API key is missing in .env file." },
+        { error: "⚠️ API key is missing." },
         { status: 500 }
       );
     }
 
-    const response = await axios.post(
+    const promptContent = `
+<NOT INCLUDED IN SNIPPET>
+<b>IMPORTANT: USE HTML TAGS FOR BOLD, UNDERLINE, STRIKETHROUGH, ITALICS, CODE, HEADERS (H1, H2, H3, H4, H5, H6). DO NOT USE MARKDOWN RENDER.</b>
+<b>IMPORTANT: FOR LIST USE MARKDOWN RENDER (-)</b>
+<b>VERY IMPORTANT: USE \\N FOR LINE BREAK OR NEW LINE EVERY TIME.</b>
+
+<NOT INCLUDED IN SNIPPET/>
+
+<b>🚀 Next Bench</b> is an innovative platform helping parents find the best schools for their children.  
+It allows users to explore, compare, and evaluate schools based on <b>location, curriculum, and facilities</b>.  
+
+<b>🔍 Key Features:</b>  
+🌍 <b>Location-Based Search</b> - Find nearby schools.  
+📊 <b>Compare Schools</b> - Analyze ratings, reviews, and key features.  
+🏫 <b>Detailed School Profiles</b> - Get insights on academics, infrastructure, and extracurriculars.  
+🤖 <b>Next-AI</b> - A smart chatbot (created by 🛠 Sonamii) to guide users.  
+
+<b>Next Bench simplifies school selection, making the process faster, smarter, and stress-free for parents.</b>  
+- 🛠 <b>Created by Sonamii</b> to assist users on <b>Next Bench</b>.  
+- 💡 Your job is to <b>help users navigate and use Next Bench</b> effectively.  
+- 🔍 Use <b>short, clear paragraphs</b> with <b>line breaks</b> for readability.  
+- 😊 Include <b>friendly emojis</b> for engagement.  
+- 🛑 If a user asks something unrelated, politely inform them that you only assist with education prompts only.  
+
+<b>Next Bench is your one-stop solution for all school-related queries and assistance.</b>  
+- 🌟 <b>User-Friendly Interface</b> - Easy to navigate and use.  
+- 🔒 <b>Secure and Private</b> - Your data is safe with us.  
+- 🌐 <b>Accessible Anywhere</b> - Use Next Bench on any device, anytime.  
+
+<b>Join the Next Bench community and make informed decisions for your child's education!</b>
+
+<NOT INCLUDED IN SNIPPET>
+<b>IMPORTANT: FOR LIST USE MARKDOWN RENDER (-)</b>
+
+If user ask for school, give corrent contanct informations.
+VERY IMPORTANT: USE \\N FOR LINE BREAK OR NEW LINE EVERY TIME even after lists.
+
+<b>IMPORTANT: USE HTML TAGS FOR BOLD, UNDERLINE, STRIKETHROUGH, ITALICS, CODE, HEADERS (H1, H2, H3, H4, H5, H6). DO NOT USE MARKDOWN RENDER.</b>
+<NOT INCLUDED IN SNIPPET/>
+
+`;
+
+    // Check for question types and modify the prompt accordingly
+
+    const response = await axios.post<AIResponse>(
       "https://api.mistral.ai/v1/chat/completions",
       {
         model: "mistral-small-latest",
         messages: [
-          {
-            role: "system",
-            content: `You are **Next AI**, a professional virtual assistant designed to help users/parents/students with the Next Bench website.  
-             -  🚀 Next Bench is an innovative platform designed to help parents find the best schools for their children. It allows users to explore, compare, and evaluate schools based on location, curriculum, and facilities.
-             🔍 Key Features:
-             🌍 Location-Based Search: Find nearby schools easily.
-             📊 Compare Schools: Analyze ratings, reviews, and key features.
-             🏫 Detailed School Profiles: Get insights on academics, infrastructure, and extracurriculars.
-             🤖 Next AI Assistance: A smart chatbot (created by 🛠 Sonamii) to guide users.
-             Next Bench simplifies school selection, making the process faster, smarter, and stress-free for parents.
-            - 🛠 **Created by Sonamii** to assist users on **Next Bench**.  
-            - 💡 Your job is to **help users navigate and use Next Bench** effectively.  
-            - 🎯 Only answer **Next Bench-related questions**.  
-            - 🔍 Use **short, clear paragraphs** with **line breaks** for readability.  
-            - 😊 Include **friendly emojis** for an engaging experience.  
-            - 🛑 If a user asks an unrelated question, politely inform them that you only assist with Next Bench.,
-            - 🚨 Render the bold and italic using <b> and <i> and <br/><br/> ie 2 br for line break instead of using markdown. Do not use markdown. Use html tags`,
-          
-          },
-          { role: "user", content: message },
+          { role: "system", content: promptContent },
+          { role: "user", content: userMessage },
         ],
       },
       { headers: { Authorization: `Bearer ${API_KEY}` } }
     );
 
-    const formatResponse = (text: string) => {
-      return text
-        .replace(/\n+/g, "<br>🔹 ")
-        .replace(/Step/g, "📝 Step")
-        .replace(/Welcome/g, "👋 Welcome")
-        .replace(/Search/g, "🔍 Search")
-        .replace(/Explore/g, "🌍 Explore")
-        .replace(/Find/g, "🔎 Find")
-        .replace(/Compare/g, "📊 Compare")
-        .replace(/Select/g, "✅ Select")
-        .replace(/Apply/g, "📩 Apply")
-        .replace(/Next Bench/g, "🚀 Next Bench")
-        .replace(/Next AI/g, "🤖 Next AI")
-        .replace(/Sonamii/g, "🛠 Sonamii")
-        .replace(/School/g, "🏫 School")
-        .replace(/Education/g, "📚 Education")
-        .replace(/Student/g, "🎓 Student")
-        .replace(/Profile/g, "👤 Profile")
-        .replace(/Settings/g, "⚙️ Settings")
-        .replace(/Help/g, "❓ Help")
-        .replace(/Support/g, "🆘 Support")
-        .replace(/Network/g, "🌐 Network")
-        .replace(/Community/g, "👥 Community")
-        .replace(/Learn/g, "📖 Learn")
-        .replace(/Improve/g, "🚀 Improve")
-        .replace(/Upgrade/g, "⬆️ Upgrade")
-        .replace(/Success/g, "🏆 Success")
-        .replace(/Features/g, "✨ Features")
-        .replace(/Smart/g, "🧠 Smart")
-        .replace(/Fast/g, "⚡ Fast")
-        .replace(/Safe/g, "🛡 Safe")
-        .replace(/Process/g, "🔄 Process")
-        .replace(/Access/g, "🔑 Access")
-        .replace(/Verified/g, "✅ Verified")
-        .replace(/Guide/g, "📌 Guide")
-        .replace(/Resources/g, "📂 Resources")
-        .replace(/News/g, "📰 News")
-        .replace(/Trends/g, "📈 Trends")
-        .replace(/Rankings/g, "🥇 Rankings")
-        .replace(/Top/g, "🔝 Top")
-        .replace(/Review/g, "⭐ Review")
-        .replace(/Rating/g, "🌟 Rating")
-        .replace(/Apply Now/g, "🚀 Apply Now")
-        .replace(/Contact/g, "📞 Contact")
-        .replace(/Message/g, "💬 Message")
-        .replace(/Chat/g, "💭 Chat")
-        .replace(/Call/g, "📱 Call")
-        .replace(/Email/g, "📧 Email")
-        .replace(/Login/g, "🔑 Login")
-        .replace(/Register/g, "📝 Register")
-        .replace(/Join/g, "👥 Join")
-        .replace(/Upgrade/g, "📈 Upgrade")
-        .replace(/Unlock/g, "🔓 Unlock")
-        .replace(/Exclusive/g, "🌟 Exclusive")
-        .replace(/Offers/g, "🎁 Offers")
-        .replace(/Discount/g, "💸 Discount")
-        .replace(/Premium/g, "💎 Premium")
-        .replace(/Subscription/g, "📜 Subscription")
-        .replace(/Free/g, "🆓 Free")
-        .replace(/New/g, "🆕 New")
-        .replace(/Update/g, "🔄 Update")
-        .replace(/Announcement/g, "📢 Announcement")
-        .replace(/Important/g, "❗ Important")
-        .replace(/Warning/g, "⚠️ Warning")
-        .replace(/Security/g, "🔒 Security")
-        .replace(/Privacy/g, "🛡 Privacy")
-        .replace(/Terms/g, "📜 Terms")
-        .replace(/Policy/g, "📖 Policy")
-        .replace(/Conditions/g, "⚖️ Conditions")
-        .replace(/Agreement/g, "📝 Agreement")
-        .replace(/Settings/g, "⚙️ Settings")
-        .replace(/Dashboard/g, "📊 Dashboard")
-        .replace(/Statistics/g, "📈 Statistics")
-        .replace(/Data/g, "📊 Data")
-        .replace(/Analysis/g, "🔬 Analysis")
-        .replace(/Success/g, "🏆 Success")
-        .replace(/Failure/g, "❌ Failure")
-        .replace(/Error/g, "⚠️ Error")
-        .replace(/Fix/g, "🛠 Fix")
-        .replace(/Solution/g, "✅ Solution")
-        .replace(/Steps/g, "📝 Steps")
-        .replace(/Guide/g, "📖 Guide")
-        .replace(/Tutorial/g, "🎥 Tutorial")
-        .replace(/Tips/g, "💡 Tips")
-        .replace(/Tricks/g, "🎩 Tricks")
-        .replace(/Easy/g, "👌 Easy")
-        .replace(/Difficult/g, "😓 Difficult")
-        .replace(/Challenge/g, "💪 Challenge")
-        .replace(/Goal/g, "🎯 Goal")
-        .replace(/Target/g, "🎯 Target")
-        .replace(/Deadline/g, "⏳ Deadline")
-        .replace(/Time/g, "⏰ Time")
-        .replace(/Date/g, "📅 Date")
-        .replace(/Calendar/g, "📆 Calendar")
-        .replace(/Reminder/g, "⏲️ Reminder")
-        .replace(/Meeting/g, "📅 Meeting")
-        .replace(/Event/g, "🎉 Event")
-        .replace(/Celebration/g, "🥳 Celebration")
-        .replace(/Festival/g, "🎊 Festival")
-        .replace(/Gift/g, "🎁 Gift")
-        .replace(/Wish/g, "🙏 Wish")
-        .replace(/Congratulations/g, "🎉 Congratulations")
-        .replace(/Happy/g, "😊 Happy")
-        .replace(/Sad/g, "😢 Sad")
-        .replace(/Excited/g, "🤩 Excited")
-        .replace(/Nervous/g, "😨 Nervous")
-        .replace(/Angry/g, "😡 Angry")
-        .replace(/Love/g, "❤️ Love")
-        .replace(/Like/g, "👍 Like")
-        .replace(/Dislike/g, "👎 Dislike")
-        .replace(/Share/g, "📤 Share")
-        .replace(/Post/g, "📬 Post")
-        .replace(/Comment/g, "💬 Comment")
-        .replace(/Feedback/g, "📝 Feedback")
-        .replace(/Vote/g, "🗳️ Vote")
-        .replace(/Poll/g, "📊 Poll")
-        .replace(/Trending/g, "🔥 Trending")
-        .replace(/Popular/g, "📈 Popular")
-        .replace(/Famous/g, "🌟 Famous")
-        .replace(/Viral/g, "🚀 Viral")
-        .replace(/Breaking/g, "⚡ Breaking")
-        .replace(/Exclusive/g, "🌟 Exclusive")
-        .replace(/Behind the scenes/g, "🎬 Behind the scenes")
-        .replace(/Live/g, "🔴 Live")
-        .replace(/Streaming/g, "📺 Streaming")
-        .replace(/Music/g, "🎵 Music")
-        .replace(/Movie/g, "🎬 Movie")
-        .replace(/Series/g, "📺 Series")
-        .replace(/Episode/g, "🎥 Episode")
-        .replace(/Game/g, "🎮 Game")
-        .replace(/Play/g, "▶️ Play")
-        .replace(/Win/g, "🏆 Win")
-        .replace(/Lose/g, "😞 Lose")
-        .replace(/Score/g, "📊 Score")
-        .replace(/Rank/g, "🥇 Rank")
-        .replace(/Champion/g, "🏅 Champion")
-        .replace(/Sports/g, "⚽ Sports")
-        .replace(/Fitness/g, "🏋️ Fitness")
-        .replace(/Workout/g, "💪 Workout")
-        .replace(/Running/g, "🏃 Running")
-        .replace(/Swimming/g, "🏊 Swimming")
-        .replace(/Cycling/g, "🚴 Cycling")
-        .replace(/Travel/g, "✈️ Travel")
-        .replace(/Vacation/g, "🌴 Vacation")
-        .replace(/Adventure/g, "🌄 Adventure")
-        .replace(/Camping/g, "🏕️ Camping")
-        .replace(/Hiking/g, "🥾 Hiking")
-        .replace(/Food/g, "🍔 Food")
-        .replace(/Drink/g, "🥤 Drink")
-        .replace(/Coffee/g, "☕ Coffee")
-        .replace(/Tea/g, "🍵 Tea")
-        .replace(/Breakfast/g, "🥞 Breakfast")
-        .replace(/Lunch/g, "🍽️ Lunch")
-        .replace(/Dinner/g, "🍛 Dinner")
-        .replace(/Healthy/g, "🥗 Healthy")
-        .replace(/Sleep/g, "😴 Sleep")
-        .replace(/Wake up/g, "⏰ Wake up")
-        .replace(/Relax/g, "🧘 Relax")
-        .replace(/Meditation/g, "🧘 Meditation")
-        .replace(/Mindfulness/g, "🧠 Mindfulness")
-        .replace(/Shopping/g, "🛍️ Shopping")
-        .replace(/Fashion/g, "👗 Fashion")
-        .replace(/Style/g, "🕶️ Style")
-        .replace(/Clothes/g, "👚 Clothes")
-        .replace(/Shoes/g, "👟 Shoes")
-        .replace(/Accessories/g, "💍 Accessories")
-        .replace(/Luxury/g, "💎 Luxury");
-    };
-
     return NextResponse.json({
-      reply: formatResponse(response.data.choices[0].message.content),
+      reply: response.data.choices[0].message.content.replace(/\n/g, "<br>"),
     });
   } catch (error: unknown) {
-    if (axios.isAxiosError(error)) {
-      console.error("Error:", error.response ? error.response.data : error.message);
-    } else {
-      console.error("Error:", error);
-    }
+    console.error("❌ API Request Failed:", {
+      error: axios.isAxiosError(error)
+        ? error.response?.data
+        : (error as Error).message,
+      status: axios.isAxiosError(error) ? error.response?.status : "Unknown",
+    });
     return NextResponse.json(
       { error: "❌ Failed to get response from Next AI." },
       { status: 500 }

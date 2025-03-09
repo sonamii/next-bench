@@ -27,7 +27,7 @@ import * as React from "react";
 
 import "./style.css";
 import Image from "next/image";
-import { Nav } from "@/custom-components/nav";
+import { Nav } from "@/custom-components/nav/nav";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import Link from "next/link";
@@ -39,19 +39,36 @@ export default function Waitlist() {
     setTimeout(() => setIsVisible(true), 100);
   }, []);
 
+  React.useEffect(() => {
+    const handleScroll = () => {
+      const nav = document.querySelector(".nav");
+      if (nav && nav instanceof HTMLElement) {
+        if (window.scrollY > 20) {
+          nav.style.setProperty("top", "20px", "important");
+        } else {
+          nav.style.setProperty("top", "70px", "important");
+        }
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
   return (
     <>
       {/* BACKGROUND IMAGE FOR GRID*/}
       <div className="background"></div>
-      <div className="header">Pre-Login opened. SignUp Now!</div>
+      <div className="header">
+        <code className="releaseCode">&nbsp;v0.1.0.alpha-2</code>
+        released. SignUp Now!
+      </div>{" "}
       {/* NAVBAR START*/}
       <Nav />
       {/* NAVABR END*/}
-
       <div className="space"></div>
-
       {/* MAIN LANDING PAGE START*/}
-
       <div className={`containerMain ${isVisible ? "fade-in" : ""}`}>
         {/* INITIAL DETAILS START*/}
 
@@ -440,7 +457,6 @@ export default function Waitlist() {
 
         <div className="space-s"></div>
       </div>
-
       {/* MAIN LANDING PAGE END*/}
     </>
   );
