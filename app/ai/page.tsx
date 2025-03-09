@@ -121,7 +121,7 @@ export default function AiPage() {
   const { isVerified } = useVerificationStore();
 
   const [emailLocal, setEmailLocal] = useState("");
-
+  console.log(emailLocal);
   useEffect(() => {
     setEmailLocal(localStorage.getItem("email") || "");
   }, []);
