@@ -55,12 +55,11 @@ export default function Waitlist() {
       }
     };
 
-    if (window.innerWidth > 500) {
       window.addEventListener("scroll", handleScroll);
       return () => {
         window.removeEventListener("scroll", handleScroll);
       };
-    }
+    
   }, []);
   return (
     <>
