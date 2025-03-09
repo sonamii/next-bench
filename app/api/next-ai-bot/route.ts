@@ -30,7 +30,7 @@ export async function POST(req: Request): Promise<Response> {
       );
     }
 
-    let promptContent = `
+    const promptContent = `
 <NOT INCLUDED IN SNIPPET>
 <b>IMPORTANT: USE HTML TAGS FOR BOLD, UNDERLINE, STRIKETHROUGH, ITALICS, CODE, HEADERS (H1, H2, H3, H4, H5, H6). DO NOT USE MARKDOWN RENDER.</b>
 <b>IMPORTANT: FOR LIST USE MARKDOWN RENDER (-)</b>

@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Trash2 } from "lucide-react";
-import ChatUi, {  } from "./ChatUi";
+// import ChatUi, {  } from "./ChatUi";
 
 export default function Sidebar(){
   return(

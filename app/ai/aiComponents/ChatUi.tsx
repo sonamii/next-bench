@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react";
-import { Nav } from "@/custom-components/nav/nav";
+// import { Nav } from "@/custom-components/nav/nav";
 import EmptyChatUi from "./EmptyChatUi";
 import "./style.css";
 import { Input } from "@/components/ui/input";

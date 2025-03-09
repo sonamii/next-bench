@@ -13,7 +13,7 @@ import { Bot, Send } from "lucide-react";
 import Avvvatars from "avvvatars-react";
 import { marked } from "marked";
 
-export default function aiPage() {
+export default function AiPage() {
   const { resolvedTheme } = useTheme();
   const [color, setColor] = useState("#ff0000");
   const [email, setEmail] = useState("");
@@ -24,6 +24,8 @@ export default function aiPage() {
   >([]);
 
   const [isFirstMessageSent, setIsFirstMessageSent] = useState(false);
+
+  console.log(color);
 
   useEffect(() => {
     const emailLocal = localStorage.getItem("email");
@@ -104,7 +106,7 @@ export default function aiPage() {
           { sender: "bot", message: "⚠️ Error: Unable to fetch response." },
         ]);
       }
-    } catch (error) {
+    } catch {
       setChatHistory((prev) => [
         ...prev,
         { sender: "bot", message: "❌ AI is currently unavailable." },
@@ -191,6 +193,7 @@ export default function aiPage() {
                     onSendMessage();
                   }
                 }}
+                spellCheck={false}
                 placeholder="Type a message..."
               />
               <Button onClick={onSendMessage}>
