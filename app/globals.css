@@ -142,7 +142,7 @@
 
 .space {
   display: flex;
-  position: relative;
+  position: relative; 
   width: 0px;
   height: 60px;
   background-color: gainsboro;

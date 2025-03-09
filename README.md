@@ -5,6 +5,7 @@
 🌟 [**Next Bench**](https://next-bench-dev.vercel.app/) is a user-friendly **`web`** application that helps 🧑‍🎓 students to find the best 🏫 **`institutions`**, offering advanced search and school comparisons. It is a **`startup`** designed to overhaul the school admission process for 👩‍🦰 **`parents`**. Our vision **`extends`** beyond admissions, providing individually tailored 🗺️ **`roadmaps`** to students' dream 🍁 **`universities`**.
 
   <br>
+
   
 ```dart
  🙏 We aim to eliminate the *stress* and *inefficiency* of finding and applying to schools by offering a *unified platform*.

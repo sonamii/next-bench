@@ -23,7 +23,7 @@ export function LoginForm({
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const { setIsVerified } = useVerificationStore();
-
+  
   function getDataFromSupabase() {
     console.log(email);
     console.log(password);
