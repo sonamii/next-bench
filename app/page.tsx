@@ -23,9 +23,8 @@ import {
   WandIcon,
   Wifi,
 } from "lucide-react";
-import * as React from "react"
+import * as React from "react";
 
- 
 import "./style.css";
 import Image from "next/image";
 import { Nav } from "@/custom-components/nav";
@@ -44,7 +43,7 @@ export default function Waitlist() {
     <>
       {/* BACKGROUND IMAGE FOR GRID*/}
       <div className="background"></div>
-
+      <div className="header">Pre-Login opened. SignUp Now!</div>
       {/* NAVBAR START*/}
       <Nav />
       {/* NAVABR END*/}

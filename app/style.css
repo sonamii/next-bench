@@ -11,7 +11,8 @@ body {
   overflow-x: hidden;
   overflow-y: auto;
 }
-html{
+
+html {
   scroll-behavior: smooth;
 }
 
@@ -989,6 +990,16 @@ html{
   }
 }
 
+@media (max-width:500px) {
+  body {
+    padding-top: 120px;
+  }
+
+  .header {
+    display: flex !important;
+  }
+}
+
 @media (max-width:900px) {
   .topFeatures .right {
     flex-direction: column !important;
@@ -1102,4 +1113,19 @@ html{
     max-width: 48.5%;
     margin-bottom: 20px;
   }
+}
+
+.header {
+  display: none;
+  position: absolute;
+  background: linear-gradient(to right, #c3ff53, rgb(172, 255, 172));
+  width: 100vw;
+  height: 50px;
+  top: 0px;
+  align-items: center;
+  justify-content: center;
+  font-family: "Plus Jakarta Sans", sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: rgb(18, 96, 8);
 }

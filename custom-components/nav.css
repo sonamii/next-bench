@@ -180,6 +180,13 @@
   src: url("./../fonts/ClashGrotesk-Variable.ttf") format("truetype");
 }
 
+@media (max-width: 500px) {
+
+  .nav {
+    top: 70px;
+  }
+}
+
 @media (max-width: 675px) {
   .nav {
     max-width: 90vw;
