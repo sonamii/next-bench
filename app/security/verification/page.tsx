@@ -142,6 +142,7 @@ export default function Callback() {
           placeholder="Enter your email"
           onChange={(e) => setEmail(e.target.value)}
           value={email}
+          required
         />
         <Input
           type="text"
@@ -149,6 +150,7 @@ export default function Callback() {
           placeholder="Enter your securityID"
           onChange={(e) => setSecurityId(e.target.value)}
           value={securityId}
+          required
         />
         <div className="buttonContainer">
           {" "}

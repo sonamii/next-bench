@@ -10,7 +10,7 @@ import { toast } from "sonner";
 export default function Callback() {
   const [isSessionPresent, setIsSessionPresent] = useState(false);
   const [securityID, setSecurityID] = useState(
-    "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxxx"
+    "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
   );
   const getSession = async () => {
     const { data, error } = await supabase.auth.getSession();
@@ -52,8 +52,37 @@ export default function Callback() {
   };
 
   const copyToClipboard = () => {
-    navigator.clipboard.writeText(securityID).then(
-      () => {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(securityID).then(
+        () => {
+          console.log("Security ID copied to clipboard");
+          toast("Copied!", {
+            description: `Security ID copied to clipboard`,
+            action: { label: "Okay", onClick: () => console.log("Okay") },
+          });
+          setTimeout(() => {
+            toast("Redirecting...", {
+              description: `Redirecting in 1.5 seconds`,
+              action: { label: "Okay", onClick: () => console.log("Okay") },
+            });
+            setTimeout(() => {
+              window.location.href = "/dashboard";
+            }, 1500);
+          }, 1500);
+        },
+        (err) => {
+          console.error("Could not copy text: ", err);
+        }
+      );
+    } else {
+      // Fallback for browsers that do not support navigator.clipboard
+      const textArea = document.createElement("textarea");
+      textArea.value = securityID;
+      document.body.appendChild(textArea);
+      textArea.focus();
+      textArea.select();
+      try {
+        document.execCommand("copy");
         console.log("Security ID copied to clipboard");
         toast("Copied!", {
           description: `Security ID copied to clipboard`,
@@ -68,11 +97,11 @@ export default function Callback() {
             window.location.href = "/dashboard";
           }, 1500);
         }, 1500);
-      },
-      (err) => {
+      } catch (err) {
         console.error("Could not copy text: ", err);
       }
-    );
+      document.body.removeChild(textArea);
+    }
   };
 
   const [isVisible, setIsVisible] = useState(false);

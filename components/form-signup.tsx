@@ -20,6 +20,7 @@ import {
   HoverCardTrigger,
 } from "@/components/ui/hover-card";
 import { useState } from "react";
+import { v4 as uuidv4 } from "uuid";
 import supabase from "./../services/supabase";
 
 export function SignUpForm({
@@ -57,7 +58,7 @@ export function SignUpForm({
 
     if (error) {
       toast("Error signing up", {
-        description: `Please try again, ${error.message}`,
+        description: `Please try again or LogIn, ${error.message}`,
         action: { label: "Okay", onClick: () => console.log("Okay") },
       });
       return;
@@ -71,8 +72,7 @@ export function SignUpForm({
       return;
     }
 
-    // Generate security_id
-    const securityId = crypto.randomUUID(); // More secure than a custom function
+    const securityId = uuidv4(); // More secure than a custom function
 
     // Insert user details into the 'users' table
     const { error: insertError } = await supabase.from("users").insert([
