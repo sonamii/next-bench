@@ -1,0 +1,6 @@
+.background {
+  background-image: url("/download.svg");
+  background-size: 100%;
+  width: 100%;
+  background-repeat: no-repeat;
+}

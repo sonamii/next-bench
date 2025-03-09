@@ -41,7 +41,7 @@ export const Nav = ({ className }: NavProps) => {
         <Image src="./logoNav.svg" alt="Logo" width={30} height={30} />
       </div>
       <div className="right">
-        <div className="dropdown">Dashboard</div>
+        <div className="dropdown"><a href={"/dashboard"}>Dashboard</a></div>
         <div className="button">
           <a href={"/auth/signup"}>Sign Up</a>
         </div>
