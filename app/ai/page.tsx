@@ -12,6 +12,8 @@ import { Button } from "@/components/ui/button";
 import { Bot, Send } from "lucide-react";
 import Avvvatars from "avvvatars-react";
 import { marked } from "marked";
+import { useVerificationStore } from "@/store/verificationStore";
+import { toast } from "sonner";
 
 export default function AiPage() {
   const { resolvedTheme } = useTheme();
@@ -33,7 +35,7 @@ export default function AiPage() {
   }, []);
 
   useEffect(() => {
-    setColor(resolvedTheme === "dark" ? "#ff0000" : "#000000");
+    setColor(resolvedTheme === "dark" ? "#ff0000" : "#ff0000");
   }, [resolvedTheme]);
 
   useEffect(() => {
@@ -113,6 +115,39 @@ export default function AiPage() {
       ]);
     }
   };
+
+  //VERIFICATION AND LOGIN
+
+  const { isVerified } = useVerificationStore();
+
+  const [emailLocal, setEmailLocal] = useState("");
+
+  useEffect(() => {
+    setEmailLocal(localStorage.getItem("email") || "");
+  }, []);
+
+  useEffect(() => {
+    if (!isVerified) {
+      toast("Account not verified/logged in", {
+        description: `Redirecting in 1.5 seconds`,
+        action: {
+          label: "Login",
+          onClick: () => (window.location.href = "/auth/login"),
+        },
+      });
+      setTimeout(() => {
+        window.location.href = "/auth/login";
+      }, 1500);
+    } else {
+      toast("Account is verified and logged in", {
+        description: `Chat with NextAI`,
+        action: {
+          label: "Okay",
+          onClick: () => console.log("Okay"),
+        },
+      });
+    }
+  }, [isVerified]);
 
   return (
     <>

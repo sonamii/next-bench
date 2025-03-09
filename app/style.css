@@ -1130,6 +1130,16 @@ html {
   color: rgb(18, 96, 8);
 }
 
+.releaseCode {
+  background-color: #75cb5f96;
+  padding: 2px;
+  padding-inline: 5px;
+  border-radius: 3px;
+  margin-right: 5px;
+  font-weight: 500 !important;
+  margin-top: 2px;
+}
+
 @media (max-width: 500px) {
   .nav {
     top: 70px !important;
