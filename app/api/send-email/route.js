@@ -18,11 +18,11 @@ export async function POST(req) {
       );
     }
 
-    const resend = new Resend(process.env.NEXT_PUBLIC_RESEND_API_KEY);
+    const resend = new Resend(process.env.RESEND_API_KEY);
 
     const data = await resend.emails.send({
       from: "notify@resend.dev",
-      to: process.env.NEXT_PUBLIC_PRIVATE_EMAIL,
+      to: process.env.PRIVATE_EMAIL,
       subject: "Subscription Added",
       html: `<p>A new subscription to Next-Bench has been added. User: ${userEmail}</p>`,
     });

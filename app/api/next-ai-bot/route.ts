@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import axios from "axios";
 
-const API_KEY = process.env.NEXT_PUBLIC_MISTRAL_API_KEY;
+const API_KEY = process.env.MISTRAL_API_KEY;
 
 interface RequestBody {
   message: string;

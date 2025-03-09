@@ -83,7 +83,7 @@ export default function Callback() {
         toast.error("Invalid securityID or email");
       } else {
         if (uidDatabase === data.id) {
-          if (data.id == process.env.NEXT_PUBLIC_ADMIN_UID) {
+          if (data.id == process.env.ADMIN_UID) {
             setIsVerified(true);
             toast("Admin Verified", {
               description: `Redirecting to admin dashboard in 1.5 seconds`,
@@ -104,7 +104,7 @@ export default function Callback() {
               window.location.href = "/dashboard";
             }, 1500);
           }
-        } else if (data.id == process.env.NEXT_PUBLIC_ADMIN_UID) {
+        } else if (data.id == process.env.ADMIN_UID) {
           setIsVerified(true);
           toast("Admin Verified", {
             description: `Redirecting to admin dashboard in 1.5 seconds`,
