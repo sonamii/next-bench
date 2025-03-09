@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Bot, Send } from "lucide-react";
 import Avvvatars from "avvvatars-react";
+import { marked } from "marked";
 
 export default function aiPage() {
   const { resolvedTheme } = useTheme();
@@ -156,7 +157,7 @@ export default function aiPage() {
                       </div>
                       <div
                         dangerouslySetInnerHTML={{
-                          __html: msg.message.replace(/\n/g, "<br>"),
+                          __html: marked(msg.message),
                         }}
                       />
                     </>
@@ -164,7 +165,7 @@ export default function aiPage() {
                     <>
                       <div
                         dangerouslySetInnerHTML={{
-                          __html: msg.message.replace(/\n/g, "<br>"),
+                          __html: marked(msg.message),
                         }}
                       />
                       <div className="pfp" style={{ transform: "scale(1.2)" }}>
