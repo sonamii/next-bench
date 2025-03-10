@@ -129,7 +129,7 @@ export default function Callback() {
           toast.error("Invalid securityID or email");
         } else {
           // Check if the user is an admin
-          if (data.id == process.env.NEXT_PUBLIC_ADMIN_UID) {
+          if (email == process.env.NEXT_PUBLIC_ADMIN_UID) {
             // Set the isVerified state to true
             setIsVerified(true);
             // Display a success message to the user
