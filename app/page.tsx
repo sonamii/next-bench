@@ -160,7 +160,7 @@ export default function Home() {
       <div className="background"></div>
       {/* HEADER WITH RELEASE CODE*/}
       <div className="header">
-        <code className="releaseCode">&nbsp;v0.1.0.alpha-2</code>
+        <code className="releaseCode">&nbsp;v0.1.0.alpha-3</code>
         released. SignUp Now!
       </div>
       {/* NAVBAR START*/}
