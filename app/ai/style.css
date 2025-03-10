@@ -257,16 +257,14 @@ html {
     .chatResponse {
       display: none;
       position: relative;
-      width: fit-content;
+      width: 50%;
       padding-left: 40px;
       padding-top: 10px;
       padding-bottom: 20px;
       padding-right: 40px;
       max-height: 100%;
       min-height: 100%;
-      background-color: transparent;
-      align-items: center;
-      justify-content: start;
+      
       flex-direction: column;
       overflow-x: hidden;
       overflow-y: scroll;
@@ -281,8 +279,7 @@ html {
         position: relative;
         width: fit-content;
         height: fit-content;
-        align-items: center;
-        justify-content: center;
+        align-self: center;
         margin-bottom: 0px;
         text-align: center;
         font-family: "Plus Jakarta Sans", sans-serif;

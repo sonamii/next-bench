@@ -9,7 +9,7 @@ import Image from "next/image";
 import { useTheme } from "next-themes";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Bot, Send } from "lucide-react";
+import { Bot, Divide, Send } from "lucide-react";
 import Avvvatars from "avvvatars-react";
 import { marked } from "marked";
 import { useVerificationStore } from "@/store/verificationStore";
@@ -278,40 +278,26 @@ export default function AiPage() {
               <div className="textChat">Chatting with NextAI*</div>
               {/* Map over the chat history and render each message */}
               {chatHistory.map((msg, index) => (
-                <div key={index} className={msg.sender}>
-                  {/* If the message is from the bot, render it with the bot's profile picture */}
-                  {msg.sender === "bot" ? (
-                    <>
-                      {/* Bot's profile picture */}
-                      <div className="pfp">
-                        <Image
-                          src="/pfpChat.png"
-                          alt="Bot"
-                          width={35}
-                          height={35}
-                        />
-                      </div>
-                      {/* Message text from the bot */}
-                      <div
-                        dangerouslySetInnerHTML={{
-                          __html: marked(msg.message),
-                        }}
-                      />
-                    </>
-                  ) : (
-                    <>
-                      {/* Message text from the user */}
-                      <div
-                        dangerouslySetInnerHTML={{
-                          __html: marked(msg.message),
-                        }}
-                      />
-                      {/* User's profile picture */}
-                      <div className="pfp" style={{ transform: "scale(1.2)" }}>
-                        <Avvvatars value={email} />
-                      </div>
-                    </>
-                  )}
+                <div  key={index}
+                className={`flex ${msg.sender == 'user'? 'justify-end' : 'justify-start'}`}>
+                  <div className="flex gap-3">
+                    {msg.sender == 'bot' && <Image src="/pfpChat.png" 
+                    alt="BOT" 
+                    width={100} 
+                    height={100}
+                    className="w-[30px] h-[30px] rounded-l object-cover" />}
+
+                    <div className={`p-3 rounded-lg ${msg.sender == 'user' ? 
+                      'bg-gray-200 text-black rounded-lg' : 
+                      'bg-gray-100 text-black'}`}>
+                      {msg.message}
+                    </div>
+
+                    {msg.sender == 'user' && 
+                    <div className="w-[30px] h-[30px] rounded-l object-cover">
+                      <Avvvatars value={email} />
+                    </div> }
+                  </div>
                 </div>
               ))}
               {/* Scroll to the bottom of the chat */}
