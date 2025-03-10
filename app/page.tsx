@@ -31,6 +31,8 @@ import { Nav } from "@/custom-components/nav/nav";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import supabase from "@/services/supabase";
+import { toast } from "sonner";
 
 export default function Waitlist() {
   const [isVisible, setIsVisible] = useState(false);
@@ -55,12 +57,52 @@ export default function Waitlist() {
       }
     };
 
-      window.addEventListener("scroll", handleScroll);
-      return () => {
-        window.removeEventListener("scroll", handleScroll);
-      };
-    
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
   }, []);
+
+  useEffect(() => {
+    const getUserEmail = async () => {
+      const { data, error } = await supabase.auth.getUser();
+      if (error) {
+        toast.error("Error fetching user email: " + error.message);
+      } else {
+        if (data?.user?.email != localStorage.getItem("email")) {
+          toast.error("Recent email change detected.");
+
+          if (data?.user?.email) {
+            localStorage.setItem("email", data.user.email);
+            console.log("Local email: " + localStorage.getItem("email"));
+            const session = await supabase.auth.getSession();
+            if (session.error) {
+              toast.error("Error fetching session: " + session.error.message);
+            } else {
+              const sessionId = session.data.session?.user.id;
+              const newEmail = data.user.email;
+              const newName = newEmail.split("@")[0];
+
+              const { error: updateError } = await supabase
+                .from("users")
+                .update({ email: newEmail, name: newName })
+                .eq("id", sessionId);
+
+              if (updateError) {
+                toast.error("Error updating user: " + updateError.message);
+              } else {
+                toast.success("User updated successfully.");
+              }
+            }
+          }
+        } else {
+          toast.success("Welcome back, " + data?.user?.email);
+        }
+      }
+    };
+    getUserEmail();
+  }, []);
+
   return (
     <>
       {/* BACKGROUND IMAGE FOR GRID*/}
@@ -77,9 +119,12 @@ export default function Waitlist() {
       <div className={`containerMain ${isVisible ? "fade-in" : ""}`}>
         {/* INITIAL DETAILS START*/}
 
-        <div className="logo fade-item">
-          <Image src="./logoMain.svg" alt="Logo" width={25} height={25} />
-        </div>
+        <Link href="/">
+          {" "}
+          <div className="logo fade-item">
+            <Image src="./logoMain.svg" alt="Logo" width={25} height={25} />
+          </div>
+        </Link>
         <div className="space-s"></div>
         <div className="members fade-item">
           <Image
@@ -252,7 +297,7 @@ export default function Waitlist() {
               Opportunities All At ONE PLACE.
             </div>
             <div className="space-xs"></div>
-            <div className="userContainer userContainer2 fade-item">
+            <div className="userContainer fade-item">
               <div className="item">
                 <div className="text">200+</div>
                 <div className="bottomText">User Views</div>

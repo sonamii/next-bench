@@ -486,8 +486,8 @@ html {
 
   .inputContainer {
     Input {
-      max-width: 60vw !important;
-      min-width: 60vw !important;
+      max-width: 70vw !important;
+      min-width: 70vw !important;
     }
   }
 }

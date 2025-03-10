@@ -21,7 +21,7 @@ export async function POST(req) {
       );
     }
 
-    const resend = new Resend(serverRuntimeConfig.RESEND_API_KEY);
+    const resend = new Resend(process.env.NEXT_PUBLIC_RESEND_API_KEY);
 
     const data = await resend.emails.send({
       from: "notify@resend.dev",

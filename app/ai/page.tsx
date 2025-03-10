@@ -27,8 +27,6 @@ export default function AiPage() {
 
   const [isFirstMessageSent, setIsFirstMessageSent] = useState(false);
 
-  console.log(color);
-
   useEffect(() => {
     const emailLocal = localStorage.getItem("email");
     setEmail(emailLocal || "");
@@ -36,6 +34,7 @@ export default function AiPage() {
 
   useEffect(() => {
     setColor(resolvedTheme === "dark" ? "#ff0000" : "#ff0000");
+    console.log(color);
   }, [resolvedTheme]);
 
   useEffect(() => {
@@ -121,9 +120,9 @@ export default function AiPage() {
   const { isVerified } = useVerificationStore();
 
   const [emailLocal, setEmailLocal] = useState("");
-  console.log(emailLocal);
   useEffect(() => {
     setEmailLocal(localStorage.getItem("email") || "");
+    console.log(emailLocal);
   }, []);
 
   useEffect(() => {
@@ -141,13 +140,15 @@ export default function AiPage() {
         }, 1500);
       }, 2500);
     } else {
-      toast("Account is verified and logged in", {
-        description: `Chat with NextAI`,
-        action: {
-          label: "Okay",
-          onClick: () => console.log("Okay"),
-        },
-      });
+      setTimeout(() => {
+        toast("Account is verified and logged in", {
+          description: `Chat with NextAI`,
+          action: {
+            label: "Okay",
+            onClick: () => console.log("Okay"),
+          },
+        });
+      }, 2500);
     }
   }, [isVerified]);
 

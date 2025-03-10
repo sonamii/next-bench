@@ -22,7 +22,9 @@ export const Nav = ({ className }: NavProps) => {
         </div>
       </div>
       <div className="mid">
-        <Image src="./logoNav.svg" alt="Logo" width={30} height={30} />
+        <a href="/">
+          <Image src="/logoNav.svg" alt="Logo" width={30} height={30} />
+        </a>
       </div>
       <div className="right">
         <div className="dropdown">

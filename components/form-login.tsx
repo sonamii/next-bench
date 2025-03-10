@@ -23,7 +23,7 @@ export function LoginForm({
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const { setIsVerified } = useVerificationStore();
-  
+
   function getDataFromSupabase() {
     console.log(email);
     console.log(password);
@@ -105,10 +105,10 @@ export function LoginForm({
                 <div className="flex items-center">
                   <Label htmlFor="password">Password</Label>
                   <a
-                    href="/auth/reset-password"
+                    href="/auth/change-email"
                     className="ml-auto text-sm underline-offset-2 hover:underline"
                   >
-                    Forgot your password?
+                    Update email?
                   </a>
                 </div>
                 <Input

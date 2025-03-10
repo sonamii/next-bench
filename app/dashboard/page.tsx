@@ -27,7 +27,7 @@ export default function Callback() {
         },
       });
       setTimeout(() => {
-        window.location.href = "/security/verification";
+        window.location.href = "/security/verify";
       }, 3000);
     }
   }, [isVerified]);

@@ -57,9 +57,12 @@ export default function Waitlist() {
       <Nav />
       <div className="space"></div>
       <div className={`containerMain ${isVisible ? "fade-in" : ""}`}>
-        <div className="logo fade-item">
-          <Image src="./logoMain.svg" alt="Logo" width={25} height={25} />
-        </div>
+        <Link href="/">
+          {" "}
+          <div className="logo fade-item">
+            <Image src="./logoMain.svg" alt="Logo" width={25} height={25} />
+          </div>
+        </Link>
         <div className="space-s"></div>
         <div className="textTop fade-item">
           Join Our Waitlist for exclusive updates

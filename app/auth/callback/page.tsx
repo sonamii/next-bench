@@ -6,6 +6,7 @@ import { useEffect } from "react";
 import { useState } from "react";
 import { Copy, Info } from "lucide-react";
 import { toast } from "sonner";
+import Link from "next/link";
 
 export default function Callback() {
   const [isSessionPresent, setIsSessionPresent] = useState(false);
@@ -113,9 +114,11 @@ export default function Callback() {
   if (isSessionPresent)
     return (
       <div className={`containerMain ${isVisible ? "fade-in" : ""}`}>
-        <div className="logo fade-item">
-          <Image src="/logoMain.svg" alt="Logo" width={25} height={25} />
-        </div>{" "}
+        <Link href="/">
+          <div className="logo fade-item">
+            <Image src="/logoMain.svg" alt="Logo" width={25} height={25} />
+          </div>
+        </Link>
         <div className="space-xs"></div>
         <div className="textTop fade-item">Callback Successful</div>
         <div className="space-xxs"></div>
@@ -129,7 +132,7 @@ export default function Callback() {
           <div className="codeBlock  fade-item">
             {securityID}{" "}
             <div className="copyButton" onClick={copyToClipboard}>
-              <Copy size={15} />
+              <Copy size={15} className="copyButtonIcon" />
             </div>
           </div>
           <div className="button" onClick={deleteSessionAndLogout}>
