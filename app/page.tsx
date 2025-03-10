@@ -63,7 +63,8 @@ export default function Home() {
     const handleScroll = () => {
       const nav = document.querySelector(".nav");
       if (nav && nav instanceof HTMLElement) {
-        const top = window.innerWidth > 500 ? 20 : window.scrollY > 20 ? 20 : 70;
+        const top =
+          window.innerWidth > 500 ? 20 : window.scrollY > 20 ? 20 : 70;
         nav.style.setProperty("top", `${top}px`, "important");
       }
     };
@@ -174,7 +175,7 @@ export default function Home() {
         <Link href="/">
           {" "}
           <div className="logo fade-item">
-            <Image src="./logoMain.svg" alt="Logo" width={25} height={25} />
+            <Image src="/logoMain.svg" alt="Logo" width={25} height={25} />
           </div>
         </Link>
         <div className="space-s"></div>
@@ -683,7 +684,6 @@ function Item({ icon, text }: ItemProps) {
     </div>
   );
 }
-
 
 /**
  * MarqueeComponent renders a scrollable marquee with repeated items for an infinite scrolling effect.

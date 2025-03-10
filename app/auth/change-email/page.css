@@ -7,7 +7,7 @@ body {
     width: 100vw;
     display: flex;
     min-height: 100vh;
-    padding-top: 80px;
+    padding-top: 20px;
     overflow-x: hidden;
     overflow-y: auto;
 }
