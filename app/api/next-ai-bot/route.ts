@@ -3,19 +3,59 @@ import axios from "axios";
 
 const API_KEY = process.env.NEXT_PUBLIC_MISTRAL_API_KEY;
 
+/**
+ * RequestBody represents the structure of the request payload.
+ *
+ * It contains a single property `message` which is a string 
+ * expected to be sent in the request.
+ */
 interface RequestBody {
   message: string;
 }
 
+/**
+ * AIResponse is the response from the AI service.
+ *
+ * It contains a single property `choices` which is an array of objects.
+ * Each object contains a `message` property which has a `content` string property.
+ * The `content` string is the response from the AI service.
+ */
 interface AIResponse {
   choices: { message: { content: string } }[];
 }
 
+
+/**
+ * RequestBody represents the structure of the request payload.
+ * It contains a single property `message` which is a string 
+ * expected to be sent in the request.
+ */
+interface RequestBody {
+  message: string;
+}
+
+/**
+ * AIResponse is the response from the AI service.
+ * It contains a single property `choices` which is an array of objects.
+ * Each object contains a `message` property which has a `content` string property.
+ * The `content` string is the response from the AI service.
+ */
+interface AIResponse {
+  choices: { message: { content: string } }[];
+}
+
+/**
+ * Handles a POST request to interact with the AI service.
+ * @param req - Incoming request object
+ * @returns A response object containing a reply from the AI or an error message
+ */
 export async function POST(req: Request): Promise<Response> {
   try {
+    // Parse the request body
     const body = (await req.json()) as Partial<RequestBody>;
     const userMessage = body.message?.toLowerCase();
 
+    // Validate the user message
     if (!userMessage) {
       return NextResponse.json(
         { error: "⚠️ Message is required." },
@@ -23,6 +63,7 @@ export async function POST(req: Request): Promise<Response> {
       );
     }
 
+    // Check if API key is available
     if (!API_KEY) {
       return NextResponse.json(
         { error: "⚠️ API key is missing." },
@@ -30,6 +71,7 @@ export async function POST(req: Request): Promise<Response> {
       );
     }
 
+    // Prepare the prompt content for the AI service
     const promptContent = `
 <NOT INCLUDED IN SNIPPET>
 <b>IMPORTANT: USE HTML TAGS FOR BOLD, UNDERLINE, STRIKETHROUGH, ITALICS, CODE, HEADERS (H1, H2, H3, H4, H5, H6). DO NOT USE MARKDOWN RENDER.</b>
@@ -69,11 +111,9 @@ VERY IMPORTANT: USE \\N FOR LINE BREAK OR NEW LINE EVERY TIME even after lists.
 
 <b>IMPORTANT: USE HTML TAGS FOR BOLD, UNDERLINE, STRIKETHROUGH, ITALICS, CODE, HEADERS (H1, H2, H3, H4, H5, H6). DO NOT USE MARKDOWN RENDER.</b>
 <NOT INCLUDED IN SNIPPET/>
-
 `;
 
-    // Check for question types and modify the prompt accordingly
-
+    // Make a request to the AI service with the prompt and user message
     const response = await axios.post<AIResponse>(
       "https://api.mistral.ai/v1/chat/completions",
       {
@@ -86,16 +126,20 @@ VERY IMPORTANT: USE \\N FOR LINE BREAK OR NEW LINE EVERY TIME even after lists.
       { headers: { Authorization: `Bearer ${API_KEY}` } }
     );
 
+    // Return the AI's response, replacing newlines with HTML line breaks
     return NextResponse.json({
       reply: response.data.choices[0].message.content.replace(/\n/g, "<br>"),
     });
   } catch (error: unknown) {
+    // Log the error details for debugging
     console.error("❌ API Request Failed:", {
       error: axios.isAxiosError(error)
         ? error.response?.data
         : (error as Error).message,
       status: axios.isAxiosError(error) ? error.response?.status : "Unknown",
     });
+
+    // Return a generic error response
     return NextResponse.json(
       { error: "❌ Failed to get response from Next AI." },
       { status: 500 }

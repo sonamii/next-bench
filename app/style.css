@@ -829,8 +829,7 @@ html {
   }
 }
 
-@media (max-width: 500px) {
-
+@media (max-width:570px) {
   .footer .top .left .text {
     max-width: fit-content !important;
   }
@@ -840,12 +839,28 @@ html {
     align-items: center;
     justify-self: center;
     padding-top: 10px;
-    padding-bottom: 10px;
+    padding-bottom: 20px !important;
+    gap: 10px;
+  }
+
+  .footer {
+    height: 460px !important;
+  }
+
+  .footer a:nth-child(2) {
+    display: none;
   }
 
   .right10vw {
     margin-right: 0;
   }
+}
+
+@media (max-width: 500px) {
+
+
+
+
 
   .background {
     background-size: 200%;

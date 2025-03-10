@@ -208,6 +208,44 @@ body {
             background-color: #b5b5b685;
             border: 1px solid #cfd1d485;
         }
+
+        .copyButtonIcon {
+            animation: wobble 1.4s ease-in-out infinite;
+        }
+    }
+}
+
+@keyframes wobble {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    15% {
+        transform: rotate(15deg);
+    }
+
+    30% {
+        transform: rotate(-15deg);
+    }
+
+    45% {
+        transform: rotate(10deg);
+    }
+
+    60% {
+        transform: rotate(-10deg);
+    }
+
+    75% {
+        transform: rotate(5deg);
+    }
+
+    90% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(0deg);
     }
 }
 
@@ -232,6 +270,7 @@ body {
         background-color: #1d1e1e;
     }
 }
+
 
 .releaseDate {
     display: flex;

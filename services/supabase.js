@@ -1,3 +1,13 @@
+/**
+ * Supabase client
+ *
+ * Creates a Supabase client instance with the URL and key from environment
+ * variables.
+ *
+ * @throws {Error} If either `NEXT_PUBLIC_SUPABASE_URL` or
+ *   `NEXT_PUBLIC_SUPABASE_KEY` is not set.
+ */
+
 import { createClient } from "@supabase/supabase-js";
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;

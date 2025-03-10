@@ -16,6 +16,17 @@ import {
   HoverCardContent,
   HoverCardTrigger,
 } from "@/components/ui/hover-card";
+/**
+ * LoginForm component
+ *
+ * This component is used to log in to the application.
+ * It requires an email and a password as input.
+ * The component will call the {@link supabase.auth.signInWithPassword} method
+ * to sign in to the application.
+ *
+ * @param {React.ComponentProps<"div">} props - The props for the component.
+ * @returns {React.ReactElement} The LoginForm component.
+ */
 export function LoginForm({
   className,
   ...props
@@ -24,13 +35,26 @@ export function LoginForm({
   const [password, setPassword] = useState("");
   const { setIsVerified } = useVerificationStore();
   
+  /**
+   * This function is called when the user clicks the "LogIn" button.
+   * It will call the {@link supabase.auth.signInWithPassword} method
+   * to sign in to the application.
+   *
+   * If the sign in is successful, the user will be redirected to the
+   * `/auth/callback` page. If the sign in fails, an error message will
+   * be displayed to the user.
+   */
   function getDataFromSupabase() {
-    console.log(email);
-    console.log(password);
+    // Log the email and password to the console
+    console.log(`Email: ${email}`);
+    console.log(`Password: ${password}`);
+
+    // Use the signInWithPassword method to sign in to the application
     supabase.auth
       .signInWithPassword({ email, password })
       .then(({ data, error }) => {
         if (error) {
+          // If there is an error, log it to the console and display an error message to the user
           console.error("Error logging in:", error.message);
           toast("Error logging in", {
             description: `Please try again - ${error.message}`,
@@ -40,12 +64,16 @@ export function LoginForm({
             },
           });
         } else {
+          // If the sign in is successful, log the user to the console and set the isVerified flag to false
           console.log("Logged in successfully:", data.user);
           setIsVerified(false);
 
+          // Store the user's email in local storage
           if (data.user.email) {
             localStorage.setItem("email", data.user.email);
           }
+
+          // Display a success message to the user
           toast("Logged in successfully", {
             description: `Welcome back, ${data.user.email}`,
             action: {
@@ -53,6 +81,8 @@ export function LoginForm({
               onClick: () => console.log("Hello"),
             },
           });
+
+          // After 1.5 seconds, redirect the user to the /auth/callback page
           setTimeout(() => {
             window.location.href = "/auth/callback";
           }, 1500);
@@ -66,11 +96,13 @@ export function LoginForm({
         <CardContent className="grid p-0 md:grid-cols-2">
           <form className="p-6 md:p-8" onSubmit={(e) => e.preventDefault()}>
             <div className="flex flex-col gap-6">
+              {/* Header */}
               <div className="flex flex-col items-center text-center">
                 <h1 className="text-2xl font-bold">Welcome back!</h1>
                 <div className="text-muted-foreground text-balance">
                   Login to your{" "}
                   <HoverCard>
+                    {/* next-bench version number */}
                     <HoverCardTrigger>
                       <u>next-bench</u>
                     </HoverCardTrigger>
@@ -83,12 +115,14 @@ export function LoginForm({
                         color: "inherit",
                       }}
                     >
-                      v0.1.0-alpha.1
+                      v0.1.0.alpha-2
                     </HoverCardContent>
                   </HoverCard>{" "}
                   account
                 </div>
               </div>
+
+              {/* Email and password inputs */}
               <div className="grid gap-3">
                 <Label htmlFor="email">Email</Label>
                 <Input
@@ -102,13 +136,14 @@ export function LoginForm({
               </div>
 
               <div className="grid gap-3">
+                {/* Password input */}
                 <div className="flex items-center">
                   <Label htmlFor="password">Password</Label>
                   <a
-                    href="/auth/reset-password"
+                    href="/auth/change-email"
                     className="ml-auto text-sm underline-offset-2 hover:underline"
                   >
-                    Forgot your password?
+                    Update email?
                   </a>
                 </div>
                 <Input
@@ -120,6 +155,8 @@ export function LoginForm({
                   onChange={(e) => setPassword(e.target.value)}
                 />
               </div>
+
+              {/* Login button */}
               <Button
                 className="w-full"
                 onClick={getDataFromSupabase}
@@ -127,11 +164,15 @@ export function LoginForm({
               >
                 LogIn
               </Button>
+
+              {/* Text between login and signup */}
               <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
                 <span className="relative z-10 bg-background px-2 text-muted-foreground">
                   Or continue with
                 </span>
               </div>
+
+              {/* Signup and Apple login buttons */}
               <div className="grid grid-cols-3 gap-4">
                 <Button
                   variant="outline"

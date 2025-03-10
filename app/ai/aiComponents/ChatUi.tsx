@@ -1,13 +1,12 @@
-"use client"
+"use client";
 
 import { useState } from "react";
-// import { Nav } from "@/custom-components/nav/nav";
+import { Nav } from "@/custom-components/nav/nav";
 import EmptyChatUi from "./EmptyChatUi";
 import "./style.css";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Send } from "lucide-react";
-
 
 export default function ChatUi() {
   const [input, setInput] = useState<string>("");
@@ -54,14 +53,20 @@ export default function ChatUi() {
     }
   };
 
-  return(
+  return (
     <div className="background">
+      <div className="ml-[20vw !important]">
+        <Nav />
+      </div>
       <div className="mt-30 relative h-[85vh]">
         {aiResponses?.length == 0 && <EmptyChatUi />}
 
         <div className="h-[75vh] overflow-scroll">
           {aiResponses.map((response, index) => (
-            <div key={index} className="p-5 m-5 ml-10 bg-secondary border-r-[1px] rounded-md">
+            <div
+              key={index}
+              className="p-5 m-5 ml-10 bg-secondary border-r-[1px] rounded-md"
+            >
               <div
                 className="response"
                 dangerouslySetInnerHTML={{
@@ -78,7 +83,8 @@ export default function ChatUi() {
             value={input}
             placeholder="Start Typing Here..."
             onChange={(event) => setInput(event.target.value)}
-            onKeyPress={(e) => e.key=='Enter' && onSendMessage()}/>
+            onKeyPress={(e) => e.key == "Enter" && onSendMessage()}
+          />
           <Button onClick={onSendMessage}>
             <Send />
           </Button>
@@ -86,4 +92,4 @@ export default function ChatUi() {
       </div>
     </div>
   );
-};  
+}
