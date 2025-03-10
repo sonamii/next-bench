@@ -15,6 +15,29 @@ import { marked } from "marked";
 import { useVerificationStore } from "@/store/verificationStore";
 import { toast } from "sonner";
 
+/**
+ * The main page for NextAI, containing a chat interface for users to interact
+ * with the AI.
+ *
+ * The page is split into two sections: the top, which contains the chat log and
+ * the input field, and the bottom, which contains the release date and the
+ * "Bot may make mistakes" notice.
+ *
+ * The top section is further divided into two parts: the chat log, which is
+ * displayed as a list of messages, and the input field, which is a text input
+ * that allows users to type messages to the AI.
+ *
+ * When the user types a message and presses Enter, the message is sent to the
+ * AI and the response is displayed in the chat log.
+ *
+ * If the user's account is not verified or logged in, a toast notification will
+ * appear after 2.5 seconds, prompting the user to log in.
+ *
+ * The page also contains a particles animation in the background, which is
+ * animated using the "ease" property.
+ *
+ * @returns The JSX element for the main page of NextAI.
+ */
 export default function AiPage() {
   const { resolvedTheme } = useTheme();
   const [color, setColor] = useState("#ff0000");
@@ -24,23 +47,41 @@ export default function AiPage() {
   const [chatHistory, setChatHistory] = useState<
     { sender: "user" | "bot"; message: string }[]
   >([]);
+  const { isVerified } = useVerificationStore();
+  const [emailLocal, setEmailLocal] = useState("");
 
   const [isFirstMessageSent, setIsFirstMessageSent] = useState(false);
 
+  // Set the user's email from local storage if it exists, otherwise set it to an empty string.
   useEffect(() => {
     const emailLocal = localStorage.getItem("email");
     setEmail(emailLocal || "");
   }, []);
 
+  // Sets the color of the particles animation based on the theme.
+  // If the theme is dark, the color is set to #ff0000.
+  // If the theme is light, the color is also set to #ff0000.
+  // Logs the current color to the console.
   useEffect(() => {
     setColor(resolvedTheme === "dark" ? "#ff0000" : "#ff0000");
     console.log(color);
   }, [resolvedTheme]);
 
+  /**
+   * Sets the visibility state to true after 100ms.
+   *
+   * This delay is used to ensure any animations or initial renders
+   * do not appear abruptly, providing a smoother transition effect.
+   */
   useEffect(() => {
     setTimeout(() => setIsVisible(true), 100);
   }, []);
 
+  /**
+   * Scrolls to the bottom of the chat log whenever the chat history
+   * updates. This is used to keep the chat log scrolled to the bottom
+   * after the user sends a message or the AI responds.
+   */
   useEffect(() => {
     const scrollBottom = document.getElementById("scrollBottom");
     if (scrollBottom) {
@@ -48,9 +89,22 @@ export default function AiPage() {
     }
   }, [chatHistory]); // Scrolls whenever chatHistory updates
 
+  /**
+   * Handles sending a message from the user to the AI and updates the chat history.
+   * Animates the chat introduction heading, manages input, and handles errors.
+   */
+  /**
+   * Handles sending a message from the user to the AI and updates the chat history.
+   *
+   * Animates the chat introduction heading, manages input, and handles errors.
+   *
+   * @function onSendMessage
+   * @returns {void}
+   */
   const onSendMessage = async () => {
     const chatIntroHeading = document.getElementById("chatIntroHeading");
 
+    // Animate and hide the chat introduction heading
     if (chatIntroHeading) {
       chatIntroHeading.style.animation = "fadeUps 1.0s ease-in-out";
 
@@ -64,9 +118,10 @@ export default function AiPage() {
     }
 
     const trimmedInput = input.trim();
-    if (!trimmedInput) return;
+    if (!trimmedInput) return; // Prevent sending empty messages
 
-    if (isFirstMessageSent == true) {
+    // Add user's message to chat history
+    if (isFirstMessageSent) {
       setChatHistory((prev) => [
         ...prev,
         { sender: "user", message: trimmedInput },
@@ -80,15 +135,18 @@ export default function AiPage() {
       }, 800);
       setIsFirstMessageSent(true);
     }
-    setInput("");
+    setInput(""); // Clear input field
 
     try {
+      // Scroll to the bottom of the chat log
       setTimeout(() => {
         const scrollBottom = document.getElementById("scrollBottom");
         if (scrollBottom) {
           scrollBottom.scrollIntoView({ behavior: "smooth" });
         }
       }, 0);
+
+      // Send a POST request to the AI API
       const res = await fetch("/api/next-ai-bot", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -97,17 +155,20 @@ export default function AiPage() {
 
       if (res.ok) {
         const data = await res.json();
+        // Append AI's response to chat history
         setChatHistory((prev) => [
           ...prev,
           { sender: "bot", message: data.reply },
         ]);
       } else {
+        // Handle error if response is not ok
         setChatHistory((prev) => [
           ...prev,
           { sender: "bot", message: "⚠️ Error: Unable to fetch response." },
         ]);
       }
     } catch {
+      // Handle network or other errors
       setChatHistory((prev) => [
         ...prev,
         { sender: "bot", message: "❌ AI is currently unavailable." },
@@ -115,18 +176,32 @@ export default function AiPage() {
     }
   };
 
-  //VERIFICATION AND LOGIN
 
-  const { isVerified } = useVerificationStore();
-
-  const [emailLocal, setEmailLocal] = useState("");
+  
+  /**
+   * Retrieves the user's email from localStorage and sets it to the local state.
+   * Logs the retrieved email to the console.
+   * 
+   * @function useEffect
+   */
   useEffect(() => {
     setEmailLocal(localStorage.getItem("email") || "");
     console.log(emailLocal);
   }, []);
 
+  /**
+   * useEffect hook to handle user verification and login status.
+   * 
+   * If the user's account is not verified, a toast notification is shown,
+   * and the user is redirected to the login page after a delay.
+   * If the account is verified, a toast notification is shown allowing the
+   * user to chat with NextAI.
+   * 
+   * @dependency isVerified - The verification status of the user's account.
+   */
   useEffect(() => {
     if (!isVerified) {
+      // Show toast notification and redirect to login if not verified
       setTimeout(() => {
         toast("Account not verified/logged in", {
           description: `Redirecting in 1.5 seconds`,
@@ -140,6 +215,7 @@ export default function AiPage() {
         }, 1500);
       }, 2500);
     } else {
+      // Show toast notification for verified account
       setTimeout(() => {
         toast("Account is verified and logged in", {
           description: `Chat with NextAI`,
@@ -151,10 +227,11 @@ export default function AiPage() {
       }, 2500);
     }
   }, [isVerified]);
-
   return (
     <>
+      {/* Navigation bar at the top of the page */}
       <Nav />
+      {/* Particles background effect */}
       <Particles
         className="absolute inset-0 z-0"
         quantity={200}
@@ -162,31 +239,44 @@ export default function AiPage() {
         color={"red"}
         refresh
       />
+      {/* Background that holds the entire page */}
       <div className="background"></div>
+      {/* Main container that contains the chat */}
       <div className={`containerMain ${isVisible ? "fade-in" : ""}`}>
         <div className="chatCont">
+          {/* Top section of the chat that contains the intro text and heading */}
           <div className="top">
             <div
               className="intro"
               id="chatIntroHeading"
               style={{ display: "flex" }}
             >
+              {/* Logo of the application */}
               <div className="logo fade-item">
                 <Image src="./logoMain.svg" alt="Logo" width={25} height={25} />
               </div>
+              {/* Space between the logo and the text */}
               <div className="space-xxs"></div>
+              {/* Sparkly text that says "NextAI" */}
               <SparklesText text="NextAI" className="CG fade-item" />
+              {/* Space between the text and the bottom text */}
               <div className="space-xxs"></div>
+              {/* Text that says "Start a conversation with NextAI" */}
               <div className="textBottom fade-item">
                 Start a conversation with NextAI
               </div>
             </div>
+            {/* Chat response section that contains the chat messages */}
             <div className="chatResponse" id="chatResponse">
+              {/* Text that says "Chatting with NextAI*" */}
               <div className="textChat">Chatting with NextAI*</div>
+              {/* Map over the chat history and render each message */}
               {chatHistory.map((msg, index) => (
                 <div key={index} className={msg.sender}>
+                  {/* If the message is from the bot, render it with the bot's profile picture */}
                   {msg.sender === "bot" ? (
                     <>
+                      {/* Bot's profile picture */}
                       <div className="pfp">
                         <Image
                           src="/pfpChat.png"
@@ -195,6 +285,7 @@ export default function AiPage() {
                           height={35}
                         />
                       </div>
+                      {/* Message text from the bot */}
                       <div
                         dangerouslySetInnerHTML={{
                           __html: marked(msg.message),
@@ -203,11 +294,13 @@ export default function AiPage() {
                     </>
                   ) : (
                     <>
+                      {/* Message text from the user */}
                       <div
                         dangerouslySetInnerHTML={{
                           __html: marked(msg.message),
                         }}
                       />
+                      {/* User's profile picture */}
                       <div className="pfp" style={{ transform: "scale(1.2)" }}>
                         <Avvvatars value={email} />
                       </div>
@@ -215,12 +308,16 @@ export default function AiPage() {
                   )}
                 </div>
               ))}
+              {/* Scroll to the bottom of the chat */}
               <div className="scrollBottom" id="scrollBottom"></div>
             </div>
           </div>
 
+          {/* Bottom section of the chat that contains the input field */}
           <div className="bottom">
+            {/* Container for the input field */}
             <div className="inputContainer fade-item">
+              {/* Input field */}
               <Input
                 className="input"
                 onChange={(e) => setInput(e.target.value)}
@@ -234,10 +331,12 @@ export default function AiPage() {
                 spellCheck={false}
                 placeholder="Type a message..."
               />
+              {/* Send button */}
               <Button onClick={onSendMessage}>
                 <Send />
               </Button>
             </div>
+            {/* Text that says "Bot may make mistakes" */}
             <div className="releaseDate fade-item">
               <Bot
                 style={{ marginRight: "5px", marginLeft: "3px" }}

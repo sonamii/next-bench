@@ -474,6 +474,8 @@ html {
     min-width: 100vw !important;
     padding-left: 45px !important;
     padding-right: 45px !important;
+    /* padding-left: 8vw !important;
+    padding-right: 8vw !important; */
 
     .user {
       max-width: 100% !important;
