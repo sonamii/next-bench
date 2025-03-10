@@ -472,6 +472,8 @@ html {
   .chatResponse {
     max-width: 100vw !important;
     min-width: 100vw !important;
+    padding-left: 45px !important;
+    padding-right: 45px !important;
 
     .user {
       max-width: 100% !important;

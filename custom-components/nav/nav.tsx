@@ -17,7 +17,7 @@ export const Nav = ({ className }: NavProps) => {
         <div className="link">Explore</div>
 
         <div className="dropdown dropdown-next">
-          <a href={"/ai"}>Next-AI</a>
+          <a href={"/ai"}>NextAI</a>
           <ChevronDown size={20} />
         </div>
       </div>
