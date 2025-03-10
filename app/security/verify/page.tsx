@@ -48,9 +48,12 @@ export default function Callback() {
   }, []);
 
   // Retrieve email from localStorage
-  let emailLocalStorage = "";
+  const [emailLocalStorage, setEmailLocalStorage] = useState("");
   useEffect(() => {
-    emailLocalStorage = localStorage.getItem("email") as string;
+    const storedEmail = localStorage.getItem("email") as string;
+    if (storedEmail) {
+      setEmailLocalStorage(storedEmail);
+    }
   }, []);
 
   //! ALWAYS KEEP THIS PAGE OPEN FOR ADMINS (MAY REMOVE)
@@ -129,7 +132,7 @@ export default function Callback() {
           toast.error("Invalid securityID or email");
         } else {
           // Check if the user is an admin
-          if (email == process.env.NEXT_PUBLIC_ADMIN_UID) {
+          if (data.id == process.env.NEXT_PUBLIC_ADMIN_UID) {
             // Set the isVerified state to true
             setIsVerified(true);
             // Display a success message to the user
@@ -148,7 +151,7 @@ export default function Callback() {
               // Set the isVerified state to true
               setIsVerified(true);
               // Display a success message to the user
-              toast("Admin Verified", {
+              toast("Account Verified", {
                 description: `Redirecting in 1.5 seconds`,
                 action: { label: "Okay", onClick: () => console.log("Okay") },
               });
@@ -170,6 +173,7 @@ export default function Callback() {
     }
   };
 
+  
   return (
     <div className={`containerMain ${isVisible ? "fade-in" : ""}`}>
       {/* Logo */}

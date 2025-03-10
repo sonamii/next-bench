@@ -8,6 +8,7 @@ import Link from "next/link";
 import { toast } from "sonner";
 import { useEffect } from "react";
 import { useState } from "react";
+import supabase from "@/services/supabase";
 
 /**
  * The main dashboard page.
@@ -54,6 +55,34 @@ export default function Callback() {
     }
   }, [isVerified]);
 
+  /**
+   * Deletes the current session and logs out the user.
+   *
+   * This function performs the following actions:
+   * 1. Signs out the user using Supabase authentication.
+   * 2. Logs an error message to the console if the sign-out process fails.
+   * 3. Logs a success message to the console if the sign-out process succeeds.
+   * 4. Redirects the user to the login page.
+   * 5. Clears the user's email and security ID from local storage.
+   *
+   * @returns {Promise<void>} A promise that resolves when the sign-out process is complete.
+   */
+  const deleteSessionAndLogout = async () => {
+    // Sign out the user
+    const { error } = await supabase.auth.signOut();
+    if (error) {
+      console.error("Error signing out:", error);
+      return;
+    }
+    console.log("Signed out successfully");
+
+    // Redirect to login page or home page after logout
+    window.location.href = "/auth/login";
+    // Clear the email from local storage
+    localStorage.setItem("email", "");
+    localStorage.setItem("security_id", "");
+  };
+
   return (
     <>
       {/* The navigation bar at the top of the page. */}
@@ -81,6 +110,9 @@ export default function Callback() {
             {/* The button text. */}
             <div className="button">Home</div>
           </Link>
+          <div className="button" onClick={deleteSessionAndLogout}>
+            Logout
+          </div>
         </div>
         {/* A space of 10px between the button and the release date. */}
         <div className="space-s"></div>
