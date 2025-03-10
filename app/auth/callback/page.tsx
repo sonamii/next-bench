@@ -203,7 +203,7 @@ export default function Callback() {
         <div className="releaseDate fade-item">
           {/* The release date icon is an Info icon */}
           <Info size={15} style={{ marginRight: "5px" }} /> This is your user
-          id, use it to access your account.
+          id, copy it now and use it to verify your account.
         </div>
       </div>
     );

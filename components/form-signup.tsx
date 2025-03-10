@@ -22,6 +22,7 @@ import {
 import { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import supabase from "./../services/supabase";
+import { useEffect } from "react";
 
 /**
  * The SignUpForm component is a form that allows users to sign up for a new
@@ -131,6 +132,25 @@ export function SignUpForm({
       window.location.href = "/auth/login";
     }, 2500);
   }
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data, error }) => {
+      if (error) {
+        console.error("Error getting session:", error.message);
+      } else if (data.session) {
+        toast("User already logged in as", {
+          description: `${data.session.user.email}`,
+          action: {
+            label: "Redirecting",
+            onClick: () => console.log("Redirecting"),
+          },
+        });
+        setTimeout(() => {
+          window.location.href = "/";
+        }, 3500);
+      }
+    });
+  }, []);
 
   /**
    * The SignUpForm component returns a Card with a CardContent that is a grid

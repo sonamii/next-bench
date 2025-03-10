@@ -18,7 +18,11 @@ import { useState } from "react";
 export default function Callback() {
   const { isVerified } = useVerificationStore();
   const [emailLocal, setEmailLocal] = useState("");
+  const [isVisible, setIsVisible] = useState(false);
 
+  useEffect(() => {
+    setTimeout(() => setIsVisible(true), 100);
+  }, []);
   // Set the emailLocal state to the value of the email in local storage.
   useEffect(() => {
     setEmailLocal(localStorage.getItem("email") || "");
@@ -47,7 +51,7 @@ export default function Callback() {
       {/* The navigation bar at the top of the page. */}
       <Nav></Nav>
       {/* The main container for the page. */}
-      <div className="containerMain">
+      <div className={`containerMain ${isVisible ? "fade-in" : ""}`}>
         {/* The logo of the application. */}
         <div className="logo fade-item">
           <Image src="/logoMain.svg" alt="Logo" width={25} height={25} />
@@ -55,20 +59,20 @@ export default function Callback() {
         {/* A space of 5px between the logo and the text. */}
         <div className="space-xs"></div>
         {/* The main text of the page. */}
-        <div className="textTop">Dashboard</div>
+        <div className="textTop fade-item">Dashboard</div>
         {/* A smaller space of 3px between the text and the bottom text. */}
         <div className="space-xxs"></div>
         {/* The bottom text of the page. */}
-        <div className="textBottom">{emailLocal}</div>
+        <div className="textBottom fade-item">{emailLocal}</div>
         {/* A space of 5px between the bottom text and the button. */}
         <div className="space-xxs"></div>
         {/* The button to go back to the homepage. */}
-        <div className="buttonContainer">
+        <div className="buttonContainer fade-item">
           {/* The button element itself. */}
-          <Link href={"/"}>
+            <Link href={"/"} onClick={() => window.location.assign("/")}>
             {/* The button text. */}
             <div className="button">Home</div>
-          </Link>
+            </Link>
         </div>
         {/* A space of 10px between the button and the release date. */}
         <div className="space-s"></div>

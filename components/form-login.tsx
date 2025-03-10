@@ -16,6 +16,7 @@ import {
   HoverCardContent,
   HoverCardTrigger,
 } from "@/components/ui/hover-card";
+import { useEffect } from "react";
 /**
  * LoginForm component
  *
@@ -34,7 +35,7 @@ export function LoginForm({
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const { setIsVerified } = useVerificationStore();
-  
+
   /**
    * This function is called when the user clicks the "LogIn" button.
    * It will call the {@link supabase.auth.signInWithPassword} method
@@ -89,6 +90,26 @@ export function LoginForm({
         }
       });
   }
+
+  // Check for current session when the component mounts
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data, error }) => {
+      if (error) {
+        console.error("Error getting session:", error.message);
+      } else if (data.session) {
+        toast("User already logged in as", {
+          description: `${data.session.user.email}`,
+          action: {
+            label: "Redirecting",
+            onClick: () => console.log("Redirecting"),
+          },
+        });
+        setTimeout(() => {
+          window.location.href = "/";
+        }, 3500);
+      }
+    });
+  }, []);
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>

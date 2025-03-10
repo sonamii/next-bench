@@ -9,12 +9,13 @@ import Image from "next/image";
 import { useTheme } from "next-themes";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Bot, Divide, Send } from "lucide-react";
+import { Bot, Send } from "lucide-react";
 import Avvvatars from "avvvatars-react";
 import { marked } from "marked";
 import { useVerificationStore } from "@/store/verificationStore";
 import { toast } from "sonner";
 import Link from "next/link";
+import supabase from "@/services/supabase";
 
 /**
  * The main page for NextAI, containing a chat interface for users to interact
@@ -103,6 +104,10 @@ export default function AiPage() {
    * @returns {void}
    */
   const onSendMessage = async () => {
+    const chatCont = document.querySelector(".chatCont");
+    if (window.innerWidth < 500 && chatCont) {
+      chatCont.setAttribute("style", "height: calc(102vh);");
+    }
     const chatIntroHeading = document.getElementById("chatIntroHeading");
 
     // Animate and hide the chat introduction heading
@@ -199,32 +204,60 @@ export default function AiPage() {
    * @dependency isVerified - The verification status of the user's account.
    */
   useEffect(() => {
-    if (!isVerified) {
-      // Show toast notification and redirect to login if not verified
-      setTimeout(() => {
-        toast("Account not verified/logged in", {
-          description: `Redirecting in 1.5 seconds`,
-          action: {
-            label: "Login",
-            onClick: () => (window.location.href = "/auth/login"),
-          },
-        });
+    const checkSession = async () => {
+      const { error } = await supabase.auth.getSession();
+      if (error) {
+        console.error("Error fetching session:", error);
+        return false;
+      }
+      return true;
+    };
+
+    const handleSessionCheck = async () => {
+      const sessionExists = await checkSession();
+      if (!isVerified && sessionExists) {
+        // Show toast notification and redirect to login if not verified
         setTimeout(() => {
-          window.location.href = "/auth/login";
-        }, 1500);
-      }, 2500);
-    } else {
-      // Show toast notification for verified account
-      setTimeout(() => {
-        toast("Account is verified and logged in", {
-          description: `Chat with NextAI`,
-          action: {
-            label: "Okay",
-            onClick: () => console.log("Okay"),
-          },
-        });
-      }, 2500);
-    }
+          toast("Account not verified", {
+            description: `Redirecting in 1.5 seconds`,
+            action: {
+              label: "Verify",
+              onClick: () => (window.location.href = "/security/verify"),
+            },
+          });
+          setTimeout(() => {
+            window.location.href = "/security/verify";
+          }, 1500);
+        }, 500);
+      } else if (!isVerified && !sessionExists) {
+        // Show toast notification and redirect to login if not verified
+        setTimeout(() => {
+          toast("Session not found", {
+            description: `Redirecting in 1.5 seconds`,
+            action: {
+              label: "Login",
+              onClick: () => (window.location.href = "/auth/login"),
+            },
+          });
+          setTimeout(() => {
+            window.location.href = "/auth/login";
+          }, 1500);
+        }, 500);
+      } else {
+        // Show toast notification for verified account
+        setTimeout(() => {
+          toast("Account is verified and logged in", {
+            description: `Chat with NextAI`,
+            action: {
+              label: "Okay",
+              onClick: () => console.log("Okay"),
+            },
+          });
+        }, 500);
+      }
+    };
+
+    handleSessionCheck();
   }, [isVerified]);
   return (
     <>
@@ -267,7 +300,16 @@ export default function AiPage() {
               <div className="space-xxs"></div>
 
               <div className="textBottom fade-item">
-                <Link href={"/ai/old"} style={{ textDecoration: "none" }} onMouseOver={(e) => e.currentTarget.style.textDecoration = "underline"} onMouseOut={(e) => e.currentTarget.style.textDecoration = "none"}>
+                <Link
+                  href={"/ai/old"}
+                  style={{ textDecoration: "none" }}
+                  onMouseOver={(e) =>
+                    (e.currentTarget.style.textDecoration = "underline")
+                  }
+                  onMouseOut={(e) =>
+                    (e.currentTarget.style.textDecoration = "none")
+                  }
+                >
                   <b>Try UI-v1</b>
                 </Link>
               </div>
@@ -278,25 +320,43 @@ export default function AiPage() {
               <div className="textChat">Chatting with NextAI*</div>
               {/* Map over the chat history and render each message */}
               {chatHistory.map((msg, index) => (
-                <div  key={index}
-                className={`flex ${msg.sender == 'user'? 'justify-end' : 'justify-start'}`}>
+                <div
+                  key={index}
+                  className={`flex ${
+                    msg.sender == "user" ? "justify-end" : "justify-start"
+                  }`}
+                  style={{ animation: "fadeInUp 0.6s ease-out" }}
+                >
                   <div className="flex gap-3">
-                    {msg.sender == 'bot' && <Image src="/pfpChat.png" 
-                    alt="BOT" 
-                    width={100} 
-                    height={100}
-                    className="w-[30px] h-[30px] rounded-l object-cover" />}
+                    {msg.sender == "bot" && (
+                      <Image
+                        src="/pfpChat.png"
+                        alt="BOT"
+                        width={100}
+                        height={100}
+                        className="w-[30px] h-[30px] object-cover rounded-full"
+                        style={{ animation: "fadeInUp 0.6s ease-out" }}
+                      />
+                    )}
 
-                    <div className={`p-3 rounded-lg ${msg.sender == 'user' ? 
-                      'bg-gray-200 text-black rounded-lg' : 
-                      'bg-gray-100 text-black'}`}>
-                      {msg.message}
-                    </div>
+                    <div
+                      className={`p-3 rounded-lg ${
+                        msg.sender == "user"
+                          ? "bg-gray-100 text-black rounded-lg  border-gray-200  border-1"
+                          : "bg-gray-100 text-black rounded-lg  border-gray-200  border-1"
+                      }`}
+                      dangerouslySetInnerHTML={{ __html: marked(msg.message) }}
+                      style={{ animation: "fadeInUp 0.6s ease-out" }}
+                    ></div>
 
-                    {msg.sender == 'user' && 
-                    <div className="w-[30px] h-[30px] rounded-l object-cover">
-                      <Avvvatars value={email} />
-                    </div> }
+                    {msg.sender == "user" && (
+                      <div
+                        className="w-[30px] h-[30px] rounded-l object-cover"
+                        style={{ animation: "fadeInUp 0.6s ease-out" }}
+                      >
+                        <Avvvatars value={email} />
+                      </div>
+                    )}
                   </div>
                 </div>
               ))}

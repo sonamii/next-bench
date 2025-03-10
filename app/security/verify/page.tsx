@@ -8,6 +8,7 @@ import { CheckCircle2Icon } from "lucide-react";
 import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
 import { useVerificationStore } from "@/store/verificationStore";
+import Link from "next/link";
 
 /**
  * Security Verification Callback Component
@@ -24,7 +25,8 @@ export default function Callback() {
   const [uidDatabase, setUidDatabase] = useState("");
   const { isVerified, setIsVerified } = useVerificationStore();
   const [isVisible, setIsVisible] = useState(false);
-  const [isVerificationSuccessDone, setIsVerificationSuccessDone] = useState(false);
+  const [isVerificationSuccessDone, setIsVerificationSuccessDone] =
+    useState(false);
 
   // Effect to set visibility after 100ms for fade-in animation
   useEffect(() => {
@@ -37,23 +39,26 @@ export default function Callback() {
     emailLocalStorage = localStorage.getItem("email") as string;
   }, []);
 
-
   //! ALWAYS KEEP THIS PAGE OPEN FOR ADMINS (MAY REMOVE)
 
   // Effect to handle session check and verification status
   useEffect(() => {
     if (!emailLocalStorage) {
       toast("No Session Found", {
-        description: `Login to continue`,
+        description: `Redirecting in 1.5 seconds`,
         action: {
           label: "Login",
           onClick: () => (window.location.href = "/auth/login"),
         },
       });
+
+      setTimeout(() => {
+        window.location.href = "/auth/login";
+      }, 1500);
     } else {
       if (isVerified && !isVerificationSuccessDone) {
-        toast("Account Verified", {
-          description: `You are already verified as ${emailLocalStorage}`,
+        toast("You are already verified as", {
+          description: `${emailLocalStorage}`,
           action: {
             label: "Dashboard",
             onClick: () => (window.location.href = "/dashboard"),
@@ -158,9 +163,11 @@ export default function Callback() {
   return (
     <div className={`containerMain ${isVisible ? "fade-in" : ""}`}>
       {/* Logo */}
-      <div className="logo fade-item">
-        <Image src="/logoMain.svg" alt="Logo" width={25} height={25} />
-      </div>
+      <Link href={"/"}>
+        <div className="logo fade-item">
+          <Image src="/logoMain.svg" alt="Logo" width={25} height={25} />
+        </div>
+      </Link>
       {/* Space between logo and text */}
       <div className="space-xs"></div>
       {/* Text for security check description */}
@@ -169,7 +176,8 @@ export default function Callback() {
       <div className="space-xxs"></div>
       {/* Text for security check description */}
       <div className="textBottom fade-item">
-        We have to perform security check to prevent bots from accessing your account.
+        We have to perform security check to prevent bots from accessing your
+        account.
       </div>
       {/* Space between text and input */}
       <div className="space-s"></div>
@@ -214,7 +222,8 @@ export default function Callback() {
       <div className="space-xs"></div>
       {/* Release date */}
       <div className="releaseDate fade-item">
-        <CheckCircle2Icon size={15} style={{ marginRight: "5px" }} /> Complete this one-time security check.
+        <CheckCircle2Icon size={15} style={{ marginRight: "5px" }} /> Complete
+        this one-time security check.
       </div>
     </div>
   );
