@@ -21,12 +21,26 @@ import Link from "next/link";
 export default function Callback() {
   // State hooks for email, security ID, user ID from database, verification status, and visibility
   const [email, setEmail] = useState("");
-  const [securityId, setSecurityId] = useState("");
+  const [securityId, setSecurityId] = useState(
+    "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+  );
   const [uidDatabase, setUidDatabase] = useState("");
   const { isVerified, setIsVerified } = useVerificationStore();
   const [isVisible, setIsVisible] = useState(false);
   const [isVerificationSuccessDone, setIsVerificationSuccessDone] =
     useState(false);
+
+  // Retrieve security ID from localStorage
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const securityIdLocalStorage = localStorage.getItem(
+        "security_id"
+      ) as string;
+      if (securityIdLocalStorage) {
+        setSecurityId(securityIdLocalStorage);
+      }
+    }
+  }, []);
 
   // Effect to set visibility after 100ms for fade-in animation
   useEffect(() => {
@@ -51,10 +65,6 @@ export default function Callback() {
           onClick: () => (window.location.href = "/auth/login"),
         },
       });
-
-      setTimeout(() => {
-        window.location.href = "/auth/login";
-      }, 1500);
     } else {
       if (isVerified && !isVerificationSuccessDone) {
         toast("You are already verified as", {
@@ -185,6 +195,13 @@ export default function Callback() {
       <div className="inputContainer fade-item">
         {/* Email input */}
         <Input
+          type="text"
+          className="input fade-item input-placeholder"
+          placeholder="Enter your securityID"
+          value={securityId}
+          readOnly
+        />
+        <Input
           type="email"
           className="input fade-item"
           placeholder="Enter your email"
@@ -193,14 +210,7 @@ export default function Callback() {
           required
         />
         {/* Security ID input */}
-        <Input
-          type="text"
-          className="input fade-item"
-          placeholder="Enter your securityID"
-          onChange={(e) => setSecurityId(e.target.value)}
-          value={securityId}
-          required
-        />
+
         {/* Button container */}
         <div className="buttonContainer">
           {/* Check button */}

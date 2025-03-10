@@ -47,6 +47,7 @@ export function LoginForm({
    */
   function getDataFromSupabase() {
     // Log the email and password to the console
+
     console.log(`Email: ${email}`);
     console.log(`Password: ${password}`);
 
@@ -68,6 +69,7 @@ export function LoginForm({
           // If the sign in is successful, log the user to the console and set the isVerified flag to false
           console.log("Logged in successfully:", data.user);
           setIsVerified(false);
+          localStorage.setItem("security_id", "");
 
           // Store the user's email in local storage
           if (data.user.email) {
@@ -100,13 +102,10 @@ export function LoginForm({
         toast("User already logged in as", {
           description: `${data.session.user.email}`,
           action: {
-            label: "Redirecting",
-            onClick: () => console.log("Redirecting"),
+            label: "Dashboard",
+            onClick: () => (window.location.href = "/"),
           },
         });
-        setTimeout(() => {
-          window.location.href = "/";
-        }, 3500);
       }
     });
   }, []);

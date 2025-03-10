@@ -8,6 +8,7 @@ import Link from "next/link";
 import { toast } from "sonner";
 import { useEffect } from "react";
 import { useState } from "react";
+
 /**
  * The main dashboard page.
  *
@@ -39,10 +40,17 @@ export default function Callback() {
           onClick: () => (window.location.href = "/auth/login"),
         },
       });
-
       setTimeout(() => {
         window.location.href = "/security/verify";
       }, 1700);
+    } else {
+      toast("Account verified", {
+        description: `Verification successful`,
+        action: {
+          label: "Okay",
+          onClick: () => console.log("Okay"),
+        },
+      });
     }
   }, [isVerified]);
 
@@ -69,10 +77,10 @@ export default function Callback() {
         {/* The button to go back to the homepage. */}
         <div className="buttonContainer fade-item">
           {/* The button element itself. */}
-            <Link href={"/"} onClick={() => window.location.assign("/")}>
+          <Link href={"/"} onClick={() => window.location.assign("/")}>
             {/* The button text. */}
             <div className="button">Home</div>
-            </Link>
+          </Link>
         </div>
         {/* A space of 10px between the button and the release date. */}
         <div className="space-s"></div>

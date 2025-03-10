@@ -4,7 +4,7 @@ import Image from "next/image";
 import supabase from "@/services/supabase";
 import { useEffect } from "react";
 import { useState } from "react";
-import { Copy, Info } from "lucide-react";
+import { Info } from "lucide-react";
 import { toast } from "sonner";
 import Link from "next/link";
 
@@ -53,6 +53,7 @@ export default function Callback() {
         return;
       }
       setSecurityID(userData.security_id);
+      localStorage.setItem("security_id", userData.security_id);
     }
   };
 
@@ -151,7 +152,6 @@ export default function Callback() {
     }
   };
 
-
   /**
    * After 100ms, set the visibility to true.
    *
@@ -190,7 +190,7 @@ export default function Callback() {
             {/* The copy button is a button that copies the security ID to the clipboard */}
             <div className="copyButton" onClick={copyToClipboard}>
               {/* The copy button icon is a Copy icon */}
-              <Copy size={15} className="copyButtonIcon" />
+              Click
             </div>
           </div>
           {/* The logout button is a button that deletes the session and logs the user out */}

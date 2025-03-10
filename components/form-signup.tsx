@@ -141,13 +141,10 @@ export function SignUpForm({
         toast("User already logged in as", {
           description: `${data.session.user.email}`,
           action: {
-            label: "Redirecting",
-            onClick: () => console.log("Redirecting"),
+            label: "Dashboard",
+            onClick: () => (window.location.href = "/"),
           },
         });
-        setTimeout(() => {
-          window.location.href = "/";
-        }, 3500);
       }
     });
   }, []);
