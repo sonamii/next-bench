@@ -23,6 +23,7 @@ import { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import supabase from "./../services/supabase";
 import { useEffect } from "react";
+import { useVerificationStore } from "@/store/verificationStore";
 
 /**
  * The SignUpForm component is a form that allows users to sign up for a new
@@ -39,6 +40,7 @@ export function SignUpForm({
   const [email, setEmail] = useState(""); // The user's email address.
   const [password, setPassword] = useState(""); // The user's password.
   const [type, setType] = useState<string>(""); // The user's type (Student, Parent, Teacher, Institution).
+  const { setIsVerified } = useVerificationStore();
 
   /**
    * postDataToSupabase is a function that posts the user's data to Supabase.
@@ -83,6 +85,38 @@ export function SignUpForm({
 
     const user = data.user;
     console.log("Signed up successfully:", user);
+    setIsVerified(false);
+
+    // Fetch the security_id from the 'users' table using the user ID
+    if (!user) {
+      console.error("User is null. Signup failed.");
+      return;
+    }
+
+    async function fetchAndStoreSecurityId(userId: string) {
+      const { data: userData, error: fetchError } = await supabase
+        .from("users")
+        .select("security_id")
+        .eq("id", userId)
+        .single();
+
+      if (fetchError) {
+        console.error("Error fetching security_id:", fetchError.message);
+        return;
+      }
+
+      const securityId = userData?.security_id;
+
+      if (securityId) {
+        // Store the security_id in localStorage
+        localStorage.setItem("security_id", securityId);
+        console.log("Security ID stored in localStorage:");
+        localStorage.setItem("email", email);
+        console.log("Email stored in localStorage:", email);
+      } else {
+        console.error("Security ID not found for user.");
+      }
+    }
 
     if (!user?.id) {
       console.error("User ID is missing. Signup failed.");
@@ -106,13 +140,14 @@ export function SignUpForm({
     ]);
 
     if (insertError) {
-      console.error("Error inserting user details:", insertError.message);
+      toast("Error inserting user details", {
+        description: `Please try again, ${insertError.message}`,
+        action: { label: "Okay", onClick: () => console.log("Okay") },
+      });
       return;
     }
 
     console.log("User details inserted successfully!");
-
-    // Success toast and redirect
     toast("Signed up successfully", {
       description: new Date().toLocaleString("en-US", {
         weekday: "long",
@@ -124,10 +159,11 @@ export function SignUpForm({
         hour12: true,
       }),
       action: {
-        label: "Confirm email",
+        label: "Login",
         onClick: () => (window.location.href = "/auth/login"),
       },
     });
+    fetchAndStoreSecurityId(user.id);
     setTimeout(() => {
       window.location.href = "/auth/login";
     }, 2500);
@@ -295,7 +331,14 @@ export function SignUpForm({
               width={400}
               height={400}
               className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
-              style={{ width: "100% !important", height: "100% !important" }}
+              style={{
+                width: "100% !important",
+                height: "100% !important",
+                cursor: "pointer",
+              }}
+              onClick={() => {
+                window.location.href = "/";
+              }}
             />
           </div>
         </CardContent>

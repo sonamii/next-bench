@@ -59,7 +59,7 @@ export default function Callback() {
   useEffect(() => {
     if (!emailLocalStorage) {
       toast("No Session Found", {
-        description: `Redirecting in 1.5 seconds`,
+        description: `Login first`,
         action: {
           label: "Login",
           onClick: () => (window.location.href = "/auth/login"),

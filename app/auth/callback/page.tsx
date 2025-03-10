@@ -84,6 +84,7 @@ export default function Callback() {
     window.location.href = "/auth/login";
     // Clear the email from local storage
     localStorage.setItem("email", "");
+    localStorage.setItem("security_id", "");
   };
 
   /**
@@ -202,8 +203,8 @@ export default function Callback() {
         {/* The release date is a string that is displayed at the bottom of the page */}
         <div className="releaseDate fade-item">
           {/* The release date icon is an Info icon */}
-          <Info size={15} style={{ marginRight: "5px" }} /> This is your user
-          id, copy it now and use it to verify your account.
+          <Info size={15} style={{ marginRight: "5px" }} /> This is your
+          security id, copy it now and use it to verify your account.
         </div>
       </div>
     );

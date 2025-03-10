@@ -69,7 +69,6 @@ export function LoginForm({
           // If the sign in is successful, log the user to the console and set the isVerified flag to false
           console.log("Logged in successfully:", data.user);
           setIsVerified(false);
-          localStorage.setItem("security_id", "");
 
           // Store the user's email in local storage
           if (data.user.email) {
@@ -99,7 +98,7 @@ export function LoginForm({
       if (error) {
         console.error("Error getting session:", error.message);
       } else if (data.session) {
-        toast("User already logged in as", {
+        toast("User already signed in as", {
           description: `${data.session.user.email}`,
           action: {
             label: "Dashboard",
@@ -110,6 +109,11 @@ export function LoginForm({
     });
   }, []);
 
+  function googleLogin() {
+    toast("Authorization failed", {
+      description: `Unable to authorize with Google`,
+    });
+  }
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card className="overflow-hidden p-0 cardContainer">
@@ -203,12 +207,13 @@ export function LoginForm({
                   }}
                 >
                   <ArrowLeft />
-                  <span className="sr-only">Login with Apple</span>
+                  <span className="sr-only">Back</span>
                 </Button>
                 <Button
                   variant="outline"
                   className="w-full"
                   style={{ cursor: "pointer" }}
+                  onClick={googleLogin}
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                     <path
@@ -222,6 +227,9 @@ export function LoginForm({
                   variant="outline"
                   className="w-full"
                   style={{ cursor: "pointer" }}
+                  onClick={() => {
+                    window.location.href = "/";
+                  }}
                 >
                   <Image
                     src="/logo.png"
@@ -241,7 +249,14 @@ export function LoginForm({
               width={400}
               height={400}
               className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
-              style={{ width: "100% !important", height: "100% !important" }}
+              style={{
+                width: "100% !important",
+                height: "100% !important",
+                cursor: "pointer",
+              }}
+              onClick={() => {
+                window.location.href = "/";
+              }}
             />
           </div>
         </CardContent>
