@@ -29,7 +29,7 @@ export default function Callback() {
     if (!isVerified) {
       // Show a toast message and redirect in 3 seconds.
       toast("Account not verified", {
-        description: `Redirecting in 3 seconds`,
+        description: `Redirecting in 2 seconds`,
         action: {
           label: "Login",
           onClick: () => (window.location.href = "/auth/login"),
@@ -38,7 +38,7 @@ export default function Callback() {
 
       setTimeout(() => {
         window.location.href = "/security/verify";
-      }, 3000);
+      }, 1700);
     }
   }, [isVerified]);
 

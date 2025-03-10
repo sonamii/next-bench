@@ -14,6 +14,7 @@ import Avvvatars from "avvvatars-react";
 import { marked } from "marked";
 import { useVerificationStore } from "@/store/verificationStore";
 import { toast } from "sonner";
+import Link from "next/link";
 
 /**
  * The main page for NextAI, containing a chat interface for users to interact
@@ -176,12 +177,10 @@ export default function AiPage() {
     }
   };
 
-
-  
   /**
    * Retrieves the user's email from localStorage and sets it to the local state.
    * Logs the retrieved email to the console.
-   * 
+   *
    * @function useEffect
    */
   useEffect(() => {
@@ -191,12 +190,12 @@ export default function AiPage() {
 
   /**
    * useEffect hook to handle user verification and login status.
-   * 
+   *
    * If the user's account is not verified, a toast notification is shown,
    * and the user is redirected to the login page after a delay.
    * If the account is verified, a toast notification is shown allowing the
    * user to chat with NextAI.
-   * 
+   *
    * @dependency isVerified - The verification status of the user's account.
    */
   useEffect(() => {
@@ -264,6 +263,13 @@ export default function AiPage() {
               {/* Text that says "Start a conversation with NextAI" */}
               <div className="textBottom fade-item">
                 Start a conversation with NextAI
+              </div>
+              <div className="space-xxs"></div>
+
+              <div className="textBottom fade-item">
+                <Link href={"/ai/old"} style={{ textDecoration: "none" }} onMouseOver={(e) => e.currentTarget.style.textDecoration = "underline"} onMouseOut={(e) => e.currentTarget.style.textDecoration = "none"}>
+                  <b>Try UI-v1</b>
+                </Link>
               </div>
             </div>
             {/* Chat response section that contains the chat messages */}

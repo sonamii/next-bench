@@ -21,7 +21,7 @@ const PageWrapper = ({ children }: { children: ReactNode }) => {
       animate={{ opacity: 1 }} // Animate state
       transition={{ duration: 0.5 }} // Transition prop
     >
-      {children} // Render the wrapped content
+      {children}
     </motion.div>
   );
 };
