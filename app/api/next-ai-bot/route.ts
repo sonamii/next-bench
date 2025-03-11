@@ -6,7 +6,7 @@ const API_KEY = process.env.NEXT_PUBLIC_MISTRAL_API_KEY;
 /**
  * RequestBody represents the structure of the request payload.
  *
- * It contains a single property `message` which is a string 
+ * It contains a single property `message` which is a string
  * expected to be sent in the request.
  */
 interface RequestBody {
@@ -24,10 +24,9 @@ interface AIResponse {
   choices: { message: { content: string } }[];
 }
 
-
 /**
  * RequestBody represents the structure of the request payload.
- * It contains a single property `message` which is a string 
+ * It contains a single property `message` which is a string
  * expected to be sent in the request.
  */
 interface RequestBody {
@@ -91,10 +90,11 @@ It allows users to explore, compare, and evaluate schools based on <b>location, 
 
 <b>Next Bench simplifies school selection, making the process faster, smarter, and stress-free for parents.</b>  
 - 🛠 <b>Created by Sonamii</b> to assist users on <b>Next Bench</b>.  
-- 💡 Your job is to <b>help users navigate and use Next Bench</b> effectively.  
-- 🔍 Use <b>short, clear paragraphs</b> with <b>line breaks</b> for readability.  
+- 💡 Your job is to <b>help users navigate and use Next Bench and answer study questions</b> effectively.  
+- 🔍 Use <b>short, clear paragraphs</b> with <b>line breaks important</b> and bold,italics,underline for readability.  
 - 😊 Include <b>friendly emojis</b> for engagement.  
-- 🛑 If a user asks something unrelated, politely inform them that you only assist with education prompts only.  
+- 🛑 If a user asks something UNRELATED, politely give a very brief introduction of what they asked and then say you can only assist with education,study and Next Bench.
+- ⚒️ The team is planning to release the site in 3 months.  
 
 <b>Next Bench is your one-stop solution for all school-related queries and assistance.</b>  
 - 🌟 <b>User-Friendly Interface</b> - Easy to navigate and use.  

@@ -47,20 +47,8 @@ export default function Callback() {
     setTimeout(() => setIsVisible(true), 100);
   }, []);
 
-  // Retrieve email from localStorage
-  const [emailLocalStorage, setEmailLocalStorage] = useState("");
   useEffect(() => {
-    const storedEmail = localStorage.getItem("email") as string;
-    if (storedEmail) {
-      setEmailLocalStorage(storedEmail);
-    }
-  }, []);
-
-  //! ALWAYS KEEP THIS PAGE OPEN FOR ADMINS (MAY REMOVE)
-
-  // Effect to handle session check and verification status
-  useEffect(() => {
-    if (!emailLocalStorage) {
+    if (localStorage.getItem("security_id") === null) {
       toast("No Session Found", {
         description: `Login first`,
         action: {
@@ -69,18 +57,19 @@ export default function Callback() {
         },
       });
     } else {
-      if (isVerified && !isVerificationSuccessDone) {
-        toast("You are already verified as", {
-          description: `${emailLocalStorage}`,
-          action: {
-            label: "Dashboard",
-            onClick: () => (window.location.href = "/dashboard"),
-          },
-        });
+      if (isVerified) {
+        alert(
+          `You are already verified as ${localStorage.getItem(
+            "email"
+          )}. Redirecting to dashboard...`
+        );
+        setTimeout(() => {
+          window.location.href = "/dashboard";
+        }, 200);
         setIsVerificationSuccessDone(true);
       }
     }
-  }, [isVerified]);
+  }, []);
 
   // Effect to get user ID from session
   /**
@@ -173,15 +162,16 @@ export default function Callback() {
     }
   };
 
-  
   return (
     <div className={`containerMain ${isVisible ? "fade-in" : ""}`}>
       {/* Logo */}
-      <Link href={"/"}>
-        <div className="logo fade-item">
-          <Image src="/logoMain.svg" alt="Logo" width={25} height={25} />
-        </div>
-      </Link>
+      <button
+        onClick={() => (window.location.href = "/")}
+        className="logo fade-item"
+        style={{ cursor: "pointer" }}
+      >
+        <Image src="/logoMain.svg" alt="Logo" width={25} height={25} />
+      </button>
       {/* Space between logo and text */}
       <div className="space-xs"></div>
       {/* Text for security check description */}
@@ -208,12 +198,11 @@ export default function Callback() {
         <Input
           type="email"
           className="input fade-item"
-          placeholder="Enter your email"
+          placeholder="Login first or Enter your email"
           onChange={(e) => setEmail(e.target.value)}
           value={email}
           required
         />
-        {/* Security ID input */}
 
         {/* Button container */}
         <div className="buttonContainer">
@@ -225,10 +214,10 @@ export default function Callback() {
           <div
             className="button2"
             onClick={() => {
-              window.location.href = "/auth/callback";
+              window.location.href = "/auth/login";
             }}
           >
-            Forgot?
+            Login?
           </div>
         </div>
       </div>

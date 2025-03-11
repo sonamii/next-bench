@@ -158,8 +158,8 @@ body {
 }
 
 .button {
-    min-height: 40px;
-    padding-inline: 13px;
+    min-height: 45px;
+    padding-inline: 15px;
     border-radius: 10px;
     align-items: center;
     justify-content: center;
@@ -177,6 +177,54 @@ body {
     &:hover {
         background-color: #1d1e1e;
     }
+}
+
+.buttonS {
+    min-height: 45px;
+    padding-inline: 13px;
+    border-radius: 10px;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    position: relative;
+    font-family: "CG";
+    font-weight: 500;
+    font-size: 14px;
+    color: #3a3a3a;
+    background-color: #f8f9fa;
+    border: 1px solid #e9ecf0 !important;
+    cursor: pointer;
+    transition: 0.3s !important;
+
+    &:hover {
+        background-color: #e6ebf0;
+    }
+}
+
+.isVerifiedButton {
+    min-height: 40px;
+    min-width: 40px;
+    border-radius: 100%;
+    align-items: center;
+    justify-content: center;
+    display: none;
+    position: relative;
+    font-weight: 400;
+    font-size: 14px;
+    color: #e84272;
+    background-color: #f5dada;
+    cursor: pointer;
+    transition: 0.3s !important;
+
+    &:hover {
+        background-color: #eec8c8;
+    }
+}
+
+
+
+.grow-wobble {
+    animation: growAndWobble 1s ease-in-out infinite;
 }
 
 .releaseDate {
@@ -198,6 +246,56 @@ body {
     font-weight: 550;
 }
 
+.members {
+    display: flex;
+    position: relative;
+    width: fit-content;
+    padding-left: 3px;
+    padding-right: 3px;
+    border-radius: 50px;
+    height: 30px;
+    border: 1px solid #e9ecf0;
+    background-color: #f8f9fa;
+    align-items: center;
+    justify-content: center;
+    font-family: "CG", sans-serif;
+    color: #666;
+    line-height: 1em;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.members .pfp {
+    width: 25px;
+    height: 25px;
+    border-radius: 100%;
+    background-color: transparent;
+    margin-right: 5px;
+    overflow: hidden;
+}
+
+.members .buttonM {
+    width: 23px !important;
+    height: 23px !important;
+    border-radius: 50px;
+    background-color: #f7cfd7;
+    color: #ff4d6d;
+    margin-left: 15px;
+    overflow: hidden;
+    display: flex;
+    font-family: "Plus Jakarta Sans", sans-serif;
+    font-size: 11px !important;
+    position: relative;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: 0.3s;
+
+    &:hover {
+        background-color: #f1bdc7;
+    }
+
+}
 
 @media (max-width: 700px) {
     body {

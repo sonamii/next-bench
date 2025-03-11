@@ -152,7 +152,9 @@
       padding: 10px 15px;
       border-radius: 8px;
       background-color: #b8ff33;
+      border: 0px !important;
       color: #0c0c0c;
+      font-weight: 450;
       display: flex;
       position: relative;
       cursor: pointer;

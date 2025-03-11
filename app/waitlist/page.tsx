@@ -27,7 +27,6 @@ export default function Waitlist() {
     setTimeout(() => setIsVisible(true), 100);
   }, []);
 
-
   /**
    * Sends a POST request to the API to send an email to the user.
    *
@@ -83,11 +82,13 @@ export default function Waitlist() {
       {/* The main container for the page. */}
       <div className={`containerMain ${isVisible ? "fade-in" : ""}`}>
         {/* The logo of the site. */}
-        <Link href="/">
-          <div className="logo fade-item">
-            <Image src="./logoMain.svg" alt="Logo" width={25} height={25} />
-          </div>
-        </Link>
+        <button
+          onClick={() => (window.location.href = "/")}
+          className="logo fade-item"
+          style={{ cursor: "pointer" }}
+        >
+          <Image src="./logoMain.svg" alt="Logo" width={25} height={25} />
+        </button>
         <div className="space-s"></div>
         {/* The top text on the page. */}
         <div className="textTop fade-item">

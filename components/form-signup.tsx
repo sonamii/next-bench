@@ -170,19 +170,15 @@ export function SignUpForm({
   }
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data, error }) => {
-      if (error) {
-        console.error("Error getting session:", error.message);
-      } else if (data.session) {
-        toast("User already logged in as", {
-          description: `${data.session.user.email}`,
-          action: {
-            label: "Dashboard",
-            onClick: () => (window.location.href = "/"),
-          },
-        });
-      }
-    });
+    if (localStorage.getItem("email")) {
+      toast("User already signed in as", {
+        description: `${localStorage.getItem("email")}`,
+        action: {
+          label: "Dashboard",
+          onClick: () => (window.location.href = "/dashboard"),
+        },
+      });
+    }
   }, []);
 
   /**

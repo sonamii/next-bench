@@ -40,8 +40,6 @@ export default function Waitlist() {
     setTimeout(() => setIsVisible(true), 100);
   }, []);
 
-
-
   /**
    * Updates the user's email address using Supabase authentication.
    * - If no new email is entered, it displays an error message.
@@ -84,12 +82,14 @@ export default function Waitlist() {
       {/* The containerMain div is used to contain all the content. */}
       <div className={`containerMain ${isVisible ? "fade-in" : ""}`}>
         {/* The logo div is used to display the logo. */}
-        <Link href="/">
-          <div className="logo fade-item">
-            {/* The Image component is used to display the logo image. */}
-            <Image src="/logoMain.svg" alt="Logo" width={25} height={25} />
-          </div>
-        </Link>
+        <button
+          className="logo fade-item"
+          onClick={() => (window.location.href = "/")}
+          style={{ cursor: "pointer" }}
+        >
+          {/* The Image component is used to display the logo image. */}
+          <Image src="/logoMain.svg" alt="Logo" width={25} height={25} />
+        </button>
         {/* The space-s div is used to add a small gap between the logo and the content. */}
         <div className="space-s"></div>
         {/* The textTop div is used to display the main text. */}

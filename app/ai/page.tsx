@@ -60,21 +60,12 @@ export default function AiPage() {
     setEmail(emailLocal || "");
   }, []);
 
-  // Sets the color of the particles animation based on the theme.
-  // If the theme is dark, the color is set to #ff0000.
-  // If the theme is light, the color is also set to #ff0000.
-  // Logs the current color to the console.
   useEffect(() => {
     setColor(resolvedTheme === "dark" ? "#ff0000" : "#ff0000");
     console.log(color);
   }, [resolvedTheme]);
 
-  /**
-   * Sets the visibility state to true after 100ms.
-   *
-   * This delay is used to ensure any animations or initial renders
-   * do not appear abruptly, providing a smoother transition effect.
-   */
+  
   useEffect(() => {
     setTimeout(() => setIsVisible(true), 100);
   }, []);
@@ -84,6 +75,7 @@ export default function AiPage() {
    * updates. This is used to keep the chat log scrolled to the bottom
    * after the user sends a message or the AI responds.
    */
+
   useEffect(() => {
     const scrollBottom = document.getElementById("scrollBottom");
     if (scrollBottom) {
@@ -103,6 +95,7 @@ export default function AiPage() {
    * @function onSendMessage
    * @returns {void}
    */
+  
   const onSendMessage = async () => {
     const chatCont = document.querySelector(".chatCont");
     if (window.innerWidth < 500 && chatCont) {
@@ -354,7 +347,7 @@ export default function AiPage() {
                         className="w-[30px] h-[30px] rounded-l object-cover"
                         style={{ animation: "fadeInUp 0.6s ease-out" }}
                       >
-                        <Avvvatars value={email} />
+                        <Avvvatars value={emailLocal.split("@")[0]} />
                       </div>
                     )}
                   </div>

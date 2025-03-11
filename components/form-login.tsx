@@ -45,6 +45,29 @@ export function LoginForm({
    * `/auth/callback` page. If the sign in fails, an error message will
    * be displayed to the user.
    */
+  async function fetchAndStoreSecurityId(userId: string) {
+    const { data: userData, error: fetchError } = await supabase
+      .from("users")
+      .select("security_id")
+      .eq("id", userId)
+      .single();
+
+    if (fetchError) {
+      console.error("Error fetching security_id:", fetchError.message);
+      return;
+    }
+
+    const securityId = userData?.security_id;
+
+    if (securityId) {
+      // Store the security_id in localStorage
+      localStorage.setItem("security_id", securityId);
+      console.log("Security ID stored in localStorage:");
+    } else {
+      console.error("Security ID not found for user.");
+    }
+  }
+
   function getDataFromSupabase() {
     // Log the email and password to the console
 
@@ -73,6 +96,7 @@ export function LoginForm({
           // Store the user's email in local storage
           if (data.user.email) {
             localStorage.setItem("email", data.user.email);
+            fetchAndStoreSecurityId(data.user.id);
           }
 
           // Display a success message to the user
@@ -92,21 +116,16 @@ export function LoginForm({
       });
   }
 
-  // Check for current session when the component mounts
   useEffect(() => {
-    supabase.auth.getSession().then(({ data, error }) => {
-      if (error) {
-        console.error("Error getting session:", error.message);
-      } else if (data.session) {
-        toast("User already signed in as", {
-          description: `${data.session.user.email}`,
-          action: {
-            label: "Dashboard",
-            onClick: () => (window.location.href = "/"),
-          },
-        });
-      }
-    });
+    if (localStorage.getItem("email")) {
+      toast("User already signed in as", {
+        description: `${localStorage.getItem("email")}`,
+        action: {
+          label: "Dashboard",
+          onClick: () => (window.location.href = "/dashboard"),
+        },
+      });
+    }
   }, []);
 
   function googleLogin() {
