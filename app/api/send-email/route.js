@@ -1,7 +1,4 @@
 import { Resend } from "resend";
-import getConfig from "next/config";
-const { serverRuntimeConfig } = getConfig();
-
 
 /**
  * Handles the POST request to send an email to the host.
@@ -15,13 +12,10 @@ export async function POST(req) {
 
     // Validate the user email
     if (!userEmail || !userEmail.includes("@") || !userEmail.includes(".")) {
-      return new Response(
-        JSON.stringify({ error: "Invalid email address" }),
-        {
-          // Return a 400 status code
-          status: 400,
-        }
-      );
+      return new Response(JSON.stringify({ error: "Invalid email address" }), {
+        // Return a 400 status code
+        status: 400,
+      });
     }
 
     // Create a Resend client instance
@@ -30,7 +24,7 @@ export async function POST(req) {
     // Send the email
     const data = await resend.emails.send({
       from: "notify@resend.dev",
-      to: serverRuntimeConfig.PRIVATE_EMAIL, // Email address of the host
+      to: process.env.NEXT_PUBLIC_PRIVATE_EMAIL, // Email address of the host
       subject: "Subscription Added",
       html: `<p>A new subscription to Next-Bench has been added. User: ${userEmail}</p>`,
     });

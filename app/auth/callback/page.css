@@ -300,3 +300,49 @@ body {
         flex-direction: column;
     }
 }
+
+
+.copyButtonDown {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 100px;
+    height: 30px;
+    background-color: #cfd1d480;
+    border: 1px solid #cfd1d480;
+    border-radius: 7px;
+    cursor: pointer;
+    transition: 0.3s;
+    color: #666;
+    font-family: "CG", sans-serif;
+    font-weight: 450;
+    font-size: 15px;
+
+    &:hover {
+        background-color: #b5b5b685;
+        border: 1px solid #cfd1d485;
+    }
+
+    .copyButtonIcon {
+        animation: wobble 1.4s ease-in-out infinite;
+    }
+}
+
+@media (max-width: 450px) {
+    body {
+        background-size: 250%;
+
+    }
+
+    .codeBlock {
+        padding-right: 15px !important;
+    }
+
+    .codeBlock .copyButton {
+        display: none;
+    }
+
+    .copyButtonDown {
+        display: flex;
+    }
+}

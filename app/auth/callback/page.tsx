@@ -119,11 +119,20 @@ export default function Callback() {
             </div>
           </div>
           {/* The logout button is a button that deletes the session and logs the user out */}
+
           <div className="button" onClick={deleteSessionAndLogout}>
             Logout
           </div>
+          <div
+            className="copyButtonDown"
+            onClick={() => (window.location.href = "/security/verify")}
+          >
+            {/* The copy button icon is a Copy icon */}
+            Click to verify
+          </div>
         </div>
         <div className="space-xs"></div>
+
         {/* The release date is a string that is displayed at the bottom of the page */}
         <div className="releaseDate fade-item">
           {/* The release date icon is an Info icon */}
