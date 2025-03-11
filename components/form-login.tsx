@@ -11,11 +11,13 @@ import { useState } from "react";
 import supabase from "./../services/supabase";
 import { toast } from "sonner";
 import { useVerificationStore } from "@/store/verificationStore";
+import { useAdminVerificationStore } from "@/store/adminVerificationStore";
 import {
   HoverCard,
   HoverCardContent,
   HoverCardTrigger,
 } from "@/components/ui/hover-card";
+import { useEffect } from "react";
 /**
  * LoginForm component
  *
@@ -34,7 +36,8 @@ export function LoginForm({
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const { setIsVerified } = useVerificationStore();
-  
+  const { setIsAdminVerified } = useAdminVerificationStore();
+
   /**
    * This function is called when the user clicks the "LogIn" button.
    * It will call the {@link supabase.auth.signInWithPassword} method
@@ -44,8 +47,32 @@ export function LoginForm({
    * `/auth/callback` page. If the sign in fails, an error message will
    * be displayed to the user.
    */
+  async function fetchAndStoreSecurityId(userId: string) {
+    const { data: userData, error: fetchError } = await supabase
+      .from("users")
+      .select("security_id")
+      .eq("id", userId)
+      .single();
+
+    if (fetchError) {
+      console.error("Error fetching security_id:", fetchError.message);
+      return;
+    }
+
+    const securityId = userData?.security_id;
+
+    if (securityId) {
+      // Store the security_id in localStorage
+      localStorage.setItem("security_id", securityId);
+      console.log("Security ID stored in localStorage:");
+    } else {
+      console.error("Security ID not found for user.");
+    }
+  }
+
   function getDataFromSupabase() {
     // Log the email and password to the console
+
     console.log(`Email: ${email}`);
     console.log(`Password: ${password}`);
 
@@ -67,11 +94,16 @@ export function LoginForm({
           // If the sign in is successful, log the user to the console and set the isVerified flag to false
           console.log("Logged in successfully:", data.user);
           setIsVerified(false);
+          setIsAdminVerified(false);
 
           // Store the user's email in local storage
-          if (data.user.email) {
-            localStorage.setItem("email", data.user.email);
-          }
+          // if (data.user.email) {
+          //   localStorage.setItem("email", data.user.email);
+          //   fetchAndStoreSecurityId(data.user.id);
+          // }
+
+          localStorage.setItem("email", email);
+          fetchAndStoreSecurityId(data.user.id);
 
           // Display a success message to the user
           toast("Logged in successfully", {
@@ -90,6 +122,23 @@ export function LoginForm({
       });
   }
 
+  useEffect(() => {
+    if (localStorage.getItem("email")) {
+      toast("User already signed in as", {
+        description: `${localStorage.getItem("email")}`,
+        action: {
+          label: "Dashboard",
+          onClick: () => (window.location.href = "/dashboard"),
+        },
+      });
+    }
+  }, []);
+
+  function googleLogin() {
+    toast("Authorization failed", {
+      description: `Unable to authorize with Google`,
+    });
+  }
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card className="overflow-hidden p-0 cardContainer">
@@ -183,12 +232,13 @@ export function LoginForm({
                   }}
                 >
                   <ArrowLeft />
-                  <span className="sr-only">Login with Apple</span>
+                  <span className="sr-only">Back</span>
                 </Button>
                 <Button
                   variant="outline"
                   className="w-full"
                   style={{ cursor: "pointer" }}
+                  onClick={googleLogin}
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                     <path
@@ -202,6 +252,9 @@ export function LoginForm({
                   variant="outline"
                   className="w-full"
                   style={{ cursor: "pointer" }}
+                  onClick={() => {
+                    window.location.href = "/";
+                  }}
                 >
                   <Image
                     src="/logo.png"
@@ -221,7 +274,14 @@ export function LoginForm({
               width={400}
               height={400}
               className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
-              style={{ width: "100% !important", height: "100% !important" }}
+              style={{
+                width: "100% !important",
+                height: "100% !important",
+                cursor: "pointer",
+              }}
+              onClick={() => {
+                window.location.href = "/";
+              }}
             />
           </div>
         </CardContent>

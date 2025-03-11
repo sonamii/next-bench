@@ -35,6 +35,10 @@ body {
     box-sizing: border-box;
 }
 
+.input-placeholder::placeholder {
+    color: #aaa;
+}
+
 .space-s {
     display: flex;
     position: relative;
@@ -186,8 +190,9 @@ body {
     display: flex;
     align-items: center;
     gap: 5px;
-    padding-inline: 15px;
-    width: 300px;
+    padding-left: 15px;
+    min-width: 302px;
+    max-width: 302px;
     padding-right: 15px;
     height: 40px;
     background-color: #fff;
@@ -295,5 +300,12 @@ body {
 @media (max-width: 700px) {
     body {
         background-size: 270%;
+    }
+}
+
+@media (max-width:500px) {
+    body {
+        height: 100svh;
+
     }
 }

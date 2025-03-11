@@ -160,7 +160,7 @@ export default function Home() {
       <div className="background"></div>
       {/* HEADER WITH RELEASE CODE*/}
       <div className="header">
-        <code className="releaseCode">&nbsp;v0.1.0.alpha-3</code>
+        <code className="releaseCode">&nbsp;v0.1.0.beta-1</code>
         released. SignUp Now!
       </div>
       {/* NAVBAR START*/}
@@ -387,12 +387,12 @@ export default function Home() {
             <div className="userContainer fade-item">
               {/* USER ITEM */}
               <div className="item">
-                <div className="text">200+</div>
+                <div className="text">800+</div>
                 <div className="bottomText">User Views</div>
               </div>
               {/* USER ITEM */}
               <div className="item bordered">
-                <div className="text">10+</div>
+                <div className="text">80+</div>
                 <div className="bottomText">Active Users</div>
               </div>
               {/* USER ITEM */}
@@ -501,12 +501,12 @@ export default function Home() {
             <div className="userContainer userContainer2 fade-item">
               {/* USER ITEM */}
               <div className="item">
-                <div className="text">200+</div>
+                <div className="text">800+</div>
                 <div className="bottomText">User Views</div>
               </div>
               {/* USER ITEM */}
               <div className="item bordered">
-                <div className="text">10+</div>
+                <div className="text">80+</div>
                 <div className="bottomText">Active Users</div>
               </div>
 

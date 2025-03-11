@@ -119,6 +119,7 @@ body {
     align-items: center;
     justify-content: center;
     flex-direction: row;
+    flex-wrap: wrap;
 }
 
 .codeBlock {
@@ -158,8 +159,8 @@ body {
 }
 
 .button {
-    min-height: 40px;
-    padding-inline: 13px;
+    min-height: 45px;
+    padding-inline: 15px;
     border-radius: 10px;
     align-items: center;
     justify-content: center;
@@ -177,6 +178,76 @@ body {
     &:hover {
         background-color: #1d1e1e;
     }
+}
+
+.buttonS {
+    min-height: 45px;
+    padding-inline: 13px;
+    border-radius: 10px;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    position: relative;
+    font-family: "CG";
+    font-weight: 500;
+    font-size: 14px;
+    color: #3a3a3a;
+    background-color: #f8f9fa;
+    border: 1px solid #e9ecf0 !important;
+    cursor: pointer;
+    transition: 0.3s !important;
+
+    &:hover {
+        background-color: #e6ebf0;
+    }
+}
+
+.buttonA {
+    min-height: 45px;
+    padding-inline: 13px;
+    border-radius: 10px;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    position: relative;
+    font-family: "CG";
+    font-weight: 500;
+    font-size: 14px;
+    color: #355734;
+    background-color: #d4edda;
+    border: 0px solid #355734 !important;
+    cursor: pointer;
+    transition: 0.3s !important;
+
+    &:hover {
+        background-color: #c4e8cc;
+    }
+}
+
+.isVerifiedButton {
+    min-height: 40px;
+    min-width: 40px;
+    border-radius: 100%;
+    align-items: center;
+    justify-content: center;
+    display: none;
+    position: relative;
+    font-weight: 400;
+    font-size: 14px;
+    color: #e84272;
+    background-color: #f5dada;
+    cursor: pointer;
+    transition: 0.3s !important;
+
+    &:hover {
+        background-color: #eec8c8;
+    }
+}
+
+
+
+.grow-wobble {
+    animation: growAndWobble 1s ease-in-out infinite;
 }
 
 .releaseDate {
@@ -198,9 +269,120 @@ body {
     font-weight: 550;
 }
 
+.members {
+    display: flex;
+    position: relative;
+    width: fit-content;
+    padding-left: 3px;
+    padding-right: 3px;
+    border-radius: 50px;
+    height: 30px;
+    border: 1px solid #e9ecf0;
+    background-color: #f8f9fa;
+    align-items: center;
+    justify-content: center;
+    font-family: "CG", sans-serif;
+    color: #666;
+    line-height: 1em;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.members .pfp {
+    width: 25px;
+    height: 25px;
+    border-radius: 100%;
+    background-color: transparent;
+    margin-right: 5px;
+    overflow: hidden;
+}
+
+.members .buttonM {
+    width: 23px !important;
+    height: 23px !important;
+    border-radius: 50px;
+    background-color: #f7cfd7;
+    color: #ff4d6d;
+    margin-left: 15px;
+    overflow: hidden;
+    display: flex;
+    font-family: "Plus Jakarta Sans", sans-serif;
+    font-size: 11px !important;
+    position: relative;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: 0.3s;
+
+    &:hover {
+        background-color: #f1bdc7;
+    }
+
+}
 
 @media (max-width: 700px) {
     body {
         background-size: 270%;
     }
+}
+
+@media (max-width:500px) {
+    body {
+        height: 100svh;
+
+    }
+}
+
+.fade-in {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+.fade-item {
+    opacity: 0;
+    transform: translateY(30px);
+    animation: fadeInUp 0.6s ease-out forwards;
+}
+
+
+/* Stagger effect */
+.fade-item:nth-child(1) {
+    animation-delay: 0.15s;
+}
+
+.fade-item:nth-child(2) {
+    animation-delay: 0.3s;
+}
+
+.fade-item:nth-child(3) {
+    animation-delay: 0.45s;
+}
+
+.fade-item:nth-child(4) {
+    animation-delay: 0.6s;
+}
+
+.fade-item:nth-child(5) {
+    animation-delay: 0.75s;
+}
+
+.fade-item:nth-child(6) {
+    animation-delay: 0.9s;
+}
+
+.fade-item:nth-child(7) {
+    animation-delay: 1.05s;
+}
+
+.fade-item:nth-child(8) {
+    animation-delay: 1.35s;
+}
+
+.fade-item:nth-child(9) {
+    animation-delay: 1.5s;
+}
+
+.fade-item:nth-child(10) {
+    animation-delay: 1.65s;
 }
