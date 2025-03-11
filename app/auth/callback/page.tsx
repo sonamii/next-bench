@@ -5,6 +5,7 @@ import supabase from "@/services/supabase";
 import { useEffect } from "react";
 import { useState } from "react";
 import { Info } from "lucide-react";
+import { toast } from "sonner";
 
 /**
  * The Callback component is a client-side only page that is used to handle
@@ -54,10 +55,14 @@ export default function Callback() {
     // Redirect to login page or home page after logout
     window.location.href = "/auth/login";
     // Clear the email from local storage
-    useEffect(() => {
+    if (typeof localStorage !== "undefined") {
       localStorage.setItem("email", "U");
       localStorage.setItem("security_id", "");
-    }, []);
+      toast.success("Logged out successfully");
+    } else {
+      console.error("localStorage is not available");
+      toast.error("localStorage is not available");
+    }
   };
 
   /**
