@@ -5,8 +5,6 @@ import supabase from "@/services/supabase";
 import { useEffect } from "react";
 import { useState } from "react";
 import { Info } from "lucide-react";
-import { toast } from "sonner";
-import Link from "next/link";
 
 /**
  * The Callback component is a client-side only page that is used to handle
@@ -56,8 +54,10 @@ export default function Callback() {
     // Redirect to login page or home page after logout
     window.location.href = "/auth/login";
     // Clear the email from local storage
-    localStorage.setItem("email", "U");
-    localStorage.setItem("security_id", "");
+    useEffect(() => {
+      localStorage.setItem("email", "U");
+      localStorage.setItem("security_id", "");
+    }, []);
   };
 
   /**
@@ -69,11 +69,14 @@ export default function Callback() {
     setTimeout(() => setIsVisible(true), 100);
   }, []);
 
-  if (localStorage.getItem("security_id")) {
-    useEffect(() => {
-      setSecurityID(localStorage.getItem("security_id") as string);
-    }, []);
+  useEffect(() => {
+    const storedSecurityID = localStorage.getItem("security_id");
+    if (storedSecurityID) {
+      setSecurityID(storedSecurityID as string);
+    }
+  }, []);
 
+  if (securityID) {
     return (
       <div className={`containerMain ${isVisible ? "fade-in" : ""}`}>
         {/* The logo at the top of the page is a link to the homepage */}

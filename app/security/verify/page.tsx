@@ -8,7 +8,6 @@ import { CheckCircle2Icon } from "lucide-react";
 import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
 import { useVerificationStore } from "@/store/verificationStore";
-import Link from "next/link";
 
 /**
  * Security Verification Callback Component
@@ -67,6 +66,7 @@ export default function Callback() {
           window.location.href = "/dashboard";
         }, 200);
         setIsVerificationSuccessDone(true);
+        console.log(isVerificationSuccessDone);
       }
     }
   }, []);

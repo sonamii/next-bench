@@ -58,6 +58,7 @@ export default function AiPage() {
   useEffect(() => {
     const emailLocal = localStorage.getItem("email");
     setEmail(emailLocal || "");
+    console.log(email);
   }, []);
 
   useEffect(() => {
@@ -65,7 +66,6 @@ export default function AiPage() {
     console.log(color);
   }, [resolvedTheme]);
 
-  
   useEffect(() => {
     setTimeout(() => setIsVisible(true), 100);
   }, []);
@@ -95,7 +95,7 @@ export default function AiPage() {
    * @function onSendMessage
    * @returns {void}
    */
-  
+
   const onSendMessage = async () => {
     const chatCont = document.querySelector(".chatCont");
     if (window.innerWidth < 500 && chatCont) {

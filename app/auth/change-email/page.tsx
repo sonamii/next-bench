@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import supabase from "@/services/supabase";
 import { toast } from "sonner";
-import Link from "next/link";
 
 /**
  * The Waitlist component is a page that allows users to change their email

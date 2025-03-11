@@ -1,16 +1,9 @@
 "use client";
 import "./page.css";
 import Image from "next/image";
-import {
-  ArrowRight,
-  Info,
-  LayoutDashboard,
-  LucideLayoutDashboard,
-  SquareSigmaIcon,
-} from "lucide-react";
+import { ArrowRight, SquareSigmaIcon } from "lucide-react";
 import { useVerificationStore } from "@/store/verificationStore";
 import { Nav } from "@/custom-components/nav/nav";
-import Link from "next/link";
 import { toast } from "sonner";
 import { useEffect } from "react";
 import { useState } from "react";
