@@ -1,9 +1,10 @@
+"use client";
 import React from "react";
 import { ChevronDown, MenuIcon } from "lucide-react";
 import "./nav.css";
 import Image from "next/image";
 import { track } from "@vercel/analytics";
-
+import { useAdminVerificationStore } from "@/store/adminVerificationStore";
 /**
  * Props for the Nav component.
  *
@@ -23,7 +24,17 @@ interface NavProps {
  * - Middle Section: Contains a logo linking to the homepage.
  * - Right Section: Contains links to "Dashboard", "Sign Up", and a menu icon.
  */
-export const Nav = ({ className }: NavProps) => {
+export const Nav = ({ className = "" }: NavProps) => {
+  const [isClient, setIsClient] = React.useState(false);
+
+  React.useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  if (!isClient) {
+    return null;
+  }
+
   return (
     <div className={`nav ${className}`}>
       {/* Left Section */}

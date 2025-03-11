@@ -6,6 +6,7 @@ import { useEffect } from "react";
 import { useState } from "react";
 import { Info } from "lucide-react";
 import { toast } from "sonner";
+import { useVerificationStore } from "@/store/verificationStore";
 
 /**
  * The Callback component is a client-side only page that is used to handle
@@ -22,6 +23,7 @@ export default function Callback() {
   const [securityID, setSecurityID] = useState(
     "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
   );
+  const { setIsVerified } = useVerificationStore();
   const [isVisible, setIsVisible] = useState(false);
 
   /**
@@ -54,9 +56,11 @@ export default function Callback() {
 
     // Redirect to login page or home page after logout
     window.location.href = "/auth/login";
+    setIsVerified(false);
+    setSecurityID("");
     // Clear the email from local storage
     if (typeof localStorage !== "undefined") {
-      localStorage.setItem("email", "U");
+      localStorage.setItem("email", "");
       localStorage.setItem("security_id", "");
       toast.success("Logged out successfully");
     } else {
@@ -81,6 +85,21 @@ export default function Callback() {
     }
   }, []);
 
+  useEffect(() => {
+    const buttonCopyDown = document.getElementById("copyButtonDown");
+    if (buttonCopyDown) {
+      buttonCopyDown.addEventListener("click", () => {
+        window.location.href = "/security/verify";
+      });
+    }
+    return () => {
+      if (buttonCopyDown) {
+        buttonCopyDown.removeEventListener("click", () => {
+          window.location.href = "/security/verify";
+        });
+      }
+    };
+  }, []);
   if (securityID) {
     return (
       <div className={`containerMain ${isVisible ? "fade-in" : ""}`}>
@@ -125,6 +144,7 @@ export default function Callback() {
           </div>
           <div
             className="copyButtonDown"
+            id="copyButtonDown"
             onClick={() => (window.location.href = "/security/verify")}
           >
             {/* The copy button icon is a Copy icon */}

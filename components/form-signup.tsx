@@ -24,6 +24,7 @@ import { v4 as uuidv4 } from "uuid";
 import supabase from "./../services/supabase";
 import { useEffect } from "react";
 import { useVerificationStore } from "@/store/verificationStore";
+import { useAdminVerificationStore } from "@/store/adminVerificationStore";
 
 /**
  * The SignUpForm component is a form that allows users to sign up for a new
@@ -41,6 +42,7 @@ export function SignUpForm({
   const [password, setPassword] = useState(""); // The user's password.
   const [type, setType] = useState<string>(""); // The user's type (Student, Parent, Teacher, Institution).
   const { setIsVerified } = useVerificationStore();
+  const { setIsAdminVerified } = useAdminVerificationStore();
 
   /**
    * postDataToSupabase is a function that posts the user's data to Supabase.
@@ -86,6 +88,7 @@ export function SignUpForm({
     const user = data.user;
     console.log("Signed up successfully:", user);
     setIsVerified(false);
+    setIsAdminVerified(false);
 
     // Fetch the security_id from the 'users' table using the user ID
     if (!user) {

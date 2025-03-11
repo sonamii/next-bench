@@ -119,6 +119,7 @@ body {
     align-items: center;
     justify-content: center;
     flex-direction: row;
+    flex-wrap: wrap;
 }
 
 .codeBlock {
@@ -198,6 +199,28 @@ body {
 
     &:hover {
         background-color: #e6ebf0;
+    }
+}
+
+.buttonA {
+    min-height: 45px;
+    padding-inline: 13px;
+    border-radius: 10px;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    position: relative;
+    font-family: "CG";
+    font-weight: 500;
+    font-size: 14px;
+    color: #355734;
+    background-color: #d4edda;
+    border: 0px solid #355734 !important;
+    cursor: pointer;
+    transition: 0.3s !important;
+
+    &:hover {
+        background-color: #c4e8cc;
     }
 }
 

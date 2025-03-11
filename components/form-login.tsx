@@ -11,6 +11,7 @@ import { useState } from "react";
 import supabase from "./../services/supabase";
 import { toast } from "sonner";
 import { useVerificationStore } from "@/store/verificationStore";
+import { useAdminVerificationStore } from "@/store/adminVerificationStore";
 import {
   HoverCard,
   HoverCardContent,
@@ -35,6 +36,7 @@ export function LoginForm({
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const { setIsVerified } = useVerificationStore();
+  const { setIsAdminVerified } = useAdminVerificationStore();
 
   /**
    * This function is called when the user clicks the "LogIn" button.
@@ -92,12 +94,16 @@ export function LoginForm({
           // If the sign in is successful, log the user to the console and set the isVerified flag to false
           console.log("Logged in successfully:", data.user);
           setIsVerified(false);
+          setIsAdminVerified(false);
 
           // Store the user's email in local storage
-          if (data.user.email) {
-            localStorage.setItem("email", data.user.email);
-            fetchAndStoreSecurityId(data.user.id);
-          }
+          // if (data.user.email) {
+          //   localStorage.setItem("email", data.user.email);
+          //   fetchAndStoreSecurityId(data.user.id);
+          // }
+
+          localStorage.setItem("email", email);
+          fetchAndStoreSecurityId(data.user.id);
 
           // Display a success message to the user
           toast("Logged in successfully", {

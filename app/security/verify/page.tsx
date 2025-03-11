@@ -8,6 +8,7 @@ import { CheckCircle2Icon } from "lucide-react";
 import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
 import { useVerificationStore } from "@/store/verificationStore";
+import { useAdminVerificationStore } from "@/store/adminVerificationStore";
 
 /**
  * Security Verification Callback Component
@@ -25,6 +26,8 @@ export default function Callback() {
   );
   const [uidDatabase, setUidDatabase] = useState("");
   const { isVerified, setIsVerified } = useVerificationStore();
+  const { setIsAdminVerified } = useAdminVerificationStore();
+
   const [isVisible, setIsVisible] = useState(false);
   const [isVerificationSuccessDone, setIsVerificationSuccessDone] =
     useState(false);
@@ -110,7 +113,7 @@ export default function Callback() {
         // Fetch the user's id from the database using the security id and email
         const { data, error } = await supabase
           .from("users")
-          .select("id")
+          .select("id, type")
           .eq("security_id", securityId)
           .eq("email", email)
           .single();
@@ -129,16 +132,20 @@ export default function Callback() {
               description: `Redirecting to admin dashboard in 1.5 seconds`,
               action: { label: "Roger!", onClick: () => console.log("Okay") },
             });
-
+            setIsAdminVerified(true);
             // Redirect the user to the admin dashboard
             setTimeout(() => {
               window.location.href = "/admin/dashboard";
             }, 2500);
           } else {
             // Check if the user is the same as the one in the database
-            if (uidDatabase === data.id) {
+            if (uidDatabase === data.id && data.type) {
               // Set the isVerified state to true
               setIsVerified(true);
+
+              if (data.type === "ADMIN") {
+                setIsAdminVerified(true);
+              }
               // Display a success message to the user
               toast("Account Verified", {
                 description: `Redirecting in 1.5 seconds`,
@@ -198,10 +205,11 @@ export default function Callback() {
         <Input
           type="email"
           className="input fade-item"
-          placeholder="Login first or Enter your email"
+          placeholder="Enter your email/admin id or Login first "
           onChange={(e) => setEmail(e.target.value)}
           value={email}
           required
+          spellCheck="false"
         />
 
         {/* Button container */}

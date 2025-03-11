@@ -9,6 +9,7 @@ import { useEffect } from "react";
 import { useState } from "react";
 import supabase from "@/services/supabase";
 import Avvvatars from "avvvatars-react";
+import { useAdminVerificationStore } from "@/store/adminVerificationStore";
 
 /**
  * The main dashboard page.
@@ -20,6 +21,7 @@ import Avvvatars from "avvvatars-react";
 export default function Callback() {
   const { isVerified, setIsVerified } = useVerificationStore();
   const [emailLocal, setEmailLocal] = useState("");
+  const { isAdminVerified } = useAdminVerificationStore();
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
@@ -34,6 +36,7 @@ export default function Callback() {
   useEffect(() => {
     const isVerifiedButton = document.getElementById("isVerifiedButton");
     const verifiedContainer = document.getElementById("verifiedContainer");
+
     if (!isVerified) {
       // Show a toast message and redirect in 3 seconds.
       toast("Account not verified", {
@@ -73,18 +76,6 @@ export default function Callback() {
     }
   }, [isVerified]);
 
-  /**
-   * Deletes the current session and logs out the user.
-   *
-   * This function performs the following actions:
-   * 1. Signs out the user using Supabase authentication.
-   * 2. Logs an error message to the console if the sign-out process fails.
-   * 3. Logs a success message to the console if the sign-out process succeeds.
-   * 4. Redirects the user to the login page.
-   * 5. Clears the user's email and security ID from local storage.
-   *
-   * @returns {Promise<void>} A promise that resolves when the sign-out process is complete.
-   */
   const deleteSessionAndLogout = async () => {
     // Sign out the user
     const { error } = await supabase.auth.signOut();
@@ -94,7 +85,6 @@ export default function Callback() {
     }
     console.log("Signed out successfully");
 
-    // Redirect to login page or home page after logout
     window.location.href = "/auth/login";
     // Clear the email from local storage
     localStorage.setItem("email", "");
@@ -121,7 +111,7 @@ export default function Callback() {
         <div className="members fade-item">
           <div className="pfp" style={{ marginTop: "1px" }}>
             {" "}
-            <Avvvatars value={emailLocal.split("@")[0] || "U"} size={23} />
+            <Avvvatars value={emailLocal.split("@")[0] || "-"} size={23} />
           </div>
           <div id="verifiedContainer">You are not verified</div>
           <button className="buttonM" id="isVerifiedButton">
@@ -146,6 +136,14 @@ export default function Callback() {
           >
             Try NextAI
           </button>
+          {isVisible && isAdminVerified && (
+            <button
+              className="buttonA"
+              onClick={() => (window.location.href = "/admin/dashboard")}
+            >
+              Admin Dashboard
+            </button>
+          )}
         </div>
         <div className="space-xs"></div>
         {/* <div className="textBottom fade-item">{emailLocal}</div> */}
