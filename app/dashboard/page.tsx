@@ -21,7 +21,7 @@ import { useAdminVerificationStore } from "@/store/adminVerificationStore";
 export default function Callback() {
   const { isVerified, setIsVerified } = useVerificationStore();
   const [emailLocal, setEmailLocal] = useState("");
-  const { isAdminVerified } = useAdminVerificationStore();
+  const { isAdminVerified, setIsAdminVerified } = useAdminVerificationStore();
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
@@ -90,6 +90,7 @@ export default function Callback() {
     localStorage.setItem("email", "");
     localStorage.setItem("security_id", "");
     setIsVerified(false);
+    setIsAdminVerified(false);
   };
 
   return (

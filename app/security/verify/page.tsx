@@ -205,7 +205,7 @@ export default function Callback() {
         <Input
           type="email"
           className="input fade-item"
-          placeholder="Enter your email/admin id or Login first "
+          placeholder="Enter your email/admin id or LOGIN "
           onChange={(e) => setEmail(e.target.value)}
           value={email}
           required

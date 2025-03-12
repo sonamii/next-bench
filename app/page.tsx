@@ -96,7 +96,7 @@ export default function Home() {
       const { data, error } = await supabase.auth.getUser();
       if (error) {
         // If there is an error fetching the user, display an error message
-        toast.error("Error fetching user email: " + error.message);
+        toast.error("Error fetching user auth email: {no login found}");
       } else {
         // Check if the email has changed since the last login
         if (data?.user?.email != localStorage.getItem("email")) {

@@ -1,7 +1,7 @@
 "use client";
 import "./page.css";
 import Image from "next/image";
-import { AppWindowMacIcon, ArrowRight } from "lucide-react";
+import { AppWindowMacIcon, ArrowRight, X } from "lucide-react";
 import { useVerificationStore } from "@/store/verificationStore";
 import { Nav } from "@/custom-components/nav/nav";
 import { toast } from "sonner";
@@ -21,7 +21,7 @@ export default function Callback() {
   const { isVerified, setIsVerified } = useVerificationStore();
   const [emailLocal, setEmailLocal] = useState("");
   const [isVisible, setIsVisible] = useState(false);
-  const { isAdminVerified } = useAdminVerificationStore();
+  const { isAdminVerified, setIsAdminVerified } = useAdminVerificationStore();
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -88,7 +88,8 @@ export default function Callback() {
     localStorage.setItem("email", "");
     localStorage.setItem("security_id", "");
     setIsVerified(false);
-    window.location.href = "/auth/login";
+    setIsAdminVerified(false);
+    window.location.reload();
   };
 
   async function showUserData() {
@@ -235,19 +236,27 @@ export default function Callback() {
           <div className="members fade-item">
             <div className="pfp" style={{ marginTop: "1px" }}>
               {" "}
-              <Avvvatars value={emailLocal.split("@")[0] || "U"} size={23} />
+              <Avvvatars value={emailLocal.split("@")[0] || "-"} size={23} />
             </div>
             <div id="verifiedContainer">You are not verified</div>
             <button className="buttonM" id="isVerifiedButton">
-              <ArrowRight size={14} />
+              <X size={14} />
+            </button>
+          </div>
+          <div className="space-xs"></div>
+          <div className="buttonContainer fade-item">
+            <button
+              className="button "
+              onClick={() => window.location.assign("/")}
+            >
+              Home
             </button>
           </div>
           <div className="space-xxs"></div>
           <div className="space-xxs"></div>
 
           <div className="releaseDate fade-item">
-            <AppWindowMacIcon size={15} style={{ marginRight: "5px" }} />
-            Admin dashboard
+            😏 Why do you want to see the admin dashboard?
           </div>
         </div>
       </>
