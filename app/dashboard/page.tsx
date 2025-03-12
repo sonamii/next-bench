@@ -20,9 +20,9 @@ import { useAdminVerificationStore } from "@/store/adminVerificationStore";
  */
 export default function Callback() {
   const { isVerified, setIsVerified } = useVerificationStore();
-  const [emailLocal, setEmailLocal] = useState("");
   const { isAdminVerified, setIsAdminVerified } = useAdminVerificationStore();
   const [isVisible, setIsVisible] = useState(false);
+  const [emailLocal, setEmailLocal] = useState("");
 
   useEffect(() => {
     setTimeout(() => setIsVisible(true), 100);
@@ -112,7 +112,7 @@ export default function Callback() {
         <div className="members fade-item">
           <div className="pfp" style={{ marginTop: "1px" }}>
             {" "}
-            <Avvvatars value={emailLocal.split("@")[0] || "-"} size={23} />
+            <Avvvatars value={emailLocal.split("@")[0] || ""} size={23} />
           </div>
           <div id="verifiedContainer">You are not verified</div>
           <button className="buttonM" id="isVerifiedButton">
@@ -128,15 +128,18 @@ export default function Callback() {
           >
             Home
           </button>
-          <button className="button  " onClick={deleteSessionAndLogout}>
-            Logout
-          </button>
+          {isVerified && (
+            <button className="button  " onClick={deleteSessionAndLogout}>
+              Logout
+            </button>
+          )}
           <button
             className="buttonS"
             onClick={() => window.location.assign("/ai")}
           >
             Try NextAI
           </button>
+
           {isVisible && isAdminVerified && (
             <button
               className="buttonA"

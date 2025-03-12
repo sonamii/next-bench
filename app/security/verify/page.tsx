@@ -50,7 +50,7 @@ export default function Callback() {
   }, []);
 
   useEffect(() => {
-    if (localStorage.getItem("security_id") === null) {
+    if (localStorage.getItem("security_id") === "") {
       toast("No Session Found", {
         description: `Login first`,
         action: {

@@ -10,6 +10,7 @@ import { useState } from "react";
 import supabase from "@/services/supabase";
 import Avvvatars from "avvvatars-react";
 import { useAdminVerificationStore } from "@/store/adminVerificationStore";
+import { getIsLoggedInStatus } from "@/services/isLoggedIn";
 /**
  * The main dashboard page.
  *
@@ -200,6 +201,7 @@ export default function Callback() {
               <button className="buttonA" onClick={showUserData}>
                 View data analysis
               </button>
+              <button className="buttonB">Global Specific Logout</button>
             </div>
             <div className="space-xs"></div>
             {/* <div className="textBottom fade-item">{emailLocal}</div> */}
@@ -236,7 +238,7 @@ export default function Callback() {
           <div className="members fade-item">
             <div className="pfp" style={{ marginTop: "1px" }}>
               {" "}
-              <Avvvatars value={emailLocal.split("@")[0] || "-"} size={23} />
+              <Avvvatars value={emailLocal.split("@")[0] || ""} size={23} />
             </div>
             <div id="verifiedContainer">You are not verified</div>
             <button className="buttonM" id="isVerifiedButton">
