@@ -25,6 +25,7 @@ import supabase from "./../services/supabase";
 import { useEffect } from "react";
 import { useVerificationStore } from "@/store/verificationStore";
 import { useAdminVerificationStore } from "@/store/adminVerificationStore";
+import updateIsLoggedIn from "@/services/updateIsLoggedIn";
 
 /**
  * The SignUpForm component is a form that allows users to sign up for a new
@@ -87,6 +88,7 @@ export function SignUpForm({
 
     const user = data.user;
     console.log("Signed up successfully:", user);
+    updateIsLoggedIn(true);
     setIsVerified(false);
     setIsAdminVerified(false);
 

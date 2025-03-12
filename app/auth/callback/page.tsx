@@ -7,6 +7,7 @@ import { useState } from "react";
 import { Info } from "lucide-react";
 import { toast } from "sonner";
 import { useVerificationStore } from "@/store/verificationStore";
+import updateIsLoggedIn from "@/services/updateIsLoggedIn";
 
 /**
  * The Callback component is a client-side only page that is used to handle
@@ -46,6 +47,8 @@ export default function Callback() {
    * This function is called when the user clicks the "Log out" button.
    */
   const deleteSessionAndLogout = async () => {
+    updateIsLoggedIn(false);
+
     // Sign out the user
     const { error } = await supabase.auth.signOut();
     if (error) {
@@ -100,6 +103,7 @@ export default function Callback() {
       }
     };
   }, []);
+
   if (securityID) {
     return (
       <div className={`containerMain ${isVisible ? "fade-in" : ""}`}>

@@ -10,7 +10,7 @@ import { useState } from "react";
 import supabase from "@/services/supabase";
 import Avvvatars from "avvvatars-react";
 import { useAdminVerificationStore } from "@/store/adminVerificationStore";
-import { getIsLoggedInStatus } from "@/services/isLoggedIn";
+import updateIsLoggedIn from "@/services/updateIsLoggedIn";
 /**
  * The main dashboard page.
  *
@@ -18,6 +18,7 @@ import { getIsLoggedInStatus } from "@/services/isLoggedIn";
  *
  * @returns The dashboard page.
  */
+
 export default function Callback() {
   const { isVerified, setIsVerified } = useVerificationStore();
   const [emailLocal, setEmailLocal] = useState("");
@@ -80,6 +81,7 @@ export default function Callback() {
   }, [isVerified]);
 
   const deleteSessionAndLogout = async () => {
+    updateIsLoggedIn(false);
     const { error } = await supabase.auth.signOut();
     if (error) {
       console.error("Error signing out:", error);

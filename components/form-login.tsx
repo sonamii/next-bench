@@ -12,6 +12,7 @@ import supabase from "./../services/supabase";
 import { toast } from "sonner";
 import { useVerificationStore } from "@/store/verificationStore";
 import { useAdminVerificationStore } from "@/store/adminVerificationStore";
+import updateIsLoggedIn from "@/services/updateIsLoggedIn";
 import {
   HoverCard,
   HoverCardContent,
@@ -95,6 +96,7 @@ export function LoginForm({
           console.log("Logged in successfully:", data.user);
           setIsVerified(false);
           setIsAdminVerified(false);
+          updateIsLoggedIn(true);
 
           // Store the user's email in local storage
           // if (data.user.email) {
@@ -139,6 +141,7 @@ export function LoginForm({
       description: `Unable to authorize with Google`,
     });
   }
+
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card className="overflow-hidden p-0 cardContainer">
