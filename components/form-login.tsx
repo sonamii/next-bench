@@ -13,6 +13,7 @@ import { toast } from "sonner";
 import { useVerificationStore } from "@/store/verificationStore";
 import { useAdminVerificationStore } from "@/store/adminVerificationStore";
 import updateIsLoggedIn from "@/services/updateIsLoggedIn";
+import returnIsLoggedIn from "@/services/returnIsLoggedIn";
 import {
   HoverCard,
   HoverCardContent,
@@ -124,8 +125,23 @@ export function LoginForm({
       });
   }
 
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
   useEffect(() => {
-    if (localStorage.getItem("email")) {
+    const checkLoginStatus = async () => {
+      const result = await returnIsLoggedIn();
+      if (result !== null) {
+        setIsLoggedIn(result);
+      } else {
+        setIsLoggedIn(false);
+      }
+    };
+
+    checkLoginStatus();
+  }, []);
+
+  useEffect(() => {
+    if (localStorage.getItem("email") && isLoggedIn === true) {
       toast("User already signed in as", {
         description: `${localStorage.getItem("email")}`,
         action: {
@@ -133,8 +149,19 @@ export function LoginForm({
           onClick: () => (window.location.href = "/dashboard"),
         },
       });
+    } else if (isLoggedIn === false) {
+      toast("Recent logout detected", {
+        description: `Please login to continue`,
+        action: {
+          label: "Login",
+          onClick: () => (window.location.href = "/auth/login"),
+        },
+      });
+      setIsVerified(false);
+      setIsAdminVerified(false);
+      localStorage.setItem("security_id", "");
     }
-  }, []);
+  }, [isLoggedIn]);
 
   function googleLogin() {
     toast("Authorization failed", {

@@ -218,9 +218,9 @@ export default function AiPage() {
               onClick: () => (window.location.href = "/security/verify"),
             },
           });
-          setTimeout(() => {
-            window.location.href = "/security/verify";
-          }, 1500);
+          // setTimeout(() => {
+          //   window.location.href = "/security/verify";
+          // }, 1500);
         }, 500);
       } else if (!isVerified && !sessionExists) {
         // Show toast notification and redirect to login if not verified
@@ -232,9 +232,9 @@ export default function AiPage() {
               onClick: () => (window.location.href = "/auth/login"),
             },
           });
-          setTimeout(() => {
-            window.location.href = "/auth/login";
-          }, 1500);
+          // setTimeout(() => {
+          //   window.location.href = "/auth/login";
+          // }, 1500);
         }, 500);
       } else {
         // Show toast notification for verified account

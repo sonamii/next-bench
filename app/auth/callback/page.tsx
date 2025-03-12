@@ -8,6 +8,7 @@ import { Info } from "lucide-react";
 import { toast } from "sonner";
 import { useVerificationStore } from "@/store/verificationStore";
 import updateIsLoggedIn from "@/services/updateIsLoggedIn";
+import returnIsLoggedIn from "@/services/returnIsLoggedIn";
 
 /**
  * The Callback component is a client-side only page that is used to handle
@@ -104,7 +105,16 @@ export default function Callback() {
     };
   }, []);
 
-  if (securityID) {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  useEffect(() => {
+    returnIsLoggedIn().then((result) => {
+      if (result !== null) {
+        setIsLoggedIn(result);
+      }
+    });
+  }, []);
+
+  if (securityID && isLoggedIn) {
     return (
       <div className={`containerMain ${isVisible ? "fade-in" : ""}`}>
         {/* The logo at the top of the page is a link to the homepage */}

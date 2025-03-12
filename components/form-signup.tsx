@@ -26,6 +26,7 @@ import { useEffect } from "react";
 import { useVerificationStore } from "@/store/verificationStore";
 import { useAdminVerificationStore } from "@/store/adminVerificationStore";
 import updateIsLoggedIn from "@/services/updateIsLoggedIn";
+import returnIsLoggedIn from "@/services/returnIsLoggedIn";
 
 /**
  * The SignUpForm component is a form that allows users to sign up for a new
@@ -174,8 +175,23 @@ export function SignUpForm({
     }, 2500);
   }
 
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
   useEffect(() => {
-    if (localStorage.getItem("email")) {
+    const checkLoginStatus = async () => {
+      const result = await returnIsLoggedIn();
+      if (result !== null) {
+        setIsLoggedIn(result);
+      } else {
+        setIsLoggedIn(false);
+      }
+    };
+
+    checkLoginStatus();
+  }, []);
+
+  useEffect(() => {
+    if (localStorage.getItem("email") && isLoggedIn === true) {
       toast("User already signed in as", {
         description: `${localStorage.getItem("email")}`,
         action: {
@@ -183,9 +199,18 @@ export function SignUpForm({
           onClick: () => (window.location.href = "/dashboard"),
         },
       });
+    } else if (isLoggedIn === false) {
+      toast("Recent logout detected", {
+        description: `Please login to continue`,
+        action: {
+          label: "Login",
+          onClick: () => (window.location.href = "/auth/login"),
+        },
+      });
+      setIsVerified(false);
+      setIsAdminVerified(false);
     }
-  }, []);
-
+  }, [isLoggedIn]);
   /**
    * The SignUpForm component returns a Card with a CardContent that is a grid
    * with two columns. The first column contains a form with the following

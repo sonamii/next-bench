@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
 import { useVerificationStore } from "@/store/verificationStore";
 import { useAdminVerificationStore } from "@/store/adminVerificationStore";
+import returnIsLoggedIn from "@/services/returnIsLoggedIn";
 
 /**
  * Security Verification Callback Component
@@ -32,17 +33,30 @@ export default function Callback() {
   const [isVerificationSuccessDone, setIsVerificationSuccessDone] =
     useState(false);
 
-  // Retrieve security ID from localStorage
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
+
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      const securityIdLocalStorage = localStorage.getItem(
-        "security_id"
-      ) as string;
-      if (securityIdLocalStorage) {
-        setSecurityId(securityIdLocalStorage);
+    returnIsLoggedIn().then((result) => {
+      if (result !== null) {
+        setIsLoggedIn(result);
+      }
+    });
+  }, []); // Only run once on mount
+
+  useEffect(() => {
+    if (isLoggedIn === null) return; // Ensure it only runs when isLoggedIn is fully set
+
+    if (isLoggedIn) {
+      if (typeof window !== "undefined") {
+        const securityIdLocalStorage = localStorage.getItem(
+          "security_id"
+        ) as string;
+        if (securityIdLocalStorage) {
+          setSecurityId(securityIdLocalStorage);
+        }
       }
     }
-  }, []);
+  }, [isLoggedIn]);
 
   // Effect to set visibility after 100ms for fade-in animation
   useEffect(() => {

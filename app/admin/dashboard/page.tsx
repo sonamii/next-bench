@@ -11,6 +11,7 @@ import supabase from "@/services/supabase";
 import Avvvatars from "avvvatars-react";
 import { useAdminVerificationStore } from "@/store/adminVerificationStore";
 import updateIsLoggedIn from "@/services/updateIsLoggedIn";
+import returnIsLoggedIn from "@/services/returnIsLoggedIn";
 /**
  * The main dashboard page.
  *
@@ -35,50 +36,78 @@ export default function Callback() {
     setEmailLocal(localStorage.getItem("email") || "");
   }, []);
 
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
+
   useEffect(() => {
+    returnIsLoggedIn().then((result) => {
+      if (result !== null) {
+        setIsLoggedIn(result);
+      }
+    });
+  }, []); // Only run once on mount
+
+  useEffect(() => {
+    if (isLoggedIn === null) return; // Ensure it only runs when isLoggedIn is fully set
+
     const isVerifiedButton = document.getElementById("isVerifiedButton");
     const verifiedContainer = document.getElementById("verifiedContainer");
-    if (!isVerified) {
-      // Show a toast message and redirect in 3 seconds.
-      toast("Admin not verified", {
-        description: `Verify now as admin`,
-        action: {
-          label: "Verify",
-          onClick: () => (window.location.href = "/security/verify"),
-        },
-      });
 
-      if (isVerifiedButton) {
-        isVerifiedButton.style.display = "flex";
-      }
+    if (isLoggedIn) {
+      if (!isVerified) {
+        // Show a toast message and redirect in 3 seconds.
+        toast("Admin not verified", {
+          description: `Verify now as admin`,
+          action: {
+            label: "Verify",
+            onClick: () => (window.location.href = "/security/verify"),
+          },
+        });
 
-      isVerifiedButton?.addEventListener("click", () => {
-        window.location.href = "/security/verify";
-      });
-    } else {
-      if (isAdminVerified) {
-        if (!document.getElementById("verification-toast")) {
-          toast("Account verified", {
-            description: `Verification successful as admin`,
-            action: {
-              label: "Welcome",
-              onClick: () => console.log("Welcome"),
-            },
-            id: "verification-toast",
-          });
+        if (isVerifiedButton) {
+          isVerifiedButton.style.display = "flex";
+        }
+
+        isVerifiedButton?.addEventListener("click", () => {
+          window.location.href = "/security/verify";
+        });
+      } else {
+        if (isAdminVerified) {
+          if (!document.getElementById("verification-toast")) {
+            toast("Account verified", {
+              description: `Verification successful as admin`,
+              action: {
+                label: "Welcome",
+                onClick: () => console.log("Welcome"),
+              },
+              id: "verification-toast",
+            });
+          }
+        }
+        if (isVerifiedButton && verifiedContainer) {
+          verifiedContainer.innerHTML = "You are verified as admin";
+          isVerifiedButton.style.backgroundColor = "#d4edda";
+          isVerifiedButton.style.color = "#355734";
+          isVerifiedButton.innerHTML = "";
+          const infoIcon = document.createElement("div");
+          infoIcon.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-info"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12" y2="8"></line></svg>`;
+          isVerifiedButton.appendChild(infoIcon);
         }
       }
-      if (isVerifiedButton && verifiedContainer) {
-        verifiedContainer.innerHTML = "You are verified as admin";
-        isVerifiedButton.style.backgroundColor = "#d4edda";
-        isVerifiedButton.style.color = "#355734";
-        isVerifiedButton.innerHTML = "";
-        const infoIcon = document.createElement("div");
-        infoIcon.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-info"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12" y2="8"></line></svg>`;
-        isVerifiedButton.appendChild(infoIcon);
-      }
+    } else {
+      console.log("Logged in value: ", isLoggedIn);
+      toast("Recent logout detected", {
+        description: `Please login to continue`,
+        action: {
+          label: "Login",
+          onClick: () => (window.location.href = "/auth/login"),
+        },
+      });
+      setIsVerified(false);
+      setIsAdminVerified(false);
+      localStorage.setItem("security_id", "");
+      localStorage.setItem("email", "");
     }
-  }, [isVerified]);
+  }, [isVerified, isLoggedIn]);
 
   const deleteSessionAndLogout = async () => {
     updateIsLoggedIn(false);
@@ -203,7 +232,6 @@ export default function Callback() {
               <button className="buttonA" onClick={showUserData}>
                 View data analysis
               </button>
-              <button className="buttonB">Global Specific Logout</button>
             </div>
             <div className="space-xs"></div>
             {/* <div className="textBottom fade-item">{emailLocal}</div> */}
