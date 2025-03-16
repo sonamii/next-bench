@@ -2,8 +2,7 @@
 import "./page.css";
 import Image from "next/image";
 import supabase from "@/services/supabase";
-import { useEffect } from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Info } from "lucide-react";
 import { toast } from "sonner";
 import { useVerificationStore } from "@/store/verificationStore";
@@ -85,7 +84,7 @@ export default function Callback() {
   useEffect(() => {
     const storedSecurityID = localStorage.getItem("security_id");
     if (storedSecurityID) {
-      setSecurityID(storedSecurityID as string);
+      setSecurityID(storedSecurityID);
     }
   }, []);
 
@@ -146,6 +145,11 @@ export default function Callback() {
             <div
               className="copyButton"
               onClick={() => (window.location.href = "/security/verify")}
+              onKeyPress={(e) => {
+                if (e.key === "" || e.key === "") {
+                  window.location.href = "/security/verify";
+                }
+              }}
             >
               {/* The copy button icon is a Copy icon */}
               Click to verify
@@ -160,6 +164,11 @@ export default function Callback() {
             className="copyButtonDown"
             id="copyButtonDown"
             onClick={() => (window.location.href = "/security/verify")}
+            onKeyPress={(e) => {
+              if (e.key === "" || e.key === "") {
+                window.location.href = "/security/verify";
+              }
+            }}
           >
             {/* The copy button icon is a Copy icon */}
             Click to verify
@@ -201,6 +210,11 @@ export default function Callback() {
           <div
             className="button"
             onClick={() => (window.location.href = "/auth/login")}
+            onKeyPress={(e) => {
+              if (e.key === "" || e.key === "") {
+                window.location.href = "/auth/login";
+              }
+            }}
           >
             LogIn
           </div>

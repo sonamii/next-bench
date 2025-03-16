@@ -63,8 +63,10 @@ export default function Home() {
     const handleScroll = () => {
       const nav = document.querySelector(".nav");
       if (nav && nav instanceof HTMLElement) {
-        const top =
-          window.innerWidth > 500 ? 20 : window.scrollY > 20 ? 20 : 70;
+        let top = 70;
+        if (window.innerWidth > 500 || window.scrollY > 20) {
+          top = 20;
+        }
         nav.style.setProperty("top", `${top}px`, "important");
       }
     };
@@ -84,61 +86,43 @@ export default function Home() {
    * If the user is updated successfully, a success message is displayed.
    */
   useEffect(() => {
-    /**
-     * Fetches the user's email from Supabase and updates the user's email
-     * and name in the "users" table if the email has changed since the last
-     * login. If the email has not changed, a welcome back message is displayed.
-     * If there is an error fetching the user, an error message is displayed.
-     * If there is an error updating the user, an error message is displayed.
-     * If the user is updated successfully, a success message is displayed.
-     */
     const getUserEmail = async () => {
-      const { data, error } = await supabase.auth.getUser();
-      if (error) {
-        // If there is an error fetching the user, display an error message
-        toast.error("Error fetching user auth email: {no login found}");
-      } else {
-        // Check if the email has changed since the last login
-        if (data?.user?.email != localStorage.getItem("email")) {
-          // If the email has changed, display an error message
+      try {
+        const { data, error } = await supabase.auth.getUser();
+        if (error) throw new Error("Error fetching user auth email: {no login found}");
+
+        const localEmail = localStorage.getItem("email");
+        const userEmail = data?.user?.email;
+
+        if (userEmail !== localEmail) {
           toast.error("Recent email change detected.");
+          if (userEmail) {
+            localStorage.setItem("email", userEmail);
+            console.log("Local email: " + localEmail);
 
-          if (data?.user?.email) {
-            // Update the local email
-            localStorage.setItem("email", data.user.email);
-            console.log("Local email: " + localStorage.getItem("email"));
-
-            // Fetch the session
             const session = await supabase.auth.getSession();
-            if (session.error) {
-              // If there is an error fetching the session, display an error message
-              toast.error("Error fetching session: " + session.error.message);
-            } else {
-              // Get the session ID
-              const sessionId = session.data.session?.user.id;
+            if (session.error) throw new Error("Error fetching session: " + session.error.message);
 
-              // Get the new email and name
-              const newEmail = data.user.email;
-              const newName = newEmail.split("@")[0];
+            const sessionId = session.data.session?.user.id;
+            const newName = userEmail.split("@")[0];
 
-              // Update the user's email and name in the "users" table
-              const { error: updateError } = await supabase
-                .from("users")
-                .update({ email: newEmail, name: newName })
-                .eq("id", sessionId);
+            const { error: updateError } = await supabase
+              .from("users")
+              .update({ email: userEmail, name: newName })
+              .eq("id", sessionId);
 
-              if (updateError) {
-                // If there is an error updating the user, display an error message
-                toast.error("Error updating user: " + updateError.message);
-              } else {
-                // If the user is updated successfully, display a success message
-                toast.success("User updated successfully.");
-              }
-            }
+            if (updateError) throw new Error("Error updating user: " + updateError.message);
+
+            toast.success("User updated successfully.");
           }
         } else {
-          // If the email has not changed, display a welcome back message
-          toast.success("Welcome back, " + data?.user?.email);
+          toast.success("Welcome back, " + userEmail);
+        }
+      } catch (err: unknown) {
+        if (err instanceof Error) {
+          toast.error(err.message);
+        } else {
+          toast.error("An unknown error occurred");
         }
       }
     };
@@ -160,8 +144,7 @@ export default function Home() {
       <div className="background"></div>
       {/* HEADER WITH RELEASE CODE*/}
       <div className="header">
-        <code className="releaseCode">&nbsp;v0.1.0.beta-1</code>
-        released. SignUp Now!
+        <code className="releaseCode">&nbsp;v0.1.0.beta-1</code>released. SignUp Now!
       </div>
       {/* NAVBAR START*/}
       <Nav />
@@ -676,7 +659,7 @@ interface ItemProps {
  * @param {string} props.text - The text label to display next to the icon.
  * @returns {React.ReactElement} The rendered item component.
  */
-function Item({ icon, text }: ItemProps) {
+function Item({ icon, text }: Readonly<ItemProps>) {
   return (
     <div className="item">
       {icon}

@@ -76,6 +76,17 @@ export default function Callback() {
       if (isVerified) {
         alert(
           `You are already verified as ${localStorage.getItem(
+        "email"
+          )}. Redirecting to dashboard...`
+        );
+        setTimeout(() => {
+          window.location.href = "/dashboard";
+        }, 200);
+        setIsVerificationSuccessDone(true);
+        console.log(isVerificationSuccessDone);
+      }
+        alert(
+          `You are already verified as ${localStorage.getItem(
             "email"
           )}. Redirecting to dashboard...`
         );
@@ -85,8 +96,7 @@ export default function Callback() {
         setIsVerificationSuccessDone(true);
         console.log(isVerificationSuccessDone);
       }
-    }
-  }, []);
+    } ,[]);
 
   // Effect to get user ID from session
   /**
@@ -121,65 +131,58 @@ export default function Callback() {
     console.log("Security id:", securityId);
     console.log("Email:", email);
 
-    // Check if the user has entered both the security id and email
-    if (email && securityId) {
-      try {
-        // Fetch the user's id from the database using the security id and email
-        const { data, error } = await supabase
-          .from("users")
-          .select("id, type")
-          .eq("security_id", securityId)
-          .eq("email", email)
-          .single();
+    if (!email || !securityId) return;
 
-        // Check if there is an error
-        if (error) {
-          // Display an error message to the user
-          toast.error("Invalid securityID or email");
-        } else {
-          // Check if the user is an admin
-          if (data.id == process.env.NEXT_PUBLIC_ADMIN_UID) {
-            // Set the isVerified state to true
-            setIsVerified(true);
-            // Display a success message to the user
-            toast("Admin Verified", {
-              description: `Redirecting to admin dashboard in 1.5 seconds`,
-              action: { label: "Roger!", onClick: () => console.log("Okay") },
-            });
-            setIsAdminVerified(true);
-            // Redirect the user to the admin dashboard
-            setTimeout(() => {
-              window.location.href = "/admin/dashboard";
-            }, 2500);
-          } else {
-            // Check if the user is the same as the one in the database
-            if (uidDatabase === data.id && data.type) {
-              // Set the isVerified state to true
-              setIsVerified(true);
+    try {
+      const { data, error } = await supabase
+        .from("users")
+        .select("id, type")
+        .eq("security_id", securityId)
+        .eq("email", email)
+        .single();
 
-              if (data.type === "ADMIN") {
-                setIsAdminVerified(true);
-              }
-              // Display a success message to the user
-              toast("Account Verified", {
-                description: `Redirecting in 1.5 seconds`,
-                action: { label: "Okay", onClick: () => console.log("Okay") },
-              });
-
-              // Redirect the user to the dashboard
-              setTimeout(() => {
-                window.location.href = "/dashboard";
-              }, 1500);
-            } else {
-              // Display an error message to the user
-              toast.error("Invalid securityID or email");
-            }
-          }
-        }
-      } catch (error) {
-        // Log any errors to the console
-        console.error(error);
+      if (error) {
+        toast.error("Invalid securityID or email");
+        return;
       }
+
+      if (data.id === process.env.NEXT_PUBLIC_ADMIN_UID) {
+        handleAdminVerification();
+      } else {
+        handleUserVerification(data);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleAdminVerification = () => {
+    setIsVerified(true);
+    setIsAdminVerified(true);
+    toast("Admin Verified", {
+      description: `Redirecting to admin dashboard in 1.5 seconds`,
+      action: { label: "Roger!", onClick: () => console.log("Okay") },
+    });
+    setTimeout(() => {
+      window.location.href = "/admin/dashboard";
+    }, 2500);
+  };
+
+  const handleUserVerification = (data: { id: string; type: string }) => {
+    if (uidDatabase === data.id && data.type) {
+      setIsVerified(true);
+      if (data.type === "ADMIN") {
+        setIsAdminVerified(true);
+      }
+      toast("Account Verified", {
+        description: `Redirecting in 1.5 seconds`,
+        action: { label: "Okay", onClick: () => console.log("Okay") },
+      });
+      setTimeout(() => {
+        window.location.href = "/dashboard";
+      }, 1500);
+    } else {
+      toast.error("Invalid securityID or email");
     }
   };
 
@@ -229,7 +232,11 @@ export default function Callback() {
         {/* Button container */}
         <div className="buttonContainer">
           {/* Check button */}
-          <div className="button" onClick={handleSecurityCheck}>
+          <div className="button" onClick={handleSecurityCheck}  onKeyPress={(e) => {
+                if (e.key === "" || e.key === "") {
+                  window.location.href = "/security/verify";
+                }
+              }}>
             Check
           </div>
           {/* Forgot button */}
@@ -237,6 +244,11 @@ export default function Callback() {
             className="button2"
             onClick={() => {
               window.location.href = "/auth/login";
+            }}
+            onKeyPress={(e) => {
+              if (e.key === "" || e.key === "") {
+                window.location.href = "/security/verify";
+              }
             }}
           >
             Login?

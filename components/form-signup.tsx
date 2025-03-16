@@ -19,10 +19,9 @@ import {
   HoverCardContent,
   HoverCardTrigger,
 } from "@/components/ui/hover-card";
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import { v4 as uuidv4 } from "uuid";
 import supabase from "./../services/supabase";
-import { useEffect } from "react";
 import { useVerificationStore } from "@/store/verificationStore";
 import { useAdminVerificationStore } from "@/store/adminVerificationStore";
 import updateIsLoggedIn from "@/services/updateIsLoggedIn";

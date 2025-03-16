@@ -161,7 +161,7 @@ body {
     color: #666;
     font-weight: 500;
     padding-inline: 20px;
-    font-family: "CG";
+    font-family: "CG", sans-serif;
   }
 
   Button {
@@ -327,12 +327,4 @@ body {
 
 .fade-item:nth-child(12) {
   animation-delay: 1.85s;
-}
-
-.fade-item:nth-child(12) {
-  animation-delay: 2s;
-}
-
-.fade-item:nth-child(12) {
-  animation-delay: 2.15s;
 }

@@ -56,13 +56,13 @@ export default function AiPage() {
 
   // Set the user's email from local storage if it exists, otherwise set it to an empty string.
   useEffect(() => {
+    setColor("#ff0000")
     const emailLocal = localStorage.getItem("email");
-    setEmail(emailLocal || "");
+    setEmail(emailLocal ?? "");
     console.log(email);
   }, []);
 
   useEffect(() => {
-    setColor(resolvedTheme === "dark" ? "#ff0000" : "#ff0000");
     console.log(color);
   }, [resolvedTheme]);
 
@@ -182,7 +182,7 @@ export default function AiPage() {
    * @function useEffect
    */
   useEffect(() => {
-    setEmailLocal(localStorage.getItem("email") || "");
+    setEmailLocal(localStorage.getItem("email") ?? "");
     console.log(emailLocal);
   }, []);
 

@@ -4,7 +4,6 @@ import { ChevronDown, MenuIcon } from "lucide-react";
 import "./nav.css";
 import Image from "next/image";
 import { track } from "@vercel/analytics";
-import { useAdminVerificationStore } from "@/store/adminVerificationStore";
 /**
  * Props for the Nav component.
  *

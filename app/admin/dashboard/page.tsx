@@ -5,8 +5,7 @@ import { AppWindowMacIcon, ArrowRight, X } from "lucide-react";
 import { useVerificationStore } from "@/store/verificationStore";
 import { Nav } from "@/custom-components/nav/nav";
 import { toast } from "sonner";
-import { useEffect } from "react";
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import supabase from "@/services/supabase";
 import Avvvatars from "avvvatars-react";
 import { useAdminVerificationStore } from "@/store/adminVerificationStore";
@@ -33,7 +32,7 @@ export default function Callback() {
   }, []);
 
   useEffect(() => {
-    setEmailLocal(localStorage.getItem("email") || "");
+    setEmailLocal(localStorage.getItem("email") ?? "");
   }, []);
 
   const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
@@ -205,7 +204,7 @@ export default function Callback() {
               <Image src="/logoMain.svg" alt="Logo" width={25} height={25} />
             </button>
             <div className="space-xs"></div>
-            <div className="textTop fade-item">Dashboard</div>
+            <div className="textTop fade-item">Admin Dashboard</div>
             <div className="space-xxs"></div>
             <div className="members fade-item">
               <div className="pfp" style={{ marginTop: "1px" }}>

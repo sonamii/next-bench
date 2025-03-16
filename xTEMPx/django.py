@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify
 import numpy as np
-from typing import List, Tuple
+from typing import List, Tuple, Optional
 
 app = Flask(__name__)
 
@@ -11,17 +11,17 @@ y: np.ndarray = np.array([1, 3, 5, 7, 9])
 # Train the model for next-ai
 class SimpleLinearRegression:
     def __init__(self):
-        self.coef_: float = None
-        self.intercept_: float = None
+        self.coef_: Optional[float] = None
+        self.intercept_: Optional[float] = None
 
-    def fit(self, X: np.ndarray, y: np.ndarray) -> None:
-        X_mean: float = np.mean(X)
+    def fit(self, x_values: np.ndarray, y: np.ndarray) -> None:
+        x_mean: float = np.mean(x_values)
         y_mean: float = np.mean(y)
-        self.coef_ = np.sum((X - X_mean) * (y - y_mean)) / np.sum((X - X_mean) ** 2)
-        self.intercept_ = y_mean - self.coef_ * X_mean
+        self.coef_ = np.sum((x_values - x_mean) * (y - y_mean)) / np.sum((x_values - x_mean) ** 2)
+        self.intercept_ = y_mean - self.coef_ * x_mean
 
-    def predict(self, X: np.ndarray) -> np.ndarray:
-        return self.coef_ * X + self.intercept_
+    def predict(self, x_values: np.ndarray) -> np.ndarray:
+        return self.coef_ * x_values + self.intercept_
 
 model = SimpleLinearRegression()
 model.fit(X, y)
@@ -35,8 +35,3 @@ def predict() -> Tuple[dict, int]:
 
 if __name__ == '__main__':
     app.run(debug=True)
-    
-    
-    
-    
-    

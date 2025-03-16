@@ -7,7 +7,7 @@ import "./../app/auth/login-signup.css";
 import { Card, CardContent } from "@/components/ui/card";
 import { ArrowLeft } from "lucide-react";
 import Image from "next/image";
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import supabase from "./../services/supabase";
 import { toast } from "sonner";
 import { useVerificationStore } from "@/store/verificationStore";
@@ -19,7 +19,6 @@ import {
   HoverCardContent,
   HoverCardTrigger,
 } from "@/components/ui/hover-card";
-import { useEffect } from "react";
 /**
  * LoginForm component
  *

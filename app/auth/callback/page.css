@@ -257,7 +257,7 @@ body {
     justify-content: center;
     display: flex;
     position: relative;
-    font-family: "CG";
+    font-family: "CG", sans-serif;
     font-weight: 400;
     font-size: 14px;
     color: #f5f7f9;

@@ -1,5 +1,4 @@
 // Sample POST request handler for storing details in database.
-package edu;
 
 public class POST {
     private String name;
@@ -48,6 +47,7 @@ public class POST {
 
     public static void main(String[] args) {
         GET person = new GET("Name", 30, "Email");
-        System.out.println(person);
+        Logger logger = Logger.getLogger(POST.class.getName());
+        logger.info(person.toString());
     }
 }

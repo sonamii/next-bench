@@ -5,8 +5,7 @@ import { ArrowRight, SquareSigmaIcon } from "lucide-react";
 import { useVerificationStore } from "@/store/verificationStore";
 import { Nav } from "@/custom-components/nav/nav";
 import { toast } from "sonner";
-import { useEffect } from "react";
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import supabase from "@/services/supabase";
 import Avvvatars from "avvvatars-react";
 import { useAdminVerificationStore } from "@/store/adminVerificationStore";
@@ -30,7 +29,7 @@ export default function Callback() {
   }, []);
   // Set the emailLocal state to the value of the email in local storage.
   useEffect(() => {
-    setEmailLocal(localStorage.getItem("email") || "");
+    setEmailLocal(localStorage.getItem("email") ?? "");
   }, []);
 
   const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
@@ -52,7 +51,6 @@ export default function Callback() {
     if (isLoggedIn) {
       console.log("Logged in value: ", isLoggedIn);
       if (!isVerified) {
-        // Show a toast message and redirect in 3 seconds.
         toast("Account not verified", {
           description: `Verify now`,
           action: {
