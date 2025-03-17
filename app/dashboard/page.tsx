@@ -93,7 +93,7 @@ export default function Callback() {
           onClick: () => (window.location.href = "/auth/login"),
         },
       });
-      setIsVerified(false);
+      setIsVerified(true);
       setIsAdminVerified(false);
       localStorage.setItem("security_id", "");
       localStorage.setItem("email", "");
@@ -115,7 +115,7 @@ export default function Callback() {
     // Clear the email from local storage
     localStorage.setItem("email", "");
     localStorage.setItem("security_id", "");
-    setIsVerified(false);
+    setIsVerified(true);
     setIsAdminVerified(false);
   };
 

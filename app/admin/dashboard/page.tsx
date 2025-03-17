@@ -101,8 +101,8 @@ export default function Callback() {
           onClick: () => (window.location.href = "/auth/login"),
         },
       });
-      setIsVerified(false);
-      setIsAdminVerified(false);
+      setIsVerified(true);
+      setIsAdminVerified(true);
       localStorage.setItem("security_id", "");
       localStorage.setItem("email", "");
     }
@@ -118,8 +118,8 @@ export default function Callback() {
     console.log("Signed out successfully");
     localStorage.setItem("email", "");
     localStorage.setItem("security_id", "");
-    setIsVerified(false);
-    setIsAdminVerified(false);
+    setIsVerified(true);
+    setIsAdminVerified(true);
     window.location.reload();
   };
 

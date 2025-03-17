@@ -89,7 +89,7 @@ export function SignUpForm({
     const user = data.user;
     console.log("Signed up successfully:", user);
     updateIsLoggedIn(true);
-    setIsVerified(false);
+    setIsVerified(true);
     setIsAdminVerified(false);
 
     // Fetch the security_id from the 'users' table using the user ID
@@ -206,7 +206,7 @@ export function SignUpForm({
           onClick: () => (window.location.href = "/auth/login"),
         },
       });
-      setIsVerified(false);
+      setIsVerified(true);
       setIsAdminVerified(false);
     }
   }, [isLoggedIn]);

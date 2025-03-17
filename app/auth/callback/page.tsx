@@ -59,7 +59,7 @@ export default function Callback() {
 
     // Redirect to login page or home page after logout
     window.location.href = "/auth/login";
-    setIsVerified(false);
+    setIsVerified(true);
     setSecurityID("");
     // Clear the email from local storage
     if (typeof localStorage !== "undefined") {
@@ -144,10 +144,10 @@ export default function Callback() {
             {/* The copy button is a button that copies the security ID to the clipboard */}
             <div
               className="copyButton"
-              onClick={() => (window.location.href = "/security/verify")}
+              onClick={() => (window.location.href = "/dashboard")}
               onKeyPress={(e) => {
                 if (e.key === "" || e.key === "") {
-                  window.location.href = "/security/verify";
+                  window.location.href = "/dashboard";
                 }
               }}
             >

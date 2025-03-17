@@ -94,7 +94,7 @@ export function LoginForm({
         } else {
           // If the sign in is successful, log the user to the console and set the isVerified flag to false
           console.log("Logged in successfully:", data.user);
-          setIsVerified(false);
+          setIsVerified(true);
           setIsAdminVerified(false);
           updateIsLoggedIn(true);
 
@@ -156,7 +156,7 @@ export function LoginForm({
           onClick: () => (window.location.href = "/auth/login"),
         },
       });
-      setIsVerified(false);
+      setIsVerified(true);
       setIsAdminVerified(false);
       localStorage.setItem("security_id", "");
     }
