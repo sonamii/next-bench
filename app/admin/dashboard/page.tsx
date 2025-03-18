@@ -198,15 +198,15 @@ export default function Callback() {
                 {" "}
                 <Avvvatars value={emailID} size={23} />
               </div>
-              <div id="verifiedContainer">You are not verified</div>
+              <div id="verifiedContainer">You skipped the callback or are not verified</div>
               <button
                 className="buttonM"
                 id="isVerifiedButton"
                 onClick={() => {
-                  if (!isLoggedIn) {
-                    window.location.href = "/auth/login";
-                  } else if (!isVerified) {
+                  if (!isVerified) {
                     window.location.href = "/auth/callback";
+                  } else if (!isLoggedIn) {
+                    window.location.href = "/auth/login";
                   } else if (isVerified && isLoggedIn) {
                     window.location.href = "#";
                   }

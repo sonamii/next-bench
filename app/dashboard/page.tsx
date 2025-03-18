@@ -1,6 +1,6 @@
 "use client";
 import "./page.css";
-import Swal from 'sweetalert2'
+import Swal from "sweetalert2";
 import Image from "next/image";
 import { ArrowRight, SquareSigmaIcon } from "lucide-react";
 import { Nav } from "@/custom-components/nav/nav";
@@ -8,7 +8,6 @@ import { toast } from "sonner";
 import { useState, useEffect } from "react";
 import supabase from "@/services/supabase";
 import Avvvatars from "avvvatars-react";
-
 
 export default function Callback() {
   const [isVisible, setIsVisible] = useState(false);
@@ -18,12 +17,7 @@ export default function Callback() {
   const [userID, setUserID] = useState("");
   const [isAdminVerified, setIsAdminVerified] = useState(false);
 
-
-  useEffect(() => {
-
-
-
-  })
+  useEffect(() => {});
   useEffect(() => {
     setTimeout(() => setIsVisible(true), 100);
   }, []);
@@ -105,12 +99,12 @@ export default function Callback() {
       }
       toast.success("Successfully logged out");
       Swal.fire({
-        icon: 'success',
-        title: 'Logged out',
-        text: 'You have been successfully logged out.',
+        icon: "success",
+        title: "Logged out",
+        text: "You have been successfully logged out.",
         customClass: {
-          container: "my-swal-container"
-        }
+          container: "my-swal-container",
+        },
       });
 
       setTimeout(() => {
@@ -140,15 +134,17 @@ export default function Callback() {
             {" "}
             <Avvvatars value={emailID.split("@")[0] || "🥲"} size={23} />
           </div>
-          <div id="verifiedContainer">You are not verified/logged in</div>
+          <div id="verifiedContainer">
+            You skipped the callback or are not verified/logged in
+          </div>
           <button
             className="buttonM"
             id="isVerifiedButton"
             onClick={() => {
-              if (!isLoggedIn) {
-                window.location.href = "/auth/login";
-              } else if (!isVerified) {
+              if (!isVerified) {
                 window.location.href = "/auth/callback";
+              } else if (!isLoggedIn) {
+                window.location.href = "/auth/login";
               } else if (isVerified && isLoggedIn) {
                 window.location.href = "#";
               }
