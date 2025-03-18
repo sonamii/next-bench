@@ -1,4 +1,5 @@
 "use client";
+import Swal from "sweetalert2";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -7,165 +8,84 @@ import "./../app/auth/login-signup.css";
 import { Card, CardContent } from "@/components/ui/card";
 import { ArrowLeft } from "lucide-react";
 import Image from "next/image";
-import { useState,useEffect } from "react";
+import { useState, useEffect } from "react";
 import supabase from "./../services/supabase";
 import { toast } from "sonner";
-import { useVerificationStore } from "@/store/verificationStore";
-import { useAdminVerificationStore } from "@/store/adminVerificationStore";
-import updateIsLoggedIn from "@/services/updateIsLoggedIn";
-import returnIsLoggedIn from "@/services/returnIsLoggedIn";
+
 import {
   HoverCard,
   HoverCardContent,
   HoverCardTrigger,
 } from "@/components/ui/hover-card";
-/**
- * LoginForm component
- *
- * This component is used to log in to the application.
- * It requires an email and a password as input.
- * The component will call the {@link supabase.auth.signInWithPassword} method
- * to sign in to the application.
- *
- * @param {React.ComponentProps<"div">} props - The props for the component.
- * @returns {React.ReactElement} The LoginForm component.
- */
+
 export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { setIsVerified } = useVerificationStore();
-  const { setIsAdminVerified } = useAdminVerificationStore();
-
-  /**
-   * This function is called when the user clicks the "LogIn" button.
-   * It will call the {@link supabase.auth.signInWithPassword} method
-   * to sign in to the application.
-   *
-   * If the sign in is successful, the user will be redirected to the
-   * `/auth/callback` page. If the sign in fails, an error message will
-   * be displayed to the user.
-   */
-  async function fetchAndStoreSecurityId(userId: string) {
-    const { data: userData, error: fetchError } = await supabase
-      .from("users")
-      .select("security_id")
-      .eq("id", userId)
-      .single();
-
-    if (fetchError) {
-      console.error("Error fetching security_id:", fetchError.message);
-      return;
-    }
-
-    const securityId = userData?.security_id;
-
-    if (securityId) {
-      // Store the security_id in localStorage
-      localStorage.setItem("security_id", securityId);
-      console.log("Security ID stored in localStorage:");
-    } else {
-      console.error("Security ID not found for user.");
-    }
-  }
-
-  function getDataFromSupabase() {
-    // Log the email and password to the console
-
-    console.log(`Email: ${email}`);
-    console.log(`Password: ${password}`);
-
-    // Use the signInWithPassword method to sign in to the application
-    supabase.auth
-      .signInWithPassword({ email, password })
-      .then(({ data, error }) => {
-        if (error) {
-          // If there is an error, log it to the console and display an error message to the user
-          console.error("Error logging in:", error.message);
-          toast("Error logging in", {
-            description: `Please try again - ${error.message}`,
-            action: {
-              label: "Okay",
-              onClick: () => console.log("Okay"),
-            },
-          });
-        } else {
-          // If the sign in is successful, log the user to the console and set the isVerified flag to false
-          console.log("Logged in successfully:", data.user);
-          setIsVerified(false);
-          setIsAdminVerified(false);
-          updateIsLoggedIn(true);
-
-          // Store the user's email in local storage
-          // if (data.user.email) {
-          //   localStorage.setItem("email", data.user.email);
-          //   fetchAndStoreSecurityId(data.user.id);
-          // }
-
-          localStorage.setItem("email", email);
-          fetchAndStoreSecurityId(data.user.id);
-
-          // Display a success message to the user
-          toast("Logged in successfully", {
-            description: `Welcome back, ${data.user.email}`,
-            action: {
-              label: "Hello",
-              onClick: () => console.log("Hello"),
-            },
-          });
-
-          // After 1.5 seconds, redirect the user to the /auth/callback page
-          setTimeout(() => {
-            window.location.href = "/auth/callback";
-          }, 1500);
-        }
-      });
-  }
-
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    const checkLoginStatus = async () => {
-      const result = await returnIsLoggedIn();
-      if (result !== null) {
-        setIsLoggedIn(result);
-      } else {
-        setIsLoggedIn(false);
+    async function checkSession() {
+      const {  error } = await supabase.auth.getSession();
+      if (error) {
+        toast.error("Failed to check session");
+        return;
       }
-    };
+      
+    }
 
-    checkLoginStatus();
+    checkSession();
   }, []);
 
-  useEffect(() => {
-    if (localStorage.getItem("email") && isLoggedIn === true) {
-      toast("User already signed in as", {
-        description: `${localStorage.getItem("email")}`,
-        action: {
-          label: "Dashboard",
-          onClick: () => (window.location.href = "/dashboard"),
-        },
+  async function signInWithPassword() {
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (error) {
+        toast.error("Failed to sign out");
+      }
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email: email,
+        password: password,
       });
-    } else if (isLoggedIn === false) {
-      toast("Recent logout detected", {
-        description: `Please login to continue`,
-        action: {
-          label: "Login",
-          onClick: () => (window.location.href = "/auth/login"),
-        },
-      });
-      setIsVerified(false);
-      setIsAdminVerified(false);
-      localStorage.setItem("security_id", "");
+      if (signInError) {
+        Swal.fire({
+          icon: "error",
+          title: "Login Failed",
+          text: "Failed to log in",
+          customClass: {
+            container: "my-swal-container",
+          },
+        });
+        return;
+      }
+      const { error: updateError } = await supabase
+        .from("users")
+        .update({ isLoggedIn: true })
+        .eq("email", email);
+      if (updateError) {
+        toast.error("Failed to update login status");
+      } else {
+        Swal.fire({
+          icon: "success",
+          title: "Login Successful",
+          text: "You have successfully logged in",
+          customClass: {
+            container: "my-swal-container",
+          },
+        });
+        setTimeout(() => {
+          window.location.href = "/auth/callback";
+        }, 1500);
+      }
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        toast.error("An unexpected error occurred");
+      } else {
+        toast.error("An unexpected error occurred");
+      }
     }
-  }, [isLoggedIn]);
-
-  function googleLogin() {
-    toast("Authorization failed", {
-      description: `Unable to authorize with Google`,
-    });
   }
 
   return (
@@ -237,10 +157,15 @@ export function LoginForm({
               {/* Login button */}
               <Button
                 className="w-full"
-                onClick={getDataFromSupabase}
+                onClick={async () => {
+                  setIsLoading(true);
+                  await signInWithPassword();
+                  setIsLoading(false);
+                }}
                 style={{ cursor: "pointer" }}
+                disabled={isLoading}
               >
-                LogIn
+                {isLoading ? "Logging In..." : "LogIn"}
               </Button>
 
               {/* Text between login and signup */}
@@ -267,7 +192,6 @@ export function LoginForm({
                   variant="outline"
                   className="w-full"
                   style={{ cursor: "pointer" }}
-                  onClick={googleLogin}
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                     <path

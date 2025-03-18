@@ -10,6 +10,14 @@
   }
 }
 
+.my-swal-container {
+  position: absolute !important;
+}
+
+.swal2-container {
+  position: absolute !important;
+}
+
 body {
   align-items: center;
   justify-content: center;
@@ -19,7 +27,7 @@ body {
   width: 100vw;
   height: 100vh;
   overflow-x: hidden;
-  overflow-y: auto;
+  overflow-y: hidden;
   background-position: center center;
   background-repeat: no-repeat;
   background-image: url("/download.svg");
@@ -34,8 +42,10 @@ body {
   display: flex;
   position: relative;
   width: 700px;
-  align-items: center;
-  justify-content: center;
+  height: fit-content !important;
+  align-items: center !important;
+  justify-content: center !important;
+  overflow: hidden;
 }
 
 .cardContainer {

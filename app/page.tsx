@@ -77,74 +77,28 @@ export default function Home() {
     };
   }, []);
 
-  /**
-   * Fetches the user's email from Supabase and updates the user's email
-   * and name in the "users" table if the email has changed since the last
-   * login. If the email has not changed, a welcome back message is displayed.
-   * If there is an error fetching the user, an error message is displayed.
-   * If there is an error updating the user, an error message is displayed.
-   * If the user is updated successfully, a success message is displayed.
-   */
   useEffect(() => {
-    const getUserEmail = async () => {
-      try {
-        const { data, error } = await supabase.auth.getUser();
-        if (error) throw new Error("Error fetching user auth email: {no login found}");
-
-        const localEmail = localStorage.getItem("email");
-        const userEmail = data?.user?.email;
-
-        if (userEmail !== localEmail) {
-          toast.error("Recent email change detected.");
-          if (userEmail) {
-            localStorage.setItem("email", userEmail);
-            console.log("Local email: " + localEmail);
-
-            const session = await supabase.auth.getSession();
-            if (session.error) throw new Error("Error fetching session: " + session.error.message);
-
-            const sessionId = session.data.session?.user.id;
-            const newName = userEmail.split("@")[0];
-
-            const { error: updateError } = await supabase
-              .from("users")
-              .update({ email: userEmail, name: newName })
-              .eq("id", sessionId);
-
-            if (updateError) throw new Error("Error updating user: " + updateError.message);
-
-            toast.success("User updated successfully.");
-          }
-        } else {
-          toast.success("Welcome back, " + userEmail);
-        }
-      } catch (err: unknown) {
-        if (err instanceof Error) {
-          toast.error(err.message);
-        } else {
-          toast.error("An unknown error occurred");
-        }
+    const getSession = async () => {
+      const { data } = await supabase.auth.getSession();
+      if (data?.session) {
+        toast.info(`Welcome back ${data.session.user.email}.`);
+        setTimeout(() => {
+          toast.info("Hope you brought pizza 🍕😋");
+        }, 1000);
       }
     };
-    getUserEmail();
+
+    getSession();
   }, []);
 
-  // The below code is the React component for the main landing page.
-  // It renders a background image, a header with a release code,
-  // a navbar, a space to separate the navbar from the main content,
-  // and the main content itself.
-  // The main content includes a container with an initial details section,
-  // a features section, and a call to action section.
-  // The initial details section includes an image, a heading, and a paragraph.
-  // The features section includes a heading and a grid of feature cards.
-  // The call to action section includes a heading and a button.
   return (
     <>
       {/* BACKGROUND IMAGE FOR GRID*/}
       <div className="background"></div>
       {/* HEADER WITH RELEASE CODE*/}
       <div className="header">
-        <code className="releaseCode">&nbsp;v0.1.0.beta-1</code>released. SignUp Now!
+        <code className="releaseCode">&nbsp;v0.1.0.beta-3</code>released. SignUp
+        Now!
       </div>
       {/* NAVBAR START*/}
       <Nav />
@@ -171,7 +125,7 @@ export default function Home() {
             height={20}
             style={{ borderRadius: "100%", marginRight: "5px" }}
           />
-          50+ People Joined
+          100+ People Joined
           <Link href="/waitlist">
             <div className="button">
               Join waitlist{" "}
@@ -370,7 +324,7 @@ export default function Home() {
             <div className="userContainer fade-item">
               {/* USER ITEM */}
               <div className="item">
-                <div className="text">800+</div>
+                <div className="text">1100+</div>
                 <div className="bottomText">User Views</div>
               </div>
               {/* USER ITEM */}

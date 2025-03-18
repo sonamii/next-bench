@@ -128,7 +128,11 @@ VERY IMPORTANT: USE \\N FOR LINE BREAK OR NEW LINE EVERY TIME even after lists.
 
     // Return the AI's response, replacing newlines with HTML line breaks
     return NextResponse.json({
-      reply: response.data.choices[0].message.content.replace(/\n/g, "<br>"),
+      reply: response.data.choices[0].message.content
+        .replace(/\n/g, "<br>")
+        .replace(/\\n/g, "<br>")
+        .replace(/\N/g, "<br>")
+        .replace(/\\N/g, "<br>"),
     });
   } catch (error: unknown) {
     // Log the error details for debugging

@@ -1,15 +1,10 @@
 "use client";
 import "./page.css";
 import Image from "next/image";
-import supabase from "@/services/supabase";
-import { useEffect } from "react";
-import { useState } from "react";
+
+import { useEffect, useState } from "react";
 import { CheckCircle2Icon } from "lucide-react";
-import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
-import { useVerificationStore } from "@/store/verificationStore";
-import { useAdminVerificationStore } from "@/store/adminVerificationStore";
-import returnIsLoggedIn from "@/services/returnIsLoggedIn";
 
 /**
  * Security Verification Callback Component
@@ -20,172 +15,13 @@ import returnIsLoggedIn from "@/services/returnIsLoggedIn";
  * to different dashboards.
  */
 export default function Callback() {
-  // State hooks for email, security ID, user ID from database, verification status, and visibility
-  const [email, setEmail] = useState("");
-  const [securityId, setSecurityId] = useState(
-    "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
-  );
-  const [uidDatabase, setUidDatabase] = useState("");
-  const { isVerified, setIsVerified } = useVerificationStore();
-  const { setIsAdminVerified } = useAdminVerificationStore();
-
   const [isVisible, setIsVisible] = useState(false);
-  const [isVerificationSuccessDone, setIsVerificationSuccessDone] =
-    useState(false);
-
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
 
   useEffect(() => {
-    returnIsLoggedIn().then((result) => {
-      if (result !== null) {
-        setIsLoggedIn(result);
-      }
-    });
-  }, []); // Only run once on mount
-
-  useEffect(() => {
-    if (isLoggedIn === null) return; // Ensure it only runs when isLoggedIn is fully set
-
-    if (isLoggedIn) {
-      if (typeof window !== "undefined") {
-        const securityIdLocalStorage = localStorage.getItem(
-          "security_id"
-        ) as string;
-        if (securityIdLocalStorage) {
-          setSecurityId(securityIdLocalStorage);
-        }
-      }
-    }
-  }, [isLoggedIn]);
-
-  // Effect to set visibility after 100ms for fade-in animation
-  useEffect(() => {
-    setTimeout(() => setIsVisible(true), 100);
-  }, []);
-
-  useEffect(() => {
-    if (localStorage.getItem("security_id") === "") {
-      toast("No Session Found", {
-        description: `Login first`,
-        action: {
-          label: "Login",
-          onClick: () => (window.location.href = "/auth/login"),
-        },
-      });
-    } else {
-      if (isVerified) {
-        alert(
-          `You are already verified as ${localStorage.getItem(
-        "email"
-          )}. Redirecting to dashboard...`
-        );
-        setTimeout(() => {
-          window.location.href = "/dashboard";
-        }, 200);
-        setIsVerificationSuccessDone(true);
-        console.log(isVerificationSuccessDone);
-      }
-        alert(
-          `You are already verified as ${localStorage.getItem(
-            "email"
-          )}. Redirecting to dashboard...`
-        );
-        setTimeout(() => {
-          window.location.href = "/dashboard";
-        }, 200);
-        setIsVerificationSuccessDone(true);
-        console.log(isVerificationSuccessDone);
-      }
-    } ,[]);
-
-  // Effect to get user ID from session
-  /**
-   * This effect is used to get the user ID from the session.
-   * If the session is valid, the user ID is stored in the `uidDatabase` state.
-   * If the session is invalid, an error message is logged to the console.
-   */
-  useEffect(() => {
-    const getUserIdFromSession = async () => {
-      const { data, error } = await supabase.auth.getSession();
-
-      if (error) {
-        console.error("Error fetching session:", error);
-      } else {
-        if (data.session) {
-          setUidDatabase(data.session.user.id);
-        }
-      }
-    };
-
-    getUserIdFromSession();
-  }, []);
-
-  // Function to handle security check
-  /**
-   * Function to handle security check.
-   * @param {React.MouseEvent<HTMLDivElement>} e The click event.
-   */
-  const handleSecurityCheck = async (e: React.MouseEvent<HTMLDivElement>) => {
-    e.preventDefault();
-
-    console.log("Security id:", securityId);
-    console.log("Email:", email);
-
-    if (!email || !securityId) return;
-
-    try {
-      const { data, error } = await supabase
-        .from("users")
-        .select("id, type")
-        .eq("security_id", securityId)
-        .eq("email", email)
-        .single();
-
-      if (error) {
-        toast.error("Invalid securityID or email");
-        return;
-      }
-
-      if (data.id === process.env.NEXT_PUBLIC_ADMIN_UID) {
-        handleAdminVerification();
-      } else {
-        handleUserVerification(data);
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const handleAdminVerification = () => {
-    setIsVerified(true);
-    setIsAdminVerified(true);
-    toast("Admin Verified", {
-      description: `Redirecting to admin dashboard in 1.5 seconds`,
-      action: { label: "Roger!", onClick: () => console.log("Okay") },
-    });
     setTimeout(() => {
-      window.location.href = "/admin/dashboard";
-    }, 2500);
-  };
-
-  const handleUserVerification = (data: { id: string; type: string }) => {
-    if (uidDatabase === data.id && data.type) {
-      setIsVerified(true);
-      if (data.type === "ADMIN") {
-        setIsAdminVerified(true);
-      }
-      toast("Account Verified", {
-        description: `Redirecting in 1.5 seconds`,
-        action: { label: "Okay", onClick: () => console.log("Okay") },
-      });
-      setTimeout(() => {
-        window.location.href = "/dashboard";
-      }, 1500);
-    } else {
-      toast.error("Invalid securityID or email");
-    }
-  };
-
+      setIsVisible(true);
+    }, 100);
+  });
   return (
     <div className={`containerMain ${isVisible ? "fade-in" : ""}`}>
       {/* Logo */}
@@ -216,15 +52,12 @@ export default function Callback() {
           type="text"
           className="input fade-item input-placeholder"
           placeholder="Enter your securityID"
-          value={securityId}
           readOnly
         />
         <Input
           type="email"
           className="input fade-item"
           placeholder="Enter your email/admin id or LOGIN "
-          onChange={(e) => setEmail(e.target.value)}
-          value={email}
           required
           spellCheck="false"
         />
@@ -232,13 +65,7 @@ export default function Callback() {
         {/* Button container */}
         <div className="buttonContainer">
           {/* Check button */}
-          <div className="button" onClick={handleSecurityCheck}  onKeyPress={(e) => {
-                if (e.key === "" || e.key === "") {
-                  window.location.href = "/security/verify";
-                }
-              }}>
-            Check
-          </div>
+          <div className="button">Check</div>
           {/* Forgot button */}
           <div
             className="button2"

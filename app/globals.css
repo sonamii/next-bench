@@ -124,6 +124,7 @@
     border: var(--border);
     outline: var(--ring) / 50;
   }
+
   body {
     background-color: var(--background);
     color: var(--foreground);
@@ -134,6 +135,7 @@
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
   }
@@ -142,7 +144,7 @@
 
 .space {
   display: flex;
-  position: relative; 
+  position: relative;
   width: 0px;
   height: 60px;
   background-color: gainsboro;
@@ -155,10 +157,15 @@
   height: 30px;
   background-color: gainsboro;
 }
+
 .space-xs {
   display: flex;
   position: relative;
   width: 0px;
   height: 20px;
   background-color: gainsboro;
+}
+
+.my-swal-container {
+  position: absolute !important;
 }
