@@ -28,12 +28,11 @@ export function LoginForm({
 
   useEffect(() => {
     async function checkSession() {
-      const {  error } = await supabase.auth.getSession();
+      const { error } = await supabase.auth.getSession();
       if (error) {
         toast.error("Failed to check session");
         return;
       }
-      
     }
 
     checkSession();
@@ -88,6 +87,26 @@ export function LoginForm({
     }
   }
 
+  async function loginWithGoogleToSupabase() {
+    setIsLoading(true);
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+      });
+      if (error) {
+        toast.error("Failed to log in with Google");
+      }
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        toast.error("An unexpected error occurred");
+      } else {
+        toast.error("An unexpected error occurred");
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card className="overflow-hidden p-0 cardContainer">
@@ -138,10 +157,10 @@ export function LoginForm({
                 <div className="flex items-center">
                   <Label htmlFor="password">Password</Label>
                   <a
-                    href="/auth/change-email"
+                    href="#"
                     className="ml-auto text-sm underline-offset-2 hover:underline"
                   >
-                    Update email?
+                    Forgot Password?
                   </a>
                 </div>
                 <Input
@@ -163,7 +182,7 @@ export function LoginForm({
                   setIsLoading(false);
                 }}
                 style={{ cursor: "pointer" }}
-                disabled={isLoading}
+                disabled={isLoading || !email || !password}
               >
                 {isLoading ? "Logging In..." : "LogIn"}
               </Button>
@@ -192,6 +211,7 @@ export function LoginForm({
                   variant="outline"
                   className="w-full"
                   style={{ cursor: "pointer" }}
+                  onClick={loginWithGoogleToSupabase}
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                     <path
@@ -201,6 +221,7 @@ export function LoginForm({
                   </svg>
                   <span className="sr-only">Login with Google</span>
                 </Button>
+
                 <Button
                   variant="outline"
                   className="w-full"
