@@ -18,6 +18,12 @@ export default function Callback() {
   const [userID, setUserID] = useState("");
   const [isAdminVerified, setIsAdminVerified] = useState(false);
 
+
+  useEffect(() => {
+
+
+
+  })
   useEffect(() => {
     setTimeout(() => setIsVisible(true), 100);
   }, []);

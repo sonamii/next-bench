@@ -120,6 +120,30 @@ export default function Callback() {
     }
   }
 
+  useEffect(() => {
+    const checkGoogleLogin = async () => {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+      if (session) {
+        const { user } = session;
+        if (user.app_metadata.providers.includes("google")) {
+          const { error: updateError } = await supabase
+            .from("users")
+            .update({ isVerified: true, isLoggedIn: true })
+            .eq("id", userID);
+
+          if (updateError) {
+            toast.error("Failed to update verification and login status");
+          } else {
+            toast.success("Authenticated with Google");
+          }
+        }
+      }
+    };
+    checkGoogleLogin();
+  }, [userID]);
+
   if (isLoggedIn && isVisible) {
     return (
       <div className={`containerMain ${isVisible ? "fade-in" : ""}`}>
