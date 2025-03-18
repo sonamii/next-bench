@@ -209,7 +209,7 @@ export function LoginForm({
                 </Button>
                 <Button
                   variant="outline"
-                  className="w-full"
+                  className="w-full buttonGoogle"
                   style={{ cursor: "pointer" }}
                   onClick={loginWithGoogleToSupabase}
                 >

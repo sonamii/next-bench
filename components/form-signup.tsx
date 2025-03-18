@@ -81,12 +81,32 @@ export function SignUpForm({
     }
   }
 
+  async function loginWithGoogleToSupabase() {
+    setIsLoading(true);
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+      });
+      if (error) {
+        toast.error("Failed to log in with Google");
+      }
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        toast.error("An unexpected error occurred");
+      } else {
+        toast.error("An unexpected error occurred");
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card className="overflow-hidden p-0 cardContainer">
         <CardContent className="grid p-0 md:grid-cols-2">
           <form className="p-6 md:p-8" onSubmit={(e) => e.preventDefault()}>
-            <div className="flex flex-col gap-6">
+            <div className="flex flex-col gap-5">
               {/* The first column contains a heading, a paragraph, and a form */}
               <div className="flex flex-col items-center text-center">
                 {/* The heading */}
@@ -205,6 +225,10 @@ export function SignUpForm({
               >
                 {isLoading ? "Signing Up..." : "SignUp"}
               </Button>
+            </div>
+            <div className="flex flex-row items-center text-center mt-3 text-sm text-foreground justify-center whitespace-pre">
+              or login with{" "}
+              <button className="underline buttonGoogle2" onClick={loginWithGoogleToSupabase}>google</button>
             </div>
           </form>
           {/* The second column contains an Image with a logo. */}
