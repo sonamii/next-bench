@@ -1,10 +1,8 @@
 "use client";
 import "./page.css";
-import Image from "next/image";
-import Swal from "sweetalert2";
+
 import supabase from "@/services/supabase";
 import { useEffect, useState } from "react";
-import { Info } from "lucide-react";
 import { toast } from "sonner";
 import { Nav } from "@/custom-components/nav/nav";
 /**
@@ -19,14 +17,8 @@ import { Nav } from "@/custom-components/nav/nav";
  * indicating that the callback was unsuccessful and a button to login.
  */
 export default function Callback() {
-  const [securityID, setSecurityID] = useState(
-    "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
-  );
-  const [isVisible, setIsVisible] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
   const [userID, setUserID] = useState("");
   const [emailID, setEmailID] = useState("");
-  const [isAuthWithGoogle, setIsAuthWithGoogle] = useState(false);
 
   useEffect(() => {
     const getSessionAndUserID = async () => {
@@ -44,10 +36,16 @@ export default function Callback() {
     getSessionAndUserID();
   }, []);
 
+  useEffect(() => {
+    console.log(userID, emailID);
+    console.clear();
+  }, [userID, emailID]);
   return (
     <>
       <Nav />
-      <div className={`containerMain ${isVisible ? "fade-in" : ""}`}>coming soon.stay tuned.</div>
+      <div className={`containerMain ${isVisible ? "fade-in" : ""}`}>
+        coming soon.stay tuned.
+      </div>
     </>
   );
 }
