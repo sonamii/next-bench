@@ -174,7 +174,7 @@ export default function Callback() {
             Try NextAI
           </button>
 
-          {isVisible && isAdminVerified && (
+          {isVisible && isAdminVerified && isVerified && (
             <button
               className="buttonA"
               onClick={() => (window.location.href = "/admin/dashboard")}

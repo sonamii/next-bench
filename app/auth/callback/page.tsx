@@ -6,6 +6,7 @@ import supabase from "@/services/supabase";
 import { useEffect, useState } from "react";
 import { Info } from "lucide-react";
 import { toast } from "sonner";
+import { v4 as uuidv4 } from "uuid";
 
 /**
  * The Callback component is a client-side only page that is used to handle
@@ -26,6 +27,7 @@ export default function Callback() {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
   const [userID, setUserID] = useState("");
   const [emailID, setEmailID] = useState("");
+  const [isAuthWithGoogle, setIsAuthWithGoogle] = useState(false);
 
   useEffect(() => {
     const getSessionAndUserID = async () => {
@@ -128,21 +130,71 @@ export default function Callback() {
       if (session) {
         const { user } = session;
         if (user.app_metadata.providers.includes("google")) {
-          const { error: updateError } = await supabase
+          const { data: existingUser, error: fetchError } = await supabase
             .from("users")
-            .update({ isVerified: true, isLoggedIn: true })
-            .eq("id", userID);
+            .select("*")
+            .eq("email", user.email)
+            .single();
 
-          if (updateError) {
-            toast.error("Failed to update verification and login status");
-          } else {
-            toast.success("Authenticated with Google");
+          if (fetchError) {
+            toast.error("Error checking user existence");
+            return;
           }
+
+          if (!existingUser) {
+            const { error } = await supabase.from("users").insert([
+              {
+                security_id: uuidv4(),
+                type: "NONE",
+                name: user.email?.split("@")[0], // Set the name extracted from the email
+                email: user.email,
+                password: "google-oauth",
+                phone: "xxx-xxx-xxxx", // Replace with actual phone number if available
+                created_at: new Date().toISOString(),
+                isLoggedIn: true, // Ensure this field exists in your database schema
+                isVerified: true,
+              },
+            ]);
+
+            if (error) {
+              toast.error("Error inserting new user");
+            } else {
+                if (!isAuthWithGoogle) {
+                toast.success(
+                  "New authentication with google created successfully"
+                );
+                }
+            }
+          } else {
+            const { error: updateError } = await supabase
+              .from("users")
+              .update({
+                isGoogleAuth: true,
+                isLoggedIn: true,
+                isVerified: true,
+              })
+              .eq("email", user.email);
+
+            if (updateError) {
+              toast.error("Error updating user password");
+            } else {
+                if (!isAuthWithGoogle) {
+                toast.success(
+                  "Old authentication with google updated successfully"
+                );
+                }
+            }
+          }
+          setIsAuthWithGoogle(true);
+          if (!isAuthWithGoogle) {
+            toast.success(`Authenticated with Google: ${user.email}`);
+          }
+          console.log(isAuthWithGoogle);
         }
       }
     };
     checkGoogleLogin();
-  }, [userID]);
+  }, [userID, isAuthWithGoogle]);
 
   if (isLoggedIn && isVisible) {
     return (
