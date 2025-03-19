@@ -2,7 +2,7 @@
 import "./page.css";
 import Image from "next/image";
 import Swal from "sweetalert2";
-import { AppWindowMacIcon, ArrowRight, X } from "lucide-react";
+import { AppWindowMacIcon} from "lucide-react";
 import { Nav } from "@/custom-components/nav/nav";
 import { toast } from "sonner";
 import { useState, useEffect } from "react";

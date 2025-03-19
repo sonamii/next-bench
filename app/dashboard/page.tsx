@@ -2,7 +2,7 @@
 import "./page.css";
 import Swal from "sweetalert2";
 import Image from "next/image";
-import { ArrowRight, SquareSigmaIcon } from "lucide-react";
+import {  SquareSigmaIcon } from "lucide-react";
 import { Nav } from "@/custom-components/nav/nav";
 import { toast } from "sonner";
 import { useState, useEffect } from "react";
