@@ -150,7 +150,7 @@ export default function Home() {
           className="inputContainer  fade-item"
           onSubmit={(e) => e.preventDefault()}
         >
-          <Button onClick={() => (window.location.href = "/ai")}>
+          <Button onClick={() => (window.location.href = "/dashboard")}>
             Try it now
           </Button>
           <div className="buttonS">
