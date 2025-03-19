@@ -43,7 +43,7 @@ export default function Callback() {
   return (
     <>
       <Nav />
-      <div className={`containerMain ${isVisible ? "fade-in" : ""}`}>
+      <div className={`containerMain fade-in`}>
         coming soon.stay tuned.
       </div>
     </>

@@ -150,7 +150,7 @@ export default function Callback() {
               }
             }}
           >
-            <ArrowRight size={14} />
+            click to verify
           </button>
         </div>
         <div className="space-xxs"></div>

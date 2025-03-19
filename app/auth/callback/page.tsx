@@ -274,7 +274,6 @@ export default function Callback() {
           <br />
           <br />
         </div>
-        <div className="space-s"></div>
         <div className="buttonContainer fade-item">
           <div
             className="button fade-item"

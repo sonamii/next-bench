@@ -287,7 +287,8 @@ body {
     }
 
     .members .buttonM {
-        width: 23px !important;
+        width: fit-content !important;
+        padding-inline: 10px;
         height: 23px !important;
         border-radius: 50px;
         background-color: #f7cfd7;

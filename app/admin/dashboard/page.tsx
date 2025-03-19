@@ -198,7 +198,9 @@ export default function Callback() {
                 {" "}
                 <Avvvatars value={emailID} size={23} />
               </div>
-              <div id="verifiedContainer">You skipped the callback or are not verified</div>
+              <div id="verifiedContainer">
+                You skipped the callback or are not verified
+              </div>
               <button
                 className="buttonM"
                 id="isVerifiedButton"
@@ -212,7 +214,7 @@ export default function Callback() {
                   }
                 }}
               >
-                <ArrowRight size={14} />
+                click to verify
               </button>
             </div>
             <div className="space-xxs"></div>
@@ -269,17 +271,9 @@ export default function Callback() {
             <button
               className="buttonM"
               id="isVerifiedButton"
-              onClick={() => {
-                if (!isLoggedIn) {
-                  window.location.href = "/auth/login";
-                } else if (!isVerified) {
-                  window.location.href = "/auth/callback";
-                } else if (isVerified && isLoggedIn) {
-                  window.location.href = "#";
-                }
-              }}
+              style={{ paddingInline: "0px !important" }}
             >
-              <X size={14} />
+              admin? click to verify
             </button>
           </div>
           <div className="space-xs"></div>
