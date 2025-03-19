@@ -33,6 +33,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import supabase from "@/services/supabase";
 import { toast } from "sonner";
+import { v4 as uuidv4 } from "uuid";
 
 /**
  * The homepage of the website. This is the entry point for the app.
@@ -42,6 +43,7 @@ export default function Home() {
    * State variable to track if the page is visible or not.
    */
   const [isVisible, setIsVisible] = useState(false);
+  const [userID, setUserID] = useState("");
 
   /**
    * Set the component as visible after a 100ms delay
@@ -90,6 +92,63 @@ export default function Home() {
 
     getSession();
   }, []);
+
+  useEffect(() => {
+    const getSessionAndUserID = async () => {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+      if (session) {
+        const { user } = session;
+        setUserID(user.id);
+      } else {
+        toast.error("No active session found");
+      }
+    };
+    getSessionAndUserID();
+  }, []);
+
+  useEffect(() => {
+    const checkAndCreateUser = async () => {
+      const { data } = await supabase.auth.getSession();
+      const user = data?.session?.user;
+
+      if (user?.app_metadata?.provider === "google") {
+        const { data: existingUser } = await supabase
+          .from("users")
+          .select("*")
+          .eq("id", user.id) // Use user.id directly instead of userID
+          .single();
+
+        if (!existingUser) {
+          const newUser = {
+            security_id: uuidv4(),
+            type: "NONE",
+            name: user.email?.split("@")[0],
+            email: user.email,
+            password: "google-oauth",
+            phone: "xxx-xxx-xxxx",
+            created_at: new Date().toISOString(),
+            isLoggedIn: true,
+            isVerified: false,
+            isGoogleAuth: true,
+          };
+
+          const { error } = await supabase.from("users").insert(newUser);
+
+          if (error) {
+            console.error("Error creating user:", error.message);
+          } else {
+            toast.success("User created successfully!");
+          }
+        }
+      }
+    };
+
+    if (userID) {
+      checkAndCreateUser(); // Ensure userID is set before calling the function
+    }
+  }, [userID]);
 
   return (
     <>
