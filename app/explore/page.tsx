@@ -270,7 +270,7 @@ export default function Callback() {
             </button>
             {isAdminOrInstituition && (
               <button
-                className="buttonAdd"
+                className="buttonAdd dropdown-next"
                 onClick={() => {
                   window.location.href = "/edu/add";
                 }}
@@ -281,6 +281,7 @@ export default function Callback() {
           </div>
           <div className="space-xxs"></div>
         </div>
+        <div className="tableNotCont">Increase screen width to view the list of schools</div>
         <div className="tableCont fade-item2">
           {/* <div className="item">
             <div className="pfp">

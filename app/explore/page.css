@@ -125,6 +125,7 @@ body {
     position: relative;
     width: 100%;
     height: fit-content;
+    max-height: 100vh;
     min-height: 100vh;
     padding-top: 110px;
     background-color: transparent;
@@ -139,7 +140,6 @@ body {
     align-items: center;
     justify-content: start;
     gap: 10px;
-    align-items: end;
     justify-content: start;
     flex-direction: column;
 }
@@ -152,7 +152,7 @@ body {
     padding-inline: 20px;
     height: 60px !important;
     max-width: 650px;
-    width: 90vw;
+    width: 90vw !important;
     background-color: none;
     border: 1px solid #b9bcbe;
     font-family: "Plus Jakarta Sans", sans-serif;
@@ -179,6 +179,7 @@ body {
     align-items: center;
     justify-content: center;
     gap: 10px;
+    flex-wrap: wrap;
 }
 
 .prefContMain .buttonSubmit {
@@ -202,13 +203,38 @@ body {
     }
 }
 
+.dropdown-next::before {
+    content: '';
+    width: 5px;
+    height: 5px;
+    background-color: #b8ff33;
+    border-radius: 100%;
+    position: absolute;
+    right: -3px;
+    top: -3px;
+    animation: radar-pulse 1.3s infinite;
+
+}
+
+@keyframes radar-pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(187, 254, 59, 0.7);
+        border-radius: 100%;
+    }
+
+    100% {
+        box-shadow: 0 0 0 5px rgba(187, 254, 59, 0);
+        border-radius: 100%;
+    }
+}
+
 .prefContMain .buttonAdd {
     display: flex;
     align-items: center;
     justify-content: center;
     width: 36px;
     height: 36px;
-    background-color: #cfd1d480;
+    background-color: #d7dadf80;
     border: 1px solid #cfd1d480;
     border-radius: 7px;
     cursor: pointer;
@@ -286,11 +312,15 @@ body {
     border-radius: 10px;
     align-items: center;
     justify-content: start;
+    overflow-x: scroll;
     flex-direction: row;
     padding-right: 115px;
     padding-left: 10px;
     gap: 10px;
 
+    &::-webkit-scrollbar {
+        display: none;
+    }
 
     .pfp {
         display: flex;
@@ -443,5 +473,26 @@ body {
             background-color: #b5b5b685;
             border: 1px solid #cfd1d485;
         }
+    }
+}
+
+
+.tableNotCont {
+    display: none;
+    position: relative;
+}
+
+@media (max-width: 750px) {
+    .tableCont {
+        display: none;
+    }
+
+    .preferencesCont {
+        width: 90vw !important;
+        padding-left: 50px;
+    }
+
+    .tableNotCont {
+        display: flex;
     }
 }
