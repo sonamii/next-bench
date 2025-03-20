@@ -129,7 +129,7 @@ export function SignUpForm({
                       }}
                     >
                       {/* Version in the code */}
-                      v0.1.0.alpha-2
+                      v0.1.0.gamma-1
                     </HoverCardContent>
                   </HoverCard>{" "}
                   {/* The text "account" */}

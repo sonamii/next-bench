@@ -156,8 +156,8 @@ export default function Home() {
       <div className="background"></div>
       {/* HEADER WITH RELEASE CODE*/}
       <div className="header">
-        <code className="releaseCode">&nbsp;v0.1.0.beta-3</code>released. SignUp
-        Now!
+        <code className="releaseCode">&nbsp;v0.1.0.gamma-1</code>released.
+        &nbsp;<b>Explore*</b> it now!
       </div>
       {/* NAVBAR START*/}
       <Nav />

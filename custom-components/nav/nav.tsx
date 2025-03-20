@@ -53,7 +53,7 @@ export const Nav = ({ className = "" }: NavProps) => {
     return () => {
       window.removeEventListener("resize", updateElements);
     };
-  }, []);
+  }, [isClient]);
 
   React.useEffect(() => {
     setIsClient(true);

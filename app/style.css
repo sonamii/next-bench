@@ -607,7 +607,7 @@ html {
         justify-content: start;
         gap: 15px;
         flex-direction: column;
-        font-family: "CG",  sans-serif;
+        font-family: "CG", sans-serif;
         font-weight: 470;
         font-size: 17px;
         color: #0c0c0c;
@@ -667,7 +667,7 @@ html {
         align-items: center;
         justify-content: start;
         gap: 15px;
-        font-family: "CG",  sans-serif;
+        font-family: "CG", sans-serif;
         font-weight: 470;
         font-size: 17px;
         color: #0c0c0c;
@@ -1102,7 +1102,7 @@ html {
     text-align: center !important;
   }
 
- 
+
 
   .topFeatures .right {
     min-width: 100% !important;

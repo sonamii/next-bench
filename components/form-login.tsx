@@ -132,7 +132,7 @@ export function LoginForm({
                         color: "inherit",
                       }}
                     >
-                      v0.1.0.alpha-2
+                      v0.1.0.gamma-1
                     </HoverCardContent>
                   </HoverCard>{" "}
                   account
