@@ -73,6 +73,11 @@ body {
     animation: fadeInUp 0.6s ease-out forwards;
 }
 
+.fade-item2 {
+    opacity: 0;
+    transform: translateY(30px);
+    animation: fadeInUp 1.6s ease-out forwards;
+}
 
 /* Stagger effect */
 .fade-item:nth-child(1) {
@@ -263,31 +268,33 @@ body {
     height: fit-content;
     overflow-x: visible;
     min-height: 400px;
-    background-color: transparent;
     align-items: center;
     justify-content: start;
     gap: 5px;
     flex-direction: column;
 }
-/* 
-table {
+
+
+.tableCont table {
     width: 100%;
+    min-width: 100% !important;
     border-collapse: separate;
     border-spacing: 0;
-    border-radius: 8px;
     overflow: visible;
-    background-color: white;
+    background-color: transparent;
+    font-family: "Plus Jakarta Sans", sans-serif;
+    color: #0f0f0f;
 }
 
 th,
 td {
-    padding: 10px;
+    padding-inline: 10px;
     border-bottom: 1px solid #8d8d8d;
-    border-left: 1px solid darkslategray;
-    border-top: 1px solid #8d8d8d;
+    padding-top: 9px;
+    padding-bottom: 9px;
     text-align: left;
 }
 
 th {
     background-color: transparent;
-} */
+}

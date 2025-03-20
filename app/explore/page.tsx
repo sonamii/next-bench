@@ -80,7 +80,7 @@ export default function Callback() {
           toast.error("Failed to fetch user type");
           console.error(error);
         } else {
-          if (data.type === "ADMIN" || data.type === "Instituition") {
+          if (data.type === "ADMIN" || data.type === "Institution") {
             setIsAdminOrInstituition(true);
           }
         }
@@ -108,39 +108,44 @@ export default function Callback() {
 
     const tableContainer = document.querySelector(".tableCont");
     if (tableContainer) {
-      if (!tableContainer.hasOwnProperty("_reactRoot")) {
-        (tableContainer as Element & { _reactRoot?: any })["_reactRoot"] =
-          createRoot(tableContainer);
-      }
-      const tableElement = (
-        <Table className="eduTable">
-          <TableHeader>
-            <TableRow>
-              <TableHead>Name</TableHead>
-              <TableHead>Subtype</TableHead>
-              <TableHead>Affiliation</TableHead>
-              <TableHead>City</TableHead>
-              <TableHead>State</TableHead>
-              <TableHead>Contact Number</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {eduData.map((edu) => (
-              <TableRow key={edu.name}>
-                <TableCell>{edu.name}</TableCell>
-                <TableCell>{edu.subtype}</TableCell>
-                <TableCell>{edu.affiliation}</TableCell>
-                <TableCell>{edu.city}</TableCell>
-                <TableCell>{edu.state}</TableCell>
-                <TableCell>{edu.contact_number}</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      );
-      (tableContainer as Element & { _reactRoot: any })["_reactRoot"].render(
-        tableElement
-      );
+      tableContainer.innerHTML = "";
+      const table = document.createElement("table");
+      table.className = "eduTable";
+
+      let thead = table.createTHead();
+      let headerRow = thead.insertRow();
+      const headers = [
+        "Name",
+        "Subtype",
+        "Affiliation",
+        "City",
+        "State",
+        "Contact Number",
+      ];
+      headers.forEach((headerText) => {
+        let header = document.createElement("th");
+        header.textContent = headerText;
+        headerRow.appendChild(header);
+      });
+
+      let tbody = table.createTBody();
+      eduData.forEach((edu) => {
+        let row = tbody.insertRow();
+        let nameCell = row.insertCell();
+        nameCell.textContent = edu.name;
+        let subtypeCell = row.insertCell();
+        subtypeCell.textContent = edu.subtype;
+        let affiliationCell = row.insertCell();
+        affiliationCell.textContent = edu.affiliation;
+        let cityCell = row.insertCell();
+        cityCell.textContent = edu.city;
+        let stateCell = row.insertCell();
+        stateCell.textContent = edu.state;
+        let contactCell = row.insertCell();
+        contactCell.textContent = edu.contact_number;
+      });
+
+      tableContainer.appendChild(table);
     }
 
     const eduChannel = supabase
@@ -182,7 +187,7 @@ export default function Callback() {
       <div className={`containerMain fade-in`}>
         <div className="prefContMain">
           {" "}
-          <div className="preferencesCont">
+          <div className="preferencesCont fade-item">
             <div>
               <Input
                 type="text"
@@ -237,8 +242,11 @@ export default function Callback() {
               </Select>
             </div>
           </div>
-          <div className="buttonCont">
+          <div className="buttonCont fade-item">
             {" "}
+            <button className="buttonSubmit">
+              This is a temporary preview table
+            </button>
             <button className="buttonSubmit" onClick={giveJSONDataInToast}>
               Apply
             </button>
@@ -255,7 +263,7 @@ export default function Callback() {
           </div>
           <div className="space-xxs"></div>
         </div>
-        <div className="tableCont"></div>
+        <div className="tableCont fade-item2"></div>
       </div>
     </>
   );
