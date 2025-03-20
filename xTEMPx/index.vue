@@ -48,18 +48,6 @@
 </template>
 
 <script lang="ts">
-// import { defineComponent } from 'vue'
-// import ExampleCompositionApi from '@/components/ExampleCompositionApi.vue'
-// import ExampleTeleport from '@/components/ExampleTeleport.vue'
-// import ExampleProvideInject from '@/components/ExampleProvideInject.vue'
-// import ExampleAsyncComponents from '@/components/ExampleAsyncComponents.vue'
 
-// export default defineComponent({
-//   components: {
-//     ExampleCompositionApi,
-//     ExampleTeleport,
-//     ExampleProvideInject,
-//     ExampleAsyncComponents,
-//   },
-// })
 </script>
+n

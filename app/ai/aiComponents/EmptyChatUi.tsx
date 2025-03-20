@@ -1,7 +1,6 @@
 "use client";
 
-// import { Button } from "@/components/ui/button";
-// import { Trash2 } from "lucide-react";
+
 import "./style.css";
 import { SparklesText } from "@/components/magicui/sparkles-text";
 

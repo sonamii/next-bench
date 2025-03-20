@@ -198,7 +198,7 @@ html {
     color: #666;
     font-weight: 500;
     padding-inline: 20px;
-    font-family: "CG";
+    font-family: "CG", sans-serif;
   }
 
   Button {
@@ -221,7 +221,7 @@ html {
     justify-content: center;
     display: flex;
     position: relative;
-    font-family: "CG";
+    font-family: "CG", sans-serif;
     font-weight: 500;
     font-size: 14px;
     color: #3a3a3a;
@@ -445,10 +445,9 @@ html {
       justify-content: center;
       flex-direction: row;
       display: flex;
-      font-family: "CG";
+      font-family: "CG", sans-serif;
       font-weight: 450;
       border-radius: 10px;
-      cursor: pointer;
 
       &:hover {
         background: linear-gradient(to bottom, #292929, #3a3a3a);
@@ -467,7 +466,6 @@ html {
     }
 
     .userContainer {
-      gap: 10px;
       display: flex;
       flex-direction: row;
       height: 230px;
@@ -549,7 +547,6 @@ html {
     justify-content: center;
     flex-direction: row;
     flex-wrap: wrap;
-    background-color: transparent;
     gap: 15px;
 
     .partnersDisplay {
@@ -610,7 +607,7 @@ html {
         justify-content: start;
         gap: 15px;
         flex-direction: column;
-        font-family: "CG";
+        font-family: "CG", sans-serif;
         font-weight: 470;
         font-size: 17px;
         color: #0c0c0c;
@@ -670,7 +667,7 @@ html {
         align-items: center;
         justify-content: start;
         gap: 15px;
-        font-family: "CG";
+        font-family: "CG", sans-serif;
         font-weight: 470;
         font-size: 17px;
         color: #0c0c0c;
@@ -716,7 +713,6 @@ html {
 .footer {
   display: flex;
   position: relative;
-  width: 100%;
   max-width: 1100px;
   width: 90vw;
   height: 400px;
@@ -756,7 +752,7 @@ html {
         height: fit-content;
         flex-direction: row;
         color: #989898;
-        font-family: "CG";
+        font-family: "CG", sans-serif;
         font-weight: 500;
         font-size: 16px;
         max-width: 200px;
@@ -1093,13 +1089,6 @@ html {
     min-width: 100% !important;
     background-color: transparent;
     height: fit-content !important;
-  }
-
-  .topFeatures .left .textBottom3 {
-    text-align: center !important;
-  }
-
-  .topFeatures .left {
     align-items: center;
     justify-content: center;
     padding-right: 0;
@@ -1107,9 +1096,13 @@ html {
     .textTop2 {
       text-align: center !important;
     }
-
-
   }
+
+  .topFeatures .left .textBottom3 {
+    text-align: center !important;
+  }
+
+
 
   .topFeatures .right {
     min-width: 100% !important;

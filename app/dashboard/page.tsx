@@ -1,71 +1,77 @@
 "use client";
 import "./page.css";
+import Swal from "sweetalert2";
 import Image from "next/image";
-import { ArrowRight, SquareSigmaIcon } from "lucide-react";
-import { useVerificationStore } from "@/store/verificationStore";
+import { SquareSigmaIcon } from "lucide-react";
 import { Nav } from "@/custom-components/nav/nav";
 import { toast } from "sonner";
-import { useEffect } from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import supabase from "@/services/supabase";
 import Avvvatars from "avvvatars-react";
-import { useAdminVerificationStore } from "@/store/adminVerificationStore";
 
-/**
- * The main dashboard page.
- *
- * This page is the main dashboard for users.
- *
- * @returns The dashboard page.
- */
 export default function Callback() {
-  const { isVerified, setIsVerified } = useVerificationStore();
-  const [emailLocal, setEmailLocal] = useState("");
-  const { isAdminVerified } = useAdminVerificationStore();
   const [isVisible, setIsVisible] = useState(false);
+  const [isVerified, setIsVerified] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
+  const [emailID, setEmailID] = useState("");
+  const [userID, setUserID] = useState("");
+  const [isAdminVerified, setIsAdminVerified] = useState(false);
 
+  useEffect(() => {});
   useEffect(() => {
     setTimeout(() => setIsVisible(true), 100);
   }, []);
-  // Set the emailLocal state to the value of the email in local storage.
+
   useEffect(() => {
-    setEmailLocal(localStorage.getItem("email") || "");
+    const getSessionAndUserID = async () => {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+      if (session) {
+        const { user } = session;
+        setUserID(user.id);
+        setEmailID(user.email as string);
+      } else {
+        toast.error("No active session found");
+      }
+    };
+    getSessionAndUserID();
   }, []);
 
-  // If the user is not verified, redirect them to the verification page.
   useEffect(() => {
-    const isVerifiedButton = document.getElementById("isVerifiedButton");
-    const verifiedContainer = document.getElementById("verifiedContainer");
+    const fetchVerificationStatus = async () => {
+      const { data, error } = await supabase
+        .from("users")
+        .select("isVerified,type,isLoggedIn")
+        .eq("id", userID)
+        .single();
 
-    if (!isVerified) {
-      // Show a toast message and redirect in 3 seconds.
-      toast("Account not verified", {
-        description: `Verify now`,
-        action: {
-          label: "Verify",
-          onClick: () => (window.location.href = "/security/verify"),
-        },
-      });
-
-      if (isVerifiedButton) {
-        isVerifiedButton.style.display = "flex";
+      if (error) {
+        toast.error("Failed to fetch verification status");
+      } else {
+        setIsVerified(data.isVerified);
+        setIsLoggedIn(data.isLoggedIn);
+        toast.success("Successfully fetched verification status");
+        if (data.type === "ADMIN") {
+          setIsAdminVerified(true);
+        }
       }
-      isVerifiedButton?.addEventListener("click", () => {
-        window.location.href = "/security/verify";
-      });
-      // setTimeout(() => {
-      //   window.location.href = "/security/verify";
-      // }, 1700);
-    } else {
-      toast("Account verified", {
-        description: `Verification successful`,
-        action: {
-          label: "Okay",
-          onClick: () => console.log("Okay"),
-        },
-      });
-      if (isVerifiedButton && verifiedContainer) {
+    };
+
+    if (userID) {
+      fetchVerificationStatus();
+    }
+  }, [userID]);
+
+  useEffect(() => {
+    if (isLoggedIn && isVerified) {
+      const verifiedContainer = document.getElementById("verifiedContainer");
+      const isVerifiedButton = document.getElementById("isVerifiedButton");
+
+      if (verifiedContainer) {
         verifiedContainer.innerHTML = "You are verified";
+      }
+      if (isVerifiedButton) {
         isVerifiedButton.style.backgroundColor = "#d4edda";
         isVerifiedButton.style.color = "#355734";
         isVerifiedButton.innerHTML = "";
@@ -74,23 +80,38 @@ export default function Callback() {
         isVerifiedButton.appendChild(infoIcon);
       }
     }
-  }, [isVerified]);
+  }, [isVerified, isLoggedIn]);
 
-  const deleteSessionAndLogout = async () => {
-    // Sign out the user
+  async function deleteSessionAndLogout() {
     const { error } = await supabase.auth.signOut();
     if (error) {
-      console.error("Error signing out:", error);
-      return;
-    }
-    console.log("Signed out successfully");
+      toast.error("Failed to sign out");
+    } else {
+      const { error: updateError } = await supabase
+        .from("users")
+        .update({ isLoggedIn: false, isVerified: false })
+        .eq("id", userID);
 
-    window.location.href = "/auth/login";
-    // Clear the email from local storage
-    localStorage.setItem("email", "");
-    localStorage.setItem("security_id", "");
-    setIsVerified(false);
-  };
+      if (updateError) {
+        toast.error("Failed to update login status");
+      } else {
+        toast.success("Login status updated");
+      }
+      toast.success("Successfully logged out");
+      Swal.fire({
+        icon: "success",
+        title: "Logged out",
+        text: "You have been successfully logged out.",
+        customClass: {
+          container: "my-swal-container",
+        },
+      });
+
+      setTimeout(() => {
+        window.location.href = "/auth/login";
+      }, 1500);
+    }
+  }
 
   return (
     <>
@@ -111,11 +132,25 @@ export default function Callback() {
         <div className="members fade-item">
           <div className="pfp" style={{ marginTop: "1px" }}>
             {" "}
-            <Avvvatars value={emailLocal.split("@")[0] || "-"} size={23} />
+            <Avvvatars value={emailID.split("@")[0] || "🥲"} size={23} />
           </div>
-          <div id="verifiedContainer">You are not verified</div>
-          <button className="buttonM" id="isVerifiedButton">
-            <ArrowRight size={14} />
+          <div id="verifiedContainer">
+            You skipped the callback or are not verified/logged in
+          </div>
+          <button
+            className="buttonM"
+            id="isVerifiedButton"
+            onClick={() => {
+              if (!isVerified) {
+                window.location.href = "/auth/callback";
+              } else if (!isLoggedIn) {
+                window.location.href = "/auth/login";
+              } else if (isVerified && isLoggedIn) {
+                window.location.href = "#";
+              }
+            }}
+          >
+            click to verify
           </button>
         </div>
         <div className="space-xxs"></div>
@@ -127,16 +162,25 @@ export default function Callback() {
           >
             Home
           </button>
-          <button className="button  " onClick={deleteSessionAndLogout}>
-            Logout
+          <button
+            className="button"
+            onClick={() => window.location.assign("/explore")}
+          >
+            Explore
           </button>
+          {isVerified && (
+            <button className="button  " onClick={deleteSessionAndLogout}>
+              Logout
+            </button>
+          )}
           <button
             className="buttonS"
             onClick={() => window.location.assign("/ai")}
           >
             Try NextAI
           </button>
-          {isVisible && isAdminVerified && (
+
+          {isVisible && isAdminVerified && isVerified && (
             <button
               className="buttonA"
               onClick={() => (window.location.href = "/admin/dashboard")}

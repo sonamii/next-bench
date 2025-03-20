@@ -33,6 +33,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import supabase from "@/services/supabase";
 import { toast } from "sonner";
+import { v4 as uuidv4 } from "uuid";
 
 /**
  * The homepage of the website. This is the entry point for the app.
@@ -42,6 +43,7 @@ export default function Home() {
    * State variable to track if the page is visible or not.
    */
   const [isVisible, setIsVisible] = useState(false);
+  const [userID, setUserID] = useState("");
 
   /**
    * Set the component as visible after a 100ms delay
@@ -63,8 +65,10 @@ export default function Home() {
     const handleScroll = () => {
       const nav = document.querySelector(".nav");
       if (nav && nav instanceof HTMLElement) {
-        const top =
-          window.innerWidth > 500 ? 20 : window.scrollY > 20 ? 20 : 70;
+        let top = 70;
+        if (window.innerWidth > 500 || window.scrollY > 20) {
+          top = 20;
+        }
         nav.style.setProperty("top", `${top}px`, "important");
       }
     };
@@ -75,93 +79,85 @@ export default function Home() {
     };
   }, []);
 
-  /**
-   * Fetches the user's email from Supabase and updates the user's email
-   * and name in the "users" table if the email has changed since the last
-   * login. If the email has not changed, a welcome back message is displayed.
-   * If there is an error fetching the user, an error message is displayed.
-   * If there is an error updating the user, an error message is displayed.
-   * If the user is updated successfully, a success message is displayed.
-   */
   useEffect(() => {
-    /**
-     * Fetches the user's email from Supabase and updates the user's email
-     * and name in the "users" table if the email has changed since the last
-     * login. If the email has not changed, a welcome back message is displayed.
-     * If there is an error fetching the user, an error message is displayed.
-     * If there is an error updating the user, an error message is displayed.
-     * If the user is updated successfully, a success message is displayed.
-     */
-    const getUserEmail = async () => {
-      const { data, error } = await supabase.auth.getUser();
-      if (error) {
-        // If there is an error fetching the user, display an error message
-        toast.error("Error fetching user email: " + error.message);
+    const getSession = async () => {
+      const { data } = await supabase.auth.getSession();
+      if (data?.session) {
+        toast.info(`Welcome back ${data.session.user.email}.`);
+        setTimeout(() => {
+          toast.info("Hope you brought pizza 🍕😋");
+        }, 1000);
+      }
+    };
+
+    getSession();
+  }, []);
+
+  useEffect(() => {
+    const getSessionAndUserID = async () => {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+      if (session) {
+        const { user } = session;
+        setUserID(user.id);
       } else {
-        // Check if the email has changed since the last login
-        if (data?.user?.email != localStorage.getItem("email")) {
-          // If the email has changed, display an error message
-          toast.error("Recent email change detected.");
+        toast.error("No active session found");
+      }
+    };
+    getSessionAndUserID();
+  }, []);
 
-          if (data?.user?.email) {
-            // Update the local email
-            localStorage.setItem("email", data.user.email);
-            console.log("Local email: " + localStorage.getItem("email"));
+  useEffect(() => {
+    const checkAndCreateUser = async () => {
+      const { data } = await supabase.auth.getSession();
+      const user = data?.session?.user;
 
-            // Fetch the session
-            const session = await supabase.auth.getSession();
-            if (session.error) {
-              // If there is an error fetching the session, display an error message
-              toast.error("Error fetching session: " + session.error.message);
-            } else {
-              // Get the session ID
-              const sessionId = session.data.session?.user.id;
+      if (user?.app_metadata?.provider === "google") {
+        const { data: existingUser } = await supabase
+          .from("users")
+          .select("*")
+          .eq("id", user.id) // Use user.id directly instead of userID
+          .single();
 
-              // Get the new email and name
-              const newEmail = data.user.email;
-              const newName = newEmail.split("@")[0];
+        if (!existingUser) {
+          const newUser = {
+            security_id: uuidv4(),
+            type: "NONE",
+            name: user.email?.split("@")[0],
+            email: user.email,
+            password: "google-oauth",
+            phone: "xxx-xxx-xxxx",
+            created_at: new Date().toISOString(),
+            isLoggedIn: true,
+            isVerified: false,
+            isGoogleAuth: true,
+          };
 
-              // Update the user's email and name in the "users" table
-              const { error: updateError } = await supabase
-                .from("users")
-                .update({ email: newEmail, name: newName })
-                .eq("id", sessionId);
+          const { error } = await supabase.from("users").insert(newUser);
 
-              if (updateError) {
-                // If there is an error updating the user, display an error message
-                toast.error("Error updating user: " + updateError.message);
-              } else {
-                // If the user is updated successfully, display a success message
-                toast.success("User updated successfully.");
-              }
-            }
+          if (error) {
+            console.error("Error creating user:", error.message);
+          } else {
+            toast.success("User created successfully!");
           }
-        } else {
-          // If the email has not changed, display a welcome back message
-          toast.success("Welcome back, " + data?.user?.email);
         }
       }
     };
-    getUserEmail();
-  }, []);
 
-  // The below code is the React component for the main landing page.
-  // It renders a background image, a header with a release code,
-  // a navbar, a space to separate the navbar from the main content,
-  // and the main content itself.
-  // The main content includes a container with an initial details section,
-  // a features section, and a call to action section.
-  // The initial details section includes an image, a heading, and a paragraph.
-  // The features section includes a heading and a grid of feature cards.
-  // The call to action section includes a heading and a button.
+    if (userID) {
+      checkAndCreateUser(); // Ensure userID is set before calling the function
+    }
+  }, [userID]);
+
   return (
     <>
       {/* BACKGROUND IMAGE FOR GRID*/}
       <div className="background"></div>
       {/* HEADER WITH RELEASE CODE*/}
       <div className="header">
-        <code className="releaseCode">&nbsp;v0.1.0.beta-1</code>
-        released. SignUp Now!
+        <code className="releaseCode">&nbsp;v0.1.0.gamma-1</code>released.
+        &nbsp;<b>Explore*</b> it now!
       </div>
       {/* NAVBAR START*/}
       <Nav />
@@ -188,7 +184,7 @@ export default function Home() {
             height={20}
             style={{ borderRadius: "100%", marginRight: "5px" }}
           />
-          50+ People Joined
+          100+ People Joined
           <Link href="/waitlist">
             <div className="button">
               Join waitlist{" "}
@@ -213,7 +209,7 @@ export default function Home() {
           className="inputContainer  fade-item"
           onSubmit={(e) => e.preventDefault()}
         >
-          <Button onClick={() => (window.location.href = "/ai")}>
+          <Button onClick={() => (window.location.href = "/dashboard")}>
             Try it now
           </Button>
           <div className="buttonS">
@@ -387,12 +383,12 @@ export default function Home() {
             <div className="userContainer fade-item">
               {/* USER ITEM */}
               <div className="item">
-                <div className="text">800+</div>
+                <div className="text">2500+</div>
                 <div className="bottomText">User Views</div>
               </div>
               {/* USER ITEM */}
               <div className="item bordered">
-                <div className="text">80+</div>
+                <div className="text">120+</div>
                 <div className="bottomText">Active Users</div>
               </div>
               {/* USER ITEM */}
@@ -501,12 +497,12 @@ export default function Home() {
             <div className="userContainer userContainer2 fade-item">
               {/* USER ITEM */}
               <div className="item">
-                <div className="text">800+</div>
+                <div className="text">2500+</div>
                 <div className="bottomText">User Views</div>
               </div>
               {/* USER ITEM */}
               <div className="item bordered">
-                <div className="text">80+</div>
+                <div className="text">120+</div>
                 <div className="bottomText">Active Users</div>
               </div>
 
@@ -676,7 +672,7 @@ interface ItemProps {
  * @param {string} props.text - The text label to display next to the icon.
  * @returns {React.ReactElement} The rendered item component.
  */
-function Item({ icon, text }: ItemProps) {
+function Item({ icon, text }: Readonly<ItemProps>) {
   return (
     <div className="item">
       {icon}

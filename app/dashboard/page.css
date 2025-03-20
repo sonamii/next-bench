@@ -166,7 +166,7 @@ body {
     justify-content: center;
     display: flex;
     position: relative;
-    font-family: "CG";
+    font-family: "CG", sans-serif;
     font-weight: 400;
     font-size: 14px;
     color: #f5f7f9;
@@ -188,7 +188,7 @@ body {
     justify-content: center;
     display: flex;
     position: relative;
-    font-family: "CG";
+    font-family: "CG", sans-serif;
     font-weight: 500;
     font-size: 14px;
     color: #3a3a3a;
@@ -210,7 +210,7 @@ body {
     justify-content: center;
     display: flex;
     position: relative;
-    font-family: "CG";
+    font-family: "CG", sans-serif;
     font-weight: 500;
     font-size: 14px;
     color: #355734;
@@ -298,9 +298,10 @@ body {
 }
 
 .members .buttonM {
-    width: 23px !important;
+    width: fit-content !important;
     height: 23px !important;
     border-radius: 50px;
+    padding-inline: 10px;
     background-color: #f7cfd7;
     color: #ff4d6d;
     margin-left: 15px;

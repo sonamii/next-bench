@@ -1,14 +1,10 @@
 "use client";
 import "./page.css";
 import Image from "next/image";
-import supabase from "@/services/supabase";
-import { useEffect } from "react";
-import { useState } from "react";
+
+import { useEffect, useState } from "react";
 import { CheckCircle2Icon } from "lucide-react";
-import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
-import { useVerificationStore } from "@/store/verificationStore";
-import { useAdminVerificationStore } from "@/store/adminVerificationStore";
 
 /**
  * Security Verification Callback Component
@@ -19,156 +15,13 @@ import { useAdminVerificationStore } from "@/store/adminVerificationStore";
  * to different dashboards.
  */
 export default function Callback() {
-  // State hooks for email, security ID, user ID from database, verification status, and visibility
-  const [email, setEmail] = useState("");
-  const [securityId, setSecurityId] = useState(
-    "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
-  );
-  const [uidDatabase, setUidDatabase] = useState("");
-  const { isVerified, setIsVerified } = useVerificationStore();
-  const { setIsAdminVerified } = useAdminVerificationStore();
-
   const [isVisible, setIsVisible] = useState(false);
-  const [isVerificationSuccessDone, setIsVerificationSuccessDone] =
-    useState(false);
-
-  // Retrieve security ID from localStorage
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const securityIdLocalStorage = localStorage.getItem(
-        "security_id"
-      ) as string;
-      if (securityIdLocalStorage) {
-        setSecurityId(securityIdLocalStorage);
-      }
-    }
-  }, []);
-
-  // Effect to set visibility after 100ms for fade-in animation
-  useEffect(() => {
-    setTimeout(() => setIsVisible(true), 100);
-  }, []);
 
   useEffect(() => {
-    if (localStorage.getItem("security_id") === null) {
-      toast("No Session Found", {
-        description: `Login first`,
-        action: {
-          label: "Login",
-          onClick: () => (window.location.href = "/auth/login"),
-        },
-      });
-    } else {
-      if (isVerified) {
-        alert(
-          `You are already verified as ${localStorage.getItem(
-            "email"
-          )}. Redirecting to dashboard...`
-        );
-        setTimeout(() => {
-          window.location.href = "/dashboard";
-        }, 200);
-        setIsVerificationSuccessDone(true);
-        console.log(isVerificationSuccessDone);
-      }
-    }
-  }, []);
-
-  // Effect to get user ID from session
-  /**
-   * This effect is used to get the user ID from the session.
-   * If the session is valid, the user ID is stored in the `uidDatabase` state.
-   * If the session is invalid, an error message is logged to the console.
-   */
-  useEffect(() => {
-    const getUserIdFromSession = async () => {
-      const { data, error } = await supabase.auth.getSession();
-
-      if (error) {
-        console.error("Error fetching session:", error);
-      } else {
-        if (data.session) {
-          setUidDatabase(data.session.user.id);
-        }
-      }
-    };
-
-    getUserIdFromSession();
-  }, []);
-
-  // Function to handle security check
-  /**
-   * Function to handle security check.
-   * @param {React.MouseEvent<HTMLDivElement>} e The click event.
-   */
-  const handleSecurityCheck = async (e: React.MouseEvent<HTMLDivElement>) => {
-    e.preventDefault();
-
-    console.log("Security id:", securityId);
-    console.log("Email:", email);
-
-    // Check if the user has entered both the security id and email
-    if (email && securityId) {
-      try {
-        // Fetch the user's id from the database using the security id and email
-        const { data, error } = await supabase
-          .from("users")
-          .select("id, type")
-          .eq("security_id", securityId)
-          .eq("email", email)
-          .single();
-
-        // Check if there is an error
-        if (error) {
-          // Display an error message to the user
-          toast.error("Invalid securityID or email");
-        } else {
-          // Check if the user is an admin
-          if (data.id == process.env.NEXT_PUBLIC_ADMIN_UID) {
-            // Set the isVerified state to true
-            setIsVerified(true);
-            // Display a success message to the user
-            toast("Admin Verified", {
-              description: `Redirecting to admin dashboard in 1.5 seconds`,
-              action: { label: "Roger!", onClick: () => console.log("Okay") },
-            });
-            setIsAdminVerified(true);
-            // Redirect the user to the admin dashboard
-            setTimeout(() => {
-              window.location.href = "/admin/dashboard";
-            }, 2500);
-          } else {
-            // Check if the user is the same as the one in the database
-            if (uidDatabase === data.id && data.type) {
-              // Set the isVerified state to true
-              setIsVerified(true);
-
-              if (data.type === "ADMIN") {
-                setIsAdminVerified(true);
-              }
-              // Display a success message to the user
-              toast("Account Verified", {
-                description: `Redirecting in 1.5 seconds`,
-                action: { label: "Okay", onClick: () => console.log("Okay") },
-              });
-
-              // Redirect the user to the dashboard
-              setTimeout(() => {
-                window.location.href = "/dashboard";
-              }, 1500);
-            } else {
-              // Display an error message to the user
-              toast.error("Invalid securityID or email");
-            }
-          }
-        }
-      } catch (error) {
-        // Log any errors to the console
-        console.error(error);
-      }
-    }
-  };
-
+    setTimeout(() => {
+      setIsVisible(true);
+    }, 100);
+  });
   return (
     <div className={`containerMain ${isVisible ? "fade-in" : ""}`}>
       {/* Logo */}
@@ -199,15 +52,12 @@ export default function Callback() {
           type="text"
           className="input fade-item input-placeholder"
           placeholder="Enter your securityID"
-          value={securityId}
           readOnly
         />
         <Input
           type="email"
           className="input fade-item"
-          placeholder="Enter your email/admin id or Login first "
-          onChange={(e) => setEmail(e.target.value)}
-          value={email}
+          placeholder="Enter your email/admin id or LOGIN "
           required
           spellCheck="false"
         />
@@ -215,14 +65,17 @@ export default function Callback() {
         {/* Button container */}
         <div className="buttonContainer">
           {/* Check button */}
-          <div className="button" onClick={handleSecurityCheck}>
-            Check
-          </div>
+          <div className="button">Check</div>
           {/* Forgot button */}
           <div
             className="button2"
             onClick={() => {
               window.location.href = "/auth/login";
+            }}
+            onKeyPress={(e) => {
+              if (e.key === "" || e.key === "") {
+                window.location.href = "/security/verify";
+              }
             }}
           >
             Login?

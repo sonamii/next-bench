@@ -444,7 +444,7 @@ html {
   100% {
     opacity: 0;
     transform: translateY(-50px);
-    display: none !important;
+    display: none ;
   }
 }
 
@@ -481,8 +481,7 @@ html {
     min-width: 100vw !important;
     padding-left: 40px !important;
     padding-right: 40px !important;
-    /* padding-left: 8vw !important;
-    padding-right: 8vw !important; */
+    
 
     .user {
       max-width: 100% !important;

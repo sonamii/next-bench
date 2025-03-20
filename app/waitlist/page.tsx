@@ -100,6 +100,12 @@ export default function Waitlist() {
           Sign up to be the first to know about site launches. Join our waitlist
           today!
         </div>
+        <div className="space-xxs"></div>
+        <div className="textBottom fade-item" style={{ marginTop: "5px" }}>
+          <u>
+            <b>Pre-signup opened. Signup Now</b>
+          </u>
+        </div>
         <div className="space-s"></div>
         {/* The members section. */}
         <div className="members fade-item">
@@ -111,7 +117,7 @@ export default function Waitlist() {
             height={20}
             style={{ borderRadius: "100%", marginRight: "5px" }}
           />
-          50+ People Joined
+          100+ People Joined
         </div>
         <div className="space-xs"></div>
         {/* The form to join the waitlist. */}

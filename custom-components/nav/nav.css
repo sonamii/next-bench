@@ -71,7 +71,7 @@
       }
     }
 
-    .dropdown.dropdown-next::before {
+    .dropdown-next::before {
       content: '';
       width: 5px;
       height: 5px;
@@ -215,11 +215,11 @@
   }
 
   .nav .right {
-    display: none;
+    display: flex;
   }
 
   .nav .mid {
-    display: flex;
+    display: none;
     position: relative;
     background-color: transparent;
     margin-right: 0px;
@@ -243,5 +243,17 @@
   100% {
     box-shadow: 0 0 0 5px rgba(187, 254, 59, 0);
     border-radius: 100%;
+  }
+}
+
+@media (max-width: 380px) {
+
+  .nav .right .button {
+    display: none !important;
+  }
+
+  .nav .right .dropdown {
+    padding: 10px !important;
+    padding-right: 0 !important;
   }
 }
