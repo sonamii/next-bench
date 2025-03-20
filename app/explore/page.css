@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap");
+
 @keyframes fadeInUp {
     from {
         opacity: 0;
@@ -126,7 +128,112 @@ body {
     flex-direction: column;
 }
 
+.prefContMain {
+    display: flex;
+    position: relative;
+    align-items: center;
+    justify-content: start;
+    gap: 10px;
+    align-items: end;
+    justify-content: start;
+    flex-direction: column;
+}
 
+.containerMain .prefContMain .preferencesCont {
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    flex-direction: row;
+    padding-inline: 20px;
+    height: 60px !important;
+    max-width: 650px;
+    width: 90vw;
+    background-color: none;
+    border: 1px solid #b9bcbe;
+    font-family: "Plus Jakarta Sans", sans-serif;
+    font-weight: 400;
+    color: #666;
+    border-radius: 10px;
+    gap: 15px;
+    overflow-x: scroll;
+    overflow-y: hidden;
+
+    &::-webkit-scrollbar {
+        display: none;
+    }
+
+
+}
+
+.buttonCont {
+    display: flex;
+    position: relative;
+    width: fit-content;
+    height: fit-content;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.prefContMain .buttonSubmit {
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: fit-content;
+    padding-inline: 20px;
+    height: 36px;
+    background-color: #cfd1d480;
+    border: 1px solid #cfd1d480;
+    border-radius: 7px;
+    cursor: pointer;
+    transition: 0.3s;
+    color: #666;
+
+    &:hover {
+        background-color: #b5b5b685;
+        border: 1px solid #cfd1d485;
+    }
+}
+
+.prefContMain .buttonAdd {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    background-color: #cfd1d480;
+    border: 1px solid #cfd1d480;
+    border-radius: 7px;
+    cursor: pointer;
+    transition: 0.3s;
+    color: #666;
+
+    &:hover {
+        background-color: #b5b5b685;
+        border: 1px solid #cfd1d485;
+    }
+}
+
+
+.inputSearch {
+    display: flex;
+    width: 230px;
+    border: 1.2px solid #b5b5b685;
+    box-shadow: none !important;
+}
+
+.inputLocation {
+    display: flex;
+    width: 130px;
+    border: 1.2px solid #b5b5b685;
+    box-shadow: none !important;
+}
+
+.select {
+    border: 1px solid #b5b5b685;
+}
 
 @media (max-width: 700px) {
     body {

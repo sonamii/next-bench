@@ -2,7 +2,7 @@
 import "./page.css";
 import Swal from "sweetalert2";
 import Image from "next/image";
-import {  SquareSigmaIcon } from "lucide-react";
+import { SquareSigmaIcon } from "lucide-react";
 import { Nav } from "@/custom-components/nav/nav";
 import { toast } from "sonner";
 import { useState, useEffect } from "react";
@@ -161,6 +161,12 @@ export default function Callback() {
             onClick={() => window.location.assign("/")}
           >
             Home
+          </button>
+          <button
+            className="button"
+            onClick={() => window.location.assign("/explore")}
+          >
+            Explore
           </button>
           {isVerified && (
             <button className="button  " onClick={deleteSessionAndLogout}>

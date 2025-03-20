@@ -73,7 +73,9 @@ export const Nav = ({ className = "" }: NavProps) => {
           <div className="item">Home</div>
         </a>
         {/* Link to Explore */}
-        <div className="link">Explore</div>
+        <div className="link" onClick={() => (window.location.href = "/explore")}>
+          Explore
+        </div>
 
         {/* Dropdown for NextAI */}
         <a
