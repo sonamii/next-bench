@@ -108,43 +108,51 @@ export default function Add() {
       return;
     }
 
-    const {  error } = await supabase
-      .from("edu")
-      .update({
-        name,
-        subtype,
-        affiliation,
-        mode,
-        address,
-        city,
-        state,
-        country,
-        pincode,
-        contact_number,
-        website,
-        established_year: parseInt(established_year.slice(-4)), // Extract last 4 digits
-        student_capacity,
-        teacher_capacity,
-        ratio: student_capacity / teacher_capacity,
-        courses_offered, // Store as a string, since it's now TEXT
-        facilities,
-        labs,
-        events,
-        other_activities,
-        sports,
-        fee_structure: fee_structure, // Convert only if needed
-        admission_process,
-        other_info,
-        transportation,
-        isPublished: publish,
-      })
-      .eq("id", userID);
+    const confirmed = window.confirm(
+      "Are you sure you want to submit these details?"
+    );
 
-    if (error) {
-      toast.error("Failed to update education center");
-      console.error(error);
+    if (confirmed) {
+      const { error } = await supabase
+        .from("edu")
+        .update({
+          name,
+          subtype,
+          affiliation,
+          mode,
+          address,
+          city,
+          state,
+          country,
+          pincode,
+          contact_number,
+          website,
+          established_year: parseInt(established_year.slice(-4)), // Extract last 4 digits
+          student_capacity,
+          teacher_capacity,
+          ratio: student_capacity / teacher_capacity,
+          courses_offered, // Store as a string, since it's now TEXT
+          facilities,
+          labs,
+          events,
+          other_activities,
+          sports,
+          fee_structure: fee_structure, // Convert only if needed
+          admission_process,
+          other_info,
+          transportation,
+          isPublished: publish,
+        })
+        .eq("id", userID);
+
+      if (error) {
+        toast.error("Failed to update education center");
+        console.error(error);
+      } else {
+        toast.success("New data updated successfully");
+      }
     } else {
-      toast.success("Education center updated successfully");
+      toast.info("Submission cancelled.");
     }
   }
 
