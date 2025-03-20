@@ -383,12 +383,12 @@ export default function Home() {
             <div className="userContainer fade-item">
               {/* USER ITEM */}
               <div className="item">
-                <div className="text">1100+</div>
+                <div className="text">2500+</div>
                 <div className="bottomText">User Views</div>
               </div>
               {/* USER ITEM */}
               <div className="item bordered">
-                <div className="text">80+</div>
+                <div className="text">120+</div>
                 <div className="bottomText">Active Users</div>
               </div>
               {/* USER ITEM */}
@@ -497,12 +497,12 @@ export default function Home() {
             <div className="userContainer userContainer2 fade-item">
               {/* USER ITEM */}
               <div className="item">
-                <div className="text">800+</div>
+                <div className="text">2500+</div>
                 <div className="bottomText">User Views</div>
               </div>
               {/* USER ITEM */}
               <div className="item bordered">
-                <div className="text">80+</div>
+                <div className="text">120+</div>
                 <div className="bottomText">Active Users</div>
               </div>
 

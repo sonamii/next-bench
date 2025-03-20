@@ -15,6 +15,7 @@ import { Input } from "@/components/ui/input";
 
 import supabase from "@/services/supabase";
 import { useEffect, useState } from "react";
+import { createRoot } from "react-dom/client";
 import { toast } from "sonner";
 import { Nav } from "@/custom-components/nav/nav";
 import { Plus } from "lucide-react";
@@ -28,6 +29,14 @@ import {
 } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 export default function Callback() {
   const [userID, setUserID] = useState("");
@@ -85,6 +94,88 @@ export default function Callback() {
     console.log(userID, emailID);
   }, [userID, emailID]);
 
+  async function getEduAsTableFromSupabase() {
+    const { data: eduData, error } = await supabase
+      .from("edu")
+      .select("name, subtype, affiliation, city, state, contact_number")
+      .eq("isPublished", true);
+
+    if (error) {
+      toast.error("Failed to fetch education data");
+      console.error(error);
+      return;
+    }
+
+    const tableContainer = document.querySelector(".tableCont");
+    if (tableContainer) {
+      if (!tableContainer.hasOwnProperty("_reactRoot")) {
+        (tableContainer as Element & { _reactRoot?: any })["_reactRoot"] =
+          createRoot(tableContainer);
+      }
+      const tableElement = (
+        <Table className="eduTable">
+          <TableHeader>
+            <TableRow>
+              <TableHead>Name</TableHead>
+              <TableHead>Subtype</TableHead>
+              <TableHead>Affiliation</TableHead>
+              <TableHead>City</TableHead>
+              <TableHead>State</TableHead>
+              <TableHead>Contact Number</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {eduData.map((edu) => (
+              <TableRow key={edu.name}>
+                <TableCell>{edu.name}</TableCell>
+                <TableCell>{edu.subtype}</TableCell>
+                <TableCell>{edu.affiliation}</TableCell>
+                <TableCell>{edu.city}</TableCell>
+                <TableCell>{edu.state}</TableCell>
+                <TableCell>{edu.contact_number}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      );
+      (tableContainer as Element & { _reactRoot: any })["_reactRoot"].render(
+        tableElement
+      );
+    }
+
+    const eduChannel = supabase
+      .channel("edu-changes")
+      .on(
+        "postgres_changes",
+        { event: "INSERT", schema: "public", table: "edu" },
+        (payload: { new: any }) => {
+          getEduAsTableFromSupabase();
+        }
+      )
+      .on(
+        "postgres_changes",
+        { event: "UPDATE", schema: "public", table: "edu" },
+        (payload: { old: any; new: any }) => {
+          getEduAsTableFromSupabase();
+        }
+      )
+      .on(
+        "postgres_changes",
+        { event: "DELETE", schema: "public", table: "edu" },
+        (payload: { old: any }) => {
+          getEduAsTableFromSupabase();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(eduChannel);
+    };
+  }
+
+  useEffect(() => {
+    getEduAsTableFromSupabase();
+  }, [userID]);
   return (
     <>
       <Nav />
@@ -162,7 +253,9 @@ export default function Callback() {
               </button>
             )}
           </div>
+          <div className="space-xxs"></div>
         </div>
+        <div className="tableCont"></div>
       </div>
     </>
   );
