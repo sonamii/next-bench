@@ -71,7 +71,7 @@
       }
     }
 
-    .dropdown.dropdown-next::before {
+    .dropdown-next::before {
       content: '';
       width: 5px;
       height: 5px;

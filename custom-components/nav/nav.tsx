@@ -73,7 +73,10 @@ export const Nav = ({ className = "" }: NavProps) => {
           <div className="item">Home</div>
         </a>
         {/* Link to Explore */}
-        <div className="link" onClick={() => (window.location.href = "/explore")}>
+        <div
+          className="link  dropdown-next"
+          onClick={() => (window.location.href = "/explore")}
+        >
           Explore
         </div>
 
@@ -83,7 +86,7 @@ export const Nav = ({ className = "" }: NavProps) => {
           onClick={() => track("NextAI Click", {}, { flags: ["true"] })}
         >
           {" "}
-          <div className="dropdown dropdown-next">
+          <div className="dropdown">
             NextAI
             {/* ChevronDown icon */}
             <ChevronDown size={20} />

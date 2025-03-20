@@ -3,7 +3,7 @@ import "./page.css";
 import Image from "next/image";
 import supabase from "@/services/supabase";
 import { useEffect, useState } from "react";
-import { ArrowRightLeftIcon, Info, Recycle } from "lucide-react";
+import { Info } from "lucide-react";
 import { toast } from "sonner";
 
 import { Input } from "@/components/ui/input";
@@ -49,6 +49,7 @@ export default function Add() {
   const [fee_structure, setFee_structure] = useState("");
   const [other_info, setOther_info] = useState("");
   const [publish, setPublish] = useState(false);
+  const [isAdminOrInstituition, setIsAdminOrInstituition] = useState(false);
 
   useEffect(() => {
     const getSessionAndUserID = async () => {
@@ -67,6 +68,29 @@ export default function Add() {
   }, []);
 
   useEffect(() => {
+    const getEduType = async () => {
+      if (!userID) {
+        return;
+      }
+
+      const { data, error } = await supabase
+        .from("edu")
+        .select("type")
+        .eq("id", userID)
+        .single();
+
+      if (error) {
+        console.error("Error fetching edu type:", error);
+      } else if (data) {
+        if (data.type === "ADMIN" || data.type === "Institution") {
+          setIsAdminOrInstituition(true);
+        }
+      }
+    };
+
+    getEduType();
+  }, [userID]);
+  useEffect(() => {
     console.log(userID);
   }, [userID]);
 
@@ -79,9 +103,12 @@ export default function Add() {
     if (!userID) {
       toast.error("User ID is missing");
       return;
+    } else if (!isAdminOrInstituition) {
+      toast.error("You are not authorized to add education center");
+      return;
     }
 
-    const { data, error } = await supabase
+    const {  error } = await supabase
       .from("edu")
       .update({
         name,
@@ -170,7 +197,7 @@ export default function Add() {
   }
   return (
     <>
-    <Nav></Nav>
+      <Nav></Nav>
       <div className="containerMain">
         <button
           onClick={() => (window.location.href = "/")}
@@ -461,8 +488,8 @@ export default function Add() {
         </div>
         <div className="space-s"></div>
         <div className="releaseDate fade-item">
-          <Info size={15} style={{ marginRight: "5px" }} /> Click to verify your
-          account.
+          <Info size={15} style={{ marginRight: "5px" }} /> This is not MVP.
+          This is a temporary preview.
         </div>
       </div>
     </>
