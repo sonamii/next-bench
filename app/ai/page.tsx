@@ -261,7 +261,7 @@ export default function AiPage() {
                 <div
                   key={index}
                   className={`flex ${
-                    msg.sender == "user" ? "justify-end" : "justify-start"
+                    msg.sender == "user" ? "justify-end" : "justify-start, pr-10"
                   }`}
                   style={{ animation: "fadeInUp 0.6s ease-out" }}
                 >
