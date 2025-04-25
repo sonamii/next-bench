@@ -508,7 +508,7 @@ export default function Home() {
 
               {/* USER ITEM */}
               <div className="item">
-                <div className="text">4</div>
+                <div className="text">5</div>
                 <div className="bottomText">Team Members</div>
               </div>
             </div>
