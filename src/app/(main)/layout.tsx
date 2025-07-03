@@ -120,6 +120,10 @@ export default function RootLayout({
             `,
           }}
         />
+        <link
+    href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css"
+    rel="stylesheet"
+/>
       </head>
       <Providers>
         <Column as="body" background="page" fillWidth margin="0" padding="0">
