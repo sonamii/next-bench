@@ -18,6 +18,9 @@ import {
   IconButton,
   Media,
   InteractiveDetails,
+  Accordion,
+  BarChart,
+  LineChart,
 } from "@once-ui-system/core";
 
 import {
@@ -75,7 +78,7 @@ export default function Home() {
         <Column
           style={{ maxWidth: "1550px", minWidth: "fit-content" }}
           fillWidth
-          fillHeight
+          fitHeight
         >
           <Row horizontal="space-between" fillWidth fitHeight vertical="center">
             <Flex vertical="center" gap="8">
@@ -147,6 +150,7 @@ export default function Home() {
             horizontal="space-between"
             vertical="start"
             fillWidth
+            style={{ maxWidth: "100vw" }}
             fitHeight
             gap="40"
             wrap={true}
@@ -164,7 +168,7 @@ export default function Home() {
                     color: "#181A1D",
                     fontSize: "70px",
                     lineHeight: "1em",
-                    fontWeight: "400",
+                    fontWeight: "500",
                     letterSpacing: ".3px",
                   }}
                   className={dmsans.className}
@@ -286,59 +290,255 @@ export default function Home() {
             horizontal="start"
             vertical="center"
             gap="16"
-            minHeight={30}
             style={{ maxWidth: "1600px" }}
             wrap={true}
           >
             <A></A> <B></B>
             <C></C> <D></D>
-          </Row>
-          <Flex fillWidth height={2}></Flex>
-          <Column
-            fillWidth
-            horizontal="center"
-            vertical="center"
-            paddingY="64"
-            gap="40"
-          >
-            {" "}
-            <Text
-              style={{
-                fontSize: "18px",
-                fontWeight: "400",
-              }}
-              onBackground="neutral-medium"
-              className={dmsans.className}
+            {/* ================================================== */}
+            <Flex height={3}></Flex>
+            {/* <Flex fillWidth height={1}></Flex>
+            <Flex center fillWidth fitHeight>
+              <Line fillWidth maxWidth={5} height={0.1}></Line>
+            </Flex>
+            <Flex fillWidth height={1}></Flex>            */}
+            <Column
+              fillWidth
+              horizontal="center"
+              vertical="center"
+              paddingY="12"
+              gap="40"
+              fitHeight
             >
-              Trusted by 2000+ students and teachers worldwide.
-            </Text>
-            <Row center gap="64">
-              <Logo
-                wordmark="https://optimize-nextjs.vercel.app/_next/image?url=%2Fimages%2FtrustedBrands%2F1.png&w=256&q=75"
-                size="l"
-              />
-              <Logo
-                wordmark="https://optimize-nextjs.vercel.app/_next/image?url=%2Fimages%2FtrustedBrands%2F2.png&w=256&q=75"
-                size="l"
-              />
-              <Logo
-                wordmark="https://optimize-nextjs.vercel.app/_next/image?url=%2Fimages%2FtrustedBrands%2F3.png&w=256&q=75 "
-                size="l"
-              />
-              <Logo
-                wordmark="https://optimize-nextjs.vercel.app/_next/image?url=%2Fimages%2FtrustedBrands%2F4.png&w=256&q=75"
-                size="l"
-              />
-              <Logo
-                wordmark="https://optimize-nextjs.vercel.app/_next/image?url=%2Fimages%2FtrustedBrands%2F5.png&w=256&q=75"
-                size="l"
-              />
-              <Logo
-                wordmark="https://optimize-nextjs.vercel.app/_next/image?url=%2Fimages%2FtrustedBrands%2F6.png&w=256&q=75"
-                size="l"
-              />
-            </Row>
-          </Column>
+              {" "}
+              <Text
+                style={{
+                  fontSize: "18px",
+                  fontWeight: "400",
+                }}
+                onBackground="neutral-medium"
+                className={dmsans.className}
+              >
+                Trusted by 2000+ students and teachers worldwide.
+              </Text>
+              <Row center gap="64">
+                <Logo
+                  wordmark="https://optimize-nextjs.vercel.app/_next/image?url=%2Fimages%2FtrustedBrands%2F1.png&w=256&q=75"
+                  size="l"
+                />
+                <Logo
+                  wordmark="https://optimize-nextjs.vercel.app/_next/image?url=%2Fimages%2FtrustedBrands%2F2.png&w=256&q=75"
+                  size="l"
+                />
+                <Logo
+                  wordmark="https://optimize-nextjs.vercel.app/_next/image?url=%2Fimages%2FtrustedBrands%2F3.png&w=256&q=75 "
+                  size="l"
+                />
+                <Logo
+                  wordmark="https://optimize-nextjs.vercel.app/_next/image?url=%2Fimages%2FtrustedBrands%2F4.png&w=256&q=75"
+                  size="l"
+                />
+                <Logo
+                  wordmark="https://optimize-nextjs.vercel.app/_next/image?url=%2Fimages%2FtrustedBrands%2F5.png&w=256&q=75"
+                  size="l"
+                />
+                <Logo
+                  wordmark="https://optimize-nextjs.vercel.app/_next/image?url=%2Fimages%2FtrustedBrands%2F6.png&w=256&q=75"
+                  size="l"
+                />
+              </Row>
+            </Column>
+            {/* ================================================= */}
+            <Flex height={3}></Flex>
+            {/* =================================================== */}
+            {/* ================================================ */}
+            <Flex height={3}></Flex>
+            {/* <Flex fillWidth height={1}></Flex>
+            <Flex center fillWidth fitHeight>
+              <Line fillWidth maxWidth={5} height={0.1}></Line>
+            </Flex>
+            <Flex fillWidth height={1}></Flex> */}
+            {/* =================================================== */}
+            <Column
+              horizontal="center"
+              vertical="center"
+              fillWidth
+              fitHeight
+              paddingX="l"
+            >
+              <Text
+                style={{
+                  color: "#181A1D",
+                  fontSize: "70px",
+                  lineHeight: "1em",
+                  fontWeight: "500",
+                  letterSpacing: ".3px",
+                }}
+                className={dmsans.className}
+              >
+                Frequently Asked,&nbsp; Clearly Answered
+              </Text>
+              <Flex fillWidth height={1}></Flex>
+
+              <Column fillWidth maxWidth={48} fitHeight>
+                <Text
+                  style={{
+                    fontSize: "18px",
+                    fontWeight: "400",
+                    textAlign: "center",
+                    maxWidth: "800px",
+                  }}
+                  onBackground="neutral-weak"
+                  className={dmsans.className}
+                >
+                  Explore our comprehensive FAQ section to find answers to your
+                  questions about our platform, services, and more. If you need
+                  further assistance, feel free to reach out to our support
+                  team.
+                </Text>{" "}
+                <Flex fillWidth height={4}></Flex>
+                <Accordion title="What is Next Bench?" textSize="xl" size="l">
+                  From the creator:
+                  <Text onBackground="neutral-weak">
+                    <Text variant="heading-default-xl"></Text>
+                    Next Bench is a student-first platform designed to help
+                    parents and students discover schools, compare options, and
+                    map out personalized roadmaps to top universities. All in
+                    one intuitive place.
+                  </Text>
+                </Accordion>
+                <Accordion
+                  title="How does the AI roadmap work?"
+                  textSize="xl"
+                  size="l"
+                >
+                  From the creators:
+                  <Text onBackground="neutral-weak">
+                    <Text variant="heading-default-xl"></Text>
+                    Our AI looks at your academic journey, interests, and future
+                    goals to build a clear roadmap — including course
+                    suggestions, resume-building steps, and key milestones to
+                    reach your dream university.
+                  </Text>
+                </Accordion>
+                <Accordion
+                  title="Can I apply to multiple schools at once?"
+                  textSize="xl"
+                  size="l"
+                >
+                  From platform functionality:
+                  <Text onBackground="neutral-weak">
+                    <Text variant="heading-default-xl"></Text>
+                    Yes! Submit a single form and apply to multiple schools
+                    instantly. Track your application statuses in real-time — no
+                    repetitive paperwork or confusion.
+                  </Text>
+                </Accordion>
+                <Accordion
+                  title="Is Next Bench free to use?"
+                  textSize="xl"
+                  size="l"
+                >
+                  From the team:
+                  <Text onBackground="neutral-weak">
+                    <Text variant="heading-default-xl"></Text>
+                    Absolutely. Core features like exploring schools and
+                    building your AI roadmap are free. We may introduce premium
+                    features (like personalized consultant help) later on.
+                  </Text>
+                </Accordion>
+                <Accordion
+                  title="How accurate is the school data?"
+                  textSize="xl"
+                  size="l"
+                >
+                  Verified by consultants:
+                  <Text onBackground="neutral-weak">
+                    <Text variant="heading-default-xl"></Text>
+                    We work closely with school admins and verified consultants
+                    to ensure all data — from fees to curriculum — is accurate,
+                    up-to-date, and trustworthy.
+                  </Text>
+                </Accordion>
+                <Accordion
+                  title="How accurate is the school data?"
+                  textSize="xl"
+                  size="l"
+                >
+                  From verified sources:
+                  <Text onBackground="neutral-weak">
+                    <Text variant="heading-default-xl"></Text>
+                    We work directly with schools and certified consultants to
+                    ensure all data — including admission criteria, fees, and
+                    reviews — is current and trustworthy.
+                  </Text>
+                </Accordion>
+                <Accordion
+                  title="What are the pricing plans?"
+                  textSize="xl"
+                  size="l"
+                >
+                  Transparent and accessible:
+                  <Text onBackground="neutral-weak">
+                    <Text variant="heading-default-xl"></Text>
+                    The core features of Next Bench are completely free. Premium
+                    features like AI-guided roadmaps and consultant matchmaking
+                    may include optional paid plans in the future.
+                  </Text>
+                </Accordion>
+                <Accordion
+                  title="Where is Next Bench available?"
+                  textSize="xl"
+                  size="l"
+                >
+                  Focused availability:
+                  <Text onBackground="neutral-weak">
+                    <Text variant="heading-default-xl"></Text>
+                    We're currently active in key Indian regions — Uttarakhand,
+                    Gujarat, and Delhi. More states and cities will be added as
+                    we grow.
+                  </Text>
+                </Accordion>
+                <Accordion
+                  title="How fast is customer support?"
+                  textSize="xl"
+                  size="l"
+                >
+                  Quick and responsive:
+                  <Text onBackground="neutral-weak">
+                    <Text variant="heading-default-xl"></Text>
+                    Our support team typically replies within 2 hours. We're
+                    committed to helping parents and students without delays.
+                  </Text>
+                </Accordion>
+                <Accordion
+                  title="Are you hiring consultants?"
+                  textSize="xl"
+                  size="l"
+                >
+                  Yes, and students too!
+                  <Text onBackground="neutral-weak">
+                    <Text variant="heading-default-xl"></Text>
+                    We are currently onboarding educational consultants and
+                    student ambassadors. If you love helping students find their
+                    path, we'd love to hear from you.
+                  </Text>
+                </Accordion>
+              </Column>
+            </Column>
+
+            {/* ============================ */}
+            <Flex height={3}></Flex>
+            <Flex
+              fillWidth
+              fitHeight
+              horizontal="center"
+              vertical="center"
+              style={{ maxWidth: "1600px" }}
+              padding="20"
+              
+              ><Row fillWidth fillHeight style={{backgroundColor:"#1"}}></Row></Flex>
+          </Row>
         </Column>
       </Column>
     </>
@@ -353,7 +553,11 @@ function C() {
       flex={2}
       fillHeight
       padding="20"
-      style={{ backgroundColor: "#F0F1EC", minWidth: "385px" }}
+      style={{
+        backgroundColor: "#F0F1EC",
+        minWidth: "385px",
+        maxHeight: "480px",
+      }}
       horizontal="center"
       vertical="start"
       gap="20"
@@ -535,7 +739,11 @@ function B() {
       flex={2}
       fillHeight
       padding="20"
-      style={{ backgroundColor: "#F0F1EC", minWidth: "385px" }}
+      style={{
+        backgroundColor: "#F0F1EC",
+        minWidth: "385px",
+        maxHeight: "480px",
+      }}
       horizontal="center"
       vertical="start"
     >
@@ -656,7 +864,11 @@ function D() {
       padding="20"
       fillHeight
       horizontal="center"
-      style={{ backgroundColor: "#D7E1B3", minWidth: "385px" }}
+      style={{
+        backgroundColor: "#D7E1B3",
+        minWidth: "385px",
+        maxHeight: "480px",
+      }}
       vertical="start"
     >
       <Row
@@ -753,7 +965,11 @@ function A() {
       radius="l"
       flex={2}
       fillHeight
-      style={{ backgroundColor: "#F0F1EC", minWidth: "385px" }}
+      style={{
+        backgroundColor: "#F0F1EC",
+        minWidth: "385px",
+        maxHeight: "480px",
+      }}
       horizontal="center"
       vertical="start"
       overflow="hidden"
