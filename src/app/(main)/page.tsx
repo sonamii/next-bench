@@ -21,6 +21,10 @@ import {
   Accordion,
   BarChart,
   LineChart,
+  Grid,
+  Scroller,
+  User,
+  UserMenu,
 } from "@once-ui-system/core";
 
 import {
@@ -349,15 +353,98 @@ export default function Home() {
               </Row>
             </Column>
             {/* ================================================= */}
-            <Flex height={3}></Flex>
-            {/* =================================================== */}
-            {/* ================================================ */}
-            <Flex height={3}></Flex>
-            {/* <Flex fillWidth height={1}></Flex>
+           {/* <Flex height={1}></Flex>
+            <Flex fillWidth height={1}></Flex>
             <Flex center fillWidth fitHeight>
               <Line fillWidth maxWidth={5} height={0.1}></Line>
             </Flex>
-            <Flex fillWidth height={1}></Flex> */}
+            <Flex fillWidth height={3}></Flex>
+            <Flex center fillWidth>
+              {" "}
+              <Column fillWidth gap="16" maxWidth={70}>
+                <Row fillWidth gap="16" mobileDirection="column">
+                  <Media
+                    flex="2"
+                    src="https://img.freepik.com/premium-photo/immersive-learning-ultra-realistic-8k-ar-cinematic-photo-university-class-engrossed-i_1015980-32532.jpg"
+                    aspectRatio={"4/3"}
+                    unoptimized
+                    radius="l"
+                  />
+                  <Media
+                    flex="3"
+                    src="https://images.squarespace-cdn.com/content/v1/6347f9c65754d300a941501c/34971c22-b2a5-40a2-b6c5-9e468d40858e/A015_A076_0617U8_001.R3D.11_04_58_11.Still001+3.jpg?format=750w"
+                    aspectRatio={"8/3"}
+                    unoptimized
+                    
+                    radius="l"
+                  />
+                </Row>
+                <Row fillWidth gap="16" mobileDirection="column">
+                  <Media
+                    flex="3"
+                    src="https://images.squarespace-cdn.com/content/v1/6347f9c65754d300a941501c/34971c22-b2a5-40a2-b6c5-9e468d40858e/A015_A076_0617U8_001.R3D.11_04_58_11.Still001+3.jpg?format=750w"
+                    aspectRatio={"8/3"}
+                    unoptimized
+                    
+                    radius="l"
+                  />
+                  <Media 
+                  src="https://img.freepik.com/premium-photo/student-presenting-anthropology-project-class-o_1237301-4104.jpg"
+                    flex="2"
+                    aspectRatio={"4/3"}
+                    radius="l"
+                    unoptimized
+                  />
+                </Row>
+              </Column>
+            </Flex>
+            <Flex fillWidth fitHeight center>
+              <Flex
+                maxWidth={70}
+                padding="104"
+                radius="l"
+                style={{ backgroundColor: "#D7E1B3" }}
+              >
+                {" "}
+                <Scroller fadeColor="transparent">
+                  <Column fillWidth fillHeight center gap="32">
+                    <Logo
+                      wordmark="https://optimize-nextjs.vercel.app/_next/image?url=%2Fimages%2Fcompany%2Fnovadex.png&w=256&q=75"
+                      size="xl"
+                    ></Logo>
+                    <Text
+                      onBackground="neutral-medium"
+                      style={{
+                        fontSize: "23px",
+                        maxWidth: "50%",
+                        textAlign: "center",
+                      }}
+                    >
+                      Easy to use and intuitive platform for students which
+                      always helps them to find the best schools and
+                      universities.
+                    </Text>
+                    <Flex style={{ scale: "1" }} center fitWidth fitHeight>
+                      {" "}
+                      <UserMenu
+                        name="Lorant One"
+                        subline="Design Engineer"
+                        placement="right-end"
+                        avatarProps={{ value: "A" }}
+                      />
+                    </Flex>
+                  </Column>
+                </Scroller>
+              </Flex>
+            </Flex> */}
+            {/* =================================================== */}
+            {/* ================================================ */}
+              <Flex height={2}></Flex>
+            <Flex fillWidth height={1}></Flex>
+            <Flex center fillWidth fitHeight>
+              <Line fillWidth maxWidth={5} height={0.1}></Line>
+            </Flex>
+            <Flex fillWidth height={3}></Flex>
             {/* =================================================== */}
             <Column
               horizontal="center"
@@ -448,16 +535,16 @@ export default function Home() {
                   </Text>
                 </Accordion>
                 <Accordion
-                  title="How accurate is the school data?"
+                  title="Can I get personalized recommendations?"
                   textSize="xl"
                   size="l"
                 >
-                  Verified by consultants:
+                  Absolutely personalized:
                   <Text onBackground="neutral-weak">
                     <Text variant="heading-default-xl"></Text>
-                    We work closely with school admins and verified consultants
-                    to ensure all data — from fees to curriculum — is accurate,
-                    up-to-date, and trustworthy.
+                    Our AI analyzes your interests, academic background, and
+                    goals to suggest the best schools and learning paths
+                    tailored just for you.
                   </Text>
                 </Accordion>
                 <Accordion
@@ -526,7 +613,6 @@ export default function Home() {
                 </Accordion>
               </Column>
             </Column>
-
             {/* ============================ */}
             <Flex height={3}></Flex>
             <Flex
@@ -536,8 +622,215 @@ export default function Home() {
               vertical="center"
               style={{ maxWidth: "1600px" }}
               padding="20"
-              
-              ><Row fillWidth fillHeight style={{backgroundColor:"#1"}}></Row></Flex>
+            >
+              <Column
+                fillWidth
+                fillHeight
+                style={{ backgroundColor: "#181A1D10" }}
+                vertical="center"
+                horizontal="center"
+                gap="40"
+                radius="xl"
+                padding="32"
+                paddingX="xl"
+              >
+                <Row fillWidth vertical="space-between" horizontal="center">
+                  <Row flex={2} vertical="center">
+                    <Input
+                      id="a"
+                      placeholder="Enter your email"
+                      height="m"
+                      hasPrefix={
+                        <Text
+                          onBackground="neutral-medium"
+                          variant="heading-default-s"
+                        >
+                          <i className="ri-mail-line"></i>
+                        </Text>
+                      }
+                    ></Input>
+                    <IconButton
+                      size="l"
+                      style={{ position: "absolute", right: "5px" }}
+                    >
+                      <Text>
+                        <i className="ri-send-plane-line"></i>
+                      </Text>
+                    </IconButton>
+                  </Row>
+                  <Row flex={5} vertical="center" horizontal="end">
+                    <Text
+                      style={{
+                        color: "#181A1D",
+                        fontSize: "50px",
+                        lineHeight: "1em",
+                        fontWeight: "400",
+                        letterSpacing: ".3px",
+                      }}
+                      className={dmsans.className}
+                    >
+                      Let's talk!
+                    </Text>
+                  </Row>
+                </Row>
+                <Line fillWidth></Line>
+
+                <Row horizontal="space-between" fillWidth height={9.5}>
+                  <Row fillHeight fillWidth gap="64">
+                    <Column gap="2">
+                      {" "}
+                      <Text
+                        onBackground="neutral-weak"
+                        variant="body-default-l"
+                        className={dmsans.className}
+                      >
+                        Contact Us
+                      </Text>
+                      <Text
+                        onBackground="neutral-weak"
+                        variant="body-default-l"
+                        className={dmsans.className}
+                      >
+                        Privacy Policy
+                      </Text>
+                      <Text
+                        onBackground="neutral-weak"
+                        variant="body-default-l"
+                        className={dmsans.className}
+                      >
+                        Help
+                      </Text>
+                      <Text
+                        onBackground="neutral-weak"
+                        variant="body-default-l"
+                        className={dmsans.className}
+                      >
+                        Careers
+                      </Text>
+                      <Text
+                        onBackground="neutral-weak"
+                        variant="body-default-l"
+                        className={dmsans.className}
+                      >
+                        Blog
+                      </Text>
+                    </Column>
+                    <Column gap="2">
+                      {" "}
+                      <Text
+                        onBackground="neutral-weak"
+                        variant="body-default-l"
+                        className={dmsans.className}
+                      >
+                        Students
+                      </Text>
+                      <Text
+                        onBackground="neutral-weak"
+                        variant="body-default-l"
+                        className={dmsans.className}
+                      >
+                        Teachers
+                      </Text>
+                      <Text
+                        onBackground="neutral-weak"
+                        variant="body-default-l"
+                        className={dmsans.className}
+                      >
+                        Consultants
+                      </Text>
+                      <Text
+                        onBackground="neutral-weak"
+                        variant="body-default-l"
+                        className={dmsans.className}
+                      >
+                        Institutions
+                      </Text>
+                      <Text
+                        onBackground="neutral-weak"
+                        variant="body-default-l"
+                        className={dmsans.className}
+                      >
+                        Others
+                      </Text>
+                    </Column>
+                  </Row>
+                  <Column
+                    horizontal="end"
+                    vertical="space-between"
+                    fillWidth
+                    fillHeight
+                  >
+                    <Row fillWidth>&nbsp;</Row>
+                    <Row gap="64">
+                      <AvatarGroup
+                        size="l"
+                        // gap="20"
+                        avatars={[
+                          { value: "A" },
+                          { value: "B" },
+                          { value: "C" },
+                          { value: "D" },
+                          { value: "E" },
+                        ]}
+                      />
+                      <Row fitWidth vertical="center" gap="12">
+                        <IconButton
+                          size="l"
+                          variant="secondary"
+                          style={{ borderColor: "black !important" }}
+                        >
+                          <i className="ri-arrow-up-line"></i>
+                        </IconButton>
+                        <Text
+                          onBackground="neutral-weak"
+                          variant="body-default-l"
+                          className={dmsans.className}
+                        >
+                          Back To Top
+                        </Text>
+                      </Row>
+                    </Row>
+                  </Column>
+                </Row>
+                {/* <Row
+                  fillWidth
+                  vertical="space-between"
+                  horizontal="start"
+                  gap="64"
+                >
+                  <Row fitWidth vertical="center" gap="12">
+                    <IconButton
+                      size="l"
+                      variant="secondary"
+                      style={{ borderColor: "black !important" }}
+                    >
+                      <i className="ri-arrow-up-line"></i>
+                    </IconButton>
+                    <Text
+                      onBackground="neutral-weak"
+                      variant="body-default-l"
+                      className={dmsans.className}
+                    >
+                      Back To Top
+                    </Text>
+                  </Row>
+                  <Row>
+                    {" "}
+                    <AvatarGroup
+                      size="l"
+                      // gap="20"
+                      avatars={[
+                        { value: "A" },
+                        { value: "B" },
+                        { value: "C" },
+                        { value: "D" },
+                        { value: "E" },
+                      ]}
+                    />
+                  </Row>
+                </Row> */}
+              </Column>
+            </Flex>
           </Row>
         </Column>
       </Column>
