@@ -80,7 +80,7 @@ export default function Home() {
         }}
       >
         <Column
-          style={{ maxWidth: "1550px", minWidth: "fit-content" }}
+          style={{ maxWidth: "1550px" }}
           fillWidth
           fitHeight
         >
@@ -294,7 +294,7 @@ export default function Home() {
             horizontal="start"
             vertical="center"
             gap="16"
-            style={{ maxWidth: "1600px" }}
+            style={{ maxWidth: "1600px",width:"1600px" }}
             wrap={true}
           >
             <A></A> <B></B>
@@ -325,7 +325,7 @@ export default function Home() {
               >
                 Trusted by 2000+ students and teachers worldwide.
               </Text>
-              <Row center gap="64">
+              <Row center gap="64" wrap={true}>
                 <Logo
                   wordmark="https://optimize-nextjs.vercel.app/_next/image?url=%2Fimages%2FtrustedBrands%2F1.png&w=256&q=75"
                   size="l"
@@ -463,7 +463,7 @@ export default function Home() {
                 }}
                 className={dmsans.className}
               >
-                Frequently Asked,&nbsp; Clearly Answered
+                  <span style={{ color: "#626F45" }}>Frequently</span> Asked,&nbsp;   <span style={{ color: "#626F45" }}>Clearly</span>   Answered
               </Text>
               <Flex fillWidth height={1}></Flex>
 
