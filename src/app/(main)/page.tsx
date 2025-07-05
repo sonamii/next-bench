@@ -25,8 +25,10 @@ import {
   Scroller,
   User,
   UserMenu,
+  Dialog,
 } from "@once-ui-system/core";
 
+import { useState } from "react";
 import {
   Lato,
   Montserrat,
@@ -65,7 +67,9 @@ const poppins = Poppins({
   variable: "--font-poppins",
   weight: ["400", "500", "600", "700"],
 });
+import { useRouter } from "next/navigation";
 export default function Home() {
+  const router = useRouter();
   return (
     <>
       <Column
@@ -79,11 +83,7 @@ export default function Home() {
           backgroundColor: "#FDFDF9",
         }}
       >
-        <Column
-          style={{ maxWidth: "1550px" }}
-          fillWidth
-          fitHeight
-        >
+        <Column style={{ maxWidth: "1550px" }} fillWidth fitHeight>
           <Row horizontal="space-between" fillWidth fitHeight vertical="center">
             <Flex vertical="center" gap="8">
               <Media
@@ -276,6 +276,7 @@ export default function Home() {
                     onMouseLeave={(e: React.MouseEvent<HTMLButtonElement>) =>
                       (e.currentTarget.style.backgroundColor = "#F2F2EF")
                     }
+                    onClick={() => router.push("/profile/a")}
                   >
                     Dashboard
                   </Button>
@@ -294,7 +295,7 @@ export default function Home() {
             horizontal="start"
             vertical="center"
             gap="16"
-            style={{ maxWidth: "1600px",width:"1600px" }}
+            style={{ maxWidth: "1600px", width: "1600px" }}
             wrap={true}
           >
             <A></A> <B></B>
@@ -353,7 +354,7 @@ export default function Home() {
               </Row>
             </Column>
             {/* ================================================= */}
-           {/* <Flex height={1}></Flex>
+            {/* <Flex height={1}></Flex>
             <Flex fillWidth height={1}></Flex>
             <Flex center fillWidth fitHeight>
               <Line fillWidth maxWidth={5} height={0.1}></Line>
@@ -439,7 +440,7 @@ export default function Home() {
             </Flex> */}
             {/* =================================================== */}
             {/* ================================================ */}
-              <Flex height={2}></Flex>
+            <Flex height={2}></Flex>
             <Flex fillWidth height={1}></Flex>
             <Flex center fillWidth fitHeight>
               <Line fillWidth maxWidth={5} height={0.1}></Line>
@@ -463,7 +464,9 @@ export default function Home() {
                 }}
                 className={dmsans.className}
               >
-                  <span style={{ color: "#626F45" }}>Frequently</span> Asked,&nbsp;   <span style={{ color: "#626F45" }}>Clearly</span>   Answered
+                <span style={{ color: "#626F45" }}>Frequently</span>{" "}
+                Asked,&nbsp; <span style={{ color: "#626F45" }}>Clearly</span>{" "}
+                Answered
               </Text>
               <Flex fillWidth height={1}></Flex>
 
@@ -834,6 +837,7 @@ export default function Home() {
           </Row>
         </Column>
       </Column>
+      );
     </>
   );
 }
@@ -1149,106 +1153,142 @@ function B() {
 }
 
 function D() {
+  const [isOpen, setIsOpen] = useState(false);
+
   return (
-    <Flex
-      radius="l"
-      direction="column"
-      flex={2}
-      padding="20"
-      fillHeight
-      horizontal="center"
-      style={{
-        backgroundColor: "#D7E1B3",
-        minWidth: "385px",
-        maxHeight: "480px",
-      }}
-      vertical="start"
-    >
-      <Row
-        fillWidth
-        style={{ backgroundColor: "#fff" }}
-        height={0.3}
-        minHeight={0.3}
-        overflow="hidden"
-        radius="xl"
+    <>
+      <Flex
+        radius="l"
+        direction="column"
+        flex={2}
+        padding="20"
+        fillHeight
+        horizontal="center"
+        style={{
+          backgroundColor: "#D7E1B3",
+          minWidth: "385px",
+          maxHeight: "480px",
+        }}
+        vertical="start"
       >
         <Row
-          width={21.55}
-          style={{ backgroundColor: "#181A1D" }}
-          height={0.3}
-          radius="xl"
-        ></Row>
-      </Row>{" "}
-      <Text
-        style={{
-          color: "#626f45",
-          fontSize: "160px",
-          lineHeight: "1em",
-          fontWeight: "400",
-          letterSpacing: ".3px",
-          position: "absolute",
-          top: "8%",
-          opacity: 0.5,
-        }}
-        className={dmsans.className}
-      >
-        Sign
-      </Text>
-      <Flex
-        fillWidth
-        fitHeight
-        style={{ marginTop: "200px", backgroundColor: "#D7E1B3" }}
-        vertical="center"
-      >
-        <Column
-          horizontal="center"
-          vertical="start"
-          fitHeight
           fillWidth
-          gap="4"
-        >
-          <Text
-            variant="body-default-xl"
-            style={{
-              color: "#181A1D",
-              fontSize: "25px",
-              fontWeight: "500",
-              textAlign: "left",
-            }}
-            className={dmsans.className}
-          >
-            Sign in to your account to start your journey
-          </Text>
-          <Text
-            style={{
-              fontSize: "15px",
-              fontWeight: "400",
-              textAlign: "left",
-            }}
-            onBackground="neutral-weak"
-            className={dmsans.className}
-          >
-            Sign in to your account to access exclusive features and
-            personalized content tailored to your educational needs.
-          </Text>
-        </Column>
-      </Flex>
-      <Row fillWidth fillHeight paddingTop="20" horizontal="start">
-        <Column
-          flex={1}
-          fillHeight
-          // background=""
+          style={{ backgroundColor: "#fff" }}
+          height={0.3}
+          minHeight={0.3}
+          overflow="hidden"
           radius="xl"
-          // style={{ backgroundColor: "#D7E1B3" }}
-          horizontal="center"
-          vertical="end"
         >
-          <Button size="l" weight="default" fillWidth>
-            Sign in with Google
-          </Button>
+          <Row
+            width={21.55}
+            style={{ backgroundColor: "#181A1D" }}
+            height={0.3}
+            radius="xl"
+          ></Row>
+        </Row>{" "}
+        <Text
+          style={{
+            color: "#626f45",
+            fontSize: "160px",
+            lineHeight: "1em",
+            fontWeight: "400",
+            letterSpacing: ".3px",
+            position: "absolute",
+            top: "8%",
+            opacity: 0.5,
+          }}
+          className={dmsans.className}
+        >
+          Sign
+        </Text>
+        <Flex
+          fillWidth
+          fitHeight
+          style={{ marginTop: "200px", backgroundColor: "#D7E1B3" }}
+          vertical="center"
+        >
+          <Column
+            horizontal="center"
+            vertical="start"
+            fitHeight
+            fillWidth
+            gap="4"
+          >
+            <Text
+              variant="body-default-xl"
+              style={{
+                color: "#181A1D",
+                fontSize: "25px",
+                fontWeight: "500",
+                textAlign: "left",
+              }}
+              className={dmsans.className}
+            >
+              Sign in to your account to start your journey
+            </Text>
+            <Text
+              style={{
+                fontSize: "15px",
+                fontWeight: "400",
+                textAlign: "left",
+              }}
+              onBackground="neutral-weak"
+              className={dmsans.className}
+            >
+              Sign in to your account to access exclusive features and
+              personalized content tailored to your educational needs.
+            </Text>
+          </Column>
+        </Flex>
+        <Row fillWidth fillHeight paddingTop="20" horizontal="start">
+          <Column
+            flex={1}
+            fillHeight
+            // background=""
+            radius="xl"
+            // style={{ backgroundColor: "#D7E1B3" }}
+            horizontal="center"
+            vertical="end"
+          >
+            <Button
+              size="l"
+              weight="default"
+              fillWidth
+              onClick={() => setIsOpen(true)}
+            >
+              Sign in with Google
+            </Button>
+          </Column>
+        </Row>
+      </Flex>
+      <Dialog
+        isOpen={isOpen}
+        onClose={() => setIsOpen(false)}
+        title="Sign Up"
+        description="Sign up to access personalized content tailored to your educational needs."
+        maxWidth={35}
+      >
+        <Column fillWidth gap="16" marginTop="12">
+          <Row fillWidth vertical="center" gap="8" horizontal="start">
+            <Button
+              variant="primary"
+              weight="default"
+              size="m"
+              onClick={() => setIsOpen(false)}
+            >
+              <Flex center fillWidth fillHeight> <Media
+                src="https://freelogopng.com/images/all_img/1657952440google-logo-png-transparent.png"
+                unoptimized
+                width={1.1}
+                height={1.1}
+              ></Media>
+              &nbsp;&nbsp;&nbsp;Continue with google</Flex>
+              
+            </Button>
+          </Row>
         </Column>
-      </Row>
-    </Flex>
+      </Dialog>
+    </>
   );
 }
 
