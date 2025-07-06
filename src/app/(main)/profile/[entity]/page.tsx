@@ -32,8 +32,10 @@ import {
   Select,
   NumberInput,
   Kbd,
+  InlineCode,
+  Card,
+  Switch,
 } from "@once-ui-system/core";
-
 import {
   Lato,
   Montserrat,
@@ -41,729 +43,979 @@ import {
   Outfit,
   Unica_One,
   Work_Sans,
+  Poppins,
+  Inter,
+  Roboto,
+  Open_Sans,
 } from "next/font/google";
+import { useState } from "react";
+
+// Font setup
 const dmsans = Outfit({
   subsets: ["latin"],
   variable: "--font-inter",
   weight: ["400", "500", "600", "700"],
 });
-import { Inter } from "next/font/google";
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
   weight: ["400", "500", "600", "700"],
 });
-import { Roboto } from "next/font/google";
 const roboto = Roboto({
   subsets: ["latin"],
   variable: "--font-roboto",
   weight: ["400", "500", "600", "700"],
 });
-import { Open_Sans } from "next/font/google";
 const openSans = Open_Sans({
   subsets: ["latin"],
   variable: "--font-open-sans",
   weight: ["400", "500", "600", "700"],
 });
-
-import { Poppins } from "next/font/google";
 const poppins = Poppins({
   subsets: ["latin"],
   variable: "--font-poppins",
   weight: ["400", "500", "600", "700"],
 });
+
+// Data JSONs
+const menuGroups = [
+  { id: "home", label: "Home", href: "/" },
+  {
+    id: "consultants",
+    label: "Consultants",
+    suffixIcon: "chevronDown",
+    sections: [],
+  },
+  { id: "find-school", label: "Find", suffixIcon: "chevronDown", sections: [] },
+  {
+    id: "dashboard",
+    label: "MekoAI",
+    href: "/mekoai",
+    suffixIcon: "chevronDown",
+    sections: [],
+  },
+];
+
+const segmentedButtons = [
+  { value: "profile", label: "Profile" },
+  { value: "creations", label: "Your creations" },
+  { value: "security", label: "Security" },
+];
+
+const genderOptions = [
+  { label: "Male", value: "male" },
+  { label: "Female", value: "female" },
+  { label: "Prefer not to say", value: "none" },
+];
+
+const membershipOptions = [
+  { label: "Active", value: "A" },
+  { label: "Freemium", value: "F" },
+  { label: "Pro", value: "P" },
+];
+
+const languageOptions = [{ label: "English", value: "English" }];
+
+const timezoneOptions = [{ label: "GMT +5:30", value: "GMT +5:30" }];
+
+const countries = [
+  { label: "Afghanistan", value: "AF" },
+  { label: "Albania", value: "AL" },
+  // ... (keep all countries as in original)
+  { label: "Zimbabwe", value: "ZW" },
+];
+
+const institutions = [
+  {
+    name: "Greenfield International School",
+    address: "Dubai, UAE",
+    affiliation: "IB/IGCSE",
+    contact: "4 123 4567",
+    email: "info@greenfield.edu",
+    isPublished: true,
+  },
+  {
+    name: "Blue Valley Public School",
+    address: "San Francisco, USA",
+    affiliation: "Common Core",
+    contact: "415 555 0199",
+    email: "contact@bluevalley.edu",
+    isPublished: true,
+  },
+  {
+    name: "Sunrise Academy",
+    address: "Sydney, Australia",
+    affiliation: "HSC/NSW",
+    contact: "2 9876 5432",
+    email: "hello@sunriseacademy.edu.au",
+    isPublished: false,
+  },
+];
+
+// Main Page
 export default function Home() {
-  const countries = [
-    { label: "Afghanistan", value: "AF" },
-    { label: "Albania", value: "AL" },
-    { label: "Algeria", value: "DZ" },
-    { label: "Andorra", value: "AD" },
-    { label: "Angola", value: "AO" },
-    { label: "Antigua and Barbuda", value: "AG" },
-    { label: "Argentina", value: "AR" },
-    { label: "Armenia", value: "AM" },
-    { label: "Australia", value: "AU" },
-    { label: "Austria", value: "AT" },
-    { label: "Azerbaijan", value: "AZ" },
-    { label: "Bahamas", value: "BS" },
-    { label: "Bahrain", value: "BH" },
-    { label: "Bangladesh", value: "BD" },
-    { label: "Barbados", value: "BB" },
-    { label: "Belarus", value: "BY" },
-    { label: "Belgium", value: "BE" },
-    { label: "Belize", value: "BZ" },
-    { label: "Benin", value: "BJ" },
-    { label: "Bhutan", value: "BT" },
-    { label: "Bolivia", value: "BO" },
-    { label: "Bosnia and Herzegovina", value: "BA" },
-    { label: "Botswana", value: "BW" },
-    { label: "Brazil", value: "BR" },
-    { label: "Brunei", value: "BN" },
-    { label: "Bulgaria", value: "BG" },
-    { label: "Burkina Faso", value: "BF" },
-    { label: "Burundi", value: "BI" },
-    { label: "Cabo Verde", value: "CV" },
-    { label: "Cambodia", value: "KH" },
-    { label: "Cameroon", value: "CM" },
-    { label: "Canada", value: "CA" },
-    { label: "Central African Republic", value: "CF" },
-    { label: "Chad", value: "TD" },
-    { label: "Chile", value: "CL" },
-    { label: "China", value: "CN" },
-    { label: "Colombia", value: "CO" },
-    { label: "Comoros", value: "KM" },
-    { label: "Congo (Congo-Brazzaville)", value: "CG" },
-    { label: "Costa Rica", value: "CR" },
-    { label: "Croatia", value: "HR" },
-    { label: "Cuba", value: "CU" },
-    { label: "Cyprus", value: "CY" },
-    { label: "Czechia (Czech Republic)", value: "CZ" },
-    { label: "Democratic Republic of the Congo", value: "CD" },
-    { label: "Denmark", value: "DK" },
-    { label: "Djibouti", value: "DJ" },
-    { label: "Dominica", value: "DM" },
-    { label: "Dominican Republic", value: "DO" },
-    { label: "Ecuador", value: "EC" },
-    { label: "Egypt", value: "EG" },
-    { label: "El Salvador", value: "SV" },
-    { label: "Equatorial Guinea", value: "GQ" },
-    { label: "Eritrea", value: "ER" },
-    { label: "Estonia", value: "EE" },
-    { label: "Eswatini (fmr. Swaziland)", value: "SZ" },
-    { label: "Ethiopia", value: "ET" },
-    { label: "Fiji", value: "FJ" },
-    { label: "Finland", value: "FI" },
-    { label: "France", value: "FR" },
-    { label: "Gabon", value: "GA" },
-    { label: "Gambia", value: "GM" },
-    { label: "Georgia", value: "GE" },
-    { label: "Germany", value: "DE" },
-    { label: "Ghana", value: "GH" },
-    { label: "Greece", value: "GR" },
-    { label: "Grenada", value: "GD" },
-    { label: "Guatemala", value: "GT" },
-    { label: "Guinea", value: "GN" },
-    { label: "Guinea-Bissau", value: "GW" },
-    { label: "Guyana", value: "GY" },
-    { label: "Haiti", value: "HT" },
-    { label: "Honduras", value: "HN" },
-    { label: "Hungary", value: "HU" },
-    { label: "Iceland", value: "IS" },
-    { label: "India", value: "IN" },
-    { label: "Indonesia", value: "ID" },
-    { label: "Iran", value: "IR" },
-    { label: "Iraq", value: "IQ" },
-    { label: "Ireland", value: "IE" },
-    { label: "Israel", value: "IL" },
-    { label: "Italy", value: "IT" },
-    { label: "Jamaica", value: "JM" },
-    { label: "Japan", value: "JP" },
-    { label: "Jordan", value: "JO" },
-    { label: "Kazakhstan", value: "KZ" },
-    { label: "Kenya", value: "KE" },
-    { label: "Kiribati", value: "KI" },
-    { label: "Kuwait", value: "KW" },
-    { label: "Kyrgyzstan", value: "KG" },
-    { label: "Laos", value: "LA" },
-    { label: "Latvia", value: "LV" },
-    { label: "Lebanon", value: "LB" },
-    { label: "Lesotho", value: "LS" },
-    { label: "Liberia", value: "LR" },
-    { label: "Libya", value: "LY" },
-    { label: "Liechtenstein", value: "LI" },
-    { label: "Lithuania", value: "LT" },
-    { label: "Luxembourg", value: "LU" },
-    { label: "Madagascar", value: "MG" },
-    { label: "Malawi", value: "MW" },
-    { label: "Malaysia", value: "MY" },
-    { label: "Maldives", value: "MV" },
-    { label: "Mali", value: "ML" },
-    { label: "Malta", value: "MT" },
-    { label: "Marshall Islands", value: "MH" },
-    { label: "Mauritania", value: "MR" },
-    { label: "Mauritius", value: "MU" },
-    { label: "Mexico", value: "MX" },
-    { label: "Micronesia", value: "FM" },
-    { label: "Moldova", value: "MD" },
-    { label: "Monaco", value: "MC" },
-    { label: "Mongolia", value: "MN" },
-    { label: "Montenegro", value: "ME" },
-    { label: "Morocco", value: "MA" },
-    { label: "Mozambique", value: "MZ" },
-    { label: "Myanmar (Burma)", value: "MM" },
-    { label: "Namibia", value: "NA" },
-    { label: "Nauru", value: "NR" },
-    { label: "Nepal", value: "NP" },
-    { label: "Netherlands", value: "NL" },
-    { label: "New Zealand", value: "NZ" },
-    { label: "Nicaragua", value: "NI" },
-    { label: "Niger", value: "NE" },
-    { label: "Nigeria", value: "NG" },
-    { label: "North Korea", value: "KP" },
-    { label: "North Macedonia", value: "MK" },
-    { label: "Norway", value: "NO" },
-    { label: "Oman", value: "OM" },
-    { label: "Pakistan", value: "PK" },
-    { label: "Palau", value: "PW" },
-    { label: "Palestine State", value: "PS" },
-    { label: "Panama", value: "PA" },
-    { label: "Papua New Guinea", value: "PG" },
-    { label: "Paraguay", value: "PY" },
-    { label: "Peru", value: "PE" },
-    { label: "Philippines", value: "PH" },
-    { label: "Poland", value: "PL" },
-    { label: "Portugal", value: "PT" },
-    { label: "Qatar", value: "QA" },
-    { label: "Romania", value: "RO" },
-    { label: "Russia", value: "RU" },
-    { label: "Rwanda", value: "RW" },
-    { label: "Saint Kitts and Nevis", value: "KN" },
-    { label: "Saint Lucia", value: "LC" },
-    { label: "Saint Vincent and the Grenadines", value: "VC" },
-    { label: "Samoa", value: "WS" },
-    { label: "San Marino", value: "SM" },
-    { label: "Sao Tome and Principe", value: "ST" },
-    { label: "Saudi Arabia", value: "SA" },
-    { label: "Senegal", value: "SN" },
-    { label: "Serbia", value: "RS" },
-    { label: "Seychelles", value: "SC" },
-    { label: "Sierra Leone", value: "SL" },
-    { label: "Singapore", value: "SG" },
-    { label: "Slovakia", value: "SK" },
-    { label: "Slovenia", value: "SI" },
-    { label: "Solomon Islands", value: "SB" },
-    { label: "Somalia", value: "SO" },
-    { label: "South Africa", value: "ZA" },
-    { label: "South Korea", value: "KR" },
-    { label: "South Sudan", value: "SS" },
-    { label: "Spain", value: "ES" },
-    { label: "Sri Lanka", value: "LK" },
-    { label: "Sudan", value: "SD" },
-    { label: "Suriname", value: "SR" },
-    { label: "Sweden", value: "SE" },
-    { label: "Switzerland", value: "CH" },
-    { label: "Syria", value: "SY" },
-    { label: "Tajikistan", value: "TJ" },
-    { label: "Tanzania", value: "TZ" },
-    { label: "Thailand", value: "TH" },
-    { label: "Timor-Leste", value: "TL" },
-    { label: "Togo", value: "TG" },
-    { label: "Tonga", value: "TO" },
-    { label: "Trinidad and Tobago", value: "TT" },
-    { label: "Tunisia", value: "TN" },
-    { label: "Turkey", value: "TR" },
-    { label: "Turkmenistan", value: "TM" },
-    { label: "Tuvalu", value: "TV" },
-    { label: "Uganda", value: "UG" },
-    { label: "Ukraine", value: "UA" },
-    { label: "United Arab Emirates", value: "AE" },
-    { label: "United Kingdom", value: "GB" },
-    { label: "United States of America", value: "US" },
-    { label: "Uruguay", value: "UY" },
-    { label: "Uzbekistan", value: "UZ" },
-    { label: "Vanuatu", value: "VU" },
-    { label: "Vatican City", value: "VA" },
-    { label: "Venezuela", value: "VE" },
-    { label: "Vietnam", value: "VN" },
-    { label: "Yemen", value: "YE" },
-    { label: "Zambia", value: "ZM" },
-    { label: "Zimbabwe", value: "ZW" },
-  ];
+  // Main state for all fields
+  const [activeTab, setActiveTab] = useState("profile");
+
+  // Profile Header
+  const [name, setName] = useState("John Doe");
+  const [avatarSrc, setAvatarSrc] = useState("");
+  const [count, setCount] = useState(1);
+  const [occupation, setOccupation] = useState("");
+
+  // Personal Details
+  const [fullName, setFullName] = useState("");
+  const [dob, setDob] = useState<Date | null>(null);
+  const [gender, setGender] = useState("none");
+  const [country, setCountry] = useState("");
+  const [address, setAddress] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState<string>("");
+  const [email, setEmail] = useState("");
+  const [accountVisibility, setAccountVisibility] = useState(false);
+  const [isVerified, setIsverified] = useState(false);
+
+  // Account Details
+  const [userName, setUserName] = useState("");
+  const [accountCreated, setAccountCreated] = useState<Date | null>(null);
+  const [lastLogin, setLastLogin] = useState<Date | null>(null);
+  const [membershipStatus, setMembershipStatus] = useState("A");
+  const [languagePreference, setLanguagePreference] = useState("English");
+  const [timezone, setTimezone] = useState("GMT +5:30");
+
+  // Security
+  const [deleteAccountInput, setDeleteAccountInput] = useState("");
+  const [deleteInstitutionsInput, setDeleteInstitutionsInput] = useState("");
+
+  // Created Institutions (if you want to edit them, add state here)
+
+  // Export all values
+  const allValues = {
+    fullName,
+    dob,
+    gender,
+    country,
+    address,
+    phoneNumber,
+    email,
+    accountVisibility,
+    userName,
+    accountCreated,
+    lastLogin,
+    membershipStatus,
+    languagePreference,
+    timezone,
+    deleteAccountInput,
+    deleteInstitutionsInput,
+  };
+
+  // For demonstration, you can log or export allValues as needed
+  // console.log(allValues);
+
   return (
-    <>
-      {" "}
+    <Column
+      fillWidth
+      padding="l"
+      horizontal="center"
+      vertical="start"
+      style={{
+        minHeight: "100vh",
+        height: "fit-content",
+        backgroundColor: "#FDFDF9",
+      }}
+    >
       <Column
+        style={{ maxWidth: "1550px" }}
         fillWidth
-        padding="l"
+        fitHeight
         horizontal="center"
-        vertical="start"
-        style={{
-          minHeight: "100vh",
-          height: "fit-content",
-          backgroundColor: "#FDFDF9",
-        }}
       >
+        <Header />
+        <Flex fillWidth height={2}></Flex>
         <Column
-          style={{ maxWidth: "1550px" }}
+          style={{ maxWidth: "1250px" }}
+          paddingX="l"
+          radius="xl"
           fillWidth
           fitHeight
           horizontal="center"
         >
-          <Row horizontal="space-between" fillWidth fitHeight vertical="center">
-            <Flex vertical="center" gap="8">
-              <Media
-                src="https://imghost.online/ib/skwnw73hCCCOt3q_1751541353.png"
-                unoptimized
-                width={4}
-                height={3}
-                alt="A"
-              ></Media>
-              <Text variant="label-default-xl">Next Bench</Text>
-            </Flex>
-            <Flex>
-              <MegaMenu
-                menuGroups={[
-                  {
-                    id: "home",
-                    label: "Home",
-                    href: "/",
-                  },
-                  {
-                    id: "consultants",
-                    label: "Consultants",
-                    suffixIcon: "chevronDown",
-
-                    sections: [],
-                  },
-                  {
-                    id: "find-school",
-                    label: "Find",
-                    suffixIcon: "chevronDown",
-                    sections: [],
-                  },
-                  {
-                    id: "dashboard",
-                    label: "MekoAI",
-                    href: "/mekoai",
-                    suffixIcon: "chevronDown",
-                    sections: [],
-                  },
-                ]}
-              />
-            </Flex>
-          </Row>
-          <Flex fillWidth height={2}></Flex>
-          <Column
-            style={{ maxWidth: "1250px" }}
-            paddingX="l"
-            radius="xl"
-            fillWidth
-            fitHeight
-            horizontal="center"
-          >
-            <Column
-              fillWidth
-              padding="xl"
-              paddingBottom="m"
-              fitHeight
-              center
-              style={{ backgroundColor: "transparent" }}
-              radius="l"
-              gap="12"
-              horizontal="center"
-              vertical="start"
-            >
-              <Avatar
-                empty
-                size="xl"
-                border="neutral-strong"
-                borderWidth={1}
-              ></Avatar>
-              <Text
-                style={{
-                  color: "#181A1D",
-                  fontSize: "41px",
-                  fontWeight: "500",
-                }}
-                className={dmsans.className}
-              >
-                User
-              </Text>
-              <Text
-                onBackground="neutral-weak"
-                style={{
-                  fontSize: "14px",
-                }}
-              >
-                Student at Next Bench
-              </Text>
-              <Flex fillWidth center paddingY="8">
-                {" "}
-                <SegmentedControl
-                  fillWidth={true}
-                  maxWidth={40}
-                  buttons={[
-                    { value: "profile", label: "Profile" },
-                    { value: "create", label: "Create" },
-                    { value: "security", label: "Security" },
-                  ]}
-                  defaultSelected="profile"
-                  onToggle={(value) => console.log(value)}
-                />
-              </Flex>
-            </Column>
-            <Flex fillWidth height={3}></Flex>
-            <Grid
-              fillWidth
-              padding="m"
-              fitHeight
-              columns={2}
-              gap="104"
-              // paddingX="xl"
-            >
-              <Column fillWidth horizontal="start" vertical="start" gap="20">
-                {" "}
-                <Text
-                  onBackground="neutral-strong"
-                  style={{
-                    fontSize: "16px",
-                    marginBottom: "12px",
-                  }}
-                >
-                  Personal details
-                </Text>
-                <Row fillWidth horizontal="space-between">
-                  <Flex flex={5}>
-                    {" "}
-                    <Text
-                      onBackground="neutral-weak"
-                      style={{
-                        fontSize: "14px",
-                      }}
-                    >
-                      Full name:
-                    </Text>
-                  </Flex>
-
-                  <Flex flex={7}>
-                    {" "}
-                    <Input
-                      id="input"
-                      height="m"
-                      placeholder="Full Name"
-                    ></Input>
-                  </Flex>
-                </Row>
-                <Row fillWidth horizontal="space-between">
-                  <Flex flex={5}>
-                    {" "}
-                    <Text
-                      onBackground="neutral-weak"
-                      style={{
-                        fontSize: "14px",
-                      }}
-                    >
-                      Date Of Birth:
-                    </Text>
-                  </Flex>
-
-                  <Flex flex={7}>
-                    {" "}
-                    <DateInput
-                      id="date"
-                      height="m"
-                      placeholder="When were you born?"
-                      cursor="interactive"
-                    ></DateInput>
-                  </Flex>
-                </Row>
-                <Row fillWidth horizontal="space-between">
-                  <Flex flex={5}>
-                    {" "}
-                    <Text
-                      onBackground="neutral-weak"
-                      style={{
-                        fontSize: "14px",
-                      }}
-                    >
-                      Gender:
-                    </Text>
-                  </Flex>
-
-                  <Flex flex={7}>
-                    {" "}
-                    <Select
-                      height="m"
-                      id="basic-select"
-                      placeholder="Choose your gender"
-                      value={"Prefer not to say"}
-                      options={[
-                        { label: "Male", value: "male" },
-                        { label: "Female", value: "female" },
-                        { label: "Prefer not to say", value: "none" },
-                      ]}
-                      onSelect={() => {}}
-                    />{" "}
-                  </Flex>
-                </Row>
-                <Row fillWidth horizontal="space-between">
-                  <Flex flex={5}>
-                    {" "}
-                    <Text
-                      onBackground="neutral-weak"
-                      style={{
-                        fontSize: "14px",
-                      }}
-                    >
-                      Country:
-                    </Text>
-                  </Flex>
-
-                  <Flex flex={7}>
-                    {" "}
-                    <Select
-                      height="m"
-                      searchable={true}
-                      id="basic-select"
-                      placeholder="Where do you reside?"
-                      value={"Earth"}
-                      options={countries}
-                      onSelect={() => {}}
-                    />{" "}
-                  </Flex>
-                </Row>
-                <Row fillWidth horizontal="space-between">
-                  <Flex flex={5}>
-                    {" "}
-                    <Text
-                      onBackground="neutral-weak"
-                      style={{
-                        fontSize: "14px",
-                      }}
-                    >
-                      Address:
-                    </Text>
-                  </Flex>
-
-                  <Flex flex={7}>
-                    {" "}
-                    <Textarea
-                      id="textarea"
-                      placeholder="Where do you live?"
-                    ></Textarea>
-                  </Flex>
-                </Row>
-                <Row fillWidth horizontal="space-between">
-                  <Flex flex={5}>
-                    {" "}
-                    <Text
-                      onBackground="neutral-weak"
-                      style={{
-                        fontSize: "14px",
-                      }}
-                    >
-                      Phone Number:
-                    </Text>
-                  </Flex>
-
-                  <Flex flex={7}>
-                    {" "}
-                    <NumberInput
-                      id="input"
-                      height="m"
-                      placeholder="Your phone number"
-                    ></NumberInput>
-                  </Flex>
-                </Row>
-                <Row fillWidth horizontal="space-between">
-                  <Flex flex={5}>
-                    {" "}
-                    <Text
-                      onBackground="neutral-weak"
-                      style={{
-                        fontSize: "14px",
-                      }}
-                    >
-                      Email:
-                    </Text>
-                  </Flex>
-
-                  <Flex flex={7}>
-                    {" "}
-                    <Input
-                      id="input"
-                      height="m"
-                      placeholder="Your email id"
-                      hasPrefix={
-                        <Text onBackground="neutral-medium">
-                          <i className="ri-at-line"></i>
-                        </Text>
-                      }
-                    ></Input>
-                  </Flex>
-                </Row>
-              </Column>
-              <Column fillWidth horizontal="start" vertical="start" gap="20">
-                <Text
-                  onBackground="neutral-strong"
-                  style={{
-                    fontSize: "16px",
-                    marginBottom: "12px",
-                  }}
-                >
-                  Account Details
-                </Text>
-                <Row fillWidth horizontal="space-between">
-                  <Flex flex={5}>
-                    <Text
-                      onBackground="neutral-weak"
-                      style={{ fontSize: "14px" }}
-                    >
-                      User Name:
-                    </Text>
-                  </Flex>
-                  <Flex flex={7}>
-                    <Input
-                      placeholder="Enter your username"
-                      description={
-                        <Text onBackground="neutral-weak">
-                          <i className="ri-information-line"></i>&nbsp;This will
-                          be visible to others
-                        </Text>
-                      }
-                      hasSuffix={<Kbd>Once</Kbd>}
-                      id="input"
-                      disabled
-                    ></Input>
-                  </Flex>
-                </Row>
-                <Row fillWidth horizontal="space-between">
-                  <Flex flex={5}>
-                    <Text
-                      onBackground="neutral-weak"
-                      style={{ fontSize: "14px" }}
-                    >
-                      Account Created:
-                    </Text>
-                  </Flex>
-                  <Flex flex={7}>
-                    <DateInput
-                      id="date"
-                      placeholder="July 2, 2025"
-                      height="m"
-                      disabled
-                    ></DateInput>
-                  </Flex>
-                </Row>
-                <Row fillWidth horizontal="space-between">
-                  <Flex flex={5}>
-                    <Text
-                      onBackground="neutral-weak"
-                      style={{ fontSize: "14px" }}
-                    >
-                      Last Login:
-                    </Text>
-                  </Flex>
-                  <Flex flex={7}>
-                    <DateInput
-                      id="date"
-                      placeholder="July 2, 2025"
-                      height="m"
-                      disabled
-                    ></DateInput>
-                  </Flex>
-                </Row>
-                <Row fillWidth horizontal="space-between">
-                  <Flex flex={5}>
-                    <Text
-                      onBackground="neutral-weak"
-                      style={{ fontSize: "14px" }}
-                    >
-                      Membership Status:
-                    </Text>
-                  </Flex>
-                  <Flex flex={7}>
-                    <Select
-                      height="m"
-                      disabled
-                      id="basic-select"
-                      placeholder="Active"
-                      value={"Active"}
-                      options={[
-                        { label: "Active", value: "A" },
-                        { label: "Freemium", value: "F" },
-                        { label: "Pro", value: "P" },
-                      ]}
-                      onSelect={() => {}}
-                    />{" "}
-                  </Flex>
-                </Row>
-                <Row fillWidth horizontal="space-between">
-                  <Flex flex={5}>
-                    <Text
-                      onBackground="neutral-weak"
-                      style={{ fontSize: "14px" }}
-                    >
-                      Account Verification:
-                    </Text>
-                  </Flex>
-                  <Flex flex={7}>
-                    <Tag variant="danger">Not verified</Tag>
-                  </Flex>
-                </Row>
-                <Row fillWidth horizontal="space-between">
-                  <Flex flex={5}>
-                    <Text
-                      onBackground="neutral-weak"
-                      style={{ fontSize: "14px" }}
-                    >
-                      Language Preference:
-                    </Text>
-                  </Flex>
-                  <Flex flex={7}>
-                    <Select
-                      disabled
-                      height="m"
-                      id="basic-select"
-                      placeholder="English"
-                      value={"English"}
-                      options={[
-                        { label: "Active", value: "A" },
-                        { label: "Freemium", value: "F" },
-                        { label: "Pro", value: "P" },
-                      ]}
-                      onSelect={() => {}}
-                    />{" "}
-                  </Flex>
-                </Row>
-                <Row fillWidth horizontal="space-between">
-                  <Flex flex={5}>
-                    <Text
-                      onBackground="neutral-weak"
-                      style={{ fontSize: "14px" }}
-                    >
-                      Time Zone:
-                    </Text>
-                  </Flex>
-                  <Flex flex={7}>
-                    <Select
-                      disabled
-                      height="m"
-                      id="basic-select"
-                      placeholder="GMT +5:30"
-                      value={"GMT +5:30"}
-                      options={[
-                        { label: "Active", value: "A" },
-                        { label: "Freemium", value: "F" },
-                        { label: "Pro", value: "P" },
-                      ]}
-                      onSelect={() => {}}
-                    />{" "}
-                  </Flex>
-                </Row>
-              </Column>
-            </Grid>
-
-            <Row paddingY="12" fillWidth horizontal="start">
-              {" "}
-              <Button size="m">Save all</Button>
-            </Row>
-
-            <Flex fillWidth height={3}></Flex>
-            <Grid fillWidth fitHeight columns={3} gap="4">
-              <Column
-                style={{ backgroundColor: "#F2F2EF" }}
-                padding="m"
-                fillWidth
-                maxHeight={28}
-                height={28}
-              >
-                <Text></Text>
-              </Column>
-            </Grid>
-          </Column>
+          <ProfileHeader
+            dmsansClass={dmsans.className}
+            activeTab={activeTab}
+            setActiveTab={setActiveTab}
+            avatarSrc={avatarSrc}
+            name={fullName || "User"}
+            occupation={occupation || "User at Next Bench"}
+            count={count}
+          />
+          <Flex fillWidth height={3}></Flex>
+          {activeTab === "profile" && (
+            <ProfileEdit
+              countries={countries}
+              fullName={fullName}
+              setFullName={setFullName}
+              dob={dob}
+              setDob={setDob}
+              gender={gender}
+              setGender={setGender}
+              country={country}
+              setCountry={setCountry}
+              address={address}
+              setAddress={setAddress}
+              phoneNumber={phoneNumber}
+              setPhoneNumber={setPhoneNumber}
+              email={email}
+              setEmail={setEmail}
+              accountVisibility={accountVisibility}
+              setAccountVisibility={setAccountVisibility}
+              userName={userName}
+              setUserName={setUserName}
+              accountCreated={accountCreated}
+              setAccountCreated={setAccountCreated}
+              lastLogin={lastLogin}
+              setLastLogin={setLastLogin}
+              membershipStatus={membershipStatus}
+              setMembershipStatus={setMembershipStatus}
+              languagePreference={languagePreference}
+              setLanguagePreference={setLanguagePreference}
+              timezone={timezone}
+              setTimezone={setTimezone}
+            />
+          )}
+          {activeTab === "creations" && (
+            <CreatedInstitutions institutions={institutions} />
+          )}
+          {activeTab === "security" && (
+            <Security
+              deleteAccountInput={deleteAccountInput}
+              setDeleteAccountInput={setDeleteAccountInput}
+              deleteInstitutionsInput={deleteInstitutionsInput}
+              setDeleteInstitutionsInput={setDeleteInstitutionsInput}
+            />
+          )}
+          <Flex fillWidth height={3}></Flex>
         </Column>
       </Column>
+    </Column>
+  );
+}
+
+// Header
+function Header() {
+  return (
+    <Row horizontal="space-between" fillWidth fitHeight vertical="center">
+      <Flex vertical="center" gap="8">
+        <Media
+          src="https://imghost.online/ib/skwnw73hCCCOt3q_1751541353.png"
+          unoptimized
+          width={4}
+          height={3}
+          alt="A"
+        />
+        <Text variant="label-default-xl">Next Bench</Text>
+      </Flex>
+      <Flex>
+        <MegaMenu menuGroups={menuGroups} />
+      </Flex>
+    </Row>
+  );
+}
+
+// Profile Header
+function ProfileHeader({
+  dmsansClass,
+  activeTab,
+  setActiveTab,
+  avatarSrc,
+  name ,
+  occupation ,
+  count,
+}: {
+  dmsansClass: string;
+  activeTab: string;
+  setActiveTab: (v: string) => void;
+  avatarSrc?: string;
+  name?: string;
+  occupation?: string;
+  count?: number;
+}) {
+  return (
+    <Column
+      fillWidth
+      padding="xl"
+      paddingBottom="m"
+      fitHeight
+      center
+      style={{ backgroundColor: "transparent" }}
+      radius="l"
+      gap="12"
+      horizontal="center"
+      vertical="start"
+    >
+      <Avatar
+        src={avatarSrc}
+        size="xl"
+        border="neutral-strong"
+        borderWidth={1}
+      />
+      <Text
+        style={{
+          color: "#181A1D",
+          fontSize: "41px",
+          fontWeight: "500",
+        }}
+        className={dmsansClass}
+      >
+        <Row center gap="8">
+          {name}
+          <Line vert width={0.1} height={2.5} background="neutral-medium" />
+          <Text
+            style={{
+              fontSize: "21px",
+              fontWeight: "500",
+            }}
+            onBackground="neutral-weak"
+            className={dmsansClass}
+          >
+            <Kbd>#{count}</Kbd>
+          </Text>
+        </Row>
+      </Text>
+      <Text onBackground="neutral-weak" style={{ fontSize: "14px" }}>
+        {occupation}
+      </Text>
+      <Flex fillWidth center paddingY="8">
+        <SegmentedControl
+          fillWidth={true}
+          maxWidth={40}
+          buttons={segmentedButtons}
+          defaultSelected="profile"
+          onToggle={setActiveTab}
+        />
+      </Flex>
+    </Column>
+  );
+}
+
+// Profile Edit
+function ProfileEdit({
+  countries,
+  fullName,
+  setFullName,
+  dob,
+  setDob,
+  gender,
+  setGender,
+  country,
+  setCountry,
+  address,
+  setAddress,
+  phoneNumber,
+  setPhoneNumber,
+  email,
+  setEmail,
+  accountVisibility,
+  setAccountVisibility,
+  userName,
+  setUserName,
+  accountCreated,
+  setAccountCreated,
+  lastLogin,
+  setLastLogin,
+  membershipStatus,
+  setMembershipStatus,
+  languagePreference,
+  setLanguagePreference,
+  timezone,
+  setTimezone,
+}: {
+  countries: { label: string; value: string }[];
+  fullName: string;
+  setFullName: (v: string) => void;
+  dob: Date | null;
+  setDob: (v: Date | null) => void;
+  gender: string;
+  setGender: (v: string) => void;
+  country: string;
+  setCountry: (v: string) => void;
+  address: string;
+  setAddress: (v: string) => void;
+  phoneNumber: string;
+  setPhoneNumber: (v: string) => void;
+  email: string;
+  setEmail: (v: string) => void;
+  accountVisibility: boolean;
+  setAccountVisibility: (v: boolean) => void;
+  userName: string;
+  setUserName: (v: string) => void;
+  accountCreated: Date | null;
+  setAccountCreated: (v: Date | null) => void;
+  lastLogin: Date | null;
+  setLastLogin: (v: Date | null) => void;
+  membershipStatus: string;
+  setMembershipStatus: (v: string) => void;
+  languagePreference: string;
+  setLanguagePreference: (v: string) => void;
+  timezone: string;
+  setTimezone: (v: string) => void;
+}) {
+  function consoleLog() {
+    console.log({
+      fullName,
+      dob,
+      gender,
+      country,
+      address,
+      phoneNumber,
+      email,
+      userName,
+      accountCreated,
+      lastLogin,
+      membershipStatus,
+      languagePreference,
+      timezone,
+      accountVisibility,
+    });
+  }
+  return (
+    <>
+      <Grid fillWidth padding="m" fitHeight columns={2} gap="104">
+        <PersonalDetails
+          countries={countries}
+          fullName={fullName}
+          setFullName={setFullName}
+          dob={dob}
+          setDob={setDob}
+          gender={gender}
+          setGender={setGender}
+          country={country}
+          setCountry={setCountry}
+          address={address}
+          setAddress={setAddress}
+          phoneNumber={phoneNumber}
+          setPhoneNumber={setPhoneNumber}
+          email={email}
+          setEmail={setEmail}
+          accountVisibility={accountVisibility}
+          setAccountVisibility={setAccountVisibility}
+        />
+        <AccountDetails
+          userName={userName}
+          setUserName={setUserName}
+          accountCreated={accountCreated}
+          setAccountCreated={setAccountCreated}
+          lastLogin={lastLogin}
+          setLastLogin={setLastLogin}
+          membershipStatus={membershipStatus}
+          setMembershipStatus={setMembershipStatus}
+          languagePreference={languagePreference}
+          setLanguagePreference={setLanguagePreference}
+          timezone={timezone}
+          setTimezone={setTimezone}
+        />
+      </Grid>
+      <Row paddingY="12" fillWidth horizontal="end">
+        <Button size="m" onClick={consoleLog}>
+          Save all
+        </Button>
+      </Row>
     </>
+  );
+}
+
+function PersonalDetails({
+  countries,
+  fullName,
+  setFullName,
+  dob,
+  setDob,
+  gender,
+  setGender,
+  country,
+  setCountry,
+  address,
+  setAddress,
+  phoneNumber,
+  setPhoneNumber,
+  email,
+  setEmail,
+  accountVisibility,
+  setAccountVisibility,
+}: {
+  countries: { label: string; value: string }[];
+  fullName: string;
+  setFullName: (v: string) => void;
+  dob: Date | null;
+  setDob: (v: Date | null) => void;
+  gender: string;
+  setGender: (v: string) => void;
+  country: string;
+  setCountry: (v: string) => void;
+  address: string;
+  setAddress: (v: string) => void;
+  phoneNumber: string;
+  setPhoneNumber: (v: string) => void;
+  email: string;
+  setEmail: (v: string) => void;
+  accountVisibility: boolean;
+  setAccountVisibility: (v: boolean) => void;
+}) {
+  return (
+    <Column fillWidth horizontal="start" vertical="start" gap="20">
+      <Text
+        onBackground="neutral-strong"
+        style={{ fontSize: "16px", marginBottom: "12px" }}
+      >
+        Personal details
+      </Text>
+      <ProfileRow label="Full name:">
+        <Input
+          id="input-fullname"
+          height="m"
+          placeholder="Full Name"
+          value={fullName}
+          onChange={(e: any) => setFullName(e.target.value)}
+        />
+      </ProfileRow>
+      <ProfileRow label="Date Of Birth:">
+        <DateInput
+          id="date-dob"
+          height="m"
+          placeholder="When were you born?"
+          cursor="interactive"
+          value={dob === null ? undefined : dob}
+          onChange={(v: Date | null) => setDob(v)}
+        />
+      </ProfileRow>
+      <ProfileRow label="Gender:">
+        <Select
+          height="m"
+          id="gender-select"
+          placeholder="Choose your gender"
+          value={gender}
+          options={genderOptions}
+          onSelect={(v: any) => setGender(v)}
+        />
+      </ProfileRow>
+      <ProfileRow label="Country:">
+        <Select
+          height="m"
+          searchable={true}
+          id="country-select"
+          placeholder="Where do you reside?"
+          value={country}
+          options={countries}
+          onSelect={(v: any) => setCountry(v)}
+        />
+      </ProfileRow>
+      <ProfileRow label="Address:">
+        <Textarea
+          id="textarea-address"
+          placeholder="Where do you live?"
+          value={address}
+          onChange={(e: any) => setAddress(e.target.value)}
+        />
+      </ProfileRow>
+      <ProfileRow label="Phone Number:">
+        <Input
+          id="input-phone"
+          height="m"
+          placeholder="Your phone number"
+          value={phoneNumber}
+          onChange={(e: any) => setPhoneNumber(e.target.value)}
+        />
+      </ProfileRow>
+      <ProfileRow label="Email:">
+        <Input
+          id="input-email"
+          height="m"
+          placeholder="Your email id"
+          value={email}
+          onChange={(e: any) => setEmail(e.target.value)}
+          hasPrefix={
+            <Text onBackground="neutral-medium">
+              <i className="ri-at-line"></i>
+            </Text>
+          }
+        />
+      </ProfileRow>
+      <ProfileRow label="Account visiblity:">
+        <Switch
+          label={
+            <Text onBackground="neutral-weak" variant="label-default-m">
+              {accountVisibility ? "Public" : "Private"}
+            </Text>
+          }
+          isChecked={accountVisibility}
+          onToggle={() => setAccountVisibility(!accountVisibility)}
+        />
+      </ProfileRow>
+    </Column>
+  );
+}
+
+function AccountDetails({
+  userName,
+  setUserName,
+  accountCreated,
+  setAccountCreated,
+  lastLogin,
+  setLastLogin,
+  membershipStatus,
+  setMembershipStatus,
+  languagePreference,
+  setLanguagePreference,
+  timezone,
+  setTimezone,
+  isVerified = true,
+}: {
+  userName: string;
+  setUserName: (v: string) => void;
+  accountCreated: Date | null;
+  setAccountCreated: (v: Date | null) => void;
+  lastLogin: Date | null;
+  setLastLogin: (v: Date | null) => void;
+  membershipStatus: string;
+  setMembershipStatus: (v: string) => void;
+  languagePreference: string;
+  setLanguagePreference: (v: string) => void;
+  timezone: string;
+  setTimezone: (v: string) => void;
+  isVerified?: boolean;
+}) {
+  return (
+    <Column fillWidth horizontal="start" vertical="start" gap="20">
+      <Text
+        onBackground="neutral-strong"
+        style={{ fontSize: "16px", marginBottom: "12px" }}
+      >
+        Account Details
+      </Text>
+      <ProfileRow label="User Name:">
+        <Input
+          placeholder="Enter your username"
+          description={
+            <Text onBackground="neutral-weak">
+              <i className="ri-information-line"></i>&nbsp;This will be visible
+              to others
+            </Text>
+          }
+          hasSuffix={<Kbd>Once</Kbd>}
+          id="input-username"
+          value={userName}
+          onChange={(e: any) => setUserName(e.target.value)}
+        />
+      </ProfileRow>
+      <ProfileRow label="Account Created:">
+        <DateInput
+          id="date-account-created"
+          placeholder="July 2, 2025"
+          height="m"
+          value={accountCreated === null ? undefined : accountCreated}
+          onChange={(v: Date | null) => setAccountCreated(v)}
+          disabled
+        />
+      </ProfileRow>
+      <ProfileRow label="Last Login:">
+        <DateInput
+          id="date-last-login"
+          placeholder="July 2, 2025"
+          height="m"
+          value={lastLogin === null ? undefined : lastLogin}
+          onChange={(v: Date | null) => setLastLogin(v)}
+          disabled
+        />
+      </ProfileRow>
+      <ProfileRow label="Membership Status:">
+        <Select
+          height="m"
+          disabled
+          id="membership-select"
+          placeholder="Active"
+          value={membershipStatus}
+          options={membershipOptions}
+          onSelect={(v: any) => setMembershipStatus(v)}
+        />
+      </ProfileRow>
+      <ProfileRow label="Account Verification:">
+        {isVerified ? (
+          <Tag variant="gradient">Verified</Tag>
+        ) : (
+          <Tag variant="danger">Not verified</Tag>
+        )}
+      </ProfileRow>
+      <ProfileRow label="Language Preference:">
+        <Select
+          height="m"
+          id="language-select"
+          placeholder="English"
+          value={languagePreference}
+          options={languageOptions}
+          onSelect={(v: any) => setLanguagePreference(v)}
+        />
+      </ProfileRow>
+      <ProfileRow label="Time Zone:">
+        <Select
+          height="m"
+          id="timezone-select"
+          placeholder="GMT +5:30"
+          value={timezone}
+          options={timezoneOptions}
+          onSelect={(v: any) => setTimezone(v)}
+        />
+      </ProfileRow>
+    </Column>
+  );
+}
+
+function ProfileRow({
+  label,
+  children,
+}: {
+  label: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <Row fillWidth horizontal="space-between">
+      <Flex flex={5}>
+        <Text onBackground="neutral-weak" style={{ fontSize: "14px" }}>
+          {label}
+        </Text>
+      </Flex>
+      <Flex flex={7}>{children}</Flex>
+    </Row>
+  );
+}
+
+// Institution type
+type Institution = {
+  name: string;
+  address: string;
+  affiliation: string;
+  contact: string;
+  email: string;
+  isPublished: boolean;
+};
+
+// Created Institutions
+function CreatedInstitutions({
+  institutions,
+}: {
+  institutions: Institution[];
+}) {
+  return (
+    <Grid fillWidth fitHeight columns={2} gap="4">
+      {institutions.map((inst) => (
+        <InstitutionCard key={inst.name} {...inst} />
+      ))}
+      <CreateNewInstitution />
+    </Grid>
+  );
+}
+
+function InstitutionCard({
+  name,
+  address,
+  affiliation,
+  contact,
+  email,
+  isPublished,
+}: {
+  name: string;
+  address: string;
+  affiliation: string;
+  contact: string;
+  email: string;
+  isPublished: boolean;
+}) {
+  // If you want to make these editable, add useState for each field here
+  const [published, setPublished] = useState(isPublished);
+
+  return (
+    <Card
+      fillWidth
+      horizontal="start"
+      vertical="start"
+      gap="20"
+      direction="column"
+      padding="m"
+      style={{ border: "none" }}
+      background="transparent"
+    >
+      <Text onBackground="neutral-strong" style={{ fontSize: "16px" }}>
+        {name}
+      </Text>
+      <InstitutionRow label="Address:">{address}</InstitutionRow>
+      <InstitutionRow label="Affiliation:">{affiliation}</InstitutionRow>
+      <InstitutionRow label="Contact:">
+        <InlineCode radius="xs-4">{contact}</InlineCode>
+      </InstitutionRow>
+      <InstitutionRow label="Email:">
+        <InlineCode radius="xs-4">{email}</InlineCode>
+      </InstitutionRow>
+      <InstitutionRow label="Is published?">
+        <Switch
+          isChecked={published}
+          onToggle={() => setPublished(!published)}
+        />
+      </InstitutionRow>
+    </Card>
+  );
+}
+
+function InstitutionRow({
+  label,
+  children,
+}: {
+  label: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <Row fillWidth horizontal="space-between">
+      <Flex flex={5}>
+        <Text onBackground="neutral-weak" style={{ fontSize: "14px" }}>
+          {label}
+        </Text>
+      </Flex>
+      <Flex flex={7}>
+        <Text onBackground="neutral-weak" style={{ fontSize: "14px" }}>
+          {children}
+        </Text>
+      </Flex>
+    </Row>
+  );
+}
+
+function CreateNewInstitution() {
+  // Placeholder for future implementation
+  return null;
+}
+
+// Security Section
+function Security({
+  deleteAccountInput,
+  setDeleteAccountInput,
+  deleteInstitutionsInput,
+  setDeleteInstitutionsInput,
+}: {
+  deleteAccountInput: string;
+  setDeleteAccountInput: (v: string) => void;
+  deleteInstitutionsInput: string;
+  setDeleteInstitutionsInput: (v: string) => void;
+}) {
+  return (
+    <Grid fillWidth padding="m" fitHeight columns={2} gap="104">
+      <SecuritySection
+        title="Account Deletion"
+        rows={[
+          {
+            label: "Delete Account?",
+            input: (
+              <Input
+                placeholder="Enter your username"
+                description={
+                  <Text onBackground="neutral-weak">
+                    <i className="ri-information-line"></i>&nbsp;This is a
+                    safety feature
+                  </Text>
+                }
+                hasSuffix={<Kbd>Once</Kbd>}
+                id="input-delete-account"
+                value={deleteAccountInput}
+                onChange={(e: any) => setDeleteAccountInput(e.target.value)}
+              />
+            ),
+            button: (
+              <Button variant="primary" size="m">
+                Delete
+              </Button>
+            ),
+          },
+        ]}
+      />
+      <SecuritySection
+        title="Institutions Deletion"
+        rows={[
+          {
+            label: "Delete all Institutions?",
+            input: (
+              <Input
+                placeholder="Enter your username"
+                description={
+                  <Text onBackground="neutral-weak">
+                    <i className="ri-information-line"></i>&nbsp;This is a
+                    safety feature
+                  </Text>
+                }
+                hasSuffix={<Kbd>Once</Kbd>}
+                id="input-delete-institutions"
+                value={deleteInstitutionsInput}
+                onChange={(e: any) =>
+                  setDeleteInstitutionsInput(e.target.value)
+                }
+              />
+            ),
+            button: (
+              <Button variant="primary" size="m">
+                Delete
+              </Button>
+            ),
+          },
+        ]}
+      />
+      <SecuritySection
+        title="Others"
+        rows={[
+          {
+            label: "Export you data?",
+            button: (
+              <Button variant="primary" size="m">
+                Export
+              </Button>
+            ),
+          },
+          {
+            label: "Request data deletion?",
+            button: (
+              <Button variant="primary" size="m">
+                Request
+              </Button>
+            ),
+          },
+        ]}
+      />
+    </Grid>
+  );
+}
+
+function SecuritySection({
+  title,
+  rows,
+}: {
+  title: string;
+  rows: { label: string; input?: React.ReactNode; button: React.ReactNode }[];
+}) {
+  return (
+    <Column fillWidth horizontal="start" vertical="start" gap="20">
+      <Text
+        onBackground="neutral-strong"
+        style={{ fontSize: "16px", marginBottom: "12px" }}
+      >
+        {title}
+      </Text>
+      {rows.map((row, idx) => (
+        <Row fillWidth horizontal="space-between" key={row.label}>
+          <Flex flex={5}>
+            <Text onBackground="neutral-weak" style={{ fontSize: "14px" }}>
+              {row.label}
+            </Text>
+          </Flex>
+          <Flex flex={7} direction="column" horizontal="end" gap="4">
+            {row.input}
+            {row.button}
+          </Flex>
+        </Row>
+      ))}
+    </Column>
   );
 }
