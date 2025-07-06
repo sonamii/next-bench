@@ -283,7 +283,12 @@ export default function Home() {
           backgroundColor: "#FDFDF9",
         }}
       >
-        <Column style={{ maxWidth: "1550px" }} fillWidth fitHeight horizontal="center">
+        <Column
+          style={{ maxWidth: "1550px" }}
+          fillWidth
+          fitHeight
+          horizontal="center"
+        >
           <Row horizontal="space-between" fillWidth fitHeight vertical="center">
             <Flex vertical="center" gap="8">
               <Media
@@ -328,423 +333,434 @@ export default function Home() {
             </Flex>
           </Row>
           <Flex fillWidth height={2}></Flex>
-          <Column  style={{ maxWidth: "1250px" }}paddingX="l" radius="xl" fillWidth fitHeight horizontal="center" >
           <Column
+            style={{ maxWidth: "1250px" }}
+            paddingX="l"
+            radius="xl"
             fillWidth
-            padding="xl"
-            paddingBottom="m"
             fitHeight
-            center
-            style={{ backgroundColor: "transparent" }}
-            radius="l"
-            gap="12"
             horizontal="center"
-            vertical="start"
           >
-            <Avatar
-empty              size="xl"
-              border="neutral-strong"
-              borderWidth={1}
-            ></Avatar>
-            <Text
-              style={{
-                color: "#181A1D",
-                fontSize: "41px",
-                fontWeight: "500",
-              }}
-              className={dmsans.className}
+            <Column
+              fillWidth
+              padding="xl"
+              paddingBottom="m"
+              fitHeight
+              center
+              style={{ backgroundColor: "transparent" }}
+              radius="l"
+              gap="12"
+              horizontal="center"
+              vertical="start"
             >
-              User
-            </Text>
-            <Text
-              onBackground="neutral-weak"
-              style={{
-                fontSize: "14px",
-              }}
-            >
-              Student at Next Bench
-            </Text>
-            <Flex fillWidth center paddingY="8">
-              {" "}
-              <SegmentedControl
-                fillWidth={false}
-                buttons={[
-                  { value: "profile", label: "Profile" },
-                  { value: "institutions", label: "Institutions" },
-                  { value: "security", label: "Security" },
-                ]}
-                defaultSelected="profile"
-                onToggle={(value) => console.log(value)}
-              />
-            </Flex>
-          </Column>
-<Flex fillWidth height={3}></Flex>
-          <Grid
-            fillWidth
-            padding="m"
-            fitHeight
-            columns={2}
-            gap="104"
-            // paddingX="xl"
-          >
-            <Column fillWidth horizontal="start" vertical="start" gap="20">
-              {" "}
+              <Avatar
+                empty
+                size="xl"
+                border="neutral-strong"
+                borderWidth={1}
+              ></Avatar>
               <Text
-                onBackground="neutral-strong"
                 style={{
-                  fontSize: "16px",
-                  marginBottom: "12px",
+                  color: "#181A1D",
+                  fontSize: "41px",
+                  fontWeight: "500",
+                }}
+                className={dmsans.className}
+              >
+                User
+              </Text>
+              <Text
+                onBackground="neutral-weak"
+                style={{
+                  fontSize: "14px",
                 }}
               >
-                Personal details
+                Student at Next Bench
               </Text>
-              <Row fillWidth horizontal="space-between">
-                <Flex flex={5}>
-                  {" "}
-                  <Text
-                    onBackground="neutral-weak"
-                    style={{
-                      fontSize: "14px",
-                    }}
-                  >
-                    Full name:
-                  </Text>
-                </Flex>
-
-                <Flex flex={7}>
-                  {" "}
-                  <Input id="input" height="m" placeholder="Full Name"></Input>
-                </Flex>
-              </Row>
-              <Row fillWidth horizontal="space-between">
-                <Flex flex={5}>
-                  {" "}
-                  <Text
-                    onBackground="neutral-weak"
-                    style={{
-                      fontSize: "14px",
-                    }}
-                  >
-                    Date Of Birth:
-                  </Text>
-                </Flex>
-
-                <Flex flex={7}>
-                  {" "}
-                  <DateInput
-                    id="date"
-                    height="m"
-                    placeholder="When were you born?"
-                    cursor="interactive"
-                  ></DateInput>
-                </Flex>
-              </Row>
-              <Row fillWidth horizontal="space-between">
-                <Flex flex={5}>
-                  {" "}
-                  <Text
-                    onBackground="neutral-weak"
-                    style={{
-                      fontSize: "14px",
-                    }}
-                  >
-                    Gender:
-                  </Text>
-                </Flex>
-
-                <Flex flex={7}>
-                  {" "}
-                  <Select
-                    height="m"
-                    id="basic-select"
-                    placeholder="Choose your gender"
-                    value={"Prefer not to say"}
-                    options={[
-                      { label: "Male", value: "male" },
-                      { label: "Female", value: "female" },
-                      { label: "Prefer not to say", value: "none" },
-                    ]}
-                    onSelect={() => {}}
-                  />{" "}
-                </Flex>
-              </Row>
-              <Row fillWidth horizontal="space-between">
-                <Flex flex={5}>
-                  {" "}
-                  <Text
-                    onBackground="neutral-weak"
-                    style={{
-                      fontSize: "14px",
-                    }}
-                  >
-                    Country:
-                  </Text>
-                </Flex>
-
-                <Flex flex={7}>
-                  {" "}
-                  <Select
-                    height="m"
-                    searchable={true}
-                    id="basic-select"
-                    placeholder="Where do you reside?"
-                    value={"Earth"}
-                    options={countries}
-                    onSelect={() => {}}
-                  />{" "}
-                </Flex>
-              </Row>
-              <Row fillWidth horizontal="space-between">
-                <Flex flex={5}>
-                  {" "}
-                  <Text
-                    onBackground="neutral-weak"
-                    style={{
-                      fontSize: "14px",
-                    }}
-                  >
-                    Date of Birth:
-                  </Text>
-                </Flex>
-
-                <Flex flex={7}>
-                  {" "}
-                  <DateInput
-                    id="date"
-                    height="m"
-                    placeholder="When were you born?"
-                    cursor="interactive"
-                  ></DateInput>
-                </Flex>
-              </Row>
-              <Row fillWidth horizontal="space-between">
-                <Flex flex={5}>
-                  {" "}
-                  <Text
-                    onBackground="neutral-weak"
-                    style={{
-                      fontSize: "14px",
-                    }}
-                  >
-                    Address:
-                  </Text>
-                </Flex>
-
-                <Flex flex={7}>
-                  {" "}
-                  <Textarea
-                    id="textarea"
-                    placeholder="Where do you live?"
-                  ></Textarea>
-                </Flex>
-              </Row>
-              <Row fillWidth horizontal="space-between">
-                <Flex flex={5}>
-                  {" "}
-                  <Text
-                    onBackground="neutral-weak"
-                    style={{
-                      fontSize: "14px",
-                    }}
-                  >
-                    Phone Number:
-                  </Text>
-                </Flex>
-
-                <Flex flex={7}>
-                  {" "}
-                  <NumberInput
-                    id="input"
-                    height="m"
-                    placeholder="Your phone number"
-                  ></NumberInput>
-                </Flex>
-              </Row>
-              <Row fillWidth horizontal="space-between">
-                <Flex flex={5}>
-                  {" "}
-                  <Text
-                    onBackground="neutral-weak"
-                    style={{
-                      fontSize: "14px",
-                    }}
-                  >
-                    Email:
-                  </Text>
-                </Flex>
-
-                <Flex flex={7}>
-                  {" "}
-                  <Input
-                    id="input"
-                    height="m"
-                    placeholder="Your email id"
-                    hasPrefix={
-                      <Text onBackground="neutral-medium">
-                        <i className="ri-at-line"></i>
-                      </Text>
-                    }
-                  ></Input>
-                </Flex>
-              </Row>
+              <Flex fillWidth center paddingY="8">
+                {" "}
+                <SegmentedControl
+                  fillWidth={true}
+                  maxWidth={40}
+                  buttons={[
+                    { value: "profile", label: "Profile" },
+                    { value: "create", label: "Create" },
+                    { value: "security", label: "Security" },
+                  ]}
+                  defaultSelected="profile"
+                  onToggle={(value) => console.log(value)}
+                />
+              </Flex>
             </Column>
-            <Column fillWidth horizontal="start" vertical="start" gap="20">
-              <Text
-                onBackground="neutral-strong"
-                style={{
-                  fontSize: "16px",
-                  marginBottom: "12px",
-                }}
+            <Flex fillWidth height={3}></Flex>
+            <Grid
+              fillWidth
+              padding="m"
+              fitHeight
+              columns={2}
+              gap="104"
+              // paddingX="xl"
+            >
+              <Column fillWidth horizontal="start" vertical="start" gap="20">
+                {" "}
+                <Text
+                  onBackground="neutral-strong"
+                  style={{
+                    fontSize: "16px",
+                    marginBottom: "12px",
+                  }}
+                >
+                  Personal details
+                </Text>
+                <Row fillWidth horizontal="space-between">
+                  <Flex flex={5}>
+                    {" "}
+                    <Text
+                      onBackground="neutral-weak"
+                      style={{
+                        fontSize: "14px",
+                      }}
+                    >
+                      Full name:
+                    </Text>
+                  </Flex>
+
+                  <Flex flex={7}>
+                    {" "}
+                    <Input
+                      id="input"
+                      height="m"
+                      placeholder="Full Name"
+                    ></Input>
+                  </Flex>
+                </Row>
+                <Row fillWidth horizontal="space-between">
+                  <Flex flex={5}>
+                    {" "}
+                    <Text
+                      onBackground="neutral-weak"
+                      style={{
+                        fontSize: "14px",
+                      }}
+                    >
+                      Date Of Birth:
+                    </Text>
+                  </Flex>
+
+                  <Flex flex={7}>
+                    {" "}
+                    <DateInput
+                      id="date"
+                      height="m"
+                      placeholder="When were you born?"
+                      cursor="interactive"
+                    ></DateInput>
+                  </Flex>
+                </Row>
+                <Row fillWidth horizontal="space-between">
+                  <Flex flex={5}>
+                    {" "}
+                    <Text
+                      onBackground="neutral-weak"
+                      style={{
+                        fontSize: "14px",
+                      }}
+                    >
+                      Gender:
+                    </Text>
+                  </Flex>
+
+                  <Flex flex={7}>
+                    {" "}
+                    <Select
+                      height="m"
+                      id="basic-select"
+                      placeholder="Choose your gender"
+                      value={"Prefer not to say"}
+                      options={[
+                        { label: "Male", value: "male" },
+                        { label: "Female", value: "female" },
+                        { label: "Prefer not to say", value: "none" },
+                      ]}
+                      onSelect={() => {}}
+                    />{" "}
+                  </Flex>
+                </Row>
+                <Row fillWidth horizontal="space-between">
+                  <Flex flex={5}>
+                    {" "}
+                    <Text
+                      onBackground="neutral-weak"
+                      style={{
+                        fontSize: "14px",
+                      }}
+                    >
+                      Country:
+                    </Text>
+                  </Flex>
+
+                  <Flex flex={7}>
+                    {" "}
+                    <Select
+                      height="m"
+                      searchable={true}
+                      id="basic-select"
+                      placeholder="Where do you reside?"
+                      value={"Earth"}
+                      options={countries}
+                      onSelect={() => {}}
+                    />{" "}
+                  </Flex>
+                </Row>
+                <Row fillWidth horizontal="space-between">
+                  <Flex flex={5}>
+                    {" "}
+                    <Text
+                      onBackground="neutral-weak"
+                      style={{
+                        fontSize: "14px",
+                      }}
+                    >
+                      Address:
+                    </Text>
+                  </Flex>
+
+                  <Flex flex={7}>
+                    {" "}
+                    <Textarea
+                      id="textarea"
+                      placeholder="Where do you live?"
+                    ></Textarea>
+                  </Flex>
+                </Row>
+                <Row fillWidth horizontal="space-between">
+                  <Flex flex={5}>
+                    {" "}
+                    <Text
+                      onBackground="neutral-weak"
+                      style={{
+                        fontSize: "14px",
+                      }}
+                    >
+                      Phone Number:
+                    </Text>
+                  </Flex>
+
+                  <Flex flex={7}>
+                    {" "}
+                    <NumberInput
+                      id="input"
+                      height="m"
+                      placeholder="Your phone number"
+                    ></NumberInput>
+                  </Flex>
+                </Row>
+                <Row fillWidth horizontal="space-between">
+                  <Flex flex={5}>
+                    {" "}
+                    <Text
+                      onBackground="neutral-weak"
+                      style={{
+                        fontSize: "14px",
+                      }}
+                    >
+                      Email:
+                    </Text>
+                  </Flex>
+
+                  <Flex flex={7}>
+                    {" "}
+                    <Input
+                      id="input"
+                      height="m"
+                      placeholder="Your email id"
+                      hasPrefix={
+                        <Text onBackground="neutral-medium">
+                          <i className="ri-at-line"></i>
+                        </Text>
+                      }
+                    ></Input>
+                  </Flex>
+                </Row>
+              </Column>
+              <Column fillWidth horizontal="start" vertical="start" gap="20">
+                <Text
+                  onBackground="neutral-strong"
+                  style={{
+                    fontSize: "16px",
+                    marginBottom: "12px",
+                  }}
+                >
+                  Account Details
+                </Text>
+                <Row fillWidth horizontal="space-between">
+                  <Flex flex={5}>
+                    <Text
+                      onBackground="neutral-weak"
+                      style={{ fontSize: "14px" }}
+                    >
+                      User Name:
+                    </Text>
+                  </Flex>
+                  <Flex flex={7}>
+                    <Input
+                      placeholder="Enter your username"
+                      description={
+                        <Text onBackground="neutral-weak">
+                          <i className="ri-information-line"></i>&nbsp;This will
+                          be visible to others
+                        </Text>
+                      }
+                      hasSuffix={<Kbd>Once</Kbd>}
+                      id="input"
+                      disabled
+                    ></Input>
+                  </Flex>
+                </Row>
+                <Row fillWidth horizontal="space-between">
+                  <Flex flex={5}>
+                    <Text
+                      onBackground="neutral-weak"
+                      style={{ fontSize: "14px" }}
+                    >
+                      Account Created:
+                    </Text>
+                  </Flex>
+                  <Flex flex={7}>
+                    <DateInput
+                      id="date"
+                      placeholder="July 2, 2025"
+                      height="m"
+                      disabled
+                    ></DateInput>
+                  </Flex>
+                </Row>
+                <Row fillWidth horizontal="space-between">
+                  <Flex flex={5}>
+                    <Text
+                      onBackground="neutral-weak"
+                      style={{ fontSize: "14px" }}
+                    >
+                      Last Login:
+                    </Text>
+                  </Flex>
+                  <Flex flex={7}>
+                    <DateInput
+                      id="date"
+                      placeholder="July 2, 2025"
+                      height="m"
+                      disabled
+                    ></DateInput>
+                  </Flex>
+                </Row>
+                <Row fillWidth horizontal="space-between">
+                  <Flex flex={5}>
+                    <Text
+                      onBackground="neutral-weak"
+                      style={{ fontSize: "14px" }}
+                    >
+                      Membership Status:
+                    </Text>
+                  </Flex>
+                  <Flex flex={7}>
+                    <Select
+                      height="m"
+                      disabled
+                      id="basic-select"
+                      placeholder="Active"
+                      value={"Active"}
+                      options={[
+                        { label: "Active", value: "A" },
+                        { label: "Freemium", value: "F" },
+                        { label: "Pro", value: "P" },
+                      ]}
+                      onSelect={() => {}}
+                    />{" "}
+                  </Flex>
+                </Row>
+                <Row fillWidth horizontal="space-between">
+                  <Flex flex={5}>
+                    <Text
+                      onBackground="neutral-weak"
+                      style={{ fontSize: "14px" }}
+                    >
+                      Account Verification:
+                    </Text>
+                  </Flex>
+                  <Flex flex={7}>
+                    <Tag variant="danger">Not verified</Tag>
+                  </Flex>
+                </Row>
+                <Row fillWidth horizontal="space-between">
+                  <Flex flex={5}>
+                    <Text
+                      onBackground="neutral-weak"
+                      style={{ fontSize: "14px" }}
+                    >
+                      Language Preference:
+                    </Text>
+                  </Flex>
+                  <Flex flex={7}>
+                    <Select
+                      disabled
+                      height="m"
+                      id="basic-select"
+                      placeholder="English"
+                      value={"English"}
+                      options={[
+                        { label: "Active", value: "A" },
+                        { label: "Freemium", value: "F" },
+                        { label: "Pro", value: "P" },
+                      ]}
+                      onSelect={() => {}}
+                    />{" "}
+                  </Flex>
+                </Row>
+                <Row fillWidth horizontal="space-between">
+                  <Flex flex={5}>
+                    <Text
+                      onBackground="neutral-weak"
+                      style={{ fontSize: "14px" }}
+                    >
+                      Time Zone:
+                    </Text>
+                  </Flex>
+                  <Flex flex={7}>
+                    <Select
+                      disabled
+                      height="m"
+                      id="basic-select"
+                      placeholder="GMT +5:30"
+                      value={"GMT +5:30"}
+                      options={[
+                        { label: "Active", value: "A" },
+                        { label: "Freemium", value: "F" },
+                        { label: "Pro", value: "P" },
+                      ]}
+                      onSelect={() => {}}
+                    />{" "}
+                  </Flex>
+                </Row>
+              </Column>
+            </Grid>
+
+            <Row paddingY="12" fillWidth horizontal="start">
+              {" "}
+              <Button size="m">Save all</Button>
+            </Row>
+
+            <Flex fillWidth height={3}></Flex>
+            <Grid fillWidth fitHeight columns={3} gap="4">
+              <Column
+                style={{ backgroundColor: "#F2F2EF" }}
+                padding="m"
+                fillWidth
+                maxHeight={28}
+                height={28}
               >
-                Account Details
-              </Text>
-              <Row fillWidth horizontal="space-between">
-                <Flex flex={5}>
-                  <Text
-                    onBackground="neutral-weak"
-                    style={{ fontSize: "14px" }}
-                  >
-                    User Name:
-                  </Text>
-                </Flex>
-                <Flex flex={7}>
-                  <Input
-                    placeholder="Enter your username"
-                    description={<Text onBackground="neutral-weak"><i className="ri-information-line"></i>&nbsp;This will be visible to others</Text>}
-                    hasSuffix={<Kbd>Once</Kbd>}
-                    id="input"
-                    disabled
-                  ></Input>
-                </Flex>
-              </Row>
-              <Row fillWidth horizontal="space-between">
-                <Flex flex={5}>
-                  <Text
-                    onBackground="neutral-weak"
-                    style={{ fontSize: "14px" }}
-                  >
-                    Account Created:
-                  </Text>
-                </Flex>
-                <Flex flex={7}>
-                  <DateInput
-                    id="date"
-                    placeholder="July 2, 2025"
-                    height="m"
-                    disabled
-                  ></DateInput>
-                </Flex>
-              </Row>
-              <Row fillWidth horizontal="space-between">
-                <Flex flex={5}>
-                  <Text
-                    onBackground="neutral-weak"
-                    style={{ fontSize: "14px" }}
-                  >
-                    Last Login:
-                  </Text>
-                </Flex>
-                <Flex flex={7}>
-                  <DateInput
-                    id="date"
-                    placeholder="July 2, 2025"
-                    height="m"
-
-                    disabled
-                  ></DateInput>
-                </Flex>
-              </Row>
-              <Row fillWidth horizontal="space-between">
-                <Flex flex={5}>
-                  <Text
-                    onBackground="neutral-weak"
-                    style={{ fontSize: "14px" }}
-                  >
-                    Membership Status:
-                  </Text>
-                </Flex>
-                <Flex flex={7}>
-                  <Select
-                    height="m"
-                                      disabled
-
-                    id="basic-select"
-                    placeholder="Active"
-                    value={"Active"}
-                    options={[
-                      { label: "Active", value: "A" },
-                      { label: "Freemium", value: "F" },
-                      { label: "Pro", value: "P" },
-                    ]}
-                    onSelect={() => {}}
-                  />{" "}
-                </Flex>
-              </Row>
-              <Row fillWidth horizontal="space-between">
-                <Flex flex={5}>
-                  <Text
-                    onBackground="neutral-weak"
-                    style={{ fontSize: "14px" }}
-                  >
-                    Account Verification:
-                  </Text>
-                </Flex>
-                <Flex flex={7}>
-                  <Tag variant="danger">Not verified</Tag>
-                </Flex>
-              </Row>
-              <Row fillWidth horizontal="space-between">
-                <Flex flex={5}>
-                  <Text
-                    onBackground="neutral-weak"
-                    style={{ fontSize: "14px" }}
-                  >
-                    Language Preference:
-                  </Text>
-                </Flex>
-                <Flex flex={7}>
-                  <Select
-                  disabled
-                    height="m"
-                    id="basic-select"
-                    placeholder="English"
-                    value={"English"}
-                    options={[
-                      { label: "Active", value: "A" },
-                      { label: "Freemium", value: "F" },
-                      { label: "Pro", value: "P" },
-                    ]}
-                    onSelect={() => {}}
-                  />{" "}
-                </Flex>
-              </Row>
-              <Row fillWidth horizontal="space-between">
-                <Flex flex={5}>
-                  <Text
-                    onBackground="neutral-weak"
-                    style={{ fontSize: "14px" }}
-                  >
-                    Time Zone:
-                  </Text>
-                </Flex>
-                <Flex flex={7}>
- <Select
-                   disabled
-
-                    height="m"
-                    id="basic-select"
-                    placeholder="GMT +5:30"
-                    value={"GMT +5:30"}
-                    options={[
-                      { label: "Active", value: "A" },
-                      { label: "Freemium", value: "F" },
-                      { label: "Pro", value: "P" },
-                    ]}
-                    onSelect={() => {}}
-                  />                </Flex>
-              </Row>
-            </Column>
-          </Grid>
+                <Text></Text>
+              </Column>
+            </Grid>
           </Column>
         </Column>
       </Column>

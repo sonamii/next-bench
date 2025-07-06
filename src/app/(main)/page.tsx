@@ -295,7 +295,7 @@ export default function Home() {
             horizontal="start"
             vertical="center"
             gap="16"
-            style={{ maxWidth: "1600px", width: "1600px" }}
+            style={{ maxWidth: "1600px",minWidth:"fit-content" }}
             wrap={true}
           >
             <A></A> <B></B>
@@ -461,6 +461,7 @@ export default function Home() {
                   lineHeight: "1em",
                   fontWeight: "500",
                   letterSpacing: ".3px",
+                  textAlign:"center"
                 }}
                 className={dmsans.className}
               >
@@ -780,7 +781,6 @@ export default function Home() {
                         <IconButton
                           size="l"
                           variant="secondary"
-                          style={{ borderColor: "black !important" }}
                         >
                           <i className="ri-arrow-up-line"></i>
                         </IconButton>
@@ -837,7 +837,7 @@ export default function Home() {
           </Row>
         </Column>
       </Column>
-      );
+      
     </>
   );
 }
@@ -1283,7 +1283,7 @@ function D() {
                 height={1.1}
               ></Media>
               &nbsp;&nbsp;&nbsp;Continue with google</Flex>
-              
+
             </Button>
           </Row>
         </Column>
