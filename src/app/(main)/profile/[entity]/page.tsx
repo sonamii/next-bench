@@ -77,6 +77,8 @@ const poppins = Poppins({
   weight: ["400", "500", "600", "700"],
 });
 
+import NavBar from "./../../components/NavBar";
+import Footer from "./../../components/Footer";
 // Data JSONs
 const menuGroups = [
   { id: "home", label: "Home", href: "/" },
@@ -229,7 +231,7 @@ export default function Home() {
         fitHeight
         horizontal="center"
       >
-        <Header />
+        <NavBar />
         <Flex fillWidth height={2}></Flex>
         <Column
           style={{ maxWidth: "1250px" }}
@@ -296,30 +298,12 @@ export default function Home() {
           <Flex fillWidth height={3}></Flex>
         </Column>
       </Column>
+      <Flex fillWidth height={3}></Flex>
+      <Footer />
     </Column>
   );
 }
 
-// Header
-function Header() {
-  return (
-    <Row horizontal="space-between" fillWidth fitHeight vertical="center">
-      <Flex vertical="center" gap="8">
-        <Media
-          src="https://imghost.online/ib/skwnw73hCCCOt3q_1751541353.png"
-          unoptimized
-          width={4}
-          height={3}
-          alt="A"
-        />
-        <Text variant="label-default-xl">Next Bench</Text>
-      </Flex>
-      <Flex>
-        <MegaMenu menuGroups={menuGroups} />
-      </Flex>
-    </Row>
-  );
-}
 
 // Profile Header
 function ProfileHeader({
@@ -327,8 +311,8 @@ function ProfileHeader({
   activeTab,
   setActiveTab,
   avatarSrc,
-  name ,
-  occupation ,
+  name,
+  occupation,
   count,
 }: {
   dmsansClass: string;
@@ -577,7 +561,7 @@ function PersonalDetails({
           onChange={(e: any) => setFullName(e.target.value)}
         />
       </ProfileRow>
-      <ProfileRow label="Date Of Birth:">
+      <ProfileRow label="Date of Birth:">
         <DateInput
           id="date-dob"
           height="m"
@@ -612,6 +596,12 @@ function PersonalDetails({
         <Textarea
           id="textarea-address"
           placeholder="Where do you live?"
+          description={
+            <Text onBackground="neutral-weak">
+              <i className="ri-information-line"></i>&nbsp;Your address will not
+              be shared with anyone.
+            </Text>
+          }
           value={address}
           onChange={(e: any) => setAddress(e.target.value)}
         />
@@ -621,6 +611,12 @@ function PersonalDetails({
           id="input-phone"
           height="m"
           placeholder="Your phone number"
+          description={
+            <Text onBackground="neutral-weak">
+              <i className="ri-information-line"></i>&nbsp;Your phone number
+              will not be shared with anyone.
+            </Text>
+          }
           value={phoneNumber}
           onChange={(e: any) => setPhoneNumber(e.target.value)}
         />
@@ -629,6 +625,13 @@ function PersonalDetails({
         <Input
           id="input-email"
           height="m"
+          description={
+            <Text onBackground="neutral-weak">
+              <i className="ri-information-line"></i>&nbsp;Your email will be
+              used for account verification and notifications.
+            </Text>
+          }
+          disabled
           placeholder="Your email id"
           value={email}
           onChange={(e: any) => setEmail(e.target.value)}
@@ -696,11 +699,15 @@ function AccountDetails({
           placeholder="Enter your username"
           description={
             <Text onBackground="neutral-weak">
-              <i className="ri-information-line"></i>&nbsp;This will be visible
-              to others
+              <i className="ri-information-line"></i>&nbsp;Your username will be
+              visible to other users.
             </Text>
           }
-          hasSuffix={<Kbd>Once</Kbd>}
+          hasSuffix={
+            <Kbd cursor="interactive" onClick={() => console.log(userName)}>
+              Change
+            </Kbd>
+          }
           id="input-username"
           value={userName}
           onChange={(e: any) => setUserName(e.target.value)}
@@ -748,7 +755,7 @@ function AccountDetails({
         <Select
           height="m"
           id="language-select"
-          placeholder="English"
+          placeholder="Select your language"
           value={languagePreference}
           options={languageOptions}
           onSelect={(v: any) => setLanguagePreference(v)}
@@ -758,7 +765,7 @@ function AccountDetails({
         <Select
           height="m"
           id="timezone-select"
-          placeholder="GMT +5:30"
+          placeholder="Select your time zone"
           value={timezone}
           options={timezoneOptions}
           onSelect={(v: any) => setTimezone(v)}
@@ -803,13 +810,49 @@ function CreatedInstitutions({
 }: {
   institutions: Institution[];
 }) {
+  const [searchValue, setSearchValue] = useState<string>("");
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchValue(e.target.value);
+  };
+
+  const handleClear = () => {
+    setSearchValue("");
+  };
   return (
-    <Grid fillWidth fitHeight columns={2} gap="4">
-      {institutions.map((inst) => (
-        <InstitutionCard key={inst.name} {...inst} />
-      ))}
-      <CreateNewInstitution />
-    </Grid>
+    <Column fillWidth horizontal="center" gap="32">
+      <Row fillWidth gap="4">
+        <Input
+          id="input-1"
+          placeholder="Search"
+          height="m"
+          value={searchValue}
+          onChange={handleChange}
+          hasPrefix={<i className="ri-search-line" />}
+          hasSuffix={
+            searchValue.length > 0 ? (
+              <IconButton
+                variant="ghost"
+                icon="close"
+                size="s"
+                onClick={handleClear}
+                aria-label="Clear search"
+              />
+            ) : null
+          }
+        />
+        <Button weight="default" variant="primary" size="l">
+          New
+        </Button>
+      </Row>
+
+      <Grid fillWidth fitHeight columns={2} gap="4">
+        {institutions.map((inst) => (
+          <InstitutionCard key={inst.name} {...inst} />
+        ))}
+        <CreateNewInstitution />
+      </Grid>
+    </Column>
   );
 }
 
@@ -967,7 +1010,7 @@ function Security({
         title="Others"
         rows={[
           {
-            label: "Export you data?",
+            label: "Export all your data?",
             button: (
               <Button variant="primary" size="m">
                 Export
@@ -975,7 +1018,7 @@ function Security({
             ),
           },
           {
-            label: "Request data deletion?",
+            label: "Request total data deletion?",
             button: (
               <Button variant="primary" size="m">
                 Request

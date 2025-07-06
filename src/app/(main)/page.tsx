@@ -42,6 +42,8 @@ import { Open_Sans } from "next/font/google";
 import { Poppins } from "next/font/google";
 import { useRouter } from "next/navigation";
 
+import Footer from "./components/Footer"; 
+import NavBar from "./components/NavBar";
 // Font setup
 const dmsans = Outfit({
   subsets: ["latin"],
@@ -69,24 +71,7 @@ const poppins = Poppins({
   weight: ["400", "500", "600", "700"],
 });
 
-// JSON Data
-const menuGroups = [
-  { id: "home", label: "Home", href: "/" },
-  {
-    id: "consultants",
-    label: "Consultants",
-    suffixIcon: "chevronDown",
-    sections: [],
-  },
-  { id: "find-school", label: "Find", suffixIcon: "chevronDown", sections: [] },
-  {
-    id: "dashboard",
-    label: "MekoAI",
-    href: "/mekoai",
-    suffixIcon: "chevronDown",
-    sections: [],
-  },
-];
+
 
 const trustedLogos = [
   "https://optimize-nextjs.vercel.app/_next/image?url=%2Fimages%2FtrustedBrands%2F1.png&w=256&q=75",
@@ -251,26 +236,7 @@ const faqList = [
   },
 ];
 
-// Components
-function Header({ router }: { router: ReturnType<typeof useRouter> }) {
-  return (
-    <Row horizontal="space-between" fillWidth fitHeight vertical="center">
-      <Flex vertical="center" gap="8">
-        <Media
-          src="https://imghost.online/ib/skwnw73hCCCOt3q_1751541353.png"
-          unoptimized
-          width={4}
-          height={3}
-          alt="A"
-        />
-        <Text variant="label-default-xl">Next Bench</Text>
-      </Flex>
-      <Flex>
-        <MegaMenu menuGroups={menuGroups} />
-      </Flex>
-    </Row>
-  );
-}
+
 
 function AboutBadge() {
   return (
@@ -404,7 +370,13 @@ function HeroStats() {
           field. Join us now.
         </Text>
         <Row gap="20">
-          <Button id="arrow-button-1" arrowIcon size="m" weight="default">
+          <Button
+            id="arrow-button-1"
+            arrowIcon
+            size="m"
+            weight="default"
+            href="#card-d"
+          >
             Start here
           </Button>
           <Button
@@ -497,116 +469,16 @@ function FAQSection() {
         feel free to reach out to our support team.
       </Text>
       <Column fillWidth maxWidth={40} paddingTop="32">
-      {faqList.map((faq, idx) => (
-        <Accordion key={idx} title={faq.title} textSize="xl" size="l">
-          {faq.content}
-        </Accordion>
-      ))}
+        {faqList.map((faq, idx) => (
+          <Accordion key={idx} title={faq.title} textSize="xl" size="l">
+            {faq.content}
+          </Accordion>
+        ))}
       </Column>
     </Column>
   );
 }
 
-function FooterSection() {
-  return (
-    <Flex
-      fillWidth
-      fitHeight
-      horizontal="center"
-      vertical="center"
-      style={{ maxWidth: "1600px" }}
-      padding="20"
-    >
-      <Column
-        fillWidth
-        fillHeight
-        style={{ backgroundColor: "#181A1D10" }}
-        vertical="center"
-        horizontal="center"
-        gap="40"
-        radius="xl"
-        padding="32"
-        paddingX="xl"
-      >
-        <Row fillWidth vertical="space-between" horizontal="center">
-          <Row flex={2} vertical="center">
-            <Input
-              id="a"
-              placeholder="Enter your email"
-              height="m"
-              hasPrefix={
-                <Text onBackground="neutral-medium" variant="heading-default-s">
-                  <i className="ri-mail-line"></i>
-                </Text>
-              }
-            />
-            <IconButton size="l" style={{ position: "absolute", right: "5px" }}>
-              <Text>
-                <i className="ri-send-plane-line"></i>
-              </Text>
-            </IconButton>
-          </Row>
-          <Row flex={5} vertical="center" horizontal="end">
-            <Text
-              style={{
-                color: "#181A1D",
-                fontSize: "50px",
-                lineHeight: "1em",
-                fontWeight: "400",
-                letterSpacing: ".3px",
-              }}
-              className={dmsans.className}
-            >
-              Let's talk!
-            </Text>
-          </Row>
-        </Row>
-        <Line fillWidth />
-        <Row horizontal="space-between" fillWidth height={9.5}>
-          <Row fillHeight fillWidth gap="64">
-            {footerLinks.map((group, idx) => (
-              <Column gap="2" key={idx}>
-                {group.map((item, i) => (
-                  <Text
-                    key={i}
-                    onBackground="neutral-weak"
-                    variant="body-default-l"
-                    className={dmsans.className}
-                  >
-                    {item}
-                  </Text>
-                ))}
-              </Column>
-            ))}
-          </Row>
-          <Column
-            horizontal="end"
-            vertical="space-between"
-            fillWidth
-            fillHeight
-          >
-            <Row fillWidth>&nbsp;</Row>
-            <Row gap="64">
-              <AvatarGroup size="l" avatars={avatarGroup2} />
-              <Row fitWidth vertical="center" gap="12">
-                <IconButton size="l" variant="secondary">
-                  <i className="ri-arrow-up-line"></i>
-                </IconButton>
-                <Text
-                  onBackground="neutral-weak"
-                  variant="body-default-l"
-                  className={dmsans.className}
-                >
-                  Back To Top
-                </Text>
-              </Row>
-            </Row>
-          </Column>
-        </Row>
-      </Column>
-    </Flex>
-  );
-}
 
 // Card Data
 const cardAProps = {
@@ -634,6 +506,14 @@ const cardBProps = {
     {
       icon: <i className="ri-ai-generate" style={{ color: "#e9d38D" }}></i>,
       text: "Fast search",
+    },
+    {
+      icon: <i className="ri-robot-line" style={{ color: "#e9d38D" }}></i>,
+      text: "AI-powered results",
+    },
+    {
+      icon: <i className="ri-cloud-line" style={{ color: "#e9d38D" }}></i>,
+      text: "Instant results",
     },
   ],
 };
@@ -782,7 +662,7 @@ function CardA({
           horizontal="center"
           vertical="end"
         >
-          <Button size="l" weight="default" fillWidth >
+          <Button size="l" weight="default" fillWidth>
             {buttonText}
           </Button>
         </Column>
@@ -792,6 +672,7 @@ function CardA({
 }
 
 function CardB({ bg, label, title, subtitle, features }: typeof cardBProps) {
+  const router = useRouter();
   return (
     <Flex
       radius="l"
@@ -825,7 +706,7 @@ function CardB({ bg, label, title, subtitle, features }: typeof cardBProps) {
         <Text variant="label-strong-s" className={dmsans.className}>
           {label}
         </Text>
-        <IconButton variant="secondary">
+        <IconButton variant="secondary" onClick={() => {router.push("/find")}}>
           <i
             className="ri-arrow-right-up-line"
             style={{ fontSize: "23px" }}
@@ -855,7 +736,7 @@ function CardB({ bg, label, title, subtitle, features }: typeof cardBProps) {
           >
             {subtitle}
           </Text>
-          <Row gap="12" paddingTop="8" horizontal="space-between">
+          <Row gap="12" paddingTop="8" horizontal="space-between" wrap={true}>
             {features.map((f, idx) => (
               <Row
                 key={idx}
@@ -866,6 +747,7 @@ function CardB({ bg, label, title, subtitle, features }: typeof cardBProps) {
                 vertical="center"
                 gap="16"
                 flex={2}
+                minWidth={10}
               >
                 {f.icon}
                 <Text
@@ -896,6 +778,7 @@ function CardB({ bg, label, title, subtitle, features }: typeof cardBProps) {
 }
 
 function CardC({ bg, title, subtitle, tags }: typeof cardCProps) {
+  const router = useRouter();
   return (
     <Flex
       radius="l"
@@ -941,7 +824,7 @@ function CardC({ bg, title, subtitle, tags }: typeof cardCProps) {
         <Text variant="body-default-s">
           Find tuitions and home tutors easily
         </Text>
-        <IconButton variant="secondary">
+        <IconButton variant="secondary" onClick={() => {router.push("/find")}}>
           <i
             className="ri-arrow-right-up-line"
             style={{ fontSize: "23px" }}
@@ -1011,7 +894,7 @@ function CardD({
 }: typeof cardDProps) {
   const [isOpen, setIsOpen] = useState(false);
   return (
-    <Flex fillWidth>
+    <Flex fillWidth id="card-d">
       <Flex
         radius="l"
         direction="column"
@@ -1156,7 +1039,7 @@ export default function Home() {
       }}
     >
       <Column style={{ maxWidth: "1550px" }} fillWidth fitHeight>
-        <Header router={router} />
+        <NavBar />
         <Flex height={3} minHeight={3}></Flex>
         <AboutBadge />
         <HeroSection />
@@ -1184,7 +1067,7 @@ export default function Home() {
           <Flex fillWidth height={3}></Flex>
           <FAQSection />
           <Flex height={3}></Flex>
-          <FooterSection />
+          <Footer/>
         </Row>
       </Column>
     </Column>
