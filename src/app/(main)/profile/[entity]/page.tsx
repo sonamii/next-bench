@@ -100,6 +100,7 @@ const menuGroups = [
 
 const segmentedButtons = [
   { value: "profile", label: "Profile" },
+  { value: "socials", label: "Socials" },
   { value: "creations", label: "Your creations" },
   { value: "security", label: "Security" },
 ];
@@ -187,6 +188,13 @@ export default function Home() {
   // Security
   const [deleteAccountInput, setDeleteAccountInput] = useState("");
   const [deleteInstitutionsInput, setDeleteInstitutionsInput] = useState("");
+
+  // Socials
+  const [phoneNumberSocials, setPhoneNumberSocials] = useState<number>(0);
+  const [emailSocials, setEmailSocials] = useState("");
+  const [whatsapp, setWhatsapp] = useState<number>(0);
+  const [instagram, setInstagram] = useState<string>("");
+  const [linkedin, setLinkedin] = useState<string>("");
 
   // Created Institutions (if you want to edit them, add state here)
 
@@ -295,6 +303,20 @@ export default function Home() {
               setDeleteInstitutionsInput={setDeleteInstitutionsInput}
             />
           )}
+          {activeTab === "socials" && (
+            <Socials
+              phoneNumberSocials={phoneNumberSocials}
+              setPhoneNumberSocials={setPhoneNumberSocials}
+              emailSocials={emailSocials}
+              setEmailSocials={setEmailSocials}
+              whatsapp={whatsapp}
+              setWhatsapp={setWhatsapp}
+              instagram={instagram}
+              setInstagram={setInstagram}
+              linkedin={linkedin}
+              setLinkedin={setLinkedin}
+            />
+          )}
           <Flex fillWidth height={3}></Flex>
         </Column>
       </Column>
@@ -303,7 +325,6 @@ export default function Home() {
     </Column>
   );
 }
-
 
 // Profile Header
 function ProfileHeader({
@@ -1056,6 +1077,195 @@ function SecuritySection({
           <Flex flex={7} direction="column" horizontal="end" gap="4">
             {row.input}
             {row.button}
+          </Flex>
+        </Row>
+      ))}
+    </Column>
+  );
+}
+
+// Security Section
+function Socials({
+  phoneNumberSocials,
+  setPhoneNumberSocials,
+  emailSocials,
+  setEmailSocials,
+  whatsapp,
+  setWhatsapp,
+  instagram,
+  setInstagram,
+  linkedin,
+  setLinkedin,
+}: {
+  phoneNumberSocials: number;
+  setPhoneNumberSocials: (v: number) => void;
+  emailSocials: string;
+  setEmailSocials: (v: string) => void;
+  whatsapp: number;
+  setWhatsapp: (v: number) => void;
+  instagram: string;
+
+  setInstagram: (v: string) => void;
+  linkedin: string;
+  setLinkedin: (v: string) => void;
+}) {
+  function consoleLog() {
+    console.log({
+      phoneNumberSocials,
+      emailSocials,
+      whatsapp,
+      instagram,
+      linkedin,
+    });
+  }
+  return (
+    <>
+    <Grid fillWidth padding="m" fitHeight columns={2} gap="104">
+      <SocialsSection
+        title="Personal Details"
+        rows={[
+          {
+            label: "Phone Number:",
+            input: (
+              <NumberInput
+                placeholder="Enter your phone number"
+                description={
+                  <Text onBackground="neutral-weak">
+                    <i className="ri-information-line"></i>&nbsp;This will be
+                    visible to other users. (optional)
+                  </Text>
+                }
+                id="input-delete-account"
+                value={phoneNumberSocials}
+                onChange={(value: number) => setPhoneNumberSocials(value)}
+              />
+            ),
+          },
+          {
+            label: "Public Email:",
+            input: (
+              <Input
+                placeholder="Enter your email"
+                 hasPrefix={
+            <Text onBackground="neutral-medium">
+              <i className="ri-at-line"></i>
+            </Text>
+          }
+                description={
+                  <Text onBackground="neutral-weak">
+                    <i className="ri-information-line"></i>&nbsp;This will be
+                    visible to other users.
+                  </Text>
+                }
+                id="input-email-socials"
+                value={emailSocials}
+                onChange={(e: any) => setEmailSocials(e.target.value)}
+              />
+            ),
+          },
+        ]}
+      />
+      <SocialsSection
+        title="Social Media"
+        rows={[
+          {
+            label: "WhatsApp Number:",
+            input: (
+              <NumberInput
+                placeholder="Enter your WhatsApp number"
+                id="input-whatsapp"
+                 
+                description={
+                  <Text onBackground="neutral-weak">
+                    <i className="ri-information-line"></i>&nbsp;This will be
+                    visible to other users.
+                  </Text>
+                }
+                value={whatsapp}
+                onChange={(value: number) => setWhatsapp(value)}
+              />
+            ),
+          },
+          {
+            label: "Instagram:",
+            input: (
+              <Input
+                placeholder="username"
+                id="input-instagram"
+                 hasPrefix={
+            <Text onBackground="neutral-medium">
+              instagram.com/
+            </Text>
+          }
+                description={
+                  <Text onBackground="neutral-weak">
+                    <i className="ri-information-line"></i>&nbsp;This will be
+                    visible to other users.
+                  </Text>
+                }
+                value={instagram}
+                onChange={(e: any) => setInstagram(e.target.value)}
+              />
+            ),
+          },
+          {
+            label: "LinkedIn:",
+            input: (
+              <Input
+                placeholder="username"
+                id="input-linkedin"
+                 hasPrefix={
+            <Text onBackground="neutral-medium">
+              linkedin.com/in/
+            </Text>
+          }
+                description={
+                  <Text onBackground="neutral-weak">
+                    <i className="ri-information-line"></i>&nbsp;This will be
+                    visible to other users.
+                  </Text>
+                }
+                value={linkedin}
+                onChange={(e: any) => setLinkedin(e.target.value)}
+              />
+            ),
+          },
+        ]}
+      />
+    </Grid>
+    <Row paddingY="12" fillWidth horizontal="end">
+        <Button size="m" onClick={consoleLog}>
+          Save all
+        </Button>
+      </Row>
+    </>
+  );
+}
+
+function SocialsSection({
+  title,
+  rows,
+}: {
+  title: string;
+  rows: { label: string; input?: React.ReactNode }[];
+}) {
+  return (
+    <Column fillWidth horizontal="start" vertical="start" gap="20">
+      <Text
+        onBackground="neutral-strong"
+        style={{ fontSize: "16px", marginBottom: "12px" }}
+      >
+        {title}
+      </Text>
+      {rows.map((row, idx) => (
+        <Row fillWidth horizontal="space-between" key={row.label}>
+          <Flex flex={5}>
+            <Text onBackground="neutral-weak" style={{ fontSize: "14px" }}>
+              {row.label}
+            </Text>
+          </Flex>
+          <Flex flex={7} direction="column" horizontal="end" gap="4">
+            {row.input}
           </Flex>
         </Row>
       ))}
