@@ -909,7 +909,7 @@ function InstitutionCard({
       <Text onBackground="neutral-strong" style={{ fontSize: "16px" }}>
         {name}
       </Text>
-      <InstitutionRow label="Address:">{address}</InstitutionRow>
+      <InstitutionRow label="City:">{address}</InstitutionRow>
       <InstitutionRow label="Affiliation:">{affiliation}</InstitutionRow>
       <InstitutionRow label="Contact:">
         <InlineCode radius="xs-4">{contact}</InlineCode>
