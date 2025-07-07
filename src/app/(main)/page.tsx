@@ -44,8 +44,9 @@ import { useRouter } from "next/navigation";
 
 import Footer from "./components/Footer";
 import NavBar from "./components/NavBar";
-import {Plans3} from "./components/once-ui-pro/Plan";
+import { Plans3 } from "./components/once-ui-pro/Plan";
 import { Cookie } from "./components/once-ui-pro/Cookie";
+import { supabase } from "../utils/supabase/client";
 // Font setup
 const dmsans = Outfit({
   subsets: ["latin"],
@@ -900,6 +901,22 @@ function CardD({
   dialogIcon,
 }: typeof cardDProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const supabaseLoginGoogle = async () => {
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: `${window.location.origin}/auth/callback`,
+        queryParams: {
+          prompt: "select_account",
+        },
+      },
+    });
+    if (error) {
+      console.error("Error logging in with Google:", error);
+    } else {
+      console.log("Login successful:", data);
+    }
+  };
   return (
     <Flex fillWidth id="card-d">
       <Flex
@@ -1016,7 +1033,10 @@ function CardD({
               variant="primary"
               weight="default"
               size="m"
-              onClick={() => setIsOpen(false)}
+              onClick={() => {
+                setIsOpen(false);
+                supabaseLoginGoogle();
+              }}
             >
               <Flex center fillWidth fillHeight>
                 <Media src={dialogIcon} unoptimized width={1.1} height={1.1} />

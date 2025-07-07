@@ -1,5 +1,4 @@
 "use client";
-
 import {
   Heading,
   Text,
@@ -35,6 +34,7 @@ import {
   InlineCode,
   Card,
   Switch,
+  Spinner,
 } from "@once-ui-system/core";
 import {
   Lato,
@@ -50,54 +50,33 @@ import {
 } from "next/font/google";
 import { useState } from "react";
 
+import { useToast } from "@once-ui-system/core";
+
 // Font setup
 const dmsans = Outfit({
   subsets: ["latin"],
   variable: "--font-inter",
   weight: ["400", "500", "600", "700"],
 });
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-inter",
-  weight: ["400", "500", "600", "700"],
-});
-const roboto = Roboto({
-  subsets: ["latin"],
-  variable: "--font-roboto",
-  weight: ["400", "500", "600", "700"],
-});
-const openSans = Open_Sans({
-  subsets: ["latin"],
-  variable: "--font-open-sans",
-  weight: ["400", "500", "600", "700"],
-});
-const poppins = Poppins({
-  subsets: ["latin"],
-  variable: "--font-poppins",
-  weight: ["400", "500", "600", "700"],
-});
 
 import NavBar from "./../../components/NavBar";
 import Footer from "./../../components/Footer";
-// Data JSONs
-const menuGroups = [
-  { id: "home", label: "Home", href: "/" },
-  {
-    id: "consultants",
-    label: "Consultants",
-    suffixIcon: "chevronDown",
-    sections: [],
-  },
-  { id: "find-school", label: "Find", suffixIcon: "chevronDown", sections: [] },
-  {
-    id: "dashboard",
-    label: "MekoAI",
-    href: "/mekoai",
-    suffixIcon: "chevronDown",
-    sections: [],
-  },
-];
+import { supabase } from "@/app/utils/supabase/client";
+import { useEffect } from "react";
 
+// Get slug from URL using pop/push and "/" split
+const uuid =
+  typeof window !== "undefined"
+    ? (() => {
+        const parts = window.location.pathname.split("/");
+        // Remove empty strings from split (leading/trailing slashes)
+        const filtered = parts.filter(Boolean);
+        // The slug is the last part (after /profile/)
+        return filtered.pop();
+      })()
+    : undefined;
+
+// Data JSONs
 const segmentedButtons = [
   { value: "profile", label: "Profile" },
   { value: "socials", label: "Socials" },
@@ -157,69 +136,7 @@ const institutions = [
 
 // Main Page
 export default function Home() {
-  // Main state for all fields
   const [activeTab, setActiveTab] = useState("profile");
-
-  // Profile Header
-  const [name, setName] = useState("John Doe");
-  const [avatarSrc, setAvatarSrc] = useState("");
-  const [count, setCount] = useState(1);
-  const [occupation, setOccupation] = useState("");
-
-  // Personal Details
-  const [fullName, setFullName] = useState("");
-  const [dob, setDob] = useState<Date | null>(null);
-  const [gender, setGender] = useState("none");
-  const [country, setCountry] = useState("");
-  const [address, setAddress] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState<string>("");
-  const [email, setEmail] = useState("");
-  const [accountVisibility, setAccountVisibility] = useState(false);
-  const [isVerified, setIsverified] = useState(false);
-
-  // Account Details
-  const [userName, setUserName] = useState("");
-  const [accountCreated, setAccountCreated] = useState<Date | null>(null);
-  const [lastLogin, setLastLogin] = useState<Date | null>(null);
-  const [membershipStatus, setMembershipStatus] = useState("A");
-  const [languagePreference, setLanguagePreference] = useState("English");
-  const [timezone, setTimezone] = useState("GMT +5:30");
-
-  // Security
-  const [deleteAccountInput, setDeleteAccountInput] = useState("");
-  const [deleteInstitutionsInput, setDeleteInstitutionsInput] = useState("");
-
-  // Socials
-  const [phoneNumberSocials, setPhoneNumberSocials] = useState<number>(0);
-  const [emailSocials, setEmailSocials] = useState("");
-  const [whatsapp, setWhatsapp] = useState<number>(0);
-  const [instagram, setInstagram] = useState<string>("");
-  const [linkedin, setLinkedin] = useState<string>("");
-
-  // Created Institutions (if you want to edit them, add state here)
-
-  // Export all values
-  const allValues = {
-    fullName,
-    dob,
-    gender,
-    country,
-    address,
-    phoneNumber,
-    email,
-    accountVisibility,
-    userName,
-    accountCreated,
-    lastLogin,
-    membershipStatus,
-    languagePreference,
-    timezone,
-    deleteAccountInput,
-    deleteInstitutionsInput,
-  };
-
-  // For demonstration, you can log or export allValues as needed
-  // console.log(allValues);
 
   return (
     <Column
@@ -253,70 +170,14 @@ export default function Home() {
             dmsansClass={dmsans.className}
             activeTab={activeTab}
             setActiveTab={setActiveTab}
-            avatarSrc={avatarSrc}
-            name={fullName || "User"}
-            occupation={occupation || "User at Next Bench"}
-            count={count}
           />
           <Flex fillWidth height={3}></Flex>
-          {activeTab === "profile" && (
-            <ProfileEdit
-              countries={countries}
-              fullName={fullName}
-              setFullName={setFullName}
-              dob={dob}
-              setDob={setDob}
-              gender={gender}
-              setGender={setGender}
-              country={country}
-              setCountry={setCountry}
-              address={address}
-              setAddress={setAddress}
-              phoneNumber={phoneNumber}
-              setPhoneNumber={setPhoneNumber}
-              email={email}
-              setEmail={setEmail}
-              accountVisibility={accountVisibility}
-              setAccountVisibility={setAccountVisibility}
-              userName={userName}
-              setUserName={setUserName}
-              accountCreated={accountCreated}
-              setAccountCreated={setAccountCreated}
-              lastLogin={lastLogin}
-              setLastLogin={setLastLogin}
-              membershipStatus={membershipStatus}
-              setMembershipStatus={setMembershipStatus}
-              languagePreference={languagePreference}
-              setLanguagePreference={setLanguagePreference}
-              timezone={timezone}
-              setTimezone={setTimezone}
-            />
-          )}
+          {activeTab === "profile" && <ProfileEdit countries={countries} />}
           {activeTab === "creations" && (
             <CreatedInstitutions institutions={institutions} />
           )}
-          {activeTab === "security" && (
-            <Security
-              deleteAccountInput={deleteAccountInput}
-              setDeleteAccountInput={setDeleteAccountInput}
-              deleteInstitutionsInput={deleteInstitutionsInput}
-              setDeleteInstitutionsInput={setDeleteInstitutionsInput}
-            />
-          )}
-          {activeTab === "socials" && (
-            <Socials
-              phoneNumberSocials={phoneNumberSocials}
-              setPhoneNumberSocials={setPhoneNumberSocials}
-              emailSocials={emailSocials}
-              setEmailSocials={setEmailSocials}
-              whatsapp={whatsapp}
-              setWhatsapp={setWhatsapp}
-              instagram={instagram}
-              setInstagram={setInstagram}
-              linkedin={linkedin}
-              setLinkedin={setLinkedin}
-            />
-          )}
+          {activeTab === "security" && <Security />}
+          {activeTab === "socials" && <Socials />}
           <Flex fillWidth height={3}></Flex>
         </Column>
       </Column>
@@ -331,19 +192,43 @@ function ProfileHeader({
   dmsansClass,
   activeTab,
   setActiveTab,
-  avatarSrc,
-  name,
-  occupation,
-  count,
 }: {
   dmsansClass: string;
   activeTab: string;
   setActiveTab: (v: string) => void;
-  avatarSrc?: string;
-  name?: string;
-  occupation?: string;
-  count?: number;
 }) {
+  const [fullName, setFullName] = useState<string>("");
+  const [avatarSrc, setAvatarSrc] = useState<string>("");
+  const [intro, setIntro] = useState<string>("");
+  const [count, setCount] = useState<number>(0);
+
+  useEffect(() => {
+    async function fetchProfileData() {
+      if (!uuid) return;
+
+      const { data, error } = await supabase
+        .from("user_profiles")
+        .select("profile_details, pfp, count")
+        .eq("uuid", uuid)
+        .maybeSingle();
+
+      if (error) {
+        console.error("Error fetching profile data:", error);
+        return;
+      }
+
+      if (data) {
+        const profileDetails = data.profile_details || {};
+        setFullName(profileDetails.fullName || "");
+        setIntro(profileDetails.introduction || "");
+        setAvatarSrc(data.pfp || "");
+        setCount(data.count || 0);
+      }
+    }
+
+    fetchProfileData();
+  }, [uuid]);
+
   return (
     <Column
       fillWidth
@@ -372,7 +257,7 @@ function ProfileHeader({
         className={dmsansClass}
       >
         <Row center gap="8">
-          {name}
+          {fullName || "User"}
           <Line vert width={0.1} height={2.5} background="neutral-medium" />
           <Text
             style={{
@@ -387,7 +272,7 @@ function ProfileHeader({
         </Row>
       </Text>
       <Text onBackground="neutral-weak" style={{ fontSize: "14px" }}>
-        {occupation}
+        {intro || "User at Next Bench"}
       </Text>
       <Flex fillWidth center paddingY="8">
         <SegmentedControl
@@ -405,88 +290,141 @@ function ProfileHeader({
 // Profile Edit
 function ProfileEdit({
   countries,
-  fullName,
-  setFullName,
-  dob,
-  setDob,
-  gender,
-  setGender,
-  country,
-  setCountry,
-  address,
-  setAddress,
-  phoneNumber,
-  setPhoneNumber,
-  email,
-  setEmail,
-  accountVisibility,
-  setAccountVisibility,
-  userName,
-  setUserName,
-  accountCreated,
-  setAccountCreated,
-  lastLogin,
-  setLastLogin,
-  membershipStatus,
-  setMembershipStatus,
-  languagePreference,
-  setLanguagePreference,
-  timezone,
-  setTimezone,
 }: {
   countries: { label: string; value: string }[];
-  fullName: string;
-  setFullName: (v: string) => void;
-  dob: Date | null;
-  setDob: (v: Date | null) => void;
-  gender: string;
-  setGender: (v: string) => void;
-  country: string;
-  setCountry: (v: string) => void;
-  address: string;
-  setAddress: (v: string) => void;
-  phoneNumber: string;
-  setPhoneNumber: (v: string) => void;
-  email: string;
-  setEmail: (v: string) => void;
-  accountVisibility: boolean;
-  setAccountVisibility: (v: boolean) => void;
-  userName: string;
-  setUserName: (v: string) => void;
-  accountCreated: Date | null;
-  setAccountCreated: (v: Date | null) => void;
-  lastLogin: Date | null;
-  setLastLogin: (v: Date | null) => void;
-  membershipStatus: string;
-  setMembershipStatus: (v: string) => void;
-  languagePreference: string;
-  setLanguagePreference: (v: string) => void;
-  timezone: string;
-  setTimezone: (v: string) => void;
 }) {
-  function consoleLog() {
-    console.log({
+  const [fullName, setFullName] = useState("");
+  const [introduction, setIntroduction] = useState("");
+  const [dob, setDob] = useState<Date | null>(null);
+  const [gender, setGender] = useState("none");
+  const [country, setCountry] = useState("");
+  const [address, setAddress] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState<string>("");
+  const [email, setEmail] = useState("");
+  const [accountVisibility, setAccountVisibility] = useState(false);
+
+  const [userName, setUserName] = useState("");
+  const [accountCreated, setAccountCreated] = useState<Date | null>(null);
+  const [lastLogin, setLastLogin] = useState<Date | null>(null);
+  const [membershipStatus, setMembershipStatus] = useState("A");
+  const [languagePreference, setLanguagePreference] = useState("English");
+  const [timezone, setTimezone] = useState("Select timezone");
+  const { addToast } = useToast();
+
+  useEffect(() => {
+    async function fetchProfileAndAccountDetails() {
+      if (!uuid) return;
+
+      // Fetch profile_details and account info in parallel
+      const [
+        { data: profileData, error: profileError },
+        { data: accountData, error: accountError },
+      ] = await Promise.all([
+        supabase
+          .from("user_profiles")
+          .select("profile_details")
+          .eq("uuid", uuid)
+          .single(),
+        supabase
+          .from("user_profiles")
+          .select("username, joined_at, last_login,primary_email,is_public")
+          .eq("uuid", uuid)
+          .maybeSingle(),
+      ]);
+
+      // Profile details
+      if (!profileError && profileData?.profile_details) {
+        const details = profileData.profile_details;
+        setFullName(details.fullName ?? "");
+        setIntroduction(details.introduction ?? "");
+        setDob(details.dob ? new Date(details.dob) : null);
+        setGender(details.gender ?? "none");
+        setCountry(details.country ?? "");
+        setAddress(details.address ?? "");
+        setPhoneNumber(details.phoneNumber ?? "");
+        setEmail(details.email ?? "");
+        setMembershipStatus(details.membershipStatus ?? "A");
+        setLanguagePreference(details.languagePreference ?? "English");
+        setTimezone(details.timezone ?? "Select timezone");
+      }
+
+      // Account details
+      if (!accountError && accountData) {
+        setUserName(accountData.username ?? "");
+        setAccountCreated(
+          accountData.joined_at ? new Date(accountData.joined_at) : null
+        );
+        setLastLogin(
+          accountData.last_login ? new Date(accountData.last_login) : null
+        );
+        setEmail(accountData.primary_email ?? "");
+        setAccountVisibility(accountData.is_public);
+      }
+    }
+
+    fetchProfileAndAccountDetails();
+  }, [uuid]);
+
+  function saveDataToSupabase() {
+    if (!uuid) return;
+
+    const profileDetails = {
       fullName,
-      dob,
+      introduction,
+      dob: dob ? dob.toISOString() : null,
       gender,
       country,
       address,
       phoneNumber,
       email,
-      userName,
-      accountCreated,
-      lastLogin,
       membershipStatus,
       languagePreference,
       timezone,
-      accountVisibility,
-    });
+    };
+
+    supabase
+      .from("user_profiles")
+      .update({
+        profile_details: profileDetails,
+        username: userName,
+      })
+      .eq("uuid", uuid)
+      .then(({ error }) => {
+        if (error) {
+          addToast({
+            message: "Failed to update profile. Please try again.",
+            variant: "danger",
+          });
+        } else {
+          addToast({
+            message: "Profile updated successfully!",
+            variant: "success",
+          });
+        }
+      });
   }
+
+  const [isUser, setIsUser] = useState(false);
+
+  useEffect(() => {
+    async function checkSessionUser() {
+      const { data, error } = await supabase.auth.getSession();
+      if (error || !data?.session?.user?.id || !uuid) {
+        setIsUser(false);
+        return;
+      }
+      setIsUser(data.session.user.id === uuid);
+    }
+    checkSessionUser();
+  }, [uuid]);
+
   return (
     <>
       <Grid fillWidth padding="m" fitHeight columns={2} gap="104">
         <PersonalDetails
           countries={countries}
+          introduction={introduction}
+          setIntroduction={setIntroduction}
           fullName={fullName}
           setFullName={setFullName}
           dob={dob}
@@ -503,6 +441,7 @@ function ProfileEdit({
           setEmail={setEmail}
           accountVisibility={accountVisibility}
           setAccountVisibility={setAccountVisibility}
+          isUser={isUser}
         />
         <AccountDetails
           userName={userName}
@@ -517,10 +456,11 @@ function ProfileEdit({
           setLanguagePreference={setLanguagePreference}
           timezone={timezone}
           setTimezone={setTimezone}
+          isUser={isUser}
         />
       </Grid>
       <Row paddingY="12" fillWidth horizontal="end">
-        <Button size="m" onClick={consoleLog}>
+        <Button size="m" onClick={saveDataToSupabase}>
           Save all
         </Button>
       </Row>
@@ -531,6 +471,8 @@ function ProfileEdit({
 function PersonalDetails({
   countries,
   fullName,
+  introduction,
+  setIntroduction,
   setFullName,
   dob,
   setDob,
@@ -546,10 +488,13 @@ function PersonalDetails({
   setEmail,
   accountVisibility,
   setAccountVisibility,
+  isUser,
 }: {
   countries: { label: string; value: string }[];
   fullName: string;
   setFullName: (v: string) => void;
+  introduction: string;
+  setIntroduction: (v: string) => void;
   dob: Date | null;
   setDob: (v: Date | null) => void;
   gender: string;
@@ -564,6 +509,7 @@ function PersonalDetails({
   setEmail: (v: string) => void;
   accountVisibility: boolean;
   setAccountVisibility: (v: boolean) => void;
+  isUser?: boolean; // Optional prop to check if it's the user's profile
 }) {
   return (
     <Column fillWidth horizontal="start" vertical="start" gap="20">
@@ -580,6 +526,16 @@ function PersonalDetails({
           placeholder="Full Name"
           value={fullName}
           onChange={(e: any) => setFullName(e.target.value)}
+        />
+      </ProfileRow>
+      <ProfileRow label="Short Introduction:">
+        <Textarea
+          id="input-fullname"
+          placeholder="Write here"
+          resize="none"
+          maxLength={30}
+          value={introduction}
+          onChange={(e: any) => setIntroduction(e.target.value)}
         />
       </ProfileRow>
       <ProfileRow label="Date of Birth:">
@@ -617,6 +573,7 @@ function PersonalDetails({
         <Textarea
           id="textarea-address"
           placeholder="Where do you live?"
+          resize="vertical"
           description={
             <Text onBackground="neutral-weak">
               <i className="ri-information-line"></i>&nbsp;Your address will not
@@ -656,11 +613,11 @@ function PersonalDetails({
           placeholder="Your email id"
           value={email}
           onChange={(e: any) => setEmail(e.target.value)}
-          hasPrefix={
-            <Text onBackground="neutral-medium">
-              <i className="ri-at-line"></i>
-            </Text>
-          }
+          // hasPrefix={
+          //   <Text onBackground="neutral-medium">
+          //     <i className="ri-at-line"></i>
+          //   </Text>
+          // }
         />
       </ProfileRow>
       <ProfileRow label="Account visiblity:">
@@ -692,6 +649,7 @@ function AccountDetails({
   timezone,
   setTimezone,
   isVerified = true,
+  isUser,
 }: {
   userName: string;
   setUserName: (v: string) => void;
@@ -706,6 +664,7 @@ function AccountDetails({
   timezone: string;
   setTimezone: (v: string) => void;
   isVerified?: boolean;
+  isUser?: boolean; // Optional prop to check if it's the user's profile
 }) {
   return (
     <Column fillWidth horizontal="start" vertical="start" gap="20">
@@ -892,7 +851,6 @@ function InstitutionCard({
   email: string;
   isPublished: boolean;
 }) {
-  // If you want to make these editable, add useState for each field here
   const [published, setPublished] = useState(isPublished);
 
   return (
@@ -951,22 +909,35 @@ function InstitutionRow({
 }
 
 function CreateNewInstitution() {
-  // Placeholder for future implementation
   return null;
 }
 
 // Security Section
-function Security({
-  deleteAccountInput,
-  setDeleteAccountInput,
-  deleteInstitutionsInput,
-  setDeleteInstitutionsInput,
-}: {
-  deleteAccountInput: string;
-  setDeleteAccountInput: (v: string) => void;
-  deleteInstitutionsInput: string;
-  setDeleteInstitutionsInput: (v: string) => void;
-}) {
+function Security() {
+  const [deleteAccountInput, setDeleteAccountInput] = useState("");
+  const [deleteInstitutionsInput, setDeleteInstitutionsInput] = useState("");
+
+  const [deleteAccountDisabled, setDeleteAccountDisabled] = useState(true);
+  const [deleteInstitutionsDisabled, setDeleteInstitutionsDisabled] =
+    useState(true);
+
+  const [username, setUsername] = useState("");
+  useEffect(() => {
+    async function fetchUsername() {
+      if (!uuid) return;
+      const { data, error } = await supabase
+        .from("user_profiles")
+        .select("username")
+        .eq("uuid", uuid)
+        .single();
+
+      if (error || !data?.username) return;
+
+      setUsername(data.username);
+    }
+    fetchUsername();
+  }, [uuid]);
+
   return (
     <Grid fillWidth padding="m" fitHeight columns={2} gap="104">
       <SecuritySection
@@ -1020,7 +991,11 @@ function Security({
               />
             ),
             button: (
-              <Button variant="primary" size="m">
+              <Button
+                variant="primary"
+                size="m"
+                disabled={deleteInstitutionsDisabled}
+              >
                 Delete
               </Button>
             ),
@@ -1067,7 +1042,7 @@ function SecuritySection({
       >
         {title}
       </Text>
-      {rows.map((row, idx) => (
+      {rows.map((row) => (
         <Row fillWidth horizontal="space-between" key={row.label}>
           <Flex flex={5}>
             <Text onBackground="neutral-weak" style={{ fontSize: "14px" }}>
@@ -1084,158 +1059,200 @@ function SecuritySection({
   );
 }
 
-// Security Section
-function Socials({
-  phoneNumberSocials,
-  setPhoneNumberSocials,
-  emailSocials,
-  setEmailSocials,
-  whatsapp,
-  setWhatsapp,
-  instagram,
-  setInstagram,
-  linkedin,
-  setLinkedin,
-}: {
-  phoneNumberSocials: number;
-  setPhoneNumberSocials: (v: number) => void;
-  emailSocials: string;
-  setEmailSocials: (v: string) => void;
-  whatsapp: number;
-  setWhatsapp: (v: number) => void;
-  instagram: string;
+// Socials Section
+function Socials() {
+  const [phoneNumberSocials, setPhoneNumberSocials] = useState<string>("");
+  const [emailSocials, setEmailSocials] = useState<string>("");
+  const [whatsapp, setWhatsapp] = useState<string>("");
+  const [instagram, setInstagram] = useState<string>("");
+  const [linkedin, setLinkedin] = useState<string>("");
+  const [loading, setLoading] = useState(false);
+  const { addToast } = useToast();
 
-  setInstagram: (v: string) => void;
-  linkedin: string;
-  setLinkedin: (v: string) => void;
-}) {
-  function consoleLog() {
-    console.log({
-      phoneNumberSocials,
-      emailSocials,
-      whatsapp,
-      instagram,
-      linkedin,
-    });
+  useEffect(() => {
+    async function fetchSocials() {
+      if (!uuid) return;
+      const { data, error } = await supabase
+        .from("user_profiles")
+        .select("socials")
+        .eq("uuid", uuid)
+        .single();
+
+      if (error || !data?.socials) return;
+
+      const socials = data.socials;
+      setPhoneNumberSocials(socials.phone || "");
+      setEmailSocials(socials.email || "");
+      setPhoneNumberSocials(socials.phone ?? "");
+      setEmailSocials(socials.email ?? "");
+      setWhatsapp(socials.whatsapp ?? "");
+      setInstagram(socials.instagram ?? "");
+      setLinkedin(socials.linkedin ?? "");
+    }
+    fetchSocials();
+  }, [uuid]);
+
+  async function saveDataToSupabase() {
+    setLoading(true);
+
+    if (!uuid) return;
+    const socials = {
+      phone: phoneNumberSocials,
+      email: emailSocials,
+      whatsapp: whatsapp,
+      instagram: instagram,
+      linkedin: linkedin,
+    };
+
+    supabase
+      .from("user_profiles")
+      .update({ socials })
+      .eq("uuid", uuid)
+      .then(({ error }) => {
+        if (error) {
+          addToast({
+            message: "Failed to update socials. Please try again.",
+            variant: "danger",
+          });
+        } else {
+          addToast({
+            message: "Socials updated successfully!",
+            variant: "success",
+          });
+        }
+        setLoading(false);
+      });
   }
   return (
     <>
-    <Grid fillWidth padding="m" fitHeight columns={2} gap="104">
-      <SocialsSection
-        title="Personal Details"
-        rows={[
-          {
-            label: "Phone Number:",
-            input: (
-              <NumberInput
-                placeholder="Enter your phone number"
-                description={
-                  <Text onBackground="neutral-weak">
-                    <i className="ri-information-line"></i>&nbsp;This will be
-                    visible to other users. (optional)
-                  </Text>
-                }
-                id="input-delete-account"
-                value={phoneNumberSocials}
-                onChange={(value: number) => setPhoneNumberSocials(value)}
-              />
-            ),
-          },
-          {
-            label: "Public Email:",
-            input: (
-              <Input
-                placeholder="Enter your email"
-                 hasPrefix={
-            <Text onBackground="neutral-medium">
-              <i className="ri-at-line"></i>
-            </Text>
-          }
-                description={
-                  <Text onBackground="neutral-weak">
-                    <i className="ri-information-line"></i>&nbsp;This will be
-                    visible to other users.
-                  </Text>
-                }
-                id="input-email-socials"
-                value={emailSocials}
-                onChange={(e: any) => setEmailSocials(e.target.value)}
-              />
-            ),
-          },
-        ]}
-      />
-      <SocialsSection
-        title="Social Media"
-        rows={[
-          {
-            label: "WhatsApp Number:",
-            input: (
-              <NumberInput
-                placeholder="Enter your WhatsApp number"
-                id="input-whatsapp"
-                 
-                description={
-                  <Text onBackground="neutral-weak">
-                    <i className="ri-information-line"></i>&nbsp;This will be
-                    visible to other users.
-                  </Text>
-                }
-                value={whatsapp}
-                onChange={(value: number) => setWhatsapp(value)}
-              />
-            ),
-          },
-          {
-            label: "Instagram:",
-            input: (
-              <Input
-                placeholder="username"
-                id="input-instagram"
-                 hasPrefix={
-            <Text onBackground="neutral-medium">
-              instagram.com/
-            </Text>
-          }
-                description={
-                  <Text onBackground="neutral-weak">
-                    <i className="ri-information-line"></i>&nbsp;This will be
-                    visible to other users.
-                  </Text>
-                }
-                value={instagram}
-                onChange={(e: any) => setInstagram(e.target.value)}
-              />
-            ),
-          },
-          {
-            label: "LinkedIn:",
-            input: (
-              <Input
-                placeholder="username"
-                id="input-linkedin"
-                 hasPrefix={
-            <Text onBackground="neutral-medium">
-              linkedin.com/in/
-            </Text>
-          }
-                description={
-                  <Text onBackground="neutral-weak">
-                    <i className="ri-information-line"></i>&nbsp;This will be
-                    visible to other users.
-                  </Text>
-                }
-                value={linkedin}
-                onChange={(e: any) => setLinkedin(e.target.value)}
-              />
-            ),
-          },
-        ]}
-      />
-    </Grid>
-    <Row paddingY="12" fillWidth horizontal="end">
-        <Button size="m" onClick={consoleLog}>
-          Save all
+      <Grid fillWidth padding="m" fitHeight columns={2} gap="104">
+        <SocialsSection
+          title="Social Details"
+          rows={[
+            {
+              label: "Phone Number:",
+              input: (
+                <Input
+                  placeholder="Enter your phone number"
+                  description={
+                    <Text onBackground="neutral-weak">
+                      <i className="ri-information-line"></i>&nbsp;This will be
+                      visible to other users. (optional)
+                    </Text>
+                  }
+                  id="input-delete-account"
+                  value={phoneNumberSocials}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    setPhoneNumberSocials(e.target.value)
+                  }
+                />
+              ),
+            },
+            {
+              label: "Public Email:",
+              input: (
+                <Input
+                  placeholder="Enter your email"
+                  hasPrefix={
+                    <Text onBackground="neutral-medium">
+                      <i className="ri-at-line"></i>
+                    </Text>
+                  }
+                  description={
+                    <Text onBackground="neutral-weak">
+                      <i className="ri-information-line"></i>&nbsp;This will be
+                      visible to other users.
+                    </Text>
+                  }
+                  id="input-email-socials"
+                  value={emailSocials}
+                  onChange={(e: any) => setEmailSocials(e.target.value)}
+                />
+              ),
+            },
+          ]}
+        />
+        <SocialsSection
+          title="Social Media"
+          rows={[
+            {
+              label: "WhatsApp Number:",
+              input: (
+                <Input
+                  placeholder="Enter your WhatsApp number"
+                  id="input-whatsapp"
+                  description={
+                    <Text onBackground="neutral-weak">
+                      <i className="ri-information-line"></i>&nbsp;This will be
+                      visible to other users.
+                    </Text>
+                  }
+                  value={whatsapp}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    setWhatsapp(e.target.value)
+                  }
+                />
+              ),
+            },
+            {
+              label: "Instagram:",
+              input: (
+                <Input
+                  placeholder="username"
+                  id="input-instagram"
+                  hasPrefix={
+                    <Text onBackground="neutral-medium">instagram.com/</Text>
+                  }
+                  description={
+                    <Text onBackground="neutral-weak">
+                      <i className="ri-information-line"></i>&nbsp;This will be
+                      visible to other users.
+                    </Text>
+                  }
+                  value={instagram}
+                  onChange={(e: any) => setInstagram(e.target.value)}
+                />
+              ),
+            },
+            {
+              label: "LinkedIn:",
+              input: (
+                <Input
+                  placeholder="username"
+                  id="input-linkedin"
+                  hasPrefix={
+                    <Text onBackground="neutral-medium">linkedin.com/in/</Text>
+                  }
+                  description={
+                    <Text onBackground="neutral-weak">
+                      <i className="ri-information-line"></i>&nbsp;This will be
+                      visible to other users.
+                    </Text>
+                  }
+                  value={linkedin}
+                  onChange={(e: any) => setLinkedin(e.target.value)}
+                />
+              ),
+            },
+          ]}
+        />
+      </Grid>
+      <Row paddingY="12" fillWidth horizontal="end">
+        <Button
+          size="m"
+          onClick={async () => {
+            saveDataToSupabase();
+          }}
+          disabled={loading}
+        >
+          {loading ? (
+            <>
+              Saving...&nbsp;
+              <Spinner size="s" />
+            </>
+          ) : (
+            "Save all"
+          )}
         </Button>
       </Row>
     </>
@@ -1257,7 +1274,7 @@ function SocialsSection({
       >
         {title}
       </Text>
-      {rows.map((row, idx) => (
+      {rows.map((row) => (
         <Row fillWidth horizontal="space-between" key={row.label}>
           <Flex flex={5}>
             <Text onBackground="neutral-weak" style={{ fontSize: "14px" }}>
