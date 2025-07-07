@@ -50,6 +50,7 @@ import { useRouter } from "next/navigation";
 
 import Footer from "../components/Footer";
 import NavBar from "../components/NavBar";
+import { Cookie } from "../components/once-ui-pro/Cookie";
 
 // Font setup
 const dmsans = Outfit({
@@ -99,6 +100,7 @@ const institutionData = [
       email: "spadehradun@gmail.com",
       phone: "+91 12345 67890",
       office: "8:00 a.m. to 5:00 p.m.",
+      fees: "₹75,000 per year",
     },
     verified: true,
     creator: {
@@ -324,10 +326,7 @@ function InstitutionCard({ data }: { data: (typeof institutionData)[0] }) {
                   lineHeight: "1em",
                 }}
               >
-                <Row gap="8">
-                  {" "}
-                  {data.name} 
-                </Row>
+                <Row gap="8"> {data.name}</Row>
               </Text>
               <Text
                 onBackground="neutral-weak"
@@ -377,6 +376,8 @@ function InstitutionCard({ data }: { data: (typeof institutionData)[0] }) {
             verified={data.verified}
           />
           <ContactRow label="Office" value={data.contact.office} />
+                    <ContactRow label="Fees" value={data.contact.fees} verified={data.verified}/>
+
         </Column>
         <Column flex={2} horizontal="start" vertical="start">
           <Carousel indicator="line" controls={false} items={data.images} />

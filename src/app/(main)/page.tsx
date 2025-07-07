@@ -42,8 +42,10 @@ import { Open_Sans } from "next/font/google";
 import { Poppins } from "next/font/google";
 import { useRouter } from "next/navigation";
 
-import Footer from "./components/Footer"; 
+import Footer from "./components/Footer";
 import NavBar from "./components/NavBar";
+import {Plans3} from "./components/once-ui-pro/Plan";
+import { Cookie } from "./components/once-ui-pro/Cookie";
 // Font setup
 const dmsans = Outfit({
   subsets: ["latin"],
@@ -70,8 +72,6 @@ const poppins = Poppins({
   variable: "--font-poppins",
   weight: ["400", "500", "600", "700"],
 });
-
-
 
 const trustedLogos = [
   "https://optimize-nextjs.vercel.app/_next/image?url=%2Fimages%2FtrustedBrands%2F1.png&w=256&q=75",
@@ -235,8 +235,6 @@ const faqList = [
     ),
   },
 ];
-
-
 
 function AboutBadge() {
   return (
@@ -479,7 +477,6 @@ function FAQSection() {
   );
 }
 
-
 // Card Data
 const cardAProps = {
   bg: "#F0F1EC",
@@ -706,7 +703,12 @@ function CardB({ bg, label, title, subtitle, features }: typeof cardBProps) {
         <Text variant="label-strong-s" className={dmsans.className}>
           {label}
         </Text>
-        <IconButton variant="secondary" onClick={() => {router.push("/find")}}>
+        <IconButton
+          variant="secondary"
+          onClick={() => {
+            router.push("/find");
+          }}
+        >
           <i
             className="ri-arrow-right-up-line"
             style={{ fontSize: "23px" }}
@@ -824,7 +826,12 @@ function CardC({ bg, title, subtitle, tags }: typeof cardCProps) {
         <Text variant="body-default-s">
           Find tuitions and home tutors easily
         </Text>
-        <IconButton variant="secondary" onClick={() => {router.push("/find")}}>
+        <IconButton
+          variant="secondary"
+          onClick={() => {
+            router.push("/find");
+          }}
+        >
           <i
             className="ri-arrow-right-up-line"
             style={{ fontSize: "23px" }}
@@ -1039,6 +1046,8 @@ export default function Home() {
       }}
     >
       <Column style={{ maxWidth: "1550px" }} fillWidth fitHeight>
+        <Cookie />
+
         <NavBar />
         <Flex height={3} minHeight={3}></Flex>
         <AboutBadge />
@@ -1067,7 +1076,7 @@ export default function Home() {
           <Flex fillWidth height={3}></Flex>
           <FAQSection />
           <Flex height={3}></Flex>
-          <Footer/>
+          <Footer />
         </Row>
       </Column>
     </Column>
