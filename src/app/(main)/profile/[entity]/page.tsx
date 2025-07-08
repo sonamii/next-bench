@@ -109,36 +109,55 @@ const countries = [
   { label: "Zimbabwe", value: "ZW" },
 ];
 
-const institutions = [
-  {
-    name: "Greenfield International School",
-    address: "Dubai, UAE",
-    affiliation: "IB/IGCSE",
-    contact: "4 123 4567",
-    email: "info@greenfield.edu",
-    isPublished: true,
-  },
-  {
-    name: "Blue Valley Public School",
-    address: "San Francisco, USA",
-    affiliation: "Common Core",
-    contact: "415 555 0199",
-    email: "contact@bluevalley.edu",
-    isPublished: true,
-  },
-  {
-    name: "Sunrise Academy",
-    address: "Sydney, Australia",
-    affiliation: "HSC/NSW",
-    contact: "2 9876 5432",
-    email: "hello@sunriseacademy.edu.au",
-    isPublished: false,
-  },
-];
-
 // Main Page
 export default function Home() {
   const [activeTab, setActiveTab] = useState("profile");
+
+  const [institutions, setInstitutions] = useState<
+    {
+      name: string;
+      id: string;
+      address: string;
+      affiliation: string;
+      contact: string;
+      email: string;
+      isPublished: boolean;
+      uuid: string;
+    }[]
+  >([]);
+
+  useEffect(() => {
+    async function fetchInstitutions() {
+      if (!uuid) return;
+      const { data, error } = await supabase
+        .from("edu_centers")
+        .select("edu_id, basic_info, is_published")
+        .eq("uuid", uuid);
+
+      if (error) {
+        console.error("Error fetching institutions:", error);
+        return;
+      }
+
+      if (data && Array.isArray(data)) {
+        setInstitutions(
+          data.map((row) => ({
+            id: row.edu_id,
+
+            name: row.basic_info?.name || "",
+            address: row.basic_info?.city || "",
+            affiliation: row.basic_info?.affiliation || "",
+            contact: row.basic_info?.phone_number || "",
+            email: row.basic_info?.email || "",
+            isPublished: row.is_published || false,
+            uuid: uuid || "",
+          }))
+        );
+      }
+    }
+
+    fetchInstitutions();
+  }, [uuid]);
 
   return (
     <Column
@@ -786,6 +805,8 @@ type Institution = {
   contact: string;
   email: string;
   isPublished: boolean;
+  id: string;
+  uuid: string;
 };
 
 // Created Institutions
@@ -803,21 +824,48 @@ function CreatedInstitutions({
   const handleClear = () => {
     setSearchValue("");
   };
-  const [isBaseOpen, setIsBaseOpen] = useState(false);
-  const [isStackedOpen, setIsStackedOpen] = useState(false);
-  const [isChecked, setIsChecked] = useState(false);
 
   const [items, setItems] = useState([
-    { id: 1, label: " Terms of Service", checked: true,description:"By checking this box, you agree to our terms of service." },
-    { id: 2, label: "Privacy Policy", checked: false ,description:" By checking this box, you agree to our privacy policy. "},
-    { id: 3, label: "Cookie Policy", checked: true ,description:" By checking this box, you agree to our cookie policy."},
-    { id: 4, label: "Community Guidelines", checked: false ,description:" By checking this box, you agree to our community guidelines."},
-    
+    {
+      id: 1,
+      label: " Terms of Service",
+      checked: false,
+      description: "By checking this box, you agree to our terms of service.",
+    },
+    {
+      id: 2,
+      label: "Privacy Policy",
+      checked: false,
+      description: " By checking this box, you agree to our privacy policy. ",
+    },
+    {
+      id: 3,
+      label: "Cookie Policy",
+      checked: false,
+      description: " By checking this box, you agree to our cookie policy.",
+    },
+    {
+      id: 4,
+      label: "Community Guidelines",
+      checked: false,
+      description:
+        " By checking this box, you agree to our community guidelines.",
+    },
   ]);
-
+  const [isBaseOpen, setIsBaseOpen] = useState(false);
+  const [isStackedOpen, setIsStackedOpen] = useState(false);
+  const [isCreating, setIsCreating] = useState(false);
+  const { addToast } = useToast();
   const allChecked = items.every((item) => item.checked);
   const someChecked = items.some((item) => item.checked);
   const isIndeterminate = someChecked && !allChecked;
+
+  const [institutionName, setInstitutionName] = useState("");
+  const [affiliation, setAffiliation] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [email, setEmail] = useState("");
+  const [institutionType, setInstitutionType] = useState("");
+  const [city, setCity] = useState("");
 
   const toggleAll = () => {
     const newCheckedState = !allChecked;
@@ -828,6 +876,74 @@ function CreatedInstitutions({
       }))
     );
   };
+
+  async function createNewInstitutionSupabase() {
+    if (
+      !institutionName ||
+      !affiliation ||
+      !phoneNumber ||
+      !email ||
+      !institutionType
+    ) {
+      addToast({
+        message: "Please fill in all the required fields.",
+        variant: "danger",
+      });
+      return;
+    }
+
+    setIsCreating(true);
+    // Generate a random 5-digit number and prepend to the URL name
+    const randomNum = Math.floor(10000 + Math.random() * 90000);
+    const urlName =
+      institutionName.toLowerCase().replace(/\s+/g, "-").trim() +
+      "-" +
+      randomNum;
+    const { data, error } = await supabase.from("edu_centers").insert([
+      {
+        basic_info: {
+          name: institutionName.trim(),
+          type: institutionType.trim(),
+          affiliation: affiliation.trim(),
+          phone_number: phoneNumber.trim(),
+          email: email.trim(),
+          city: city.trim(),
+        },
+        is_published: false, // Default to false until verified
+        uuid: uuid, // Add uuid to associate with user
+        edu_url_name: urlName,
+      },
+    ]);
+
+    setIsCreating(false);
+
+    if (error) {
+      addToast({
+        message: "Failed to create institution. Please try again.",
+        variant: "danger",
+      });
+      console.error("Error creating institution:", error);
+    } else {
+      addToast({
+        message: "Institution created successfully!",
+        variant: "success",
+      });
+      setIsBaseOpen(false);
+      setInstitutionName("");
+      setAffiliation("");
+      setPhoneNumber("");
+      setEmail("");
+      setCity("");
+      setInstitutionType("");
+      setIsStackedOpen(false);
+      setItems(
+        items.map((item) => ({
+          ...item,
+          checked: false, // Reset checkboxes after creation
+        }))
+      );
+    }
+  }
 
   return (
     <>
@@ -865,7 +981,17 @@ function CreatedInstitutions({
 
         <Grid fillWidth fitHeight columns={2} gap="4">
           {institutions.map((inst) => (
-            <InstitutionCard key={inst.name} {...inst} />
+            <InstitutionCard
+              key={inst.name}
+              name={inst.name}
+              address={inst.address}
+              affiliation={inst.affiliation}
+              contact={inst.contact}
+              email={inst.email}
+              isPublished={inst.isPublished}
+              instID={inst.id?.toString?.() ?? ""}
+              uuid={uuid ?? ""}
+            />
           ))}
           <CreateNewInstitution />
         </Grid>
@@ -901,6 +1027,36 @@ function CreatedInstitutions({
                   your institution
                 </>
               }
+              value={institutionName}
+              onChange={(e: any) => setInstitutionName(e.target.value)}
+            ></Input>
+          </Row>
+          <Row fillWidth vertical="center" gap="8">
+            <Input
+              id="name"
+              label="e.g. Vadodara,India"
+              description={
+                <>
+                  <i className="ri-information-line"></i>&nbsp;Enter the short
+                  address of your institution
+                </>
+              }
+              value={city}
+              onChange={(e: any) => setCity(e.target.value)}
+            ></Input>
+          </Row>
+          <Row fillWidth vertical="center" gap="8">
+            <Input
+              id="name"
+              label="e.g. School/Tuition"
+              description={
+                <>
+                  <i className="ri-information-line"></i>&nbsp;Enter the type of
+                  your institution
+                </>
+              }
+              value={institutionType}
+              onChange={(e: any) => setInstitutionType(e.target.value)}
             ></Input>
           </Row>
           <Row fillWidth vertical="center" gap="8">
@@ -913,6 +1069,8 @@ function CreatedInstitutions({
                   affiliation offered by your institution
                 </>
               }
+              value={affiliation}
+              onChange={(e: any) => setAffiliation(e.target.value)}
             ></Input>
           </Row>
           <Row fillWidth vertical="center" gap="8">
@@ -925,6 +1083,8 @@ function CreatedInstitutions({
                   institution's phone number
                 </>
               }
+              value={phoneNumber}
+              onChange={(e: any) => setPhoneNumber(e.target.value)}
             ></Input>
           </Row>
           <Row fillWidth vertical="center" gap="8">
@@ -937,10 +1097,23 @@ function CreatedInstitutions({
                   institution's email address
                 </>
               }
+              value={email}
+              onChange={(e: any) => setEmail(e.target.value)}
             ></Input>
           </Row>
           <Row fillWidth vertical="center" horizontal="end" gap="8">
-            <Button size="m" onClick={() => setIsStackedOpen(true)}>
+            <Button
+              size="m"
+              onClick={() => setIsStackedOpen(true)}
+              disabled={
+                !institutionName ||
+                !affiliation ||
+                !phoneNumber ||
+                !email ||
+                !institutionType ||
+                !city
+              }
+            >
               Next
             </Button>
           </Row>
@@ -949,9 +1122,22 @@ function CreatedInstitutions({
       <Dialog
         isOpen={isStackedOpen}
         onClose={() => setIsStackedOpen(false)}
-        title="Create new Institution"
+        title="Terms and Policies"
         description="Check the boxes and click on 'Create' to create a new institution."
         stack
+        footer={
+          <Row fillWidth horizontal="start" vertical="center">
+            <Text
+              variant="label-default-xs"
+              onBackground="neutral-weak"
+              style={{ fontSize: "13px" }}
+            >
+              {" "}
+              <i className="ri-information-line"></i>&nbsp;These details are
+              required to verify your institution and create a new page for it.
+            </Text>
+          </Row>
+        }
       >
         <Column fillWidth gap="16" marginTop="12">
           <Checkbox
@@ -962,33 +1148,42 @@ function CreatedInstitutions({
             isChecked={allChecked || isIndeterminate}
             isIndeterminate={isIndeterminate}
             onToggle={toggleAll}
-            style={{ width: "100%",marginBottom:"12px" }}
+            style={{ width: "100%", marginBottom: "12px" }}
           />
 
           <Column fillWidth vertical="center" horizontal="end" gap="12">
-
-          {items.map((item) => (
-            
-            <Checkbox
-            style={{ width: "100%" }}
-              key={item.id}
-              label={item.label}
-  description={item.description}
-              isChecked={item.checked}
-              onToggle={() => {
-                setItems(
-                  items.map((i) =>
-                    i.id === item.id ? { ...i, checked: !i.checked } : i
-                  )
-                );
-              }}
-            />
-          ))}
+            {items.map((item) => (
+              <Checkbox
+                style={{ width: "100%" }}
+                key={item.id}
+                label={item.label}
+                description={item.description}
+                isChecked={item.checked}
+                onToggle={() => {
+                  setItems(
+                    items.map((i) =>
+                      i.id === item.id ? { ...i, checked: !i.checked } : i
+                    )
+                  );
+                }}
+              />
+            ))}
           </Column>
 
           <Row fillWidth vertical="center" horizontal="end" gap="8">
-            <Button size="m" onClick={() => setIsStackedOpen(true)}>
-              Create
+            <Button
+              size="m"
+              onClick={() => createNewInstitutionSupabase()}
+              disabled={!allChecked || isCreating}
+            >
+              {isCreating ? (
+                <>
+                  <Spinner size="s" />
+                  &nbsp;Creating...
+                </>
+              ) : (
+                "Create"
+              )}
             </Button>
           </Row>
         </Column>
@@ -1004,6 +1199,8 @@ function InstitutionCard({
   contact,
   email,
   isPublished,
+  instID,
+  uuid,
 }: {
   name: string;
   address: string;
@@ -1011,8 +1208,28 @@ function InstitutionCard({
   contact: string;
   email: string;
   isPublished: boolean;
+  instID: string;
+  uuid: string;
 }) {
   const [published, setPublished] = useState(isPublished);
+
+  async function updateIsPublished(
+    institutionId: string,
+    uuid: string,
+    isPublished: boolean
+  ) {
+    const { error } = await supabase
+      .from("edu_centers")
+      .update({ is_published: isPublished })
+      .eq("edu_id", institutionId)
+      .eq("uuid", uuid);
+
+    if (error) {
+      console.error("Error updating institution:", error);
+    } else {
+      console.log("Institution updated successfully");
+    }
+  }
 
   return (
     <Card
@@ -1025,7 +1242,13 @@ function InstitutionCard({
       style={{ border: "none" }}
       background="transparent"
     >
-      <Text onBackground="neutral-strong" style={{ fontSize: "16px" }}>
+      <Text
+        onBackground="neutral-strong"
+        style={{ fontSize: "16px" }}
+        onClick={() => {
+          window.location.href = `/edu/${instID}`;
+        }}
+      >
         {name}
       </Text>
       <InstitutionRow label="City:">{address}</InstitutionRow>
@@ -1039,7 +1262,10 @@ function InstitutionCard({
       <InstitutionRow label="Is published?">
         <Switch
           isChecked={published}
-          onToggle={() => setPublished(!published)}
+          onToggle={() => {
+            setPublished(!published);
+            updateIsPublished(instID, uuid, !published);
+          }}
         />
       </InstitutionRow>
     </Card>
@@ -1109,6 +1335,7 @@ function Security() {
             input: (
               <Input
                 placeholder="Enter your username"
+                disabled
                 description={
                   <Text onBackground="neutral-weak">
                     <i className="ri-information-line"></i>&nbsp;This is a
@@ -1137,6 +1364,7 @@ function Security() {
             input: (
               <Input
                 placeholder="Enter your username"
+                disabled
                 description={
                   <Text onBackground="neutral-weak">
                     <i className="ri-information-line"></i>&nbsp;This is a
@@ -1152,11 +1380,7 @@ function Security() {
               />
             ),
             button: (
-              <Button
-                variant="primary"
-                size="m"
-                disabled={deleteInstitutionsDisabled}
-              >
+              <Button variant="primary" disabled size="m">
                 Delete
               </Button>
             ),
@@ -1169,7 +1393,7 @@ function Security() {
           {
             label: "Export all your data?",
             button: (
-              <Button variant="primary" size="m">
+              <Button variant="primary" size="m" disabled>
                 Export
               </Button>
             ),
