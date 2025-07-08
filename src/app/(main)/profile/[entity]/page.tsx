@@ -38,6 +38,8 @@ import {
   Dialog,
   Checkbox,
   Skeleton,
+  RevealFx,
+  HeadingLink,
 } from "@once-ui-system/core";
 import {
   Lato,
@@ -113,6 +115,7 @@ export default function ProfilePage() {
   const [activeTab, setActiveTab] = useState("profile");
   const [uuid, setUuid] = useState<string | undefined>(undefined);
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
+  const [userXP, setUserXP] = useState<number>(0); // User XP state
 
   // Loading states for each section
   const [loadingProfile, setLoadingProfile] = useState(true);
@@ -139,7 +142,7 @@ export default function ProfilePage() {
   const fetchAllUserData = useCallback(async (uuid: string) => {
     setLoadingProfile(false); //true earlier and when save all disappear
     setLoadingSocials(false); //true earlier and when save all disappear
-    setLoadingInstitutions(true); //true earlier and when save all disappear
+    setLoadingInstitutions(false); //true earlier and when save all disappear
 
     // Fetch profile, socials, and institutions in parallel
     const [
@@ -157,13 +160,14 @@ export default function ProfilePage() {
         .maybeSingle(),
       supabase
         .from("user_profiles")
-        .select("socials")
+        .select("socials,xp")
         .eq("uuid", uuid)
         .maybeSingle(),
       supabase
         .from("edu_centers")
         .select("edu_id, basic_info, is_published, uuid")
-        .eq("uuid", uuid).order("created_at", { ascending: false }),
+        .eq("uuid", uuid)
+        .order("created_at", { ascending: false }),
       supabase.auth.getSession(),
     ]);
 
@@ -221,6 +225,12 @@ export default function ProfilePage() {
         isPublished: row.is_published || false,
         uuid: row.uuid || "",
       }));
+    }
+    // Set user XP
+    if (socialsData && socialsData.xp) {
+      setUserXP(socialsData.xp);
+    } else {
+      setUserXP(0); // Default to 0 if not found
     }
 
     // Check if current user
@@ -462,6 +472,7 @@ export default function ProfilePage() {
             activeTab={activeTab}
             setActiveTab={setActiveTab}
             profile={userData.profile}
+            xp={userXP}
           />
           <Flex fillWidth height={3}></Flex>
           {activeTab === "profile" &&
@@ -566,11 +577,13 @@ function ProfileHeader({
   activeTab,
   setActiveTab,
   profile,
+  xp,
 }: {
   dmsansClass: string;
   activeTab: string;
   setActiveTab: (v: string) => void;
   profile: UserProfile | null;
+  xp?: number; // Optional XP prop for future use
 }) {
   return (
     <Column
@@ -625,6 +638,21 @@ function ProfileHeader({
               >
                 <Kbd>#{profile?.count}</Kbd>
               </Text>
+              <Text
+                style={{
+                  fontSize: "21px",
+                  fontWeight: "500",
+                }}
+                className={dmsansClass}
+              >
+                <Kbd
+                  background="brand-strong"
+                  border="brand-strong"
+                  onBackground="brand-medium"
+                >
+                  +{xp} XP
+                </Kbd>
+              </Text>
             </>
           )}
         </Row>
@@ -669,7 +697,7 @@ function ProfileEdit({
 
   const [loading, setLoading] = useState(false);
   return (
-    <>
+    <RevealFx fillWidth direction="column">
       <Grid fillWidth padding="m" fitHeight columns={2} gap="104">
         <PersonalDetails
           countries={countries}
@@ -701,7 +729,7 @@ function ProfileEdit({
           )}
         </Button>
       </Row>
-    </>
+    </RevealFx>
   );
 }
 
@@ -1299,15 +1327,18 @@ function InstitutionCard({
       style={{ border: "none" }}
       background="transparent"
     >
-      <Text
-        onBackground="neutral-strong"
-        style={{ fontSize: "16px" }}
-        onClick={() => {
-          window.location.href = `/edu/${institution.id}`;
-        }}
-      >
-        {institution.name}
-      </Text>
+      <HeadingLink as="h6" id={`edu-${institution.id}`}>
+        <Text
+          onBackground="neutral-strong"
+          style={{ fontSize: "16px" }}
+          onClick={() => {
+            window.location.href = `/edu/${institution.id}`;
+          }}
+        >
+          {institution.name}
+        </Text>{" "}
+      </HeadingLink>
+
       <InstitutionRow label="City:">{institution.address}</InstitutionRow>
       <InstitutionRow label="Affiliation:">
         {institution.affiliation}
