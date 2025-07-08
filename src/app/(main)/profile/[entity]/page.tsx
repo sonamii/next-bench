@@ -424,6 +424,22 @@ export default function ProfilePage() {
         edu_url_name: urlName,
       },
     ]);
+    // Add random XP between 5 and 10 to user_profiles.xp for this uuid
+    const { data: xpRow, error: xpError } = await supabase
+      .from("user_profiles")
+      .select("xp")
+      .eq("uuid", uuid)
+      .maybeSingle();
+
+    if (!xpError && xpRow && typeof xpRow.xp === "number") {
+      const randomXP = Math.floor(Math.random() * 6) + 5; // 5-10
+      const newXP = xpRow.xp + randomXP;
+      await supabase
+        .from("user_profiles")
+        .update({ xp: newXP })
+        .eq("uuid", uuid);
+    }
+
     if (error) {
       addToast({
         message: "Failed to create institution. Please try again.",
@@ -645,13 +661,7 @@ function ProfileHeader({
                 }}
                 className={dmsansClass}
               >
-                <Kbd
-                  background="brand-strong"
-                  border="brand-strong"
-                  onBackground="brand-medium"
-                >
-                  +{xp} XP
-                </Kbd>
+                <Tag variant="gradient">+{xp} XP</Tag>
               </Text>
             </>
           )}
@@ -1027,7 +1037,7 @@ function CreatedInstitutions({
 
   const handleCreate = async () => {
     setIsCreating(true);
-    await onCreate(newInstitution);
+    onCreate(newInstitution);
     setIsCreating(false);
     setIsDialogOpen(false);
     setIsTermsOpen(false);
@@ -1048,7 +1058,7 @@ function CreatedInstitutions({
         <Row fillWidth gap="4">
           <Input
             id="input-1"
-            placeholder="Search"
+            placeholder="Search by Institution ID"
             height="m"
             value={searchValue}
             onChange={(e) => setSearchValue(e.target.value)}
@@ -1074,7 +1084,38 @@ function CreatedInstitutions({
             New
           </Button>
         </Row>
-        <Grid fillWidth fitHeight columns={2} gap="4">
+        {/* Show only the institution card where id includes search text */}
+        {searchValue.trim() !== "" ? (
+          (() => {
+            const found = institutions.find((inst) =>
+              inst.name.toLowerCase().includes(searchValue.toLowerCase())
+            );
+            return found ? (
+              <Grid fillWidth fitHeight columns={2} gap="4">
+                <InstitutionCard
+                  key={found.id}
+                  institution={found}
+                  onPublish={onPublish}
+                />
+              </Grid>
+            ) : (
+              <Flex fillWidth center paddingY="32">
+                <Text>No institution found with that ID.</Text>
+              </Flex>
+            );
+          })()
+        ) : (
+          <Grid fillWidth fitHeight columns={2} gap="4">
+            {institutions.map((inst) => (
+              <InstitutionCard
+                key={inst.id}
+                institution={inst}
+                onPublish={onPublish}
+              />
+            ))}
+          </Grid>
+        )}
+        {/* <Grid fillWidth fitHeight columns={2} gap="4">
           {institutions
             .filter((inst) =>
               inst.name.toLowerCase().includes(searchValue.toLowerCase())
@@ -1086,7 +1127,7 @@ function CreatedInstitutions({
                 onPublish={onPublish}
               />
             ))}
-        </Grid>
+        </Grid> */}
       </Column>
       {/* Create Institution Dialog */}
       <Dialog
@@ -1326,6 +1367,7 @@ function InstitutionCard({
       padding="m"
       style={{ border: "none" }}
       background="transparent"
+      id={institution.name.toLowerCase().replace(/\s+/g, "-").trim() + "-card"}
     >
       <HeadingLink as="h6" id={`edu-${institution.id}`}>
         <Text
