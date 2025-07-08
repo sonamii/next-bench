@@ -35,6 +35,8 @@ import {
   Card,
   Switch,
   Spinner,
+  Dialog,
+  Checkbox,
 } from "@once-ui-system/core";
 import {
   Lato,
@@ -414,6 +416,8 @@ function ProfileEdit({
         return;
       }
       setIsUser(data.session.user.id === uuid);
+      console.log(`Is user: ${data.session.user.id === uuid}`);
+      console.log(`Current UUID: ${data.session.user.id}`);
     }
     checkSessionUser();
   }, [uuid]);
@@ -799,40 +803,197 @@ function CreatedInstitutions({
   const handleClear = () => {
     setSearchValue("");
   };
-  return (
-    <Column fillWidth horizontal="center" gap="32">
-      <Row fillWidth gap="4">
-        <Input
-          id="input-1"
-          placeholder="Search"
-          height="m"
-          value={searchValue}
-          onChange={handleChange}
-          hasPrefix={<i className="ri-search-line" />}
-          hasSuffix={
-            searchValue.length > 0 ? (
-              <IconButton
-                variant="ghost"
-                icon="close"
-                size="s"
-                onClick={handleClear}
-                aria-label="Clear search"
-              />
-            ) : null
-          }
-        />
-        <Button weight="default" variant="primary" size="l">
-          New
-        </Button>
-      </Row>
+  const [isBaseOpen, setIsBaseOpen] = useState(false);
+  const [isStackedOpen, setIsStackedOpen] = useState(false);
+  const [isChecked, setIsChecked] = useState(false);
 
-      <Grid fillWidth fitHeight columns={2} gap="4">
-        {institutions.map((inst) => (
-          <InstitutionCard key={inst.name} {...inst} />
-        ))}
-        <CreateNewInstitution />
-      </Grid>
-    </Column>
+  const [items, setItems] = useState([
+    { id: 1, label: " Terms of Service", checked: true,description:"By checking this box, you agree to our terms of service." },
+    { id: 2, label: "Privacy Policy", checked: false ,description:" By checking this box, you agree to our privacy policy. "},
+    { id: 3, label: "Cookie Policy", checked: true ,description:" By checking this box, you agree to our cookie policy."},
+    { id: 4, label: "Community Guidelines", checked: false ,description:" By checking this box, you agree to our community guidelines."},
+    
+  ]);
+
+  const allChecked = items.every((item) => item.checked);
+  const someChecked = items.some((item) => item.checked);
+  const isIndeterminate = someChecked && !allChecked;
+
+  const toggleAll = () => {
+    const newCheckedState = !allChecked;
+    setItems(
+      items.map((item) => ({
+        ...item,
+        checked: newCheckedState,
+      }))
+    );
+  };
+
+  return (
+    <>
+      {" "}
+      <Column fillWidth horizontal="center" gap="32">
+        <Row fillWidth gap="4">
+          <Input
+            id="input-1"
+            placeholder="Search"
+            height="m"
+            value={searchValue}
+            onChange={handleChange}
+            hasPrefix={<i className="ri-search-line" />}
+            hasSuffix={
+              searchValue.length > 0 ? (
+                <IconButton
+                  variant="ghost"
+                  icon="close"
+                  size="s"
+                  onClick={handleClear}
+                  aria-label="Clear search"
+                />
+              ) : null
+            }
+          />
+          <Button
+            weight="default"
+            variant="primary"
+            size="l"
+            onClick={() => setIsBaseOpen(true)}
+          >
+            New
+          </Button>
+        </Row>
+
+        <Grid fillWidth fitHeight columns={2} gap="4">
+          {institutions.map((inst) => (
+            <InstitutionCard key={inst.name} {...inst} />
+          ))}
+          <CreateNewInstitution />
+        </Grid>
+      </Column>
+      <Dialog
+        isOpen={isBaseOpen}
+        onClose={() => setIsBaseOpen(false)}
+        title="Create new Institution"
+        description="Fill in the details to create a new institution."
+        base={isStackedOpen}
+        footer={
+          <Row fillWidth horizontal="start" vertical="center">
+            <Text
+              variant="label-default-xs"
+              onBackground="neutral-weak"
+              style={{ fontSize: "13px" }}
+            >
+              {" "}
+              <i className="ri-information-line"></i>&nbsp;These details are
+              required to verify your institution and create a new page for it.
+            </Text>
+          </Row>
+        }
+      >
+        <Column fillWidth gap="16" marginTop="12">
+          <Row fillWidth vertical="center" gap="8">
+            <Input
+              id="name"
+              label="e.g. ABC School"
+              description={
+                <>
+                  <i className="ri-information-line"></i>&nbsp;Enter the name of
+                  your institution
+                </>
+              }
+            ></Input>
+          </Row>
+          <Row fillWidth vertical="center" gap="8">
+            <Input
+              id="name"
+              label="e.g. ICSE/CBSE/IB"
+              description={
+                <>
+                  <i className="ri-information-line"></i>&nbsp;Enter the
+                  affiliation offered by your institution
+                </>
+              }
+            ></Input>
+          </Row>
+          <Row fillWidth vertical="center" gap="8">
+            <Input
+              id="name"
+              label="e.g. +91 1234567890"
+              description={
+                <>
+                  <i className="ri-information-line"></i>&nbsp;Enter the
+                  institution's phone number
+                </>
+              }
+            ></Input>
+          </Row>
+          <Row fillWidth vertical="center" gap="8">
+            <Input
+              id="name"
+              label="e.g. ABCschool@edu.in"
+              description={
+                <>
+                  <i className="ri-information-line"></i>&nbsp;Enter the
+                  institution's email address
+                </>
+              }
+            ></Input>
+          </Row>
+          <Row fillWidth vertical="center" horizontal="end" gap="8">
+            <Button size="m" onClick={() => setIsStackedOpen(true)}>
+              Next
+            </Button>
+          </Row>
+        </Column>
+      </Dialog>
+      <Dialog
+        isOpen={isStackedOpen}
+        onClose={() => setIsStackedOpen(false)}
+        title="Create new Institution"
+        description="Check the boxes and click on 'Create' to create a new institution."
+        stack
+      >
+        <Column fillWidth gap="16" marginTop="12">
+          <Checkbox
+            label="Select All"
+            description={
+              "By checking this box, you agree to accept all terms and policies."
+            }
+            isChecked={allChecked || isIndeterminate}
+            isIndeterminate={isIndeterminate}
+            onToggle={toggleAll}
+            style={{ width: "100%",marginBottom:"12px" }}
+          />
+
+          <Column fillWidth vertical="center" horizontal="end" gap="12">
+
+          {items.map((item) => (
+            
+            <Checkbox
+            style={{ width: "100%" }}
+              key={item.id}
+              label={item.label}
+  description={item.description}
+              isChecked={item.checked}
+              onToggle={() => {
+                setItems(
+                  items.map((i) =>
+                    i.id === item.id ? { ...i, checked: !i.checked } : i
+                  )
+                );
+              }}
+            />
+          ))}
+          </Column>
+
+          <Row fillWidth vertical="center" horizontal="end" gap="8">
+            <Button size="m" onClick={() => setIsStackedOpen(true)}>
+              Create
+            </Button>
+          </Row>
+        </Column>
+      </Dialog>
+    </>
   );
 }
 

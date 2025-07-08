@@ -27,7 +27,7 @@ import {
   UserMenu,
   Dialog,
 } from "@once-ui-system/core";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Lato,
   Montserrat,
@@ -306,6 +306,16 @@ function HeroSection() {
 
 function HeroStats() {
   const router = useRouter();
+  const[uuid,setUuid]= useState<string>("");
+  // Get current session id from Supabase (if user is logged in)
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data }) => {
+      if (data?.session?.user?.id) {
+        setUuid(data.session.user.id);
+      }
+    });
+  }, [uuid]);
+  
   return (
     <Column
       fitWidth
@@ -378,7 +388,7 @@ function HeroStats() {
           >
             Start here
           </Button>
-          <Button
+            <Button
             id="arrow-button-1"
             size="m"
             weight="default"
@@ -390,10 +400,10 @@ function HeroStats() {
             onMouseLeave={(e: React.MouseEvent<HTMLButtonElement>) =>
               (e.currentTarget.style.backgroundColor = "#F2F2EF")
             }
-            onClick={() => router.push("/profile/a")}
-          >
+            onClick={() => (window.location.href = `/profile/${uuid}`)}
+            >
             Dashboard
-          </Button>
+            </Button>
         </Row>
       </Column>
     </Column>
