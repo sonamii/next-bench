@@ -37,6 +37,7 @@ import {
   Spinner,
   Dialog,
   Checkbox,
+  Skeleton,
 } from "@once-ui-system/core";
 import {
   Lato,
@@ -50,9 +51,11 @@ import {
   Roboto,
   Open_Sans,
 } from "next/font/google";
-import { useState } from "react";
-
+import { useState, useEffect, useCallback } from "react";
 import { useToast } from "@once-ui-system/core";
+import NavBar from "./../../components/NavBar";
+import Footer from "./../../components/Footer";
+import { supabase } from "@/app/utils/supabase/client";
 
 // Font setup
 const dmsans = Outfit({
@@ -61,47 +64,32 @@ const dmsans = Outfit({
   weight: ["400", "500", "600", "700"],
 });
 
-import NavBar from "./../../components/NavBar";
-import Footer from "./../../components/Footer";
-import { supabase } from "@/app/utils/supabase/client";
-import { useEffect } from "react";
+// Helper: Get UUID from URL
+function getUuidFromUrl() {
+  if (typeof window === "undefined") return undefined;
+  const parts = window.location.pathname.split("/").filter(Boolean);
+  return parts[parts.length - 1];
+}
 
-// Get slug from URL using pop/push and "/" split
-const uuid =
-  typeof window !== "undefined"
-    ? (() => {
-        const parts = window.location.pathname.split("/");
-        // Remove empty strings from split (leading/trailing slashes)
-        const filtered = parts.filter(Boolean);
-        // The slug is the last part (after /profile/)
-        return filtered.pop();
-      })()
-    : undefined;
-
-// Data JSONs
-const segmentedButtons = [
+// Options
+const segmentedTabs = [
   { value: "profile", label: "Profile" },
   { value: "socials", label: "Socials" },
   { value: "creations", label: "Your creations" },
   { value: "security", label: "Security" },
 ];
-
 const genderOptions = [
   { label: "Male", value: "male" },
   { label: "Female", value: "female" },
   { label: "Prefer not to say", value: "none" },
 ];
-
 const membershipOptions = [
   { label: "Active", value: "A" },
   { label: "Freemium", value: "F" },
   { label: "Pro", value: "P" },
 ];
-
 const languageOptions = [{ label: "English", value: "English" }];
-
 const timezoneOptions = [{ label: "GMT +5:30", value: "GMT +5:30" }];
-
 const countries = [
   { label: "Afghanistan", value: "AF" },
   { label: "Albania", value: "AL" },
@@ -109,55 +97,312 @@ const countries = [
   { label: "Zimbabwe", value: "ZW" },
 ];
 
-// Main Page
-export default function Home() {
+// --- Main Page ---
+export default function ProfilePage() {
   const [activeTab, setActiveTab] = useState("profile");
+  const [uuid, setUuid] = useState<string | undefined>(undefined);
 
-  const [institutions, setInstitutions] = useState<
-    {
-      name: string;
-      id: string;
-      address: string;
-      affiliation: string;
-      contact: string;
-      email: string;
-      isPublished: boolean;
-      uuid: string;
-    }[]
-  >([]);
+  // Loading states for each section
+  const [loadingProfile, setLoadingProfile] = useState(true);
+  const [loadingSocials, setLoadingSocials] = useState(true);
+  const [loadingInstitutions, setLoadingInstitutions] = useState(true);
+  const [loadingSecurity, setLoadingSecurity] = useState(false); // Security is static
 
-  useEffect(() => {
-    async function fetchInstitutions() {
-      if (!uuid) return;
-      const { data, error } = await supabase
+  // All user data in one state
+  const [userData, setUserData] = useState<{
+    profile: UserProfile | null;
+    socials: UserSocials | null;
+    institutions: Institution[];
+    isCurrentUser: boolean;
+  }>({
+    profile: null,
+    socials: null,
+    institutions: [],
+    isCurrentUser: false,
+  });
+
+  const { addToast } = useToast();
+
+  // Fetch all user data at once
+  const fetchAllUserData = useCallback(async (uuid: string) => {
+    setLoadingProfile(false); //true earlier and when save all disappear
+    setLoadingSocials(false); //true earlier and when save all disappear
+    setLoadingInstitutions(true); //true earlier and when save all disappear
+
+    // Fetch profile, socials, and institutions in parallel
+    const [
+      { data: profileData, error: profileError },
+      { data: socialsData, error: socialsError },
+      { data: institutionsData, error: institutionsError },
+      { data: sessionData },
+    ] = await Promise.all([
+      supabase
+        .from("user_profiles")
+        .select(
+          "profile_details, username, joined_at, last_login, primary_email, is_public, pfp, count"
+        )
+        .eq("uuid", uuid)
+        .maybeSingle(),
+      supabase
+        .from("user_profiles")
+        .select("socials")
+        .eq("uuid", uuid)
+        .maybeSingle(),
+      supabase
         .from("edu_centers")
-        .select("edu_id, basic_info, is_published")
-        .eq("uuid", uuid);
+        .select("edu_id, basic_info, is_published, uuid")
+        .eq("uuid", uuid),
+      supabase.auth.getSession(),
+    ]);
 
-      if (error) {
-        console.error("Error fetching institutions:", error);
-        return;
-      }
-
-      if (data && Array.isArray(data)) {
-        setInstitutions(
-          data.map((row) => ({
-            id: row.edu_id,
-
-            name: row.basic_info?.name || "",
-            address: row.basic_info?.city || "",
-            affiliation: row.basic_info?.affiliation || "",
-            contact: row.basic_info?.phone_number || "",
-            email: row.basic_info?.email || "",
-            isPublished: row.is_published || false,
-            uuid: uuid || "",
-          }))
-        );
-      }
+    // Prepare profile
+    let profile: UserProfile | null = null;
+    if (profileData) {
+      const pd = profileData.profile_details || {};
+      profile = {
+        fullName: pd.fullName ?? "",
+        introduction: pd.introduction ?? "",
+        dob: pd.dob ? new Date(pd.dob) : null,
+        gender: pd.gender ?? "none",
+        country: pd.country ?? "",
+        address: pd.address ?? "",
+        phoneNumber: pd.phoneNumber ?? "",
+        email: profileData.primary_email ?? "",
+        accountVisibility: profileData.is_public ?? false,
+        userName: profileData.username ?? "",
+        accountCreated: profileData.joined_at
+          ? new Date(profileData.joined_at)
+          : null,
+        lastLogin: profileData.last_login
+          ? new Date(profileData.last_login)
+          : null,
+        membershipStatus: pd.membershipStatus ?? "A",
+        languagePreference: pd.languagePreference ?? "English",
+        timezone: pd.timezone ?? "Select timezone",
+        avatarSrc: profileData.pfp ?? "",
+        count: profileData.count ?? 0,
+      };
     }
 
-    fetchInstitutions();
-  }, [uuid]);
+    // Prepare socials
+    let socials: UserSocials | null = null;
+    if (socialsData && socialsData.socials) {
+      socials = {
+        phone: socialsData.socials.phone ?? "",
+        email: socialsData.socials.email ?? "",
+        whatsapp: socialsData.socials.whatsapp ?? "",
+        instagram: socialsData.socials.instagram ?? "",
+        linkedin: socialsData.socials.linkedin ?? "",
+      };
+    }
+
+    // Prepare institutions
+    let institutions: Institution[] = [];
+    if (institutionsData && Array.isArray(institutionsData)) {
+      institutions = institutionsData.map((row) => ({
+        id: row.edu_id,
+        name: row.basic_info?.name || "",
+        address: row.basic_info?.city || "",
+        affiliation: row.basic_info?.affiliation || "",
+        contact: row.basic_info?.phone_number || "",
+        email: row.basic_info?.email || "",
+        isPublished: row.is_published || false,
+        uuid: row.uuid || "",
+      }));
+    }
+
+    // Check if current user
+    const sessionUserId = sessionData?.session?.user?.id;
+    const isCurrentUser = sessionUserId === uuid;
+
+    setUserData({
+      profile,
+      socials,
+      institutions,
+      isCurrentUser,
+    });
+
+    setLoadingProfile(false);
+    setLoadingSocials(false);
+    setTimeout(() => {
+      setLoadingInstitutions(false);
+    }, 1000);
+  }, []);
+
+  // On mount, set uuid and fetch all data
+  useEffect(() => {
+    const id = getUuidFromUrl();
+    setUuid(id);
+    if (id) fetchAllUserData(id);
+  }, [fetchAllUserData]);
+
+
+  // --- Realtime subscription for user profile ---
+  useEffect(() => {
+    if (!uuid) return;
+    // Subscribe to changes in user_profiles for this uuid
+    const channel = supabase
+      .channel(`user-profile-${uuid}`)
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'user_profiles',
+          filter: `uuid=eq.${uuid}`,
+        },
+        (payload) => {
+          fetchAllUserData(uuid);
+        }
+      )
+      .subscribe();
+
+    // Subscribe to changes in edu_centers for this uuid
+    const eduChannel = supabase
+      .channel(`edu-centers-${uuid}`)
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'edu_centers',
+          filter: `uuid=eq.${uuid}`,
+        },
+        (payload) => {
+          fetchAllUserData(uuid);
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+      supabase.removeChannel(eduChannel);
+    };
+  }, [uuid, fetchAllUserData]);
+  // Save profile handler
+  const handleSaveProfile = async (profile: UserProfile) => {
+    if (!uuid) return;
+    // setLoadingProfile(true); // REMOVE THIS LINE
+    const profileDetails = {
+      fullName: profile.fullName,
+      introduction: profile.introduction,
+      dob: profile.dob ? profile.dob.toISOString() : null,
+      gender: profile.gender,
+      country: profile.country,
+      address: profile.address,
+      phoneNumber: profile.phoneNumber,
+      email: profile.email,
+      membershipStatus: profile.membershipStatus,
+      languagePreference: profile.languagePreference,
+      timezone: profile.timezone,
+    };
+    const { error } = await supabase
+      .from("user_profiles")
+      .update({
+        profile_details: profileDetails,
+        username: profile.userName,
+        is_public: profile.accountVisibility,
+      })
+      .eq("uuid", uuid);
+    if (error) {
+      addToast({
+        message: "Failed to update profile. Please try again.",
+        variant: "danger",
+      });
+    } else {
+      addToast({
+        message: "Profile updated successfully!",
+        variant: "success",
+      });
+      await fetchAllUserData(uuid);
+    }
+    // setLoadingProfile(false); // REMOVE THIS LINE
+  };
+
+  // Save socials handler
+  const handleSaveSocials = async (socials: UserSocials) => {
+    if (!uuid) return;
+    // setLoadingSocials(true); // REMOVE THIS LINE
+    const { error } = await supabase
+      .from("user_profiles")
+      .update({ socials })
+      .eq("uuid", uuid);
+    if (error) {
+      addToast({
+        message: "Failed to update socials. Please try again.",
+        variant: "danger",
+      });
+    } else {
+      addToast({
+        message: "Socials updated successfully!",
+        variant: "success",
+      });
+      await fetchAllUserData(uuid);
+    }
+    // setLoadingSocials(false); // REMOVE THIS LINE
+  };
+
+  // Save institution publish status
+  const handlePublishInstitution = async (
+    institutionId: string,
+    isPublished: boolean
+  ) => {
+    if (!uuid) return;
+    // setLoadingInstitutions(true); // REMOVE THIS LINE
+    const { error } = await supabase
+      .from("edu_centers")
+      .update({ is_published: isPublished })
+      .eq("edu_id", institutionId)
+      .eq("uuid", uuid);
+    if (error) {
+      addToast({
+        message: "Failed to update institution.",
+        variant: "danger",
+      });
+    } else {
+      await fetchAllUserData(uuid);
+    }
+    // setLoadingInstitutions(false); // REMOVE THIS LINE
+  };
+
+  // Create new institution
+  const handleCreateInstitution = async (newInstitution: InstitutionInput) => {
+    if (!uuid) return;
+    // setLoadingInstitutions(true); // REMOVE THIS LINE
+    const randomNum = Math.floor(10000 + Math.random() * 90000);
+    const urlName =
+      newInstitution.name.toLowerCase().replace(/\s+/g, "-").trim() +
+      "-" +
+      randomNum;
+    const { error } = await supabase.from("edu_centers").insert([
+      {
+        basic_info: {
+          name: newInstitution.name.trim(),
+          type: newInstitution.type.trim(),
+          affiliation: newInstitution.affiliation.trim(),
+          phone_number: newInstitution.phoneNumber.trim(),
+          email: newInstitution.email.trim(),
+          city: newInstitution.city.trim(),
+        },
+        is_published: false,
+        uuid,
+        edu_url_name: urlName,
+      },
+    ]);
+    if (error) {
+      addToast({
+        message: "Failed to create institution. Please try again.",
+        variant: "danger",
+      });
+    } else {
+      addToast({
+        message: "Institution created successfully!",
+        variant: "success",
+      });
+      await fetchAllUserData(uuid);
+    }
+    // setLoadingInstitutions(false); // REMOVE THIS LINE
+  };
 
   return (
     <Column
@@ -191,14 +436,50 @@ export default function Home() {
             dmsansClass={dmsans.className}
             activeTab={activeTab}
             setActiveTab={setActiveTab}
+            profile={userData.profile}
           />
           <Flex fillWidth height={3}></Flex>
-          {activeTab === "profile" && <ProfileEdit countries={countries} />}
-          {activeTab === "creations" && (
-            <CreatedInstitutions institutions={institutions} />
-          )}
-          {activeTab === "security" && <Security />}
-          {activeTab === "socials" && <Socials />}
+          {activeTab === "profile" &&
+            (loadingProfile ? (
+              <Flex fillWidth center paddingY="32">
+                <Spinner size="xl" />
+              </Flex>
+            ) : userData.profile ? (
+              <ProfileEdit
+                countries={countries}
+                profile={userData.profile}
+                isCurrentUser={userData.isCurrentUser}
+                onSave={handleSaveProfile}
+              />
+            ) : null)}
+          {activeTab === "creations" &&
+            (loadingInstitutions ? (
+              <Flex fillWidth center paddingY="32">
+                <Spinner size="xl" />
+              </Flex>
+            ) : (
+              <CreatedInstitutions
+                institutions={userData.institutions}
+                onPublish={handlePublishInstitution}
+                onCreate={handleCreateInstitution}
+              />
+            ))}
+          {activeTab === "security" &&
+            (loadingSecurity ? (
+              <Flex fillWidth center paddingY="32">
+                <Spinner size="xl" />
+              </Flex>
+            ) : (
+              <Security />
+            ))}
+          {activeTab === "socials" &&
+            (loadingSocials ? (
+              <Flex fillWidth center paddingY="32">
+                <Spinner size="xl" />
+              </Flex>
+            ) : userData.socials ? (
+              <Socials socials={userData.socials} onSave={handleSaveSocials} />
+            ) : null)}
           <Flex fillWidth height={3}></Flex>
         </Column>
       </Column>
@@ -208,48 +489,64 @@ export default function Home() {
   );
 }
 
-// Profile Header
+// --- Types ---
+type UserProfile = {
+  fullName: string;
+  introduction: string;
+  dob: Date | null;
+  gender: string;
+  country: string;
+  address: string;
+  phoneNumber: string;
+  email: string;
+  accountVisibility: boolean;
+  userName: string;
+  accountCreated: Date | null;
+  lastLogin: Date | null;
+  membershipStatus: string;
+  languagePreference: string;
+  timezone: string;
+  avatarSrc: string;
+  count: number;
+};
+type UserSocials = {
+  phone: string;
+  email: string;
+  whatsapp: string;
+  instagram: string;
+  linkedin: string;
+};
+type Institution = {
+  name: string;
+  address: string;
+  affiliation: string;
+  contact: string;
+  email: string;
+  isPublished: boolean;
+  id: string;
+  uuid: string;
+};
+type InstitutionInput = {
+  name: string;
+  type: string;
+  affiliation: string;
+  phoneNumber: string;
+  email: string;
+  city: string;
+};
+
+// --- Profile Header ---
 function ProfileHeader({
   dmsansClass,
   activeTab,
   setActiveTab,
+  profile,
 }: {
   dmsansClass: string;
   activeTab: string;
   setActiveTab: (v: string) => void;
+  profile: UserProfile | null;
 }) {
-  const [fullName, setFullName] = useState<string>("");
-  const [avatarSrc, setAvatarSrc] = useState<string>("");
-  const [intro, setIntro] = useState<string>("");
-  const [count, setCount] = useState<number>(0);
-
-  useEffect(() => {
-    async function fetchProfileData() {
-      if (!uuid) return;
-
-      const { data, error } = await supabase
-        .from("user_profiles")
-        .select("profile_details, pfp, count")
-        .eq("uuid", uuid)
-        .maybeSingle();
-
-      if (error) {
-        console.error("Error fetching profile data:", error);
-        return;
-      }
-
-      if (data) {
-        const profileDetails = data.profile_details || {};
-        setFullName(profileDetails.fullName || "");
-        setIntro(profileDetails.introduction || "");
-        setAvatarSrc(data.pfp || "");
-        setCount(data.count || 0);
-      }
-    }
-
-    fetchProfileData();
-  }, [uuid]);
-
   return (
     <Column
       fillWidth
@@ -264,11 +561,22 @@ function ProfileHeader({
       vertical="start"
     >
       <Avatar
-        src={avatarSrc}
+        src={profile?.avatarSrc || ""}
         size="xl"
         border="neutral-strong"
         borderWidth={1}
+        loading={!profile}
       />
+
+      {!profile ? (
+        <>
+          <Row center gap="8" fillWidth>
+            <Skeleton shape="line" delay="1" width="s" height="xl" />
+          </Row>
+          <Skeleton shape="line" delay="1" width="xs" height="xs" />
+        </>
+      ) : null}
+
       <Text
         style={{
           color: "#181A1D",
@@ -278,28 +586,32 @@ function ProfileHeader({
         className={dmsansClass}
       >
         <Row center gap="8">
-          {fullName || "User"}
-          <Line vert width={0.1} height={2.5} background="neutral-medium" />
-          <Text
-            style={{
-              fontSize: "21px",
-              fontWeight: "500",
-            }}
-            onBackground="neutral-weak"
-            className={dmsansClass}
-          >
-            <Kbd>#{count}</Kbd>
-          </Text>
+          {profile?.fullName}
+          {profile && (
+            <>
+              <Line vert width={0.1} height={2.5} background="neutral-medium" />
+              <Text
+                style={{
+                  fontSize: "21px",
+                  fontWeight: "500",
+                }}
+                onBackground="neutral-weak"
+                className={dmsansClass}
+              >
+                <Kbd>#{profile?.count}</Kbd>
+              </Text>
+            </>
+          )}
         </Row>
       </Text>
       <Text onBackground="neutral-weak" style={{ fontSize: "14px" }}>
-        {intro || "User at Next Bench"}
+        {profile?.introduction}
       </Text>
       <Flex fillWidth center paddingY="8">
         <SegmentedControl
           fillWidth={true}
           maxWidth={40}
-          buttons={segmentedButtons}
+          buttons={segmentedTabs}
           defaultSelected="profile"
           onToggle={setActiveTab}
         />
@@ -308,183 +620,60 @@ function ProfileHeader({
   );
 }
 
-// Profile Edit
+// --- Profile Edit ---
 function ProfileEdit({
   countries,
+  profile,
+  isCurrentUser,
+  onSave,
 }: {
   countries: { label: string; value: string }[];
+  profile: UserProfile;
+  isCurrentUser: boolean;
+  onSave: (profile: UserProfile) => void;
 }) {
-  const [fullName, setFullName] = useState("");
-  const [introduction, setIntroduction] = useState("");
-  const [dob, setDob] = useState<Date | null>(null);
-  const [gender, setGender] = useState("none");
-  const [country, setCountry] = useState("");
-  const [address, setAddress] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState<string>("");
-  const [email, setEmail] = useState("");
-  const [accountVisibility, setAccountVisibility] = useState(false);
-
-  const [userName, setUserName] = useState("");
-  const [accountCreated, setAccountCreated] = useState<Date | null>(null);
-  const [lastLogin, setLastLogin] = useState<Date | null>(null);
-  const [membershipStatus, setMembershipStatus] = useState("A");
-  const [languagePreference, setLanguagePreference] = useState("English");
-  const [timezone, setTimezone] = useState("Select timezone");
-  const { addToast } = useToast();
+  const [form, setForm] = useState<UserProfile>(profile);
 
   useEffect(() => {
-    async function fetchProfileAndAccountDetails() {
-      if (!uuid) return;
+    setForm(profile);
+  }, [profile]);
 
-      // Fetch profile_details and account info in parallel
-      const [
-        { data: profileData, error: profileError },
-        { data: accountData, error: accountError },
-      ] = await Promise.all([
-        supabase
-          .from("user_profiles")
-          .select("profile_details")
-          .eq("uuid", uuid)
-          .single(),
-        supabase
-          .from("user_profiles")
-          .select("username, joined_at, last_login,primary_email,is_public")
-          .eq("uuid", uuid)
-          .maybeSingle(),
-      ]);
+  const handleChange = (field: keyof UserProfile, value: any) => {
+    setForm((prev) => ({ ...prev, [field]: value }));
+  };
 
-      // Profile details
-      if (!profileError && profileData?.profile_details) {
-        const details = profileData.profile_details;
-        setFullName(details.fullName ?? "");
-        setIntroduction(details.introduction ?? "");
-        setDob(details.dob ? new Date(details.dob) : null);
-        setGender(details.gender ?? "none");
-        setCountry(details.country ?? "");
-        setAddress(details.address ?? "");
-        setPhoneNumber(details.phoneNumber ?? "");
-        setEmail(details.email ?? "");
-        setMembershipStatus(details.membershipStatus ?? "A");
-        setLanguagePreference(details.languagePreference ?? "English");
-        setTimezone(details.timezone ?? "Select timezone");
-      }
-
-      // Account details
-      if (!accountError && accountData) {
-        setUserName(accountData.username ?? "");
-        setAccountCreated(
-          accountData.joined_at ? new Date(accountData.joined_at) : null
-        );
-        setLastLogin(
-          accountData.last_login ? new Date(accountData.last_login) : null
-        );
-        setEmail(accountData.primary_email ?? "");
-        setAccountVisibility(accountData.is_public);
-      }
-    }
-
-    fetchProfileAndAccountDetails();
-  }, [uuid]);
-
-  function saveDataToSupabase() {
-    if (!uuid) return;
-
-    const profileDetails = {
-      fullName,
-      introduction,
-      dob: dob ? dob.toISOString() : null,
-      gender,
-      country,
-      address,
-      phoneNumber,
-      email,
-      membershipStatus,
-      languagePreference,
-      timezone,
-    };
-
-    supabase
-      .from("user_profiles")
-      .update({
-        profile_details: profileDetails,
-        username: userName,
-      })
-      .eq("uuid", uuid)
-      .then(({ error }) => {
-        if (error) {
-          addToast({
-            message: "Failed to update profile. Please try again.",
-            variant: "danger",
-          });
-        } else {
-          addToast({
-            message: "Profile updated successfully!",
-            variant: "success",
-          });
-        }
-      });
-  }
-
-  const [isUser, setIsUser] = useState(false);
-
-  useEffect(() => {
-    async function checkSessionUser() {
-      const { data, error } = await supabase.auth.getSession();
-      if (error || !data?.session?.user?.id || !uuid) {
-        setIsUser(false);
-        return;
-      }
-      setIsUser(data.session.user.id === uuid);
-      console.log(`Is user: ${data.session.user.id === uuid}`);
-      console.log(`Current UUID: ${data.session.user.id}`);
-    }
-    checkSessionUser();
-  }, [uuid]);
-
+  const [loading, setLoading] = useState(false);
   return (
     <>
       <Grid fillWidth padding="m" fitHeight columns={2} gap="104">
         <PersonalDetails
           countries={countries}
-          introduction={introduction}
-          setIntroduction={setIntroduction}
-          fullName={fullName}
-          setFullName={setFullName}
-          dob={dob}
-          setDob={setDob}
-          gender={gender}
-          setGender={setGender}
-          country={country}
-          setCountry={setCountry}
-          address={address}
-          setAddress={setAddress}
-          phoneNumber={phoneNumber}
-          setPhoneNumber={setPhoneNumber}
-          email={email}
-          setEmail={setEmail}
-          accountVisibility={accountVisibility}
-          setAccountVisibility={setAccountVisibility}
-          isUser={isUser}
+          form={form}
+          onChange={handleChange}
         />
-        <AccountDetails
-          userName={userName}
-          setUserName={setUserName}
-          accountCreated={accountCreated}
-          setAccountCreated={setAccountCreated}
-          lastLogin={lastLogin}
-          setLastLogin={setLastLogin}
-          membershipStatus={membershipStatus}
-          setMembershipStatus={setMembershipStatus}
-          languagePreference={languagePreference}
-          setLanguagePreference={setLanguagePreference}
-          timezone={timezone}
-          setTimezone={setTimezone}
-          isUser={isUser}
-        />
+
+        <AccountDetails form={form} onChange={handleChange} />
       </Grid>
       <Row paddingY="12" fillWidth horizontal="end">
-        <Button size="m" onClick={saveDataToSupabase}>
-          Save all
+        <Button
+          size="m"
+          onClick={() => {
+            setLoading(true);
+            onSave(form);
+            setTimeout(() => {
+              setLoading(false);
+            }, 1000); // Simulate network delay
+          }}
+          disabled={loading}
+        >
+          {loading ? (
+            <>
+              Saving...&nbsp;
+              <Spinner size="s" />
+            </>
+          ) : (
+            "Save all"
+          )}
         </Button>
       </Row>
     </>
@@ -493,46 +682,12 @@ function ProfileEdit({
 
 function PersonalDetails({
   countries,
-  fullName,
-  introduction,
-  setIntroduction,
-  setFullName,
-  dob,
-  setDob,
-  gender,
-  setGender,
-  country,
-  setCountry,
-  address,
-  setAddress,
-  phoneNumber,
-  setPhoneNumber,
-  email,
-  setEmail,
-  accountVisibility,
-  setAccountVisibility,
-  isUser,
+  form,
+  onChange,
 }: {
   countries: { label: string; value: string }[];
-  fullName: string;
-  setFullName: (v: string) => void;
-  introduction: string;
-  setIntroduction: (v: string) => void;
-  dob: Date | null;
-  setDob: (v: Date | null) => void;
-  gender: string;
-  setGender: (v: string) => void;
-  country: string;
-  setCountry: (v: string) => void;
-  address: string;
-  setAddress: (v: string) => void;
-  phoneNumber: string;
-  setPhoneNumber: (v: string) => void;
-  email: string;
-  setEmail: (v: string) => void;
-  accountVisibility: boolean;
-  setAccountVisibility: (v: boolean) => void;
-  isUser?: boolean; // Optional prop to check if it's the user's profile
+  form: UserProfile;
+  onChange: (field: keyof UserProfile, value: any) => void;
 }) {
   return (
     <Column fillWidth horizontal="start" vertical="start" gap="20">
@@ -545,20 +700,22 @@ function PersonalDetails({
       <ProfileRow label="Full name:">
         <Input
           id="input-fullname"
+          spellCheck={false}
           height="m"
           placeholder="Full Name"
-          value={fullName}
-          onChange={(e: any) => setFullName(e.target.value)}
+          value={form.fullName}
+          onChange={(e: any) => onChange("fullName", e.target.value)}
         />
       </ProfileRow>
+
       <ProfileRow label="Short Introduction:">
         <Textarea
-          id="input-fullname"
+          id="input-intro"
           placeholder="Write here"
           resize="none"
           maxLength={30}
-          value={introduction}
-          onChange={(e: any) => setIntroduction(e.target.value)}
+          value={form.introduction}
+          onChange={(e: any) => onChange("introduction", e.target.value)}
         />
       </ProfileRow>
       <ProfileRow label="Date of Birth:">
@@ -567,8 +724,8 @@ function PersonalDetails({
           height="m"
           placeholder="When were you born?"
           cursor="interactive"
-          value={dob === null ? undefined : dob}
-          onChange={(v: Date | null) => setDob(v)}
+          value={form.dob === null ? undefined : form.dob}
+          onChange={(v: Date | null) => onChange("dob", v)}
         />
       </ProfileRow>
       <ProfileRow label="Gender:">
@@ -576,9 +733,9 @@ function PersonalDetails({
           height="m"
           id="gender-select"
           placeholder="Choose your gender"
-          value={gender}
+          value={form.gender}
           options={genderOptions}
-          onSelect={(v: any) => setGender(v)}
+          onSelect={(v: any) => onChange("gender", v)}
         />
       </ProfileRow>
       <ProfileRow label="Country:">
@@ -587,9 +744,9 @@ function PersonalDetails({
           searchable={true}
           id="country-select"
           placeholder="Where do you reside?"
-          value={country}
+          value={form.country}
           options={countries}
-          onSelect={(v: any) => setCountry(v)}
+          onSelect={(v: any) => onChange("country", v)}
         />
       </ProfileRow>
       <ProfileRow label="Address:">
@@ -603,14 +760,15 @@ function PersonalDetails({
               be shared with anyone.
             </Text>
           }
-          value={address}
-          onChange={(e: any) => setAddress(e.target.value)}
+          value={form.address}
+          onChange={(e: any) => onChange("address", e.target.value)}
         />
       </ProfileRow>
       <ProfileRow label="Phone Number:">
         <Input
           id="input-phone"
           height="m"
+          spellCheck={false}
           placeholder="Your phone number"
           description={
             <Text onBackground="neutral-weak">
@@ -618,14 +776,15 @@ function PersonalDetails({
               will not be shared with anyone.
             </Text>
           }
-          value={phoneNumber}
-          onChange={(e: any) => setPhoneNumber(e.target.value)}
+          value={form.phoneNumber}
+          onChange={(e: any) => onChange("phoneNumber", e.target.value)}
         />
       </ProfileRow>
       <ProfileRow label="Email:">
         <Input
           id="input-email"
           height="m"
+          spellCheck={false}
           description={
             <Text onBackground="neutral-weak">
               <i className="ri-information-line"></i>&nbsp;Your email will be
@@ -634,24 +793,21 @@ function PersonalDetails({
           }
           disabled
           placeholder="Your email id"
-          value={email}
-          onChange={(e: any) => setEmail(e.target.value)}
-          // hasPrefix={
-          //   <Text onBackground="neutral-medium">
-          //     <i className="ri-at-line"></i>
-          //   </Text>
-          // }
+          value={form.email}
+          onChange={(e: any) => onChange("email", e.target.value)}
         />
       </ProfileRow>
       <ProfileRow label="Account visiblity:">
         <Switch
           label={
             <Text onBackground="neutral-weak" variant="label-default-m">
-              {accountVisibility ? "Public" : "Private"}
+              {form.accountVisibility ? "Public" : "Private"}
             </Text>
           }
-          isChecked={accountVisibility}
-          onToggle={() => setAccountVisibility(!accountVisibility)}
+          isChecked={form.accountVisibility}
+          onToggle={() =>
+            onChange("accountVisibility", !form.accountVisibility)
+          }
         />
       </ProfileRow>
     </Column>
@@ -659,35 +815,11 @@ function PersonalDetails({
 }
 
 function AccountDetails({
-  userName,
-  setUserName,
-  accountCreated,
-  setAccountCreated,
-  lastLogin,
-  setLastLogin,
-  membershipStatus,
-  setMembershipStatus,
-  languagePreference,
-  setLanguagePreference,
-  timezone,
-  setTimezone,
-  isVerified = true,
-  isUser,
+  form,
+  onChange,
 }: {
-  userName: string;
-  setUserName: (v: string) => void;
-  accountCreated: Date | null;
-  setAccountCreated: (v: Date | null) => void;
-  lastLogin: Date | null;
-  setLastLogin: (v: Date | null) => void;
-  membershipStatus: string;
-  setMembershipStatus: (v: string) => void;
-  languagePreference: string;
-  setLanguagePreference: (v: string) => void;
-  timezone: string;
-  setTimezone: (v: string) => void;
-  isVerified?: boolean;
-  isUser?: boolean; // Optional prop to check if it's the user's profile
+  form: UserProfile;
+  onChange: (field: keyof UserProfile, value: any) => void;
 }) {
   return (
     <Column fillWidth horizontal="start" vertical="start" gap="20">
@@ -700,6 +832,7 @@ function AccountDetails({
       <ProfileRow label="User Name:">
         <Input
           placeholder="Enter your username"
+          spellCheck={false}
           description={
             <Text onBackground="neutral-weak">
               <i className="ri-information-line"></i>&nbsp;Your username will be
@@ -707,13 +840,13 @@ function AccountDetails({
             </Text>
           }
           hasSuffix={
-            <Kbd cursor="interactive" onClick={() => console.log(userName)}>
+            <Kbd cursor="interactive" onClick={() => {}}>
               Change
             </Kbd>
           }
           id="input-username"
-          value={userName}
-          onChange={(e: any) => setUserName(e.target.value)}
+          value={form.userName}
+          onChange={(e: any) => onChange("userName", e.target.value)}
         />
       </ProfileRow>
       <ProfileRow label="Account Created:">
@@ -721,8 +854,8 @@ function AccountDetails({
           id="date-account-created"
           placeholder="July 2, 2025"
           height="m"
-          value={accountCreated === null ? undefined : accountCreated}
-          onChange={(v: Date | null) => setAccountCreated(v)}
+          value={form.accountCreated === null ? undefined : form.accountCreated}
+          onChange={(v: Date | null) => onChange("accountCreated", v)}
           disabled
         />
       </ProfileRow>
@@ -731,8 +864,8 @@ function AccountDetails({
           id="date-last-login"
           placeholder="July 2, 2025"
           height="m"
-          value={lastLogin === null ? undefined : lastLogin}
-          onChange={(v: Date | null) => setLastLogin(v)}
+          value={form.lastLogin === null ? undefined : form.lastLogin}
+          onChange={(v: Date | null) => onChange("lastLogin", v)}
           disabled
         />
       </ProfileRow>
@@ -742,26 +875,22 @@ function AccountDetails({
           disabled
           id="membership-select"
           placeholder="Active"
-          value={membershipStatus}
+          value={form.membershipStatus}
           options={membershipOptions}
-          onSelect={(v: any) => setMembershipStatus(v)}
+          onSelect={(v: any) => onChange("membershipStatus", v)}
         />
       </ProfileRow>
       <ProfileRow label="Account Verification:">
-        {isVerified ? (
-          <Tag variant="gradient">Verified</Tag>
-        ) : (
-          <Tag variant="danger">Not verified</Tag>
-        )}
+        <Tag variant="gradient">Verified</Tag>
       </ProfileRow>
       <ProfileRow label="Language Preference:">
         <Select
           height="m"
           id="language-select"
           placeholder="Select your language"
-          value={languagePreference}
+          value={form.languagePreference}
           options={languageOptions}
-          onSelect={(v: any) => setLanguagePreference(v)}
+          onSelect={(v: any) => onChange("languagePreference", v)}
         />
       </ProfileRow>
       <ProfileRow label="Time Zone:">
@@ -769,9 +898,9 @@ function AccountDetails({
           height="m"
           id="timezone-select"
           placeholder="Select your time zone"
-          value={timezone}
+          value={form.timezone}
           options={timezoneOptions}
-          onSelect={(v: any) => setTimezone(v)}
+          onSelect={(v: any) => onChange("timezone", v)}
         />
       </ProfileRow>
     </Column>
@@ -797,157 +926,70 @@ function ProfileRow({
   );
 }
 
-// Institution type
-type Institution = {
-  name: string;
-  address: string;
-  affiliation: string;
-  contact: string;
-  email: string;
-  isPublished: boolean;
-  id: string;
-  uuid: string;
-};
-
-// Created Institutions
+// --- Created Institutions ---
 function CreatedInstitutions({
   institutions,
+  onPublish,
+  onCreate,
 }: {
   institutions: Institution[];
+  onPublish: (institutionId: string, isPublished: boolean) => void;
+  onCreate: (newInstitution: InstitutionInput) => void;
 }) {
   const [searchValue, setSearchValue] = useState<string>("");
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchValue(e.target.value);
-  };
-
-  const handleClear = () => {
-    setSearchValue("");
-  };
-
-  const [items, setItems] = useState([
-    {
-      id: 1,
-      label: " Terms of Service",
-      checked: false,
-      description: "By checking this box, you agree to our terms of service.",
-    },
-    {
-      id: 2,
-      label: "Privacy Policy",
-      checked: false,
-      description: " By checking this box, you agree to our privacy policy. ",
-    },
-    {
-      id: 3,
-      label: "Cookie Policy",
-      checked: false,
-      description: " By checking this box, you agree to our cookie policy.",
-    },
-    {
-      id: 4,
-      label: "Community Guidelines",
-      checked: false,
-      description:
-        " By checking this box, you agree to our community guidelines.",
-    },
-  ]);
-  const [isBaseOpen, setIsBaseOpen] = useState(false);
-  const [isStackedOpen, setIsStackedOpen] = useState(false);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isTermsOpen, setIsTermsOpen] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
-  const { addToast } = useToast();
-  const allChecked = items.every((item) => item.checked);
-  const someChecked = items.some((item) => item.checked);
+
+  // New institution form
+  const [newInstitution, setNewInstitution] = useState<InstitutionInput>({
+    name: "",
+    type: "",
+    affiliation: "",
+    phoneNumber: "",
+    email: "",
+    city: "",
+  });
+
+  // Terms checkboxes
+  const [terms, setTerms] = useState([
+    { id: 1, label: "Terms of Service", checked: false },
+    { id: 2, label: "Privacy Policy", checked: false },
+    { id: 3, label: "Cookie Policy", checked: false },
+    { id: 4, label: "Community Guidelines", checked: false },
+  ]);
+  const allChecked = terms.every((t) => t.checked);
+  const someChecked = terms.some((t) => t.checked);
   const isIndeterminate = someChecked && !allChecked;
 
-  const [institutionName, setInstitutionName] = useState("");
-  const [affiliation, setAffiliation] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [email, setEmail] = useState("");
-  const [institutionType, setInstitutionType] = useState("");
-  const [city, setCity] = useState("");
-
-  const toggleAll = () => {
-    const newCheckedState = !allChecked;
-    setItems(
-      items.map((item) => ({
-        ...item,
-        checked: newCheckedState,
-      }))
+  const handleTermToggle = (id: number) => {
+    setTerms((prev) =>
+      prev.map((t) => (t.id === id ? { ...t, checked: !t.checked } : t))
     );
   };
+  const handleAllTermsToggle = () => {
+    setTerms((prev) => prev.map((t) => ({ ...t, checked: !allChecked })));
+  };
 
-  async function createNewInstitutionSupabase() {
-    if (
-      !institutionName ||
-      !affiliation ||
-      !phoneNumber ||
-      !email ||
-      !institutionType
-    ) {
-      addToast({
-        message: "Please fill in all the required fields.",
-        variant: "danger",
-      });
-      return;
-    }
-
+  const handleCreate = async () => {
     setIsCreating(true);
-    // Generate a random 5-digit number and prepend to the URL name
-    const randomNum = Math.floor(10000 + Math.random() * 90000);
-    const urlName =
-      institutionName.toLowerCase().replace(/\s+/g, "-").trim() +
-      "-" +
-      randomNum;
-    const { data, error } = await supabase.from("edu_centers").insert([
-      {
-        basic_info: {
-          name: institutionName.trim(),
-          type: institutionType.trim(),
-          affiliation: affiliation.trim(),
-          phone_number: phoneNumber.trim(),
-          email: email.trim(),
-          city: city.trim(),
-        },
-        is_published: false, // Default to false until verified
-        uuid: uuid, // Add uuid to associate with user
-        edu_url_name: urlName,
-      },
-    ]);
-
+    await onCreate(newInstitution);
     setIsCreating(false);
-
-    if (error) {
-      addToast({
-        message: "Failed to create institution. Please try again.",
-        variant: "danger",
-      });
-      console.error("Error creating institution:", error);
-    } else {
-      addToast({
-        message: "Institution created successfully!",
-        variant: "success",
-      });
-      setIsBaseOpen(false);
-      setInstitutionName("");
-      setAffiliation("");
-      setPhoneNumber("");
-      setEmail("");
-      setCity("");
-      setInstitutionType("");
-      setIsStackedOpen(false);
-      setItems(
-        items.map((item) => ({
-          ...item,
-          checked: false, // Reset checkboxes after creation
-        }))
-      );
-    }
-  }
+    setIsDialogOpen(false);
+    setIsTermsOpen(false);
+    setNewInstitution({
+      name: "",
+      type: "",
+      affiliation: "",
+      phoneNumber: "",
+      email: "",
+      city: "",
+    });
+    setTerms(terms.map((t) => ({ ...t, checked: false })));
+  };
 
   return (
     <>
-      {" "}
       <Column fillWidth horizontal="center" gap="32">
         <Row fillWidth gap="4">
           <Input
@@ -955,7 +997,7 @@ function CreatedInstitutions({
             placeholder="Search"
             height="m"
             value={searchValue}
-            onChange={handleChange}
+            onChange={(e) => setSearchValue(e.target.value)}
             hasPrefix={<i className="ri-search-line" />}
             hasSuffix={
               searchValue.length > 0 ? (
@@ -963,7 +1005,7 @@ function CreatedInstitutions({
                   variant="ghost"
                   icon="close"
                   size="s"
-                  onClick={handleClear}
+                  onClick={() => setSearchValue("")}
                   aria-label="Clear search"
                 />
               ) : null
@@ -973,35 +1015,32 @@ function CreatedInstitutions({
             weight="default"
             variant="primary"
             size="l"
-            onClick={() => setIsBaseOpen(true)}
+            onClick={() => setIsDialogOpen(true)}
           >
             New
           </Button>
         </Row>
-
         <Grid fillWidth fitHeight columns={2} gap="4">
-          {institutions.map((inst) => (
-            <InstitutionCard
-              key={inst.name}
-              name={inst.name}
-              address={inst.address}
-              affiliation={inst.affiliation}
-              contact={inst.contact}
-              email={inst.email}
-              isPublished={inst.isPublished}
-              instID={inst.id?.toString?.() ?? ""}
-              uuid={uuid ?? ""}
-            />
-          ))}
-          <CreateNewInstitution />
+          {institutions
+            .filter((inst) =>
+              inst.name.toLowerCase().includes(searchValue.toLowerCase())
+            )
+            .map((inst) => (
+              <InstitutionCard
+                key={inst.id}
+                institution={inst}
+                onPublish={onPublish}
+              />
+            ))}
         </Grid>
       </Column>
+      {/* Create Institution Dialog */}
       <Dialog
-        isOpen={isBaseOpen}
-        onClose={() => setIsBaseOpen(false)}
+        isOpen={isDialogOpen}
+        onClose={() => setIsDialogOpen(false)}
         title="Create new Institution"
         description="Fill in the details to create a new institution."
-        base={isStackedOpen}
+        base={isTermsOpen}
         footer={
           <Row fillWidth horizontal="start" vertical="center">
             <Text
@@ -1009,7 +1048,6 @@ function CreatedInstitutions({
               onBackground="neutral-weak"
               style={{ fontSize: "13px" }}
             >
-              {" "}
               <i className="ri-information-line"></i>&nbsp;These details are
               required to verify your institution and create a new page for it.
             </Text>
@@ -1020,6 +1058,7 @@ function CreatedInstitutions({
           <Row fillWidth vertical="center" gap="8">
             <Input
               id="name"
+              spellCheck={false}
               label="e.g. ABC School"
               description={
                 <>
@@ -1027,13 +1066,16 @@ function CreatedInstitutions({
                   your institution
                 </>
               }
-              value={institutionName}
-              onChange={(e: any) => setInstitutionName(e.target.value)}
-            ></Input>
+              value={newInstitution.name}
+              onChange={(e: any) =>
+                setNewInstitution((prev) => ({ ...prev, name: e.target.value }))
+              }
+            />
           </Row>
           <Row fillWidth vertical="center" gap="8">
             <Input
-              id="name"
+              spellCheck={false}
+              id="city"
               label="e.g. Vadodara,India"
               description={
                 <>
@@ -1041,77 +1083,100 @@ function CreatedInstitutions({
                   address of your institution
                 </>
               }
-              value={city}
-              onChange={(e: any) => setCity(e.target.value)}
-            ></Input>
+              value={newInstitution.city}
+              onChange={(e: any) =>
+                setNewInstitution((prev) => ({ ...prev, city: e.target.value }))
+              }
+            />
           </Row>
           <Row fillWidth vertical="center" gap="8">
             <Input
-              id="name"
+              id="type"
               label="e.g. School/Tuition"
+              spellCheck={false}
               description={
                 <>
                   <i className="ri-information-line"></i>&nbsp;Enter the type of
                   your institution
                 </>
               }
-              value={institutionType}
-              onChange={(e: any) => setInstitutionType(e.target.value)}
-            ></Input>
+              value={newInstitution.type}
+              onChange={(e: any) =>
+                setNewInstitution((prev) => ({ ...prev, type: e.target.value }))
+              }
+            />
           </Row>
           <Row fillWidth vertical="center" gap="8">
             <Input
-              id="name"
+              id="affiliation"
               label="e.g. ICSE/CBSE/IB"
+              spellCheck={false}
               description={
                 <>
                   <i className="ri-information-line"></i>&nbsp;Enter the
                   affiliation offered by your institution
                 </>
               }
-              value={affiliation}
-              onChange={(e: any) => setAffiliation(e.target.value)}
-            ></Input>
+              value={newInstitution.affiliation}
+              onChange={(e: any) =>
+                setNewInstitution((prev) => ({
+                  ...prev,
+                  affiliation: e.target.value,
+                }))
+              }
+            />
           </Row>
           <Row fillWidth vertical="center" gap="8">
             <Input
-              id="name"
+              id="phone"
               label="e.g. +91 1234567890"
+              spellCheck={false}
               description={
                 <>
                   <i className="ri-information-line"></i>&nbsp;Enter the
                   institution's phone number
                 </>
               }
-              value={phoneNumber}
-              onChange={(e: any) => setPhoneNumber(e.target.value)}
-            ></Input>
+              value={newInstitution.phoneNumber}
+              onChange={(e: any) =>
+                setNewInstitution((prev) => ({
+                  ...prev,
+                  phoneNumber: e.target.value,
+                }))
+              }
+            />
           </Row>
           <Row fillWidth vertical="center" gap="8">
             <Input
-              id="name"
+              id="email"
               label="e.g. ABCschool@edu.in"
+              spellCheck={false}
               description={
                 <>
                   <i className="ri-information-line"></i>&nbsp;Enter the
                   institution's email address
                 </>
               }
-              value={email}
-              onChange={(e: any) => setEmail(e.target.value)}
-            ></Input>
+              value={newInstitution.email}
+              onChange={(e: any) =>
+                setNewInstitution((prev) => ({
+                  ...prev,
+                  email: e.target.value,
+                }))
+              }
+            />
           </Row>
           <Row fillWidth vertical="center" horizontal="end" gap="8">
             <Button
               size="m"
-              onClick={() => setIsStackedOpen(true)}
+              onClick={() => setIsTermsOpen(true)}
               disabled={
-                !institutionName ||
-                !affiliation ||
-                !phoneNumber ||
-                !email ||
-                !institutionType ||
-                !city
+                !newInstitution.name ||
+                !newInstitution.affiliation ||
+                !newInstitution.phoneNumber ||
+                !newInstitution.email ||
+                !newInstitution.type ||
+                !newInstitution.city
               }
             >
               Next
@@ -1119,9 +1184,10 @@ function CreatedInstitutions({
           </Row>
         </Column>
       </Dialog>
+      {/* Terms Dialog */}
       <Dialog
-        isOpen={isStackedOpen}
-        onClose={() => setIsStackedOpen(false)}
+        isOpen={isTermsOpen}
+        onClose={() => setIsTermsOpen(false)}
         title="Terms and Policies"
         description="Check the boxes and click on 'Create' to create a new institution."
         stack
@@ -1132,7 +1198,6 @@ function CreatedInstitutions({
               onBackground="neutral-weak"
               style={{ fontSize: "13px" }}
             >
-              {" "}
               <i className="ri-information-line"></i>&nbsp;These details are
               required to verify your institution and create a new page for it.
             </Text>
@@ -1142,38 +1207,27 @@ function CreatedInstitutions({
         <Column fillWidth gap="16" marginTop="12">
           <Checkbox
             label="Select All"
-            description={
-              "By checking this box, you agree to accept all terms and policies."
-            }
+            description="By checking this box, you agree to accept all terms and policies."
             isChecked={allChecked || isIndeterminate}
             isIndeterminate={isIndeterminate}
-            onToggle={toggleAll}
+            onToggle={handleAllTermsToggle}
             style={{ width: "100%", marginBottom: "12px" }}
           />
-
           <Column fillWidth vertical="center" horizontal="end" gap="12">
-            {items.map((item) => (
+            {terms.map((item) => (
               <Checkbox
                 style={{ width: "100%" }}
                 key={item.id}
                 label={item.label}
-                description={item.description}
                 isChecked={item.checked}
-                onToggle={() => {
-                  setItems(
-                    items.map((i) =>
-                      i.id === item.id ? { ...i, checked: !i.checked } : i
-                    )
-                  );
-                }}
+                onToggle={() => handleTermToggle(item.id)}
               />
             ))}
           </Column>
-
           <Row fillWidth vertical="center" horizontal="end" gap="8">
             <Button
               size="m"
-              onClick={() => createNewInstitutionSupabase()}
+              onClick={handleCreate}
               disabled={!allChecked || isCreating}
             >
               {isCreating ? (
@@ -1193,43 +1247,20 @@ function CreatedInstitutions({
 }
 
 function InstitutionCard({
-  name,
-  address,
-  affiliation,
-  contact,
-  email,
-  isPublished,
-  instID,
-  uuid,
+  institution,
+  onPublish,
 }: {
-  name: string;
-  address: string;
-  affiliation: string;
-  contact: string;
-  email: string;
-  isPublished: boolean;
-  instID: string;
-  uuid: string;
+  institution: Institution;
+  onPublish: (institutionId: string, isPublished: boolean) => void;
 }) {
-  const [published, setPublished] = useState(isPublished);
+  const [published, setPublished] = useState(institution.isPublished);
 
-  async function updateIsPublished(
-    institutionId: string,
-    uuid: string,
-    isPublished: boolean
-  ) {
-    const { error } = await supabase
-      .from("edu_centers")
-      .update({ is_published: isPublished })
-      .eq("edu_id", institutionId)
-      .eq("uuid", uuid);
-
-    if (error) {
-      console.error("Error updating institution:", error);
-    } else {
-      console.log("Institution updated successfully");
-    }
-  }
+  const handleToggle = () => {
+    setPublished((prev) => {
+      onPublish(institution.id, !prev);
+      return !prev;
+    });
+  };
 
   return (
     <Card
@@ -1246,27 +1277,23 @@ function InstitutionCard({
         onBackground="neutral-strong"
         style={{ fontSize: "16px" }}
         onClick={() => {
-          window.location.href = `/edu/${instID}`;
+          window.location.href = `/edu/${institution.id}`;
         }}
       >
-        {name}
+        {institution.name}
       </Text>
-      <InstitutionRow label="City:">{address}</InstitutionRow>
-      <InstitutionRow label="Affiliation:">{affiliation}</InstitutionRow>
+      <InstitutionRow label="City:">{institution.address}</InstitutionRow>
+      <InstitutionRow label="Affiliation:">
+        {institution.affiliation}
+      </InstitutionRow>
       <InstitutionRow label="Contact:">
-        <InlineCode radius="xs-4">{contact}</InlineCode>
+        <InlineCode radius="xs-4">{institution.contact}</InlineCode>
       </InstitutionRow>
       <InstitutionRow label="Email:">
-        <InlineCode radius="xs-4">{email}</InlineCode>
+        <InlineCode radius="xs-4">{institution.email}</InlineCode>
       </InstitutionRow>
       <InstitutionRow label="Is published?">
-        <Switch
-          isChecked={published}
-          onToggle={() => {
-            setPublished(!published);
-            updateIsPublished(instID, uuid, !published);
-          }}
-        />
+        <Switch isChecked={published} onToggle={handleToggle} />
       </InstitutionRow>
     </Card>
   );
@@ -1295,36 +1322,8 @@ function InstitutionRow({
   );
 }
 
-function CreateNewInstitution() {
-  return null;
-}
-
-// Security Section
+// --- Security Section ---
 function Security() {
-  const [deleteAccountInput, setDeleteAccountInput] = useState("");
-  const [deleteInstitutionsInput, setDeleteInstitutionsInput] = useState("");
-
-  const [deleteAccountDisabled, setDeleteAccountDisabled] = useState(true);
-  const [deleteInstitutionsDisabled, setDeleteInstitutionsDisabled] =
-    useState(true);
-
-  const [username, setUsername] = useState("");
-  useEffect(() => {
-    async function fetchUsername() {
-      if (!uuid) return;
-      const { data, error } = await supabase
-        .from("user_profiles")
-        .select("username")
-        .eq("uuid", uuid)
-        .single();
-
-      if (error || !data?.username) return;
-
-      setUsername(data.username);
-    }
-    fetchUsername();
-  }, [uuid]);
-
   return (
     <Grid fillWidth padding="m" fitHeight columns={2} gap="104">
       <SecuritySection
@@ -1335,6 +1334,7 @@ function Security() {
             input: (
               <Input
                 placeholder="Enter your username"
+                spellCheck={false}
                 disabled
                 description={
                   <Text onBackground="neutral-weak">
@@ -1344,8 +1344,8 @@ function Security() {
                 }
                 hasSuffix={<Kbd>Once</Kbd>}
                 id="input-delete-account"
-                value={deleteAccountInput}
-                onChange={(e: any) => setDeleteAccountInput(e.target.value)}
+                value=""
+                onChange={() => {}}
               />
             ),
             button: (
@@ -1364,6 +1364,7 @@ function Security() {
             input: (
               <Input
                 placeholder="Enter your username"
+                spellCheck={false}
                 disabled
                 description={
                   <Text onBackground="neutral-weak">
@@ -1373,10 +1374,8 @@ function Security() {
                 }
                 hasSuffix={<Kbd>Once</Kbd>}
                 id="input-delete-institutions"
-                value={deleteInstitutionsInput}
-                onChange={(e: any) =>
-                  setDeleteInstitutionsInput(e.target.value)
-                }
+                value=""
+                onChange={() => {}}
               />
             ),
             button: (
@@ -1444,70 +1443,34 @@ function SecuritySection({
   );
 }
 
-// Socials Section
-function Socials() {
-  const [phoneNumberSocials, setPhoneNumberSocials] = useState<string>("");
-  const [emailSocials, setEmailSocials] = useState<string>("");
-  const [whatsapp, setWhatsapp] = useState<string>("");
-  const [instagram, setInstagram] = useState<string>("");
-  const [linkedin, setLinkedin] = useState<string>("");
+// --- Socials Section ---
+function Socials({
+  socials,
+  onSave,
+}: {
+  socials: UserSocials;
+  onSave: (socials: UserSocials) => void;
+}) {
+  const [form, setForm] = useState<UserSocials>(socials);
   const [loading, setLoading] = useState(false);
-  const { addToast } = useToast();
 
   useEffect(() => {
-    async function fetchSocials() {
-      if (!uuid) return;
-      const { data, error } = await supabase
-        .from("user_profiles")
-        .select("socials")
-        .eq("uuid", uuid)
-        .single();
+    setForm(socials);
+  }, [socials]);
 
-      if (error || !data?.socials) return;
+  const handleChange = (field: keyof UserSocials, value: string) => {
+    setForm((prev) => ({ ...prev, [field]: value }));
+  };
 
-      const socials = data.socials;
-      setPhoneNumberSocials(socials.phone || "");
-      setEmailSocials(socials.email || "");
-      setPhoneNumberSocials(socials.phone ?? "");
-      setEmailSocials(socials.email ?? "");
-      setWhatsapp(socials.whatsapp ?? "");
-      setInstagram(socials.instagram ?? "");
-      setLinkedin(socials.linkedin ?? "");
-    }
-    fetchSocials();
-  }, [uuid]);
-
-  async function saveDataToSupabase() {
+  const handleSave = async () => {
     setLoading(true);
+    await onSave(form);
 
-    if (!uuid) return;
-    const socials = {
-      phone: phoneNumberSocials,
-      email: emailSocials,
-      whatsapp: whatsapp,
-      instagram: instagram,
-      linkedin: linkedin,
-    };
+    setTimeout(() => {
+      setLoading(false);
+    }, 1000);
+  };
 
-    supabase
-      .from("user_profiles")
-      .update({ socials })
-      .eq("uuid", uuid)
-      .then(({ error }) => {
-        if (error) {
-          addToast({
-            message: "Failed to update socials. Please try again.",
-            variant: "danger",
-          });
-        } else {
-          addToast({
-            message: "Socials updated successfully!",
-            variant: "success",
-          });
-        }
-        setLoading(false);
-      });
-  }
   return (
     <>
       <Grid fillWidth padding="m" fitHeight columns={2} gap="104">
@@ -1519,6 +1482,7 @@ function Socials() {
               input: (
                 <Input
                   placeholder="Enter your phone number"
+                  spellCheck={false}
                   description={
                     <Text onBackground="neutral-weak">
                       <i className="ri-information-line"></i>&nbsp;This will be
@@ -1526,9 +1490,9 @@ function Socials() {
                     </Text>
                   }
                   id="input-delete-account"
-                  value={phoneNumberSocials}
+                  value={form.phone}
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                    setPhoneNumberSocials(e.target.value)
+                    handleChange("phone", e.target.value)
                   }
                 />
               ),
@@ -1538,6 +1502,7 @@ function Socials() {
               input: (
                 <Input
                   placeholder="Enter your email"
+                  spellCheck={false}
                   hasPrefix={
                     <Text onBackground="neutral-medium">
                       <i className="ri-at-line"></i>
@@ -1550,8 +1515,8 @@ function Socials() {
                     </Text>
                   }
                   id="input-email-socials"
-                  value={emailSocials}
-                  onChange={(e: any) => setEmailSocials(e.target.value)}
+                  value={form.email}
+                  onChange={(e: any) => handleChange("email", e.target.value)}
                 />
               ),
             },
@@ -1565,6 +1530,7 @@ function Socials() {
               input: (
                 <Input
                   placeholder="Enter your WhatsApp number"
+                  spellCheck={false}
                   id="input-whatsapp"
                   description={
                     <Text onBackground="neutral-weak">
@@ -1572,9 +1538,9 @@ function Socials() {
                       visible to other users.
                     </Text>
                   }
-                  value={whatsapp}
+                  value={form.whatsapp}
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                    setWhatsapp(e.target.value)
+                    handleChange("whatsapp", e.target.value)
                   }
                 />
               ),
@@ -1584,6 +1550,7 @@ function Socials() {
               input: (
                 <Input
                   placeholder="username"
+                  spellCheck={false}
                   id="input-instagram"
                   hasPrefix={
                     <Text onBackground="neutral-medium">instagram.com/</Text>
@@ -1594,8 +1561,10 @@ function Socials() {
                       visible to other users.
                     </Text>
                   }
-                  value={instagram}
-                  onChange={(e: any) => setInstagram(e.target.value)}
+                  value={form.instagram}
+                  onChange={(e: any) =>
+                    handleChange("instagram", e.target.value)
+                  }
                 />
               ),
             },
@@ -1604,6 +1573,7 @@ function Socials() {
               input: (
                 <Input
                   placeholder="username"
+                  spellCheck={false}
                   id="input-linkedin"
                   hasPrefix={
                     <Text onBackground="neutral-medium">linkedin.com/in/</Text>
@@ -1614,8 +1584,10 @@ function Socials() {
                       visible to other users.
                     </Text>
                   }
-                  value={linkedin}
-                  onChange={(e: any) => setLinkedin(e.target.value)}
+                  value={form.linkedin}
+                  onChange={(e: any) =>
+                    handleChange("linkedin", e.target.value)
+                  }
                 />
               ),
             },
@@ -1623,13 +1595,7 @@ function Socials() {
         />
       </Grid>
       <Row paddingY="12" fillWidth horizontal="end">
-        <Button
-          size="m"
-          onClick={async () => {
-            saveDataToSupabase();
-          }}
-          disabled={loading}
-        >
+        <Button size="m" onClick={()=>handleSave()} disabled={loading}>
           {loading ? (
             <>
               Saving...&nbsp;
