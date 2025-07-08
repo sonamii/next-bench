@@ -40,6 +40,7 @@ import {
   Skeleton,
   RevealFx,
   HeadingLink,
+  ThemeSwitcher,
 } from "@once-ui-system/core";
 import {
   Lato,
@@ -53,7 +54,7 @@ import {
   Roboto,
   Open_Sans,
 } from "next/font/google";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { useToast } from "@once-ui-system/core";
 import NavBar from "./../../components/NavBar";
 import Footer from "./../../components/Footer";
@@ -79,12 +80,6 @@ function getUuidFromUrl() {
 }
 
 // Options
-const segmentedTabs = [
-  { value: "profile", label: "Profile" },
-  { value: "socials", label: "Socials" },
-  { value: "creations", label: "Your creations" },
-  { value: "security", label: "Security" },
-];
 const genderOptions = [
   { label: "Male", value: "male" },
   { label: "Female", value: "female" },
@@ -99,12 +94,10 @@ const languageOptions = languagesConfigJSON.options.map((lang) => ({
   label: lang.label,
   value: lang.value,
 }));
-// Timezone options
 const timezoneOptions = timezoneOptionsJSON.map((tz) => ({
   label: tz.label,
   value: tz.value,
 }));
-
 const countries = countriesOptionsJSON.map((country) => ({
   label: country.label,
   value: country.value,
@@ -114,14 +107,16 @@ const countries = countriesOptionsJSON.map((country) => ({
 export default function ProfilePage() {
   const [activeTab, setActiveTab] = useState("profile");
   const [uuid, setUuid] = useState<string | undefined>(undefined);
+  const [sessionId, setSessionId] = useState<string | undefined>(undefined);
+  const [userXP, setUserXP] = useState<number>(0);
+  const [isConsultant, setIsConsultant] = useState<boolean>(false);
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
-  const [userXP, setUserXP] = useState<number>(0); // User XP state
 
-  // Loading states for each section
+  // Loading states
   const [loadingProfile, setLoadingProfile] = useState(true);
   const [loadingSocials, setLoadingSocials] = useState(true);
   const [loadingInstitutions, setLoadingInstitutions] = useState(true);
-  const [loadingSecurity, setLoadingSecurity] = useState(false); // Security is static
+  const [loadingSecurity, setLoadingSecurity] = useState(false);
 
   // All user data in one state
   const [userData, setUserData] = useState<{
@@ -138,23 +133,41 @@ export default function ProfilePage() {
 
   const { addToast } = useToast();
 
+  // Segmented tabs, security tab is only for current user
+  const segmentedTabs = useMemo(() => {
+    const baseTabs = [
+      { value: "profile", label: "Profile", disabled: false },
+      { value: "socials", label: "Socials", disabled: false },
+      { value: "creations", label: "Your creations", disabled: false },
+      { value: "security", label: "Security", disabled: true },
+    ];
+    if (userData.isCurrentUser) {
+      baseTabs.forEach((tab) => {
+        if (tab.value === "security") {
+          tab.disabled = false;
+        }
+      });
+    }
+    return baseTabs;
+  }, [userData.isCurrentUser]);
+
   // Fetch all user data at once
   const fetchAllUserData = useCallback(async (uuid: string) => {
-    setLoadingProfile(false); //true earlier and when save all disappear
-    setLoadingSocials(false); //true earlier and when save all disappear
-    setLoadingInstitutions(false); //true earlier and when save all disappear
+    setLoadingProfile(false);
+    setLoadingSocials(false);
+    setLoadingInstitutions(false);
 
-    // Fetch profile, socials, and institutions in parallel
+    // Fetch profile, socials, institutions, and session in parallel
     const [
-      { data: profileData, error: profileError },
-      { data: socialsData, error: socialsError },
-      { data: institutionsData, error: institutionsError },
+      { data: profileData },
+      { data: socialsData },
+      { data: institutionsData },
       { data: sessionData },
     ] = await Promise.all([
       supabase
         .from("user_profiles")
         .select(
-          "profile_details, username, joined_at, last_login, primary_email, is_public, pfp, count,subscription,is_admin"
+          "profile_details, username, joined_at, last_login, primary_email, is_public, pfp, count, subscription, is_admin, is_consultant"
         )
         .eq("uuid", uuid)
         .maybeSingle(),
@@ -185,6 +198,7 @@ export default function ProfilePage() {
         phoneNumber: pd.phoneNumber ?? "",
         email: profileData.primary_email ?? "",
         accountVisibility: profileData.is_public ?? false,
+        isConsultant: profileData.is_consultant ?? false,
         userName: profileData.username ?? "",
         accountCreated: profileData.joined_at
           ? new Date(profileData.joined_at)
@@ -226,15 +240,31 @@ export default function ProfilePage() {
         uuid: row.uuid || "",
       }));
     }
+
     // Set user XP
     if (socialsData && socialsData.xp) {
       setUserXP(socialsData.xp);
     } else {
-      setUserXP(0); // Default to 0 if not found
+      setUserXP(0);
+    }
+
+    // Set isConsultant
+    if (profileData && profileData.is_consultant) {
+      setIsConsultant(profileData.is_consultant);
+    } else {
+      setIsConsultant(false);
+    }
+
+    // Set isAdmin
+    if (profileData && profileData.is_admin) {
+      setIsAdmin(profileData.is_admin);
+    } else {
+      setIsAdmin(false);
     }
 
     // Check if current user
     const sessionUserId = sessionData?.session?.user?.id;
+    setSessionId(sessionUserId);
     const isCurrentUser = sessionUserId === uuid;
 
     setUserData({
@@ -258,10 +288,9 @@ export default function ProfilePage() {
     if (id) fetchAllUserData(id);
   }, [fetchAllUserData]);
 
-  // --- Realtime subscription for user profile ---
+  // Realtime subscription for user profile and institutions
   useEffect(() => {
     if (!uuid) return;
-    // Subscribe to changes in user_profiles for this uuid
     const channel = supabase
       .channel(`user-profile-${uuid}`)
       .on(
@@ -272,13 +301,12 @@ export default function ProfilePage() {
           table: "user_profiles",
           filter: `uuid=eq.${uuid}`,
         },
-        (payload) => {
+        () => {
           fetchAllUserData(uuid);
         }
       )
       .subscribe();
 
-    // Subscribe to changes in edu_centers for this uuid
     const eduChannel = supabase
       .channel(`edu-centers-${uuid}`)
       .on(
@@ -289,7 +317,7 @@ export default function ProfilePage() {
           table: "edu_centers",
           filter: `uuid=eq.${uuid}`,
         },
-        (payload) => {
+        () => {
           fetchAllUserData(uuid);
         }
       )
@@ -300,21 +328,20 @@ export default function ProfilePage() {
       supabase.removeChannel(eduChannel);
     };
   }, [uuid, fetchAllUserData]);
+
   // Save profile handler
   const handleSaveProfile = async (profile: UserProfile) => {
     if (!uuid) return;
-    // setLoadingProfile(true); // REMOVE THIS LINE
 
-    // Fetch subscription from user_data table and store it
-    const [subscription, setSubscription] = useState<string | null>(null);
-    const { data: userDataRow, error: userDataError } = await supabase
+    let subscription: string | null = null;
+    const { data: userDataRow } = await supabase
       .from("user_data")
-      .select("subscription")
+      .select("subscription,is_consultant")
       .eq("uuid", uuid)
       .maybeSingle();
 
     if (userDataRow && userDataRow.subscription) {
-      setSubscription(subscription);
+      subscription = userDataRow.subscription;
     }
 
     const profileDetails = {
@@ -326,7 +353,7 @@ export default function ProfilePage() {
       address: profile.address,
       phoneNumber: profile.phoneNumber,
       email: profile.email,
-      membershipStatus: subscription,
+      membershipStatus: null,
       languagePreference: profile.languagePreference,
       timezone: profile.timezone,
     };
@@ -337,6 +364,7 @@ export default function ProfilePage() {
         username: profile.userName,
         is_public: profile.accountVisibility,
         subscription: profile.membershipStatus,
+        is_consultant: profile.isConsultant,
       })
       .eq("uuid", uuid);
     if (error) {
@@ -351,13 +379,11 @@ export default function ProfilePage() {
       });
       await fetchAllUserData(uuid);
     }
-    // setLoadingProfile(false); // REMOVE THIS LINE
   };
 
   // Save socials handler
   const handleSaveSocials = async (socials: UserSocials) => {
     if (!uuid) return;
-    // setLoadingSocials(true); // REMOVE THIS LINE
     const { error } = await supabase
       .from("user_profiles")
       .update({ socials })
@@ -374,7 +400,6 @@ export default function ProfilePage() {
       });
       await fetchAllUserData(uuid);
     }
-    // setLoadingSocials(false); // REMOVE THIS LINE
   };
 
   // Save institution publish status
@@ -383,7 +408,6 @@ export default function ProfilePage() {
     isPublished: boolean
   ) => {
     if (!uuid) return;
-    // setLoadingInstitutions(true); // REMOVE THIS LINE
     const { error } = await supabase
       .from("edu_centers")
       .update({ is_published: isPublished })
@@ -397,13 +421,11 @@ export default function ProfilePage() {
     } else {
       await fetchAllUserData(uuid);
     }
-    // setLoadingInstitutions(false); // REMOVE THIS LINE
   };
 
   // Create new institution
   const handleCreateInstitution = async (newInstitution: InstitutionInput) => {
     if (!uuid) return;
-    // setLoadingInstitutions(true); // REMOVE THIS LINE
     const randomNum = Math.floor(10000 + Math.random() * 90000);
     const urlName =
       newInstitution.name.toLowerCase().replace(/\s+/g, "-").trim() +
@@ -452,7 +474,6 @@ export default function ProfilePage() {
       });
       await fetchAllUserData(uuid);
     }
-    // setLoadingInstitutions(false); // REMOVE THIS LINE
   };
 
   return (
@@ -489,6 +510,9 @@ export default function ProfilePage() {
             setActiveTab={setActiveTab}
             profile={userData.profile}
             xp={userXP}
+            isConsultant={isConsultant}
+            isAdmin={isAdmin}
+            segmentedTabs={segmentedTabs}
           />
           <Flex fillWidth height={3}></Flex>
           {activeTab === "profile" &&
@@ -514,9 +538,11 @@ export default function ProfilePage() {
                 institutions={userData.institutions}
                 onPublish={handlePublishInstitution}
                 onCreate={handleCreateInstitution}
+                isCurrentUser={userData.isCurrentUser}
               />
             ))}
           {activeTab === "security" &&
+            userData.isCurrentUser &&
             (loadingSecurity ? (
               <Flex fillWidth center paddingY="32">
                 <Spinner size="xl" />
@@ -530,7 +556,11 @@ export default function ProfilePage() {
                 <Spinner size="xl" />
               </Flex>
             ) : userData.socials ? (
-              <Socials socials={userData.socials} onSave={handleSaveSocials} />
+              <Socials
+                socials={userData.socials}
+                onSave={handleSaveSocials}
+                isCurrentUser={userData.isCurrentUser}
+              />
             ) : null)}
           <Flex fillWidth height={3}></Flex>
         </Column>
@@ -552,6 +582,7 @@ type UserProfile = {
   phoneNumber: string;
   email: string;
   accountVisibility: boolean;
+  isConsultant: boolean;
   userName: string;
   accountCreated: Date | null;
   lastLogin: Date | null;
@@ -594,12 +625,18 @@ function ProfileHeader({
   setActiveTab,
   profile,
   xp,
+  isConsultant,
+  isAdmin,
+  segmentedTabs,
 }: {
   dmsansClass: string;
   activeTab: string;
   setActiveTab: (v: string) => void;
   profile: UserProfile | null;
-  xp?: number; // Optional XP prop for future use
+  xp?: number;
+  isConsultant?: boolean;
+  isAdmin?: boolean;
+  segmentedTabs: { value: string; label: string }[];
 }) {
   return (
     <Column
@@ -624,9 +661,13 @@ function ProfileHeader({
 
       {!profile ? (
         <>
-          <Row center gap="8" fillWidth>
-            <Skeleton shape="line" delay="1" width="s" height="xl" />
-          </Row>
+          <Column center gap="8" fillWidth paddingTop="2">
+            {" "}
+          </Column>
+
+          <Skeleton shape="line" delay="1" width="s" height="xl" />
+          <Skeleton shape="line" delay="1" width="xs" maxWidth={6} height="l" />
+
           <Skeleton shape="line" delay="1" width="xs" height="xs" />
         </>
       ) : null}
@@ -667,6 +708,31 @@ function ProfileHeader({
           )}
         </Row>
       </Text>
+      {profile && (
+        <Row center fillWidth gap="4">
+          {" "}
+          <Text
+            style={{
+              fontSize: "21px",
+              fontWeight: "500",
+            }}
+            className={dmsansClass}
+          >
+            <Tag variant="neutral">{isConsultant ? "CNLT" : "USER"}</Tag>
+          </Text>
+          {isAdmin ? (
+            <Text
+              style={{
+                fontSize: "21px",
+                fontWeight: "500",
+              }}
+              className={dmsansClass}
+            >
+              <Tag variant="accent">ADMIN </Tag>
+            </Text>
+          ) : null}
+        </Row>
+      )}
       <Text onBackground="neutral-weak" style={{ fontSize: "14px" }}>
         {profile?.introduction}
       </Text>
@@ -706,6 +772,7 @@ function ProfileEdit({
   };
 
   const [loading, setLoading] = useState(false);
+
   return (
     <RevealFx fillWidth direction="column">
       <Grid fillWidth padding="m" fitHeight columns={2} gap="104">
@@ -713,32 +780,38 @@ function ProfileEdit({
           countries={countries}
           form={form}
           onChange={handleChange}
+          isCurrentUser={isCurrentUser}
         />
-
-        <AccountDetails form={form} onChange={handleChange} />
+        <AccountDetails
+          form={form}
+          onChange={handleChange}
+          isCurrentUser={isCurrentUser}
+        />
       </Grid>
-      <Row paddingY="12" fillWidth horizontal="end">
-        <Button
-          size="m"
-          onClick={() => {
-            setLoading(true);
-            onSave(form);
-            setTimeout(() => {
-              setLoading(false);
-            }, 1000); // Simulate network delay
-          }}
-          disabled={loading}
-        >
-          {loading ? (
-            <>
-              Saving...&nbsp;
-              <Spinner size="s" />
-            </>
-          ) : (
-            "Save all"
-          )}
-        </Button>
-      </Row>
+      {isCurrentUser && (
+        <Row paddingY="12" fillWidth horizontal="end">
+          <Button
+            size="m"
+            onClick={() => {
+              setLoading(true);
+              onSave(form);
+              setTimeout(() => {
+                setLoading(false);
+              }, 1000);
+            }}
+            disabled={loading}
+          >
+            {loading ? (
+              <>
+                Saving...&nbsp;
+                <Spinner size="s" />
+              </>
+            ) : (
+              "Save all"
+            )}
+          </Button>
+        </Row>
+      )}
     </RevealFx>
   );
 }
@@ -747,10 +820,12 @@ function PersonalDetails({
   countries,
   form,
   onChange,
+  isCurrentUser,
 }: {
   countries: { label: string; value: string }[];
   form: UserProfile;
   onChange: (field: keyof UserProfile, value: any) => void;
+  isCurrentUser: boolean;
 }) {
   return (
     <Column fillWidth horizontal="start" vertical="start" gap="20">
@@ -768,17 +843,18 @@ function PersonalDetails({
           placeholder="Full Name"
           value={form.fullName}
           onChange={(e: any) => onChange("fullName", e.target.value)}
+          disabled={!isCurrentUser}
         />
       </ProfileRow>
-
       <ProfileRow label="Short Introduction:">
         <Textarea
           id="input-intro"
           placeholder="Write here"
           resize="none"
-          maxLength={30}
+          maxLength={60}
           value={form.introduction}
           onChange={(e: any) => onChange("introduction", e.target.value)}
+          disabled={!isCurrentUser}
         />
       </ProfileRow>
       <ProfileRow label="Date of Birth:">
@@ -789,6 +865,7 @@ function PersonalDetails({
           cursor="interactive"
           value={form.dob === null ? undefined : form.dob}
           onChange={(v: Date | null) => onChange("dob", v)}
+          disabled={!isCurrentUser}
         />
       </ProfileRow>
       <ProfileRow label="Gender:">
@@ -799,6 +876,7 @@ function PersonalDetails({
           value={form.gender}
           options={genderOptions}
           onSelect={(v: any) => onChange("gender", v)}
+          disabled={!isCurrentUser}
         />
       </ProfileRow>
       <ProfileRow label="Country:">
@@ -810,69 +888,66 @@ function PersonalDetails({
           value={form.country}
           options={countries}
           onSelect={(v: any) => onChange("country", v)}
+          disabled={!isCurrentUser}
         />
       </ProfileRow>
-      <ProfileRow label="Address:">
-        <Textarea
-          id="textarea-address"
-          placeholder="Where do you live?"
-          resize="vertical"
-          description={
-            <Text onBackground="neutral-weak">
-              <i className="ri-information-line"></i>&nbsp;Your address will not
-              be shared with anyone.
-            </Text>
-          }
-          value={form.address}
-          onChange={(e: any) => onChange("address", e.target.value)}
-        />
-      </ProfileRow>
-      <ProfileRow label="Phone Number:">
-        <Input
-          id="input-phone"
-          height="m"
-          spellCheck={false}
-          placeholder="Your phone number"
-          description={
-            <Text onBackground="neutral-weak">
-              <i className="ri-information-line"></i>&nbsp;Your phone number
-              will not be shared with anyone.
-            </Text>
-          }
-          value={form.phoneNumber}
-          onChange={(e: any) => onChange("phoneNumber", e.target.value)}
-        />
-      </ProfileRow>
-      <ProfileRow label="Email:">
-        <Input
-          id="input-email"
-          height="m"
-          spellCheck={false}
-          description={
-            <Text onBackground="neutral-weak">
-              <i className="ri-information-line"></i>&nbsp;Your email will be
-              used for account verification and notifications.
-            </Text>
-          }
-          disabled
-          placeholder="Your email id"
-          value={form.email}
-          onChange={(e: any) => onChange("email", e.target.value)}
-        />
-      </ProfileRow>
-      <ProfileRow label="Account visiblity:">
-        <Switch
-          label={
-            <Text onBackground="neutral-weak" variant="label-default-m">
-              {form.accountVisibility ? "Public" : "Private"}
-            </Text>
-          }
-          isChecked={form.accountVisibility}
-          onToggle={() =>
-            onChange("accountVisibility", !form.accountVisibility)
-          }
-        />
-      </ProfileRow>
+
+      {isCurrentUser && (
+        <ProfileRow label="Address:">
+          <Textarea
+            id="textarea-address"
+            placeholder="Where do you live?"
+            resize="vertical"
+            description={
+              <Text onBackground="neutral-weak">
+                <i className="ri-information-line"></i>&nbsp;Your address will
+                not be shared with anyone.
+              </Text>
+            }
+            value={form.address}
+            onChange={(e: any) => onChange("address", e.target.value)}
+            disabled={!isCurrentUser}
+          />
+        </ProfileRow>
+      )}
+      {isCurrentUser && (
+        <ProfileRow label="Phone Number:">
+          <Input
+            id="input-phone"
+            height="m"
+            spellCheck={false}
+            placeholder="Your phone number"
+            description={
+              <Text onBackground="neutral-weak">
+                <i className="ri-information-line"></i>&nbsp;Your phone number
+                will not be shared with anyone.
+              </Text>
+            }
+            value={form.phoneNumber}
+            onChange={(e: any) => onChange("phoneNumber", e.target.value)}
+            disabled={!isCurrentUser}
+          />
+        </ProfileRow>
+      )}
+      {isCurrentUser && (
+        <ProfileRow label="Email:">
+          <Input
+            id="input-email"
+            height="m"
+            spellCheck={false}
+            description={
+              <Text onBackground="neutral-weak">
+                <i className="ri-information-line"></i>&nbsp;Your email will be
+                used for account verification and notifications.
+              </Text>
+            }
+            disabled
+            placeholder="Your email id"
+            value={form.email}
+            onChange={(e: any) => onChange("email", e.target.value)}
+          />
+        </ProfileRow>
+      )}
     </Column>
   );
 }
@@ -880,10 +955,13 @@ function PersonalDetails({
 function AccountDetails({
   form,
   onChange,
+  isCurrentUser,
 }: {
   form: UserProfile;
   onChange: (field: keyof UserProfile, value: any) => void;
+  isCurrentUser: boolean;
 }) {
+  // Only show each row if isCurrentUser is true
   return (
     <Column fillWidth horizontal="start" vertical="start" gap="20">
       <Text
@@ -892,26 +970,41 @@ function AccountDetails({
       >
         Account Details
       </Text>
-      <ProfileRow label="User Name:">
-        <Input
-          placeholder="Enter your username"
-          spellCheck={false}
-          description={
-            <Text onBackground="neutral-weak">
-              <i className="ri-information-line"></i>&nbsp;Your username will be
-              visible to other users.
-            </Text>
-          }
-          hasSuffix={
-            <Kbd cursor="interactive" onClick={() => {}}>
-              Change
-            </Kbd>
-          }
-          id="input-username"
-          value={form.userName}
-          onChange={(e: any) => onChange("userName", e.target.value)}
-        />
-      </ProfileRow>
+      {isCurrentUser ? (
+        <ProfileRow label="User Name:">
+          <Input
+            placeholder="Enter your username"
+            spellCheck={false}
+            description={
+              <Text onBackground="neutral-weak">
+                <i className="ri-information-line"></i>&nbsp;Your username will
+                be visible to other users.
+              </Text>
+            }
+            hasSuffix={
+              <Kbd cursor="interactive" onClick={() => {}}>
+                Change
+              </Kbd>
+            }
+            id="input-username"
+            value={form.userName}
+            onChange={(e: any) => onChange("userName", e.target.value)}
+            disabled={!isCurrentUser}
+          />
+        </ProfileRow>
+      ) : (
+        <ProfileRow label="User Name:">
+          <Input
+            placeholder="Enter your username"
+            spellCheck={false}
+            id="input-username"
+            value={form.userName}
+            onChange={(e: any) => onChange("userName", e.target.value)}
+            disabled={!isCurrentUser}
+          />
+        </ProfileRow>
+      )}
+
       <ProfileRow label="Account Created:">
         <DateInput
           id="date-account-created"
@@ -919,9 +1012,10 @@ function AccountDetails({
           height="m"
           value={form.accountCreated === null ? undefined : form.accountCreated}
           onChange={(v: Date | null) => onChange("accountCreated", v)}
-          disabled
+          disabled={!isCurrentUser}
         />
       </ProfileRow>
+
       <ProfileRow label="Last Login:">
         <DateInput
           id="date-last-login"
@@ -929,23 +1023,29 @@ function AccountDetails({
           height="m"
           value={form.lastLogin === null ? undefined : form.lastLogin}
           onChange={(v: Date | null) => onChange("lastLogin", v)}
-          disabled
+          disabled={!isCurrentUser}
         />
       </ProfileRow>
-      <ProfileRow label="Membership Status:">
-        <Select
-          height="m"
-          disabled
-          id="membership-select"
-          placeholder="Active"
-          value={form.membershipStatus}
-          options={membershipOptions}
-          onSelect={(v: any) => onChange("membershipStatus", v)}
-        />
-      </ProfileRow>
-      <ProfileRow label="Account Verification:">
-        <Tag variant="gradient">Verified</Tag>
-      </ProfileRow>
+
+      {isCurrentUser && (
+        <ProfileRow label="Membership Status:">
+          <Select
+            height="m"
+            disabled
+            id="membership-select"
+            placeholder="Active"
+            value={form.membershipStatus}
+            options={membershipOptions}
+            onSelect={(v: any) => onChange("membershipStatus", v)}
+          />
+        </ProfileRow>
+      )}
+      {isCurrentUser && (
+        <ProfileRow label="Account Verification:">
+          <Tag variant="gradient">Verified</Tag>
+        </ProfileRow>
+      )}
+
       <ProfileRow label="Language Preference:">
         <Select
           height="m"
@@ -954,8 +1054,10 @@ function AccountDetails({
           value={form.languagePreference}
           options={languageOptions}
           onSelect={(v: any) => onChange("languagePreference", v)}
+          disabled={!isCurrentUser}
         />
       </ProfileRow>
+
       <ProfileRow label="Time Zone:">
         <Select
           height="m"
@@ -965,8 +1067,42 @@ function AccountDetails({
           value={form.timezone}
           options={timezoneOptions}
           onSelect={(v: any) => onChange("timezone", v)}
+          disabled={!isCurrentUser}
         />
       </ProfileRow>
+      {isCurrentUser && (
+        <ProfileRow label="Account visiblity:">
+          <Switch
+            label={
+              <Text onBackground="neutral-weak" variant="label-default-m">
+                {form.accountVisibility ? "Public" : "Private"}
+              </Text>
+            }
+            isChecked={form.accountVisibility}
+            onToggle={() =>
+              onChange("accountVisibility", !form.accountVisibility)
+            }
+            disabled={!isCurrentUser}
+          />
+        </ProfileRow>
+      )}
+
+      {isCurrentUser && (
+        <ProfileRow label="Apply for consultant:">
+          <Switch
+            label={
+              <Text onBackground="neutral-weak" variant="label-default-m">
+                {form.isConsultant
+                  ? "In consultant programme"
+                  : "Out of Consultant programme"}
+              </Text>
+            }
+            isChecked={form.isConsultant}
+            onToggle={() => onChange("isConsultant", !form.isConsultant)}
+            disabled={!isCurrentUser}
+          />
+        </ProfileRow>
+      )}
     </Column>
   );
 }
@@ -995,10 +1131,12 @@ function CreatedInstitutions({
   institutions,
   onPublish,
   onCreate,
+  isCurrentUser,
 }: {
   institutions: Institution[];
   onPublish: (institutionId: string, isPublished: boolean) => void;
   onCreate: (newInstitution: InstitutionInput) => void;
+  isCurrentUser: boolean;
 }) {
   const [searchValue, setSearchValue] = useState<string>("");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -1075,14 +1213,16 @@ function CreatedInstitutions({
               ) : null
             }
           />
-          <Button
-            weight="default"
-            variant="primary"
-            size="l"
-            onClick={() => setIsDialogOpen(true)}
-          >
-            New
-          </Button>
+          {isCurrentUser && (
+            <Button
+              weight="default"
+              variant="primary"
+              size="l"
+              onClick={() => setIsDialogOpen(true)}
+            >
+              New
+            </Button>
+          )}
         </Row>
         {/* Show only the institution card where id includes search text */}
         {searchValue.trim() !== "" ? (
@@ -1096,6 +1236,7 @@ function CreatedInstitutions({
                   key={found.id}
                   institution={found}
                   onPublish={onPublish}
+                  isCurrentUser={isCurrentUser}
                 />
               </Grid>
             ) : (
@@ -1111,23 +1252,11 @@ function CreatedInstitutions({
                 key={inst.id}
                 institution={inst}
                 onPublish={onPublish}
+                isCurrentUser={isCurrentUser}
               />
             ))}
           </Grid>
         )}
-        {/* <Grid fillWidth fitHeight columns={2} gap="4">
-          {institutions
-            .filter((inst) =>
-              inst.name.toLowerCase().includes(searchValue.toLowerCase())
-            )
-            .map((inst) => (
-              <InstitutionCard
-                key={inst.id}
-                institution={inst}
-                onPublish={onPublish}
-              />
-            ))}
-        </Grid> */}
       </Column>
       {/* Create Institution Dialog */}
       <Dialog
@@ -1165,6 +1294,7 @@ function CreatedInstitutions({
               onChange={(e: any) =>
                 setNewInstitution((prev) => ({ ...prev, name: e.target.value }))
               }
+              disabled={!isCurrentUser}
             />
           </Row>
           <Row fillWidth vertical="center" gap="8">
@@ -1182,6 +1312,7 @@ function CreatedInstitutions({
               onChange={(e: any) =>
                 setNewInstitution((prev) => ({ ...prev, city: e.target.value }))
               }
+              disabled={!isCurrentUser}
             />
           </Row>
           <Row fillWidth vertical="center" gap="8">
@@ -1199,6 +1330,7 @@ function CreatedInstitutions({
               onChange={(e: any) =>
                 setNewInstitution((prev) => ({ ...prev, type: e.target.value }))
               }
+              disabled={!isCurrentUser}
             />
           </Row>
           <Row fillWidth vertical="center" gap="8">
@@ -1219,6 +1351,7 @@ function CreatedInstitutions({
                   affiliation: e.target.value,
                 }))
               }
+              disabled={!isCurrentUser}
             />
           </Row>
           <Row fillWidth vertical="center" gap="8">
@@ -1239,6 +1372,7 @@ function CreatedInstitutions({
                   phoneNumber: e.target.value,
                 }))
               }
+              disabled={!isCurrentUser}
             />
           </Row>
           <Row fillWidth vertical="center" gap="8">
@@ -1259,6 +1393,7 @@ function CreatedInstitutions({
                   email: e.target.value,
                 }))
               }
+              disabled={!isCurrentUser}
             />
           </Row>
           <Row fillWidth vertical="center" horizontal="end" gap="8">
@@ -1266,6 +1401,7 @@ function CreatedInstitutions({
               size="m"
               onClick={() => setIsTermsOpen(true)}
               disabled={
+                !isCurrentUser ||
                 !newInstitution.name ||
                 !newInstitution.affiliation ||
                 !newInstitution.phoneNumber ||
@@ -1307,6 +1443,7 @@ function CreatedInstitutions({
             isIndeterminate={isIndeterminate}
             onToggle={handleAllTermsToggle}
             style={{ width: "100%", marginBottom: "12px" }}
+            disabled={!isCurrentUser}
           />
           <Column fillWidth vertical="center" horizontal="end" gap="12">
             {terms.map((item) => (
@@ -1316,6 +1453,7 @@ function CreatedInstitutions({
                 label={item.label}
                 isChecked={item.checked}
                 onToggle={() => handleTermToggle(item.id)}
+                disabled={!isCurrentUser}
               />
             ))}
           </Column>
@@ -1323,7 +1461,7 @@ function CreatedInstitutions({
             <Button
               size="m"
               onClick={handleCreate}
-              disabled={!allChecked || isCreating}
+              disabled={!allChecked || isCreating || !isCurrentUser}
             >
               {isCreating ? (
                 <>
@@ -1344,9 +1482,11 @@ function CreatedInstitutions({
 function InstitutionCard({
   institution,
   onPublish,
+  isCurrentUser,
 }: {
   institution: Institution;
   onPublish: (institutionId: string, isPublished: boolean) => void;
+  isCurrentUser: boolean;
 }) {
   const [published, setPublished] = useState(institution.isPublished);
 
@@ -1357,6 +1497,9 @@ function InstitutionCard({
     });
   };
 
+  if (!isCurrentUser && !published) {
+    return null;
+  }
   return (
     <Card
       fillWidth
@@ -1391,9 +1534,11 @@ function InstitutionCard({
       <InstitutionRow label="Email:">
         <InlineCode radius="xs-4">{institution.email}</InlineCode>
       </InstitutionRow>
-      <InstitutionRow label="Is published?">
-        <Switch isChecked={published} onToggle={handleToggle} />
-      </InstitutionRow>
+      {isCurrentUser && (
+        <InstitutionRow label="Is published?">
+          <Switch isChecked={published} onToggle={handleToggle} />
+        </InstitutionRow>
+      )}
     </Card>
   );
 }
@@ -1546,9 +1691,11 @@ function SecuritySection({
 function Socials({
   socials,
   onSave,
+  isCurrentUser,
 }: {
   socials: UserSocials;
   onSave: (socials: UserSocials) => void;
+  isCurrentUser: boolean;
 }) {
   const [form, setForm] = useState<UserSocials>(socials);
   const [loading, setLoading] = useState(false);
@@ -1583,16 +1730,19 @@ function Socials({
                   placeholder="Enter your phone number"
                   spellCheck={false}
                   description={
-                    <Text onBackground="neutral-weak">
-                      <i className="ri-information-line"></i>&nbsp;This will be
-                      visible to other users. (optional)
-                    </Text>
+                    isCurrentUser ? (
+                      <Text onBackground="neutral-weak">
+                        <i className="ri-information-line"></i>&nbsp;This will
+                        be visible to other users. (optional)
+                      </Text>
+                    ) : undefined
                   }
                   id="input-delete-account"
-                  value={form.phone}
+                  value={form.phone? form.phone: "Not provided"}
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                     handleChange("phone", e.target.value)
                   }
+                  disabled={!isCurrentUser}
                 />
               ),
             },
@@ -1608,14 +1758,17 @@ function Socials({
                     </Text>
                   }
                   description={
-                    <Text onBackground="neutral-weak">
-                      <i className="ri-information-line"></i>&nbsp;This will be
-                      visible to other users.
-                    </Text>
+                    isCurrentUser ? (
+                      <Text onBackground="neutral-weak">
+                        <i className="ri-information-line"></i>&nbsp;This will
+                        be visible to other users.
+                      </Text>
+                    ) : undefined
                   }
                   id="input-email-socials"
-                  value={form.email}
+                  value={form.email? form.email : "Not provided"}
                   onChange={(e: any) => handleChange("email", e.target.value)}
+                  disabled={!isCurrentUser}
                 />
               ),
             },
@@ -1632,15 +1785,18 @@ function Socials({
                   spellCheck={false}
                   id="input-whatsapp"
                   description={
-                    <Text onBackground="neutral-weak">
-                      <i className="ri-information-line"></i>&nbsp;This will be
-                      visible to other users.
-                    </Text>
+                    isCurrentUser ? (
+                      <Text onBackground="neutral-weak">
+                        <i className="ri-information-line"></i>&nbsp;This will
+                        be visible to other users.
+                      </Text>
+                    ) : undefined
                   }
                   value={form.whatsapp}
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                     handleChange("whatsapp", e.target.value)
                   }
+                  disabled={!isCurrentUser}
                 />
               ),
             },
@@ -1655,15 +1811,18 @@ function Socials({
                     <Text onBackground="neutral-medium">instagram.com/</Text>
                   }
                   description={
-                    <Text onBackground="neutral-weak">
-                      <i className="ri-information-line"></i>&nbsp;This will be
-                      visible to other users.
-                    </Text>
+                    isCurrentUser ? (
+                      <Text onBackground="neutral-weak">
+                        <i className="ri-information-line"></i>&nbsp;This will
+                        be visible to other users.
+                      </Text>
+                    ) : undefined
                   }
                   value={form.instagram}
                   onChange={(e: any) =>
                     handleChange("instagram", e.target.value)
                   }
+                  disabled={!isCurrentUser}
                 />
               ),
             },
@@ -1678,33 +1837,38 @@ function Socials({
                     <Text onBackground="neutral-medium">linkedin.com/in/</Text>
                   }
                   description={
-                    <Text onBackground="neutral-weak">
-                      <i className="ri-information-line"></i>&nbsp;This will be
-                      visible to other users.
-                    </Text>
+                    isCurrentUser ? (
+                      <Text onBackground="neutral-weak">
+                        <i className="ri-information-line"></i>&nbsp;This will
+                        be visible to other users.
+                      </Text>
+                    ) : undefined
                   }
                   value={form.linkedin}
                   onChange={(e: any) =>
                     handleChange("linkedin", e.target.value)
                   }
+                  disabled={!isCurrentUser}
                 />
               ),
             },
           ]}
         />
       </Grid>
-      <Row paddingY="12" fillWidth horizontal="end">
-        <Button size="m" onClick={() => handleSave()} disabled={loading}>
-          {loading ? (
-            <>
-              Saving...&nbsp;
-              <Spinner size="s" />
-            </>
-          ) : (
-            "Save all"
-          )}
-        </Button>
-      </Row>
+      {isCurrentUser && (
+        <Row paddingY="12" fillWidth horizontal="end">
+          <Button size="m" onClick={() => handleSave()} disabled={loading}>
+            {loading ? (
+              <>
+                Saving...&nbsp;
+                <Spinner size="s" />
+              </>
+            ) : (
+              "Save all"
+            )}
+          </Button>
+        </Row>
+      )}
     </>
   );
 }
