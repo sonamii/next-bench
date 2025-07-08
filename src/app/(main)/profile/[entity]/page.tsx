@@ -231,6 +231,7 @@ export default function ProfilePage() {
     if (institutionsData && Array.isArray(institutionsData)) {
       institutions = institutionsData.map((row) => ({
         id: row.edu_id,
+        type: row.basic_info?.type || "",
         name: row.basic_info?.name || "",
         address: row.basic_info?.city || "",
         affiliation: row.basic_info?.affiliation || "",
@@ -601,6 +602,7 @@ type UserSocials = {
 };
 type Institution = {
   name: string;
+  type: string;
   address: string;
   affiliation: string;
   contact: string;
@@ -1196,7 +1198,7 @@ function CreatedInstitutions({
         <Row fillWidth gap="4">
           <Input
             id="input-1"
-            placeholder="Search by Institution ID"
+            placeholder="Search by Institution Name"
             height="m"
             value={searchValue}
             onChange={(e) => setSearchValue(e.target.value)}
@@ -1523,6 +1525,7 @@ function InstitutionCard({
           {institution.name}
         </Text>{" "}
       </HeadingLink>
+      <InstitutionRow label="Type:">{institution.type}</InstitutionRow>
 
       <InstitutionRow label="City:">{institution.address}</InstitutionRow>
       <InstitutionRow label="Affiliation:">
@@ -1535,9 +1538,12 @@ function InstitutionCard({
         <InlineCode radius="xs-4">{institution.email}</InlineCode>
       </InstitutionRow>
       {isCurrentUser && (
-        <InstitutionRow label="Is published?">
-          <Switch isChecked={published} onToggle={handleToggle} />
-        </InstitutionRow>
+        <>
+          {" "}
+          <InstitutionRow label="Is published?">
+            <Switch isChecked={published} onToggle={handleToggle} />
+          </InstitutionRow>
+        </>
       )}
     </Card>
   );
@@ -1563,127 +1569,6 @@ function InstitutionRow({
         </Text>
       </Flex>
     </Row>
-  );
-}
-
-// --- Security Section ---
-function Security() {
-  return (
-    <Grid fillWidth padding="m" fitHeight columns={2} gap="104">
-      <SecuritySection
-        title="Account Deletion"
-        rows={[
-          {
-            label: "Delete Account?",
-            input: (
-              <Input
-                placeholder="Enter your username"
-                spellCheck={false}
-                disabled
-                description={
-                  <Text onBackground="neutral-weak">
-                    <i className="ri-information-line"></i>&nbsp;This is a
-                    safety feature
-                  </Text>
-                }
-                hasSuffix={<Kbd>Once</Kbd>}
-                id="input-delete-account"
-                value=""
-                onChange={() => {}}
-              />
-            ),
-            button: (
-              <Button variant="primary" size="m">
-                Delete
-              </Button>
-            ),
-          },
-        ]}
-      />
-      <SecuritySection
-        title="Institutions Deletion"
-        rows={[
-          {
-            label: "Delete all Institutions?",
-            input: (
-              <Input
-                placeholder="Enter your username"
-                spellCheck={false}
-                disabled
-                description={
-                  <Text onBackground="neutral-weak">
-                    <i className="ri-information-line"></i>&nbsp;This is a
-                    safety feature
-                  </Text>
-                }
-                hasSuffix={<Kbd>Once</Kbd>}
-                id="input-delete-institutions"
-                value=""
-                onChange={() => {}}
-              />
-            ),
-            button: (
-              <Button variant="primary" disabled size="m">
-                Delete
-              </Button>
-            ),
-          },
-        ]}
-      />
-      <SecuritySection
-        title="Others"
-        rows={[
-          {
-            label: "Export all your data?",
-            button: (
-              <Button variant="primary" size="m" disabled>
-                Export
-              </Button>
-            ),
-          },
-          {
-            label: "Request total data deletion?",
-            button: (
-              <Button variant="primary" size="m">
-                Request
-              </Button>
-            ),
-          },
-        ]}
-      />
-    </Grid>
-  );
-}
-
-function SecuritySection({
-  title,
-  rows,
-}: {
-  title: string;
-  rows: { label: string; input?: React.ReactNode; button: React.ReactNode }[];
-}) {
-  return (
-    <Column fillWidth horizontal="start" vertical="start" gap="20">
-      <Text
-        onBackground="neutral-strong"
-        style={{ fontSize: "16px", marginBottom: "12px" }}
-      >
-        {title}
-      </Text>
-      {rows.map((row) => (
-        <Row fillWidth horizontal="space-between" key={row.label}>
-          <Flex flex={5}>
-            <Text onBackground="neutral-weak" style={{ fontSize: "14px" }}>
-              {row.label}
-            </Text>
-          </Flex>
-          <Flex flex={7} direction="column" horizontal="end" gap="4">
-            {row.input}
-            {row.button}
-          </Flex>
-        </Row>
-      ))}
-    </Column>
   );
 }
 
@@ -1738,7 +1623,7 @@ function Socials({
                     ) : undefined
                   }
                   id="input-delete-account"
-                  value={form.phone? form.phone: "Not provided"}
+                  value={form.phone}
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                     handleChange("phone", e.target.value)
                   }
@@ -1766,7 +1651,7 @@ function Socials({
                     ) : undefined
                   }
                   id="input-email-socials"
-                  value={form.email? form.email : "Not provided"}
+                  value={form.email}
                   onChange={(e: any) => handleChange("email", e.target.value)}
                   disabled={!isCurrentUser}
                 />
@@ -1901,5 +1786,160 @@ function SocialsSection({
         </Row>
       ))}
     </Column>
+  );
+}
+
+// --- Security Section ---
+function Security() {
+  const [loading, setLoading] = useState(false);
+
+  async function logoutSupabase() {
+    setLoading(true);
+    setTimeout(async () => {
+      const { error } = await supabase.auth.signOut();
+      if (error) {
+        console.error("Error logging out:", error.message);
+      } else {
+        window.location.href = "/";
+      }
+    }, 1000);
+
+    setTimeout(() => {
+      setLoading(false);
+    }, 1000);
+  }
+
+  return (
+    <Grid fillWidth padding="m" fitHeight columns={2} gap="104">
+      {/* Account Deletion */}
+      <Column fillWidth horizontal="start" vertical="start" gap="20">
+        <Text
+          onBackground="neutral-strong"
+          style={{ fontSize: "16px", marginBottom: "12px" }}
+        >
+          Account Deletion
+        </Text>
+        <Row fillWidth horizontal="space-between">
+          <Flex flex={5}>
+            <Text onBackground="neutral-weak" style={{ fontSize: "14px" }}>
+              Delete Account?
+            </Text>
+          </Flex>
+          <Flex flex={7} direction="column" horizontal="end" gap="4">
+            <Input
+              placeholder="Enter your username"
+              spellCheck={false}
+              disabled
+              description={
+                <Text onBackground="neutral-weak">
+                  <i className="ri-information-line"></i>&nbsp;This is a safety
+                  feature
+                </Text>
+              }
+              hasSuffix={<Kbd>Once</Kbd>}
+              id="input-delete-account"
+              value=""
+              onChange={() => {}}
+            />
+            <Button variant="primary" size="m">
+              Delete
+            </Button>
+          </Flex>
+        </Row>
+      </Column>
+      {/* Institutions Deletion */}
+      <Column fillWidth horizontal="start" vertical="start" gap="20">
+        <Text
+          onBackground="neutral-strong"
+          style={{ fontSize: "16px", marginBottom: "12px" }}
+        >
+          Institutions Deletion
+        </Text>
+        <Row fillWidth horizontal="space-between">
+          <Flex flex={5}>
+            <Text onBackground="neutral-weak" style={{ fontSize: "14px" }}>
+              Delete all Institutions?
+            </Text>
+          </Flex>
+          <Flex flex={7} direction="column" horizontal="end" gap="4">
+            <Input
+              placeholder="Enter your username"
+              spellCheck={false}
+              disabled
+              description={
+                <Text onBackground="neutral-weak">
+                  <i className="ri-information-line"></i>&nbsp;This is a safety
+                  feature
+                </Text>
+              }
+              hasSuffix={<Kbd>Once</Kbd>}
+              id="input-delete-institutions"
+              value=""
+              onChange={() => {}}
+            />
+            <Button variant="primary" disabled size="m">
+              Delete
+            </Button>
+          </Flex>
+        </Row>
+      </Column>
+      {/* Others */}
+      <Column fillWidth horizontal="start" vertical="start" gap="20">
+        <Text
+          onBackground="neutral-strong"
+          style={{ fontSize: "16px", marginBottom: "12px" }}
+        >
+          Others
+        </Text>
+        <Row fillWidth horizontal="space-between">
+          <Flex flex={5}>
+            <Text onBackground="neutral-weak" style={{ fontSize: "14px" }}>
+              Export all your data?
+            </Text>
+          </Flex>
+          <Flex flex={7} direction="column" horizontal="end" gap="4">
+            <Button variant="primary" size="m" disabled>
+              Export
+            </Button>
+          </Flex>
+        </Row>
+        <Row fillWidth horizontal="space-between">
+          <Flex flex={5}>
+            <Text onBackground="neutral-weak" style={{ fontSize: "14px" }}>
+              Request total data deletion?
+            </Text>
+          </Flex>
+          <Flex flex={7} direction="column" horizontal="end" gap="4">
+            <Button variant="primary" size="m">
+              Request
+            </Button>
+          </Flex>
+        </Row>
+        <Row fillWidth horizontal="space-between">
+          <Flex flex={5}>
+            <Text onBackground="neutral-weak" style={{ fontSize: "14px" }}>
+              Logout from current device?
+            </Text>
+          </Flex>
+          <Flex flex={7} direction="column" horizontal="end" gap="4">
+            <Button
+              variant="primary"
+              size="m"
+              onClick={logoutSupabase}
+              disabled={loading}
+            >
+              {loading ? (
+                <>
+                  Executing...&nbsp;
+                  <Spinner size="s" />
+                </>
+              ) : (
+                "Logout"
+              )}
+            </Button>
+          </Flex>
+        </Row>
+      </Column>
+    </Grid>
   );
 }

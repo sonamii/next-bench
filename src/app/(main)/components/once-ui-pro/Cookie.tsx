@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Accordion,
   Button,
@@ -12,25 +12,89 @@ import {
   SmartLink,
   Switch,
   Text,
+  Spinner,
 } from "@once-ui-system/core";
 
 interface props extends React.ComponentProps<typeof Flex> {}
+
+const STORAGE_KEY = "cookie-banner-dismissed";
 
 export const Cookie: React.FC<props> = ({ ...rest }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [marketing, setMarketing] = useState(false);
   const [analytics, setAnalytics] = useState(false);
   const [functional, setFunctional] = useState(false);
+  const [showCookieBanner, setShowCookieBanner] = useState(false);
+
+  // Loading states for buttons
+  const [loading, setLoading] = useState<
+    null | "deny" | "accept" | "dialog-deny" | "dialog-accept" | "dialog-save"
+  >(null);
+
+  // Check localStorage/sessionStorage/cookie on mount
+  useEffect(() => {
+    if (
+      typeof window !== "undefined" &&
+      (localStorage.getItem(STORAGE_KEY) === "1" ||
+        sessionStorage.getItem(STORAGE_KEY) === "1" ||
+        document.cookie.includes(`${STORAGE_KEY}=1`))
+    ) {
+      setShowCookieBanner(false);
+    } else {
+      setShowCookieBanner(true);
+    }
+  }, []);
+
+  // Helper to persist dismissal
+  const persistDismiss = () => {
+    if (typeof window !== "undefined") {
+      localStorage.setItem(STORAGE_KEY, "1");
+      sessionStorage.setItem(STORAGE_KEY, "1");
+      document.cookie = `${STORAGE_KEY}=1; path=/; max-age=31536000`; // 1 year
+    }
+  };
+
+  // Helper to handle button actions with timeout and loading spinner
+  const handleAction = (
+    action: "deny" | "accept" | "dialog-deny" | "dialog-accept" | "dialog-save"
+  ) => {
+    setLoading(action);
+
+    if (isOpen) {
+      setTimeout(() => {
+        setIsOpen(false);
+      }, 1500);
+      setTimeout(() => {
+        setLoading(null);
+        setTimeout(() => {
+          setShowCookieBanner(false);
+          persistDismiss();
+        }, 0);
+      }, 1500);
+    } else {
+      setTimeout(() => {
+        setLoading(null);
+        setTimeout(() => {
+          setShowCookieBanner(false);
+          persistDismiss();
+        }, 0);
+      }, 1500);
+    }
+  };
+
+  if (!showCookieBanner) return null;
 
   return (
-    <div style={{ position: "fixed", bottom: "20px", left: "20px", zIndex: 1000 }}>
+    <div
+      style={{ position: "fixed", bottom: "20px", left: "20px", zIndex: 1000 }}
+    >
       <Column
         padding="20"
         maxWidth={28}
         border="neutral-medium"
         radius="l"
         gap="8"
-        style={{backgroundColor:"#FDFDF9"}}
+        style={{ backgroundColor: "#FDFDF9" }}
         {...rest}
       >
         <Text variant="body-default-s" marginBottom="12">
@@ -39,11 +103,19 @@ export const Cookie: React.FC<props> = ({ ...rest }) => {
         </Text>
         <Row fillWidth horizontal="space-between" gap="24">
           <Row gap="8">
-            <Button size="s" variant="secondary">
-              Deny
+            <Button
+              size="s"
+              variant="secondary"
+              onClick={() => handleAction("deny")}
+            >
+              {loading === "deny" ? <Spinner size="s" /> : "Deny"}
             </Button>
-            <Button size="s" variant="secondary">
-              Accept all
+            <Button
+              size="s"
+              variant="secondary"
+              onClick={() => handleAction("accept")}
+            >
+              {loading === "accept" ? <Spinner size="s" /> : "Accept all"}
             </Button>
           </Row>
           <Button size="s" onClick={() => setIsOpen(true)}>
@@ -59,10 +131,26 @@ export const Cookie: React.FC<props> = ({ ...rest }) => {
         footer={
           <Row fillWidth horizontal="space-between">
             <Row gap="8">
-              <Button variant="secondary">Deny</Button>
-              <Button variant="secondary">Accept all</Button>
+              <Button
+                variant="secondary"
+                onClick={() => handleAction("dialog-deny")}
+              >
+                {loading === "dialog-deny" ? <Spinner size="s" /> : "Deny"}
+              </Button>
+              <Button
+                variant="secondary"
+                onClick={() => handleAction("dialog-accept")}
+              >
+                {loading === "dialog-accept" ? (
+                  <Spinner size="s" />
+                ) : (
+                  "Accept all"
+                )}
+              </Button>
             </Row>
-            <Button onClick={() => setIsOpen(false)}>Save</Button>
+            <Button onClick={() => handleAction("dialog-save")}>
+              {loading === "dialog-save" ? <Spinner size="s" /> : "Save"}
+            </Button>
           </Row>
         }
       >

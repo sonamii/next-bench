@@ -16,10 +16,23 @@ export default function AuthCallbackPage() {
 
       const { user } = session;
       const { id: uuid, user_metadata, last_sign_in_at } = user;
-      const pfp = user_metadata?.avatar_url || null;
+      const newPfp = user_metadata?.avatar_url || null;
       const joined_at = user.created_at;
       const last_login = last_sign_in_at || new Date().toISOString();
       const primary_email = user_metadata?.email || null;
+
+      // Fetch existing profile
+      const { data: existingProfile } = await supabase
+        .from("user_profiles")
+        .select("pfp")
+        .eq("uuid", uuid)
+        .single();
+
+      let pfp = newPfp;
+      if (existingProfile && existingProfile.pfp) {
+        // If old pfp exists, keep it
+        pfp = existingProfile.pfp;
+      }
 
       await supabase.from("user_profiles").upsert([
         {
