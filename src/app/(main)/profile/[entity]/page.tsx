@@ -56,6 +56,11 @@ import { useToast } from "@once-ui-system/core";
 import NavBar from "./../../components/NavBar";
 import Footer from "./../../components/Footer";
 import { supabase } from "@/app/utils/supabase/client";
+import {
+  languagesConfigJSON,
+  timezoneOptionsJSON,
+  countriesOptionsJSON,
+} from "./../../../jsons/next-profile-config";
 
 // Font setup
 const dmsans = Outfit({
@@ -88,19 +93,26 @@ const membershipOptions = [
   { label: "Freemium", value: "F" },
   { label: "Pro", value: "P" },
 ];
-const languageOptions = [{ label: "English", value: "English" }];
-const timezoneOptions = [{ label: "GMT +5:30", value: "GMT +5:30" }];
-const countries = [
-  { label: "Afghanistan", value: "AF" },
-  { label: "Albania", value: "AL" },
-  // ... (keep all countries as in original)
-  { label: "Zimbabwe", value: "ZW" },
-];
+const languageOptions = languagesConfigJSON.options.map((lang) => ({
+  label: lang.label,
+  value: lang.value,
+}));
+// Timezone options
+const timezoneOptions = timezoneOptionsJSON.map((tz) => ({
+  label: tz.label,
+  value: tz.value,
+}));
+
+const countries = countriesOptionsJSON.map((country) => ({
+  label: country.label,
+  value: country.value,
+}));
 
 // --- Main Page ---
 export default function ProfilePage() {
   const [activeTab, setActiveTab] = useState("profile");
   const [uuid, setUuid] = useState<string | undefined>(undefined);
+  const [isAdmin, setIsAdmin] = useState<boolean>(false);
 
   // Loading states for each section
   const [loadingProfile, setLoadingProfile] = useState(true);
@@ -139,7 +151,7 @@ export default function ProfilePage() {
       supabase
         .from("user_profiles")
         .select(
-          "profile_details, username, joined_at, last_login, primary_email, is_public, pfp, count"
+          "profile_details, username, joined_at, last_login, primary_email, is_public, pfp, count,subscription,is_admin"
         )
         .eq("uuid", uuid)
         .maybeSingle(),
@@ -151,7 +163,7 @@ export default function ProfilePage() {
       supabase
         .from("edu_centers")
         .select("edu_id, basic_info, is_published, uuid")
-        .eq("uuid", uuid),
+        .eq("uuid", uuid).order("created_at", { ascending: false }),
       supabase.auth.getSession(),
     ]);
 
@@ -176,7 +188,7 @@ export default function ProfilePage() {
         lastLogin: profileData.last_login
           ? new Date(profileData.last_login)
           : null,
-        membershipStatus: pd.membershipStatus ?? "A",
+        membershipStatus: profileData.subscription ?? "A",
         languagePreference: pd.languagePreference ?? "English",
         timezone: pd.timezone ?? "Select timezone",
         avatarSrc: profileData.pfp ?? "",
@@ -236,7 +248,6 @@ export default function ProfilePage() {
     if (id) fetchAllUserData(id);
   }, [fetchAllUserData]);
 
-
   // --- Realtime subscription for user profile ---
   useEffect(() => {
     if (!uuid) return;
@@ -244,11 +255,11 @@ export default function ProfilePage() {
     const channel = supabase
       .channel(`user-profile-${uuid}`)
       .on(
-        'postgres_changes',
+        "postgres_changes",
         {
-          event: '*',
-          schema: 'public',
-          table: 'user_profiles',
+          event: "*",
+          schema: "public",
+          table: "user_profiles",
           filter: `uuid=eq.${uuid}`,
         },
         (payload) => {
@@ -261,11 +272,11 @@ export default function ProfilePage() {
     const eduChannel = supabase
       .channel(`edu-centers-${uuid}`)
       .on(
-        'postgres_changes',
+        "postgres_changes",
         {
-          event: '*',
-          schema: 'public',
-          table: 'edu_centers',
+          event: "*",
+          schema: "public",
+          table: "edu_centers",
           filter: `uuid=eq.${uuid}`,
         },
         (payload) => {
@@ -283,6 +294,19 @@ export default function ProfilePage() {
   const handleSaveProfile = async (profile: UserProfile) => {
     if (!uuid) return;
     // setLoadingProfile(true); // REMOVE THIS LINE
+
+    // Fetch subscription from user_data table and store it
+    const [subscription, setSubscription] = useState<string | null>(null);
+    const { data: userDataRow, error: userDataError } = await supabase
+      .from("user_data")
+      .select("subscription")
+      .eq("uuid", uuid)
+      .maybeSingle();
+
+    if (userDataRow && userDataRow.subscription) {
+      setSubscription(subscription);
+    }
+
     const profileDetails = {
       fullName: profile.fullName,
       introduction: profile.introduction,
@@ -292,7 +316,7 @@ export default function ProfilePage() {
       address: profile.address,
       phoneNumber: profile.phoneNumber,
       email: profile.email,
-      membershipStatus: profile.membershipStatus,
+      membershipStatus: subscription,
       languagePreference: profile.languagePreference,
       timezone: profile.timezone,
     };
@@ -302,6 +326,7 @@ export default function ProfilePage() {
         profile_details: profileDetails,
         username: profile.userName,
         is_public: profile.accountVisibility,
+        subscription: profile.membershipStatus,
       })
       .eq("uuid", uuid);
     if (error) {
@@ -898,6 +923,7 @@ function AccountDetails({
           height="m"
           id="timezone-select"
           placeholder="Select your time zone"
+          searchable
           value={form.timezone}
           options={timezoneOptions}
           onSelect={(v: any) => onChange("timezone", v)}
@@ -1595,7 +1621,7 @@ function Socials({
         />
       </Grid>
       <Row paddingY="12" fillWidth horizontal="end">
-        <Button size="m" onClick={()=>handleSave()} disabled={loading}>
+        <Button size="m" onClick={() => handleSave()} disabled={loading}>
           {loading ? (
             <>
               Saving...&nbsp;
