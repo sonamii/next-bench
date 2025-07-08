@@ -138,7 +138,7 @@ export default function ProfilePage() {
     const baseTabs = [
       { value: "profile", label: "Profile", disabled: false },
       { value: "socials", label: "Socials", disabled: false },
-      { value: "creations", label: "Your creations", disabled: false },
+      { value: "creations", label: "Edu Centers", disabled: false },
       { value: "security", label: "Security", disabled: true },
     ];
     if (userData.isCurrentUser) {
