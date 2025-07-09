@@ -34,6 +34,7 @@ import {
   Select,
 } from "@once-ui-system/core";
 import { useState } from "react";
+import { supabase } from "@/app/utils/supabase/client";
 import {
   Lato,
   Montserrat,
@@ -51,6 +52,7 @@ import { useRouter } from "next/navigation";
 import Footer from "../components/Footer";
 import NavBar from "../components/NavBar";
 import { Cookie } from "../components/once-ui-pro/Cookie";
+import { useEffect } from "react";
 
 // Font setup
 const dmsans = Outfit({
@@ -291,99 +293,209 @@ function HeroStats() {
     </Column>
   );
 }
-
 // Institution Card
-function InstitutionCard({ data }: { data: (typeof institutionData)[0] }) {
-  return (
-    <Card background="transparent" radius="l" border="transparent" padding="0">
-      <Grid
-        fillWidth
-        border="neutral-weak"
-        padding="m"
-        radius="l"
-        background="transparent"
-        columns={4}
-        gap="32"
-      >
-        <Column flex={2}>
-          <Row vertical="center" gap="16">
-            <Media
-              src={data.logo}
-              objectFit="contain"
-              width={3}
-              height={3}
-              alt="A"
-              radius="full"
-              borderWidth={2}
-              border="neutral-weak"
-            />
-            <Column gap="0" marginTop="16">
-              <Text
-                onBackground="neutral-strong"
-                style={{
-                  fontSize: "18px",
-                  marginBottom: "12px",
-                  lineHeight: "1em",
-                }}
-              >
-                <Row gap="8"> {data.name}</Row>
-              </Text>
-              <Text
-                onBackground="neutral-weak"
-                style={{ fontSize: "14px", lineHeight: "0.5em" }}
-              >
-                {data.type}
-              </Text>
-            </Column>
-          </Row>
-        </Column>
-        <Column flex={2} gap="8">
-          <Row fillWidth horizontal="center" gap="12" vertical="center">
-            <Row flex={1}>
-              <Media
-                src={data.creator.avatar}
-                width={2}
-                height={2}
-                radius="s-4"
-              />
-            </Row>
-            <Row flex={12}>
-              <Text
-                onBackground="neutral-medium"
-                style={{ fontSize: "16px" }}
-                className={dmsans.className}
-              >
-                {data.creator.name}
-              </Text>
-            </Row>
-          </Row>
-          <InfoRow icon="ri-map-pin-2-line" text={data.location} />
-          <InfoRow icon="ri-artboard-2-line" text={data.board} />
-          <InfoRow icon="ri-user-smile-line" text={data.classes} />
-          <InfoRow icon="ri-building-4-line" text={data.population} />
-          <InfoRow icon="ri-star-line" text={data.rating} />
-          <InfoRow icon="ri-store-2-line" text={data.features} />
-        </Column>
-        <Column flex={2} gap="8">
-          <ContactRow
-            label="Email"
-            value={data.contact.email}
-            verified={data.verified}
-          />
-          <ContactRow
-            label="Phone"
-            value={data.contact.phone}
-            verified={data.verified}
-          />
-          <ContactRow label="Office" value={data.contact.office} />
-                    <ContactRow label="Fees" value={data.contact.fees} verified={data.verified}/>
+function InstitutionCard({ data }: { data: any }) {
+  type EduCenter = {
+    name: string;
+    logo: string;
+    type: string;
+    year_established: number;
+    boarding_type: string;
+    affiliation: {
+      boards: string;
+      type: string;
+    };
+    classes_offered: {
+      min: string;
+      max: string;
+    };
+    student_population: number;
+    star_rating: number;
+    location: {
+      city: string;
+      country: string;
+    };
+    contact: {
+      email: string;
+      phone: string;
+      office_hours: {
+        start: string;
+        end: string;
+      };
+    };
+    facilities: string;
+    fees_structure: string;
+    images: Array<{ slide: string; alt: string }>;
+    verified?: boolean;
+  };
 
-        </Column>
-        <Column flex={2} horizontal="start" vertical="start">
-          <Carousel indicator="line" controls={false} items={data.images} />
-        </Column>
-      </Grid>
-    </Card>
+  const [eduCenters, setEduCenters] = useState<EduCenter[]>([]);
+
+  useEffect(() => {
+    async function fetchEduCenters() {
+      const { data, error } = await supabase
+        .from("edu_centers")
+        .select("logo,images,basic_info");
+
+      if (!error && data) {
+        const mapped = data.map((row: any) => {
+          let basicInfo = row.basic_info;
+          if (typeof basicInfo === "string") {
+            try {
+              basicInfo = JSON.parse(basicInfo);
+            } catch {
+              basicInfo = {};
+            }
+          }
+          return {
+            name: basicInfo.name || "",
+            logo: row.logo || "",
+            type: basicInfo.type || "",
+            year_established: basicInfo.year_established || "",
+            boarding_type: basicInfo.boarding_type || "",
+            affiliation: basicInfo.affiliation || { boards: "", type: "" },
+            classes_offered: basicInfo.classes_offered || { min: "", max: "" },
+            student_population: basicInfo.student_population || "",
+            star_rating: basicInfo.star_rating || "",
+            location: basicInfo.location || { city: "", country: "" },
+            contact: basicInfo.contact || {
+              email: "",
+              phone: "",
+              office_hours: { start: "", end: "" },
+            },
+            facilities: basicInfo.facilities || "",
+            fees_structure: basicInfo.fees_structure || "",
+            images: row.images || [],
+            verified: true,
+          };
+        });
+        setEduCenters(mapped);
+      }
+    }
+    fetchEduCenters();
+  }, []);
+  return (
+    <>
+      {eduCenters.length === 0 ? (
+        <Card
+          background="transparent"
+          radius="l"
+          border="transparent"
+          padding="0"
+        >
+          <Text onBackground="neutral-weak" padding="m">
+            Loading...
+          </Text>
+        </Card>
+      ) : (
+        eduCenters.map((center) => (
+          <Card
+            key={center.name}
+            background="transparent"
+            radius="l"
+            border="neutral-weak"
+            padding="0"
+            style={{ marginBottom: "32px" }}
+            fillWidth
+          >
+            <Grid
+              fillWidth
+              padding="m"
+              radius="l"
+              background="transparent"
+              columns={4}
+              gap="32"
+            >
+              <Column flex={2}>
+                <Row vertical="center" gap="16">
+                  <Media
+                    src={center.logo}
+                    objectFit="contain"
+                    width={3}
+                    height={3}
+                    alt={center.name}
+                    radius="full"
+                    borderWidth={2}
+                    border="neutral-weak"
+                  />
+                  <Column gap="0" marginTop="16">
+                    <Text
+                      onBackground="neutral-strong"
+                      style={{
+                        fontSize: "18px",
+                        marginBottom: "12px",
+                        lineHeight: "1em",
+                      }}
+                    >
+                      <Row gap="8">{center.name}</Row>
+                    </Text>
+                    <Text
+                      onBackground="neutral-weak"
+                      style={{ fontSize: "14px", lineHeight: "0.5em" }}
+                    >
+                      {center.affiliation.boards} ({center.affiliation.type})
+                    </Text>
+                  </Column>
+                </Row>
+              </Column>
+              <Column flex={2} gap="8">
+                <InfoRow
+                  icon="ri-map-pin-2-line"
+                  text={`${center.location.city}, ${center.location.country}`}
+                />
+                <InfoRow
+                  icon="ri-artboard-2-line"
+                  text={`${center.affiliation.boards} (${center.affiliation.type})`}
+                />
+                <InfoRow
+                  icon="ri-user-smile-line"
+                  text={`${center.classes_offered.min} - ${center.classes_offered.max}`}
+                />
+                <InfoRow
+                  icon="ri-building-4-line"
+                  text={center.student_population?.toString() || ""}
+                />
+                <InfoRow
+                  icon="ri-star-line"
+                  text={center.star_rating?.toString() || ""}
+                />
+                <InfoRow icon="ri-store-2-line" text={center.facilities} />
+              </Column>
+              <Column flex={2} gap="8">
+                <ContactRow
+                  label="Email"
+                  value={center.contact.email}
+                  verified={center.verified}
+                />
+                <ContactRow
+                  label="Phone"
+                  value={center.contact.phone}
+                  verified={center.verified}
+                />
+                <ContactRow
+                  label="Office"
+                  value={`${center.contact.office_hours?.start || ""} - ${
+                    center.contact.office_hours?.end || ""
+                  }`}
+                />
+                <ContactRow
+                  label="Fees"
+                  value={center.fees_structure}
+                  verified={center.verified}
+                />
+              </Column>
+              <Column flex={2} horizontal="start" vertical="start">
+                <Carousel
+                  indicator="line"
+                  controls={false}
+                  items={center.images}
+                />
+              </Column>
+            </Grid>
+          </Card>
+        ))
+      )}
+    </>
   );
 }
 

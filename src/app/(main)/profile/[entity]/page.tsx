@@ -188,15 +188,16 @@ export default function ProfilePage() {
     let profile: UserProfile | null = null;
     if (profileData) {
       const pd = profileData.profile_details || {};
+      // New profile_details structure (flat, only new structure is accepted)
       profile = {
-        fullName: pd.fullName ?? "",
-        introduction: pd.introduction ?? "",
-        dob: pd.dob ? new Date(pd.dob) : null,
-        gender: pd.gender ?? "none",
-        country: pd.country ?? "",
-        address: pd.address ?? "",
-        phoneNumber: pd.phoneNumber ?? "",
-        email: profileData.primary_email ?? "",
+        fullName: pd.personal_details.full_name ?? "",
+        introduction: pd.personal_details.introduction ?? "",
+        dob: pd.personal_details.dob ? new Date(pd.dob) : null,
+        gender: pd.personal_details.gender ?? "none",
+        country: pd.contact.country ?? "",
+        address: pd.contact.address ?? "",
+        phoneNumber: pd.contact.phone_number ?? "",
+        email: pd.contact.email ?? "",
         accountVisibility: profileData.is_public ?? false,
         isConsultant: profileData.is_consultant ?? false,
         userName: profileData.username ?? "",
@@ -206,9 +207,9 @@ export default function ProfilePage() {
         lastLogin: profileData.last_login
           ? new Date(profileData.last_login)
           : null,
-        membershipStatus: profileData.subscription ?? "A",
-        languagePreference: pd.languagePreference ?? "English",
-        timezone: pd.timezone ?? "Select timezone",
+        membershipStatus: pd.membershipStatus ?? "A",
+        languagePreference: pd.contact.languagePreference ?? "English",
+        timezone: pd.contact.timezone ?? "Select timezone",
         avatarSrc: profileData.pfp ?? "",
         count: profileData.count ?? 0,
       };
@@ -227,18 +228,25 @@ export default function ProfilePage() {
     }
 
     // Prepare institutions
+    // update this thing mf
     let institutions: Institution[] = [];
     if (institutionsData && Array.isArray(institutionsData)) {
       institutions = institutionsData.map((row) => ({
         id: row.edu_id,
         type: row.basic_info?.type || "",
         name: row.basic_info?.name || "",
-        address: row.basic_info?.city || "",
-        affiliation: row.basic_info?.affiliation || "",
-        contact: row.basic_info?.phone_number || "",
-        email: row.basic_info?.email || "",
+        address:
+          row.basic_info?.location?.city +
+            ", " +
+            row.basic_info?.location?.country || "",
+        affiliation: row.basic_info?.affiliation?.boards || "",
+        contact: row.basic_info?.contact?.phone || "",
+        email: row.basic_info?.contact?.email || "",
         isPublished: row.is_published || false,
         uuid: row.uuid || "",
+        city: row.basic_info?.location?.city || "",
+        country: row.basic_info?.location?.country || "",
+        affiliationType: row.basic_info?.affiliation?.type || "",
       }));
     }
 
@@ -345,18 +353,23 @@ export default function ProfilePage() {
       subscription = userDataRow.subscription;
     }
 
+    // Convert UserProfile to new profile_details structure
     const profileDetails = {
-      fullName: profile.fullName,
-      introduction: profile.introduction,
-      dob: profile.dob ? profile.dob.toISOString() : null,
-      gender: profile.gender,
-      country: profile.country,
-      address: profile.address,
-      phoneNumber: profile.phoneNumber,
-      email: profile.email,
-      membershipStatus: null,
-      languagePreference: profile.languagePreference,
-      timezone: profile.timezone,
+      personal_details: {
+        full_name: profile.fullName,
+        introduction: profile.introduction,
+        dob: profile.dob ? profile.dob.toISOString() : null,
+        gender: profile.gender,
+      },
+      contact: {
+        country: profile.country,
+        address: profile.address,
+        phone_number: profile.phoneNumber,
+        email: profile.email,
+        language_preference: profile.languagePreference,
+        timezone: profile.timezone,
+      },
+      membershipStatus: profile.membershipStatus,
     };
     const { error } = await supabase
       .from("user_profiles")
@@ -437,13 +450,39 @@ export default function ProfilePage() {
         basic_info: {
           name: newInstitution.name.trim(),
           type: newInstitution.type.trim(),
-          affiliation: newInstitution.affiliation.trim(),
-          phone_number: newInstitution.phoneNumber.trim(),
-          email: newInstitution.email.trim(),
-          city: newInstitution.city.trim(),
+          year_established: null, // You may want to collect this in your form
+          boarding_type: "", // You may want to collect this in your form
+          affiliation: {
+            boards: newInstitution.affiliation.trim(), // You may want to collect this in your form
+            type: "", // You may want to collect this in your form
+          },
+          classes_offered: {
+            min: "", // You may want to collect this in your form
+            max: "", // You may want to collect this in your form
+          },
+          student_population: "", // You may want to collect this in your form
+          star_rating: null, // You may want to collect this in your form
+
+          location: {
+            city: newInstitution.city.trim(),
+            country: newInstitution.country.trim(), // You may want to collect this in your form
+          },
+          contact: {
+            email: newInstitution.email.trim(),
+            phone: newInstitution.phoneNumber.trim(),
+            office_hours: {
+              start: "", // You may want to collect this in your form
+              end: "", // You may want to collect this in your form
+            },
+          },
+          facilities: "", // You may want to collect this in your form
+          fees_structure: "", // You may want to collect this in your form
+          is_published: false,
+          uuid,
+          edu_url_name: urlName,
         },
         is_published: false,
-        uuid,
+        uuid: uuid,
         edu_url_name: urlName,
       },
     ]);
@@ -601,6 +640,7 @@ type UserSocials = {
   linkedin: string;
 };
 type Institution = {
+  id: string;
   name: string;
   type: string;
   address: string;
@@ -608,8 +648,10 @@ type Institution = {
   contact: string;
   email: string;
   isPublished: boolean;
-  id: string;
   uuid: string;
+  city?: string;
+  country?: string;
+  affiliationType?: string;
 };
 type InstitutionInput = {
   name: string;
@@ -618,6 +660,7 @@ type InstitutionInput = {
   phoneNumber: string;
   email: string;
   city: string;
+  country: string;
 };
 
 // --- Profile Header ---
@@ -1153,6 +1196,7 @@ function CreatedInstitutions({
     phoneNumber: "",
     email: "",
     city: "",
+    country: "",
   });
 
   // Terms checkboxes
@@ -1188,6 +1232,7 @@ function CreatedInstitutions({
       phoneNumber: "",
       email: "",
       city: "",
+      country: "",
     });
     setTerms(terms.map((t) => ({ ...t, checked: false })));
   };
@@ -1303,16 +1348,33 @@ function CreatedInstitutions({
             <Input
               spellCheck={false}
               id="city"
-              label="e.g. Vadodara,India"
+              label="e.g. Vadodara"
               description={
                 <>
-                  <i className="ri-information-line"></i>&nbsp;Enter the short
-                  address of your institution
+                  <i className="ri-information-line"></i>&nbsp;Enter the city
                 </>
               }
               value={newInstitution.city}
               onChange={(e: any) =>
                 setNewInstitution((prev) => ({ ...prev, city: e.target.value }))
+              }
+              disabled={!isCurrentUser}
+            />
+            <Input
+              spellCheck={false}
+              id="city"
+              label="e.g. India"
+              description={
+                <>
+                  <i className="ri-information-line"></i>&nbsp;Enter the coutry
+                </>
+              }
+              value={newInstitution.country}
+              onChange={(e: any) =>
+                setNewInstitution((prev) => ({
+                  ...prev,
+                  country: e.target.value,
+                }))
               }
               disabled={!isCurrentUser}
             />
@@ -1359,7 +1421,7 @@ function CreatedInstitutions({
           <Row fillWidth vertical="center" gap="8">
             <Input
               id="phone"
-              label="e.g. +91 1234567890"
+              label="e.g. 1234567890"
               spellCheck={false}
               description={
                 <>
@@ -1527,7 +1589,9 @@ function InstitutionCard({
       </HeadingLink>
       <InstitutionRow label="Type:">{institution.type}</InstitutionRow>
 
-      <InstitutionRow label="City:">{institution.address}</InstitutionRow>
+      <InstitutionRow label="Short address:">
+        {institution.address}
+      </InstitutionRow>
       <InstitutionRow label="Affiliation:">
         {institution.affiliation}
       </InstitutionRow>

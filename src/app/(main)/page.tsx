@@ -388,22 +388,41 @@ function HeroStats() {
           >
             Start here
           </Button>
-            <Button
-            id="arrow-button-1"
-            size="m"
-            weight="default"
-            variant="secondary"
-            style={{ backgroundColor: "#F2F2EF" }}
-            onMouseEnter={(e: React.MouseEvent<HTMLButtonElement>) =>
-              (e.currentTarget.style.backgroundColor = "#E0E0DC")
-            }
-            onMouseLeave={(e: React.MouseEvent<HTMLButtonElement>) =>
-              (e.currentTarget.style.backgroundColor = "#F2F2EF")
-            }
-            onClick={() => (window.location.href = `/profile/${uuid}`)}
-            >
-            Dashboard
-            </Button>
+            {uuid ? (
+              <Button
+                id="arrow-button-1"
+                size="m"
+                weight="default"
+                variant="secondary"
+                style={{ backgroundColor: "#F2F2EF" }}
+                onMouseEnter={(e: React.MouseEvent<HTMLButtonElement>) =>
+                  (e.currentTarget.style.backgroundColor = "#E0E0DC")
+                }
+                onMouseLeave={(e: React.MouseEvent<HTMLButtonElement>) =>
+                  (e.currentTarget.style.backgroundColor = "#F2F2EF")
+                }
+                onClick={() => (window.location.href = `/profile/${uuid}`)}
+              >
+                Dashboard
+              </Button>
+            ) : (
+              <Button
+                id="arrow-button-1"
+                size="m"
+                weight="default"
+                variant="secondary"
+                style={{ backgroundColor: "#F2F2EF" }}
+                onMouseEnter={(e: React.MouseEvent<HTMLButtonElement>) =>
+                  (e.currentTarget.style.backgroundColor = "#E0E0DC")
+                }
+                onMouseLeave={(e: React.MouseEvent<HTMLButtonElement>) =>
+                  (e.currentTarget.style.backgroundColor = "#F2F2EF")
+                }
+                href="#card-d"
+              >
+                Dashboard
+              </Button>
+            )}
         </Row>
       </Column>
     </Column>
