@@ -32,8 +32,10 @@ import {
   Card,
   Carousel,
   Select,
+  Spinner,
+  RevealFx,
 } from "@once-ui-system/core";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { supabase } from "@/app/utils/supabase/client";
 import {
   Lato,
@@ -52,7 +54,6 @@ import { useRouter } from "next/navigation";
 import Footer from "../components/Footer";
 import NavBar from "../components/NavBar";
 import { Cookie } from "../components/once-ui-pro/Cookie";
-import { useEffect } from "react";
 
 // Font setup
 const dmsans = Outfit({
@@ -84,46 +85,6 @@ const poppins = Poppins({
 // JSON Data
 
 const avatarGroup1 = [{ value: "A" }, { value: "B" }, { value: "C" }];
-const institutionData = [
-  {
-    id: "st patrick's academy",
-    count: 1,
-    name: "St. Patrick's Academy",
-    logo: "https://yt3.googleusercontent.com/ytc/AIdro_nHcwS0yKNZRaBSjEKQ6GE8po7Si6MtE4D8-rABvFLuAQ=s900-c-k-c0x00ffffff-no-rj",
-    type: "School in India",
-    location: "Dehradun, Uttarakhand",
-    board: "ICSE/ISC",
-    classes: "UKG to 12th",
-    population: "3000+ students and teachers",
-    rating: "4.7/5",
-    features:
-      "Labs, Sports, Audorium, Library, Canteen, Transport, Infirmary, and more.",
-    contact: {
-      email: "spadehradun@gmail.com",
-      phone: "+91 12345 67890",
-      office: "8:00 a.m. to 5:00 p.m.",
-      fees: "₹75,000 per year",
-    },
-    verified: true,
-    creator: {
-      name: "Divyanshu Dhruv",
-      avatar:
-        "https://divyanshudhruv.is-a.dev/_next/image?url=%2Fme.png&w=384&q=95",
-    },
-    images: [
-      {
-        slide:
-          "https://msmgurugram.com/wp-content/uploads/2022/12/St.-Patricks-Academy-Dehradun-Estd.-2014.jpg",
-        alt: "Image 1",
-      },
-      {
-        slide:
-          "https://i.ytimg.com/vi/bXXd3ZOmKEM/maxresdefault.jpg?sqp=-oaymwEmCIAKENAF8quKqQMa8AEB-AH-CYAC0AWKAgwIABABGH8gHSgTMA8=&rs=AOn4CLAFB1FRI9BDbRuDtoIzllLgtYCKoA",
-        alt: "Image 2",
-      },
-    ],
-  },
-];
 
 // Header
 
@@ -293,209 +254,160 @@ function HeroStats() {
     </Column>
   );
 }
+
 // Institution Card
 function InstitutionCard({ data }: { data: any }) {
-  type EduCenter = {
-    name: string;
-    logo: string;
-    type: string;
-    year_established: number;
-    boarding_type: string;
-    affiliation: {
-      boards: string;
-      type: string;
-    };
-    classes_offered: {
-      min: string;
-      max: string;
-    };
-    student_population: number;
-    star_rating: number;
-    location: {
-      city: string;
-      country: string;
-    };
-    contact: {
-      email: string;
-      phone: string;
-      office_hours: {
-        start: string;
-        end: string;
-      };
-    };
-    facilities: string;
-    fees_structure: string;
-    images: Array<{ slide: string; alt: string }>;
-    verified?: boolean;
-  };
-
-  const [eduCenters, setEduCenters] = useState<EduCenter[]>([]);
-
-  useEffect(() => {
-    async function fetchEduCenters() {
-      const { data, error } = await supabase
-        .from("edu_centers")
-        .select("logo,images,basic_info");
-
-      if (!error && data) {
-        const mapped = data.map((row: any) => {
-          let basicInfo = row.basic_info;
-          if (typeof basicInfo === "string") {
-            try {
-              basicInfo = JSON.parse(basicInfo);
-            } catch {
-              basicInfo = {};
-            }
-          }
-          return {
-            name: basicInfo.name || "",
-            logo: row.logo || "",
-            type: basicInfo.type || "",
-            year_established: basicInfo.year_established || "",
-            boarding_type: basicInfo.boarding_type || "",
-            affiliation: basicInfo.affiliation || { boards: "", type: "" },
-            classes_offered: basicInfo.classes_offered || { min: "", max: "" },
-            student_population: basicInfo.student_population || "",
-            star_rating: basicInfo.star_rating || "",
-            location: basicInfo.location || { city: "", country: "" },
-            contact: basicInfo.contact || {
-              email: "",
-              phone: "",
-              office_hours: { start: "", end: "" },
-            },
-            facilities: basicInfo.facilities || "",
-            fees_structure: basicInfo.fees_structure || "",
-            images: row.images || [],
-            verified: true,
-          };
-        });
-        setEduCenters(mapped);
-      }
-    }
-    fetchEduCenters();
-  }, []);
+  // No fetching here, just render the UI
+  const center = data;
   return (
-    <>
-      {eduCenters.length === 0 ? (
-        <Card
-          background="transparent"
-          radius="l"
-          border="transparent"
-          padding="0"
-        >
-          <Text onBackground="neutral-weak" padding="m">
-            Loading...
-          </Text>
-        </Card>
-      ) : (
-        eduCenters.map((center) => (
-          <Card
-            key={center.name}
-            background="transparent"
-            radius="l"
-            border="neutral-weak"
-            padding="0"
-            style={{ marginBottom: "32px" }}
-            fillWidth
-          >
-            <Grid
-              fillWidth
-              padding="m"
-              radius="l"
-              background="transparent"
-              columns={4}
-              gap="32"
+    <Card
+      key={center.name}
+      background="transparent"
+      radius="l"
+      border="neutral-weak"
+      padding="0"
+      style={{ marginBottom: "32px" }}
+      fillWidth
+    >
+      <Grid
+        fillWidth
+        padding="m"
+        radius="l"
+        background="transparent"
+        columns={4}
+        gap="32"
+      >
+        <Column flex={2}>
+          <Row vertical="center" gap="16">
+            <Media
+              src={center.logo}
+              objectFit="contain"
+              width={3}
+              height={3}
+              alt={center.name}
+              radius="full"
+              borderWidth={2}
+              border="neutral-weak"
+            />
+            <Column gap="0" marginTop="16">
+              <Text
+                onBackground="neutral-strong"
+                style={{
+                  fontSize: "18px",
+                  marginBottom: "12px",
+                  lineHeight: "1em",
+                }}
+                className={dmsans.className}
+              >
+                <Row gap="8">{center.name} </Row>
+              </Text>
+              <Text
+                onBackground="neutral-weak"
+                style={{ fontSize: "14px", lineHeight: "0.5em" }}
+                className={dmsans.className}
+              >
+                {center.type} at {center.location.city}
+              </Text>
+            </Column>
+            <IconButton
+              variant="secondary"
+              size="m"
+              onClick={() => {
+                // Navigate to institution page
+                window.open(`/edu/${center.edu_id}`, "_blank");
+              }}
             >
-              <Column flex={2}>
-                <Row vertical="center" gap="16">
-                  <Media
-                    src={center.logo}
-                    objectFit="contain"
-                    width={3}
-                    height={3}
-                    alt={center.name}
-                    radius="full"
-                    borderWidth={2}
-                    border="neutral-weak"
-                  />
-                  <Column gap="0" marginTop="16">
-                    <Text
-                      onBackground="neutral-strong"
-                      style={{
-                        fontSize: "18px",
-                        marginBottom: "12px",
-                        lineHeight: "1em",
-                      }}
-                    >
-                      <Row gap="8">{center.name}</Row>
-                    </Text>
-                    <Text
-                      onBackground="neutral-weak"
-                      style={{ fontSize: "14px", lineHeight: "0.5em" }}
-                    >
-                      {center.affiliation.boards} ({center.affiliation.type})
-                    </Text>
-                  </Column>
-                </Row>
-              </Column>
-              <Column flex={2} gap="8">
-                <InfoRow
-                  icon="ri-map-pin-2-line"
-                  text={`${center.location.city}, ${center.location.country}`}
-                />
-                <InfoRow
-                  icon="ri-artboard-2-line"
-                  text={`${center.affiliation.boards} (${center.affiliation.type})`}
-                />
-                <InfoRow
-                  icon="ri-user-smile-line"
-                  text={`${center.classes_offered.min} - ${center.classes_offered.max}`}
-                />
-                <InfoRow
-                  icon="ri-building-4-line"
-                  text={center.student_population?.toString() || ""}
-                />
-                <InfoRow
-                  icon="ri-star-line"
-                  text={center.star_rating?.toString() || ""}
-                />
-                <InfoRow icon="ri-store-2-line" text={center.facilities} />
-              </Column>
-              <Column flex={2} gap="8">
-                <ContactRow
-                  label="Email"
-                  value={center.contact.email}
-                  verified={center.verified}
-                />
-                <ContactRow
-                  label="Phone"
-                  value={center.contact.phone}
-                  verified={center.verified}
-                />
-                <ContactRow
-                  label="Office"
-                  value={`${center.contact.office_hours?.start || ""} - ${
-                    center.contact.office_hours?.end || ""
-                  }`}
-                />
-                <ContactRow
-                  label="Fees"
-                  value={center.fees_structure}
-                  verified={center.verified}
-                />
-              </Column>
-              <Column flex={2} horizontal="start" vertical="start">
-                <Carousel
-                  indicator="line"
-                  controls={false}
-                  items={center.images}
-                />
-              </Column>
-            </Grid>
+              <Text onBackground="neutral-medium">
+                {" "}
+                <i
+                  className="ri-arrow-right-up-line"
+                  style={{ fontSize: "18px" }}
+                ></i>
+              </Text>
+            </IconButton>
+          </Row>
+        </Column>
+        <Column flex={2} gap="8">
+          <Card
+            gap="8"
+            vertical="center"
+            radius="s"
+            paddingX="4"
+            paddingY="2"
+            background="transparent"
+            border="transparent"
+            onClick={() => {
+              // Navigate to institution page
+              window.open(`/profile/${center.uuid}`, "_blank");
+            }}
+          >
+            <Media src={center.pfp} radius="s" width={1.8} height={1.8}></Media>{" "}
+            <Text
+              onBackground="neutral-medium"
+              style={{ fontSize: "15px" }}
+              className={dmsans.className}
+            >
+              {center.full_name}
+            </Text>
           </Card>
-        ))
-      )}
-    </>
+          <InfoRow
+            icon="ri-map-pin-2-line"
+            text={`${center.location.city}, ${center.location.country}`}
+          />
+          <InfoRow
+            icon="ri-artboard-2-line"
+            text={`${center.affiliation.boards || "Not provided"} `}
+          />
+
+          <InfoRow
+            icon="ri-user-smile-line"
+            text={`${center.classes_offered.min || "0000"} to ${
+              center.classes_offered.max || "0000"
+            }`}
+          />
+          <InfoRow
+            icon="ri-building-4-line"
+            text={
+              center.student_population?.toString() +
+                "+ students and teachers" || "Not provided"
+            }
+          />
+          <InfoRow
+            icon="ri-star-line"
+            text={center.star_rating?.toString() + "/5.0" || "Not provided"}
+          />
+          <InfoRow
+            icon="ri-store-2-line"
+            text={center.facilities || "Not provided"}
+          />
+        </Column>
+        <Column flex={2} gap="8">
+          <ContactRow
+            label="Email"
+            value={center.contact.email || "Not provided"}
+            verified={center.verified}
+          />
+          <ContactRow
+            label="Phone"
+            value={center.contact.phone || "Not provided"}
+            verified={center.verified}
+          />
+          <ContactRow
+            label="Office"
+            value={`${center.contact.office_hours?.start || "0000"} - ${
+              center.contact.office_hours?.end || "0000"
+            }`}
+          />
+          <ContactRow
+            label="Fees"
+            value={center.fees_structure || "Not provided"}
+          />
+        </Column>
+        <Column flex={2} horizontal="start" vertical="start">
+          <Carousel indicator="line" controls={false} items={center.images} />
+        </Column>
+      </Grid>
+    </Card>
   );
 }
 
@@ -568,11 +480,15 @@ function TableSection({
   setSearchValue,
   category,
   setCategory,
+  institutionData,
+  loading,
 }: {
   searchValue: string;
   setSearchValue: (v: string) => void;
   category: string;
   setCategory: (v: string) => void;
+  institutionData: any[];
+  loading: boolean;
 }) {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchValue(e.target.value);
@@ -630,9 +546,24 @@ function TableSection({
         paddingX="m"
         gap="12"
       >
-        {institutionData.map((data) => (
-          <InstitutionCard key={data.id} data={data} />
-        ))}
+        {loading ? (
+          <Flex
+            background="transparent"
+            radius="l"
+            border="transparent"
+            padding="0"
+            fillWidth
+            center
+          >
+            <Spinner size="xl" />
+          </Flex>
+        ) : (
+          institutionData.map((data) => (
+            <RevealFx key={data.edu_id}>
+              <InstitutionCard key={data.edu_url_name} data={data} />
+            </RevealFx>
+          ))
+        )}
       </Column>
     </>
   );
@@ -645,6 +576,82 @@ export default function Home() {
   // Centralized state for all input/selection
   const [searchValue, setSearchValue] = useState<string>("");
   const [category, setCategory] = useState<string>("");
+
+  // Institution data state
+  const [institutionData, setInstitutionData] = useState<any[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+
+  useEffect(() => {
+    async function fetchEduCenters() {
+      setLoading(true);
+      const { data, error } = await supabase
+        .from("edu_centers")
+        .select("logo,basic_info,images,edu_id,edu_url_name");
+
+      if (!error && data) {
+        const mapped = data.map((row: any) => {
+          const info = row.basic_info || {};
+          return {
+            name: info.name || "",
+            logo: row.logo || "",
+            type: info.type || "",
+            year_established: info.year_established || "",
+            boarding_type: info.boarding_type || "",
+            affiliation: info.affiliation || { boards: "", type: "" },
+            classes_offered: info.classes_offered || { min: "", max: "" },
+            student_population: info.student_population || "",
+            star_rating: info.star_rating || "",
+            location: info.location || { city: "", country: "" },
+            contact: info.contact || {
+              email: "",
+              phone: "",
+              office_hours: { start: "", end: "" },
+            },
+            facilities: info.facilities || "",
+            fees_structure: info.fees_structure || "",
+            images: row.images || [],
+            verified: true,
+            uuid: info.uuid || "",
+            edu_id: row.edu_id || "",
+            edu_url_name: row.edu_url_name || "",
+          };
+        });
+        setInstitutionData(mapped);
+
+        // Fetch user_profiles for each institution
+        // Fetch user_profiles for each institution and merge pfp/full_name
+        const uuids = mapped.map((inst: any) => inst.uuid).filter(Boolean);
+        if (uuids.length > 0) {
+          const { data: profiles, error: profileError } = await supabase
+            .from("user_profiles")
+            .select("uuid, pfp, profile_details")
+            .in("uuid", uuids);
+
+          if (!profileError && profiles) {
+            const profileMap = new Map(
+              profiles.map((p: any) => [
+                p.uuid,
+                {
+                  pfp: p.pfp || "",
+                  full_name:
+                    p.profile_details?.personal_details?.full_name || "",
+                },
+              ])
+            );
+            setInstitutionData((prev) =>
+              prev.map((inst) => ({
+                ...inst,
+                pfp: profileMap.get(inst.uuid)?.pfp || "",
+                full_name: profileMap.get(inst.uuid)?.full_name || "",
+              }))
+            );
+          }
+        }
+      }
+      setLoading(false);
+    }
+    fetchEduCenters();
+  }, []);
 
   return (
     <Column
@@ -669,6 +676,8 @@ export default function Home() {
           setSearchValue={setSearchValue}
           category={category}
           setCategory={setCategory}
+          institutionData={institutionData}
+          loading={loading}
         />
         <Flex height={3} fillWidth></Flex>
         <Footer />
