@@ -356,9 +356,12 @@ function InstitutionCard({ data }: { data: any }) {
           />
           <InfoRow
             icon="ri-artboard-2-line"
-            text={`${center.affiliation.boards || "Not provided"} `}
+            text={
+              Array.isArray(center.affiliation.boards)
+                ? center.affiliation.boards.join("/").toUpperCase()
+                : (center.affiliation.boards || "Not provided").toUpperCase()
+            }
           />
-
           <InfoRow
             icon="ri-user-smile-line"
             text={`${center.classes_offered.min || "0000"} to ${
@@ -586,36 +589,38 @@ export default function Home() {
       setLoading(true);
       const { data, error } = await supabase
         .from("edu_centers")
-        .select("logo,basic_info,images,edu_id,edu_url_name");
+        .select("logo,basic_info,images,edu_id,edu_url_name,is_published");
 
       if (!error && data) {
-        const mapped = data.map((row: any) => {
-          const info = row.basic_info || {};
-          return {
-            name: info.name || "",
-            logo: row.logo || "",
-            type: info.type || "",
-            year_established: info.year_established || "",
-            boarding_type: info.boarding_type || "",
-            affiliation: info.affiliation || { boards: "", type: "" },
-            classes_offered: info.classes_offered || { min: "", max: "" },
-            student_population: info.student_population || "",
-            star_rating: info.star_rating || "",
-            location: info.location || { city: "", country: "" },
-            contact: info.contact || {
-              email: "",
-              phone: "",
-              office_hours: { start: "", end: "" },
-            },
-            facilities: info.facilities || "",
-            fees_structure: info.fees_structure || "",
-            images: row.images || [],
-            verified: true,
-            uuid: info.uuid || "",
-            edu_id: row.edu_id || "",
-            edu_url_name: row.edu_url_name || "",
-          };
-        });
+        const mapped = data
+          .filter((row: any) => row.is_published !== false)
+          .map((row: any) => {
+            const info = row.basic_info || {};
+            return {
+              name: info.name || "",
+              logo: row.logo || "",
+              type: info.type || "",
+              year_established: info.year_established || "",
+              boarding_type: info.boarding_type || "",
+              affiliation: info.affiliation || { boards: [], type: "" },
+              classes_offered: info.classes_offered || { min: "", max: "" },
+              student_population: info.student_population || "",
+              star_rating: info.star_rating || "",
+              location: info.location || { city: "", country: "" },
+              contact: info.contact || {
+                email: "",
+                phone: "",
+                office_hours: { start: "", end: "" },
+              },
+              facilities: info.facilities || "",
+              fees_structure: info.fees_structure || "",
+              images: row.images || [],
+              verified: true,
+              uuid: info.uuid || "",
+              edu_id: row.edu_id || "",
+              edu_url_name: row.edu_url_name || "",
+            };
+          });
         setInstitutionData(mapped);
 
         // Fetch user_profiles for each institution

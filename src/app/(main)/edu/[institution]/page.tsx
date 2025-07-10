@@ -19,6 +19,7 @@ import {
   Input,
   Grid,
   Checkbox,
+  Spinner,
 } from "@once-ui-system/core";
 import Navbar from "../../components/NavBar";
 
@@ -38,6 +39,20 @@ import { Textarea } from "@once-ui-system/core";
 export default function Page() {
   const [activeTab, setActiveTab] = useState("about");
   const router = useRouter();
+
+  const [tables, setTables] = useState([""]);
+  const [basicInfo, setBasicInfo] = useState([""]);
+  const [extraLinks, setExtraLinks] = useState([""]);
+  const [faqs, setFAQS] = useState([""]);
+  const [text, setText] = useState("");
+  const [facilities, setFacilities] = useState([""]);
+  const [motto, setMotto] = useState("");
+  const [isPublished, setIsPublished] = useState(false);
+  const [images, setImages] = useState<string[]>([]);
+  const [logo, setLogo] = useState<string>("");
+  const [reviews, setReviews] = useState<string[]>([]);
+  const [isDataLoaded, setIsDataLoaded] = useState(false);
+
   const [slug, setSlug] = useState("");
   useEffect(() => {
     // Get the slug from the URL (the [institution] param)
@@ -60,17 +75,51 @@ export default function Page() {
       if (!userId) return;
       const { data, error } = await supabase
         .from("edu_centers")
-        .select("uuid")
+        .select(
+          "uuid,is_published,logo,qna,reviews,tables,extra_links,facilities,texts,basic_info,motto,images"
+        )
         .eq("edu_id", slug)
-        .single();
+        .maybeSingle();
       if (data && data.uuid === userId) {
         setIsUser(true);
       }
+      if (data) {
+        setIsPublished(data.is_published);
+        setLogo(data.logo);
+        setTables(data.tables || []);
+        setExtraLinks(data.extra_links || []);
+        setFacilities(data.facilities || []);
+        setText(data.texts || "");
+        setBasicInfo(data.basic_info || []);
+        setMotto(data.motto || "");
+        setImages(data.images || []);
+        setFAQS(data.qna || []);
+        setReviews(data.reviews || []);
+      }
     };
     checkUser();
+    setIsDataLoaded(true);
   }, [slug]);
 
-  const [motto, setMotto] = useState("");
+  useEffect(() => {
+    console.log(
+      isPublished,
+      logo,
+      tables,
+      extraLinks,
+      facilities,
+      text,
+      basicInfo,
+      motto,
+      images,
+      faqs,
+      reviews
+    );
+  }, []);
+
+  if (isPublished === false) {
+    return null;
+  }
 
   return (
     <>
@@ -93,215 +142,83 @@ export default function Page() {
         >
           <Navbar />
           <Flex fillWidth height={7}></Flex>
-          <Flex maxWidth={60}>
-            {" "}
-            <Row
-              id="herro"
-              horizontal="space-between"
-              vertical="start"
-              fillWidth
-              style={{ maxWidth: "100vw" }}
-              fitHeight
-              gap="40"
-              wrap={true}
-            >
-              <Column fillWidth fitHeight vertical="center" horizontal="start">
-                <Button variant="secondary" weight="default" size="l" arrowIcon>
-                  Back
-                </Button>
-                <Flex fillWidth height={0.5}></Flex>
+          {!isDataLoaded ? (
+            <>
+              <Spinner size="xl"></Spinner>
+            </>
+          ) : (
+            <Column>
+              <HeroSection
+                isUser={isUser}
+                logo={logo}
+                basicInfo={basicInfo}
+              ></HeroSection>
 
-                <Column>
-                  <a>
-                    <u style={{ textDecorationColor: "#ccc" }}>
-                      <Text
-                        style={{
-                          color: "#181A1D",
-                          fontSize: "70px",
-                          lineHeight: "1em",
-                          fontWeight: "500",
-                          letterSpacing: ".3px",
-                        }}
-                        className={dmsans.className}
-                      >
-                        St. Patrick's Academy,
-                        <span style={{ color: "#626F45" }}> School</span> <br />
-                        in <span style={{ color: "#626F45" }}>India</span>.{" "}
-                      </Text>
-                    </u>
-                  </a>
-                </Column>
-              </Column>
+              <Flex fillWidth height={3}></Flex>
+
+              <Flex fillWidth maxWidth={60} center>
+                <SegmentedControl
+                  buttons={[
+                    { value: "about", label: "About" },
+                    { value: "admission", label: "Admission & Fees" },
+                    {
+                      value: "facilities",
+                      label: "Facilities & Infrastructure",
+                    },
+                    { value: "extra", label: "Extra Curricular" },
+                    { value: "academics", label: "Academics" },
+                    { value: "reviews", label: "Reviews" },
+                    { value: "qna", label: "Q&A" },
+                  ]}
+                  onToggle={(value) => setActiveTab(value)}
+                />
+              </Flex>
+              <Flex fillWidth height={3}></Flex>
               <Column
-                fitWidth
-                fillHeight
+                fillWidth
+                maxWidth={60}
                 horizontal="start"
-                vertical="space-between"
-                maxWidth={27.5}
-                maxHeight={13.2}
-                gap="20"
+                vertical="start"
+                paddingY="16"
+                gap="8"
               >
-                <Row center fitWidth fitHeight gap="20">
-                  <AvatarGroup
-                    size="l"
-                    avatars={[
-                      {
-                        src: "https://yt3.googleusercontent.com/ytc/AIdro_nHcwS0yKNZRaBSjEKQ6GE8po7Si6MtE4D8-rABvFLuAQ=s900-c-k-c0x00ffffff-no-rj",
-                      },
-                    ]}
-                  />
-                  <Line
-                    vert
-                    width={0.2}
-                    height={4}
-                    background="neutral-medium"
-                  />
-                  <Column horizontal="end" vertical="start" fitHeight>
-                    <Text
-                      style={{
-                        color: "#181A1D",
-                        fontSize: "41px",
-                      }}
-                      className={dmsans.className}
-                    >
-                      +3000
-                    </Text>
-                    <Text
-                      onBackground="neutral-weak"
-                      style={{
-                        fontSize: "10px",
-                      }}
-                    >
-                      Students and Teachers
-                    </Text>
-                  </Column>
-                  <Column horizontal="end" vertical="start" fillHeight>
-                    <Text
-                      style={{
-                        color: "#181A1D",
-                        fontSize: "41px",
-                      }}
-                      className={dmsans.className}
-                    >
-                      4.7/5
-                    </Text>
-                    <Text
-                      onBackground="neutral-weak"
-                      style={{
-                        fontSize: "10px",
-                      }}
-                    >
-                      Average Rating
-                    </Text>
-                  </Column>
-                </Row>
-                <Column gap="20" fillWidth>
-                  <Text
-                    onBackground="neutral-weak"
-                    style={{
-                      fontSize: "14px",
-                    }}
-                  >
-                    Welcome to St. Patrick's Academy, a premier educational
-                    institution in India, dedicated to nurturing young minds and
-                    fostering a love for learning. Our school offers a holistic
-                    approach to education.
-                  </Text>
-                  <Row gap="20">
-                    <Button
-                      id="arrow-button-1"
-                      arrowIcon
-                      size="m"
-                      weight="default"
-                      href="#card-d"
-                    >
-                      Edit details
-                    </Button>
-                    <Button
-                      id="arrow-button-1"
-                      arrowIcon={!isUser}
-                      size="m"
-                      weight="default"
-                      href="#card-d"
-                    >
-                      Call Us
-                    </Button>
-                    <Button
-                      id="arrow-button-1"
-                      size="m"
-                      weight="default"
-                      variant="secondary"
-                      style={{ backgroundColor: "#F2F2EF" }}
-                      onMouseEnter={(e: React.MouseEvent<HTMLButtonElement>) =>
-                        (e.currentTarget.style.backgroundColor = "#E0E0DC")
-                      }
-                      onMouseLeave={(e: React.MouseEvent<HTMLButtonElement>) =>
-                        (e.currentTarget.style.backgroundColor = "#F2F2EF")
-                      }
-                      onClick={() => router.push("/profile/a")}
-                    >
-                      Email Us
-                    </Button>
-                    <Button
-                      id="arrow-button-1"
-                      size="m"
-                      weight="default"
-                      variant="secondary"
-                      style={{ backgroundColor: "#F2F2EF" }}
-                      onMouseEnter={(e: React.MouseEvent<HTMLButtonElement>) =>
-                        (e.currentTarget.style.backgroundColor = "#E0E0DC")
-                      }
-                      onMouseLeave={(e: React.MouseEvent<HTMLButtonElement>) =>
-                        (e.currentTarget.style.backgroundColor = "#F2F2EF")
-                      }
-                      onClick={() => router.push("/profile/a")}
-                    >
-                      <i className="ri-user-smile-line"></i>&nbsp;Connect with
-                      Students
-                    </Button>
-                  </Row>
-                </Column>
+                {
+                  {
+                    about: (
+                      <AboutSchool
+                        isUser={isUser}
+                        motto={motto}
+                        text={text}
+                        basicInfo={basicInfo}
+                      />
+                    ),
+                    admission: (
+                      <Admission
+                        isUser={isUser}
+                        text={text}
+                        extraLinks={extraLinks}
+                        tables={tables}
+                      />
+                    ),
+                    facilities: (
+                      <Facilities isUser={isUser} facilities={facilities} />
+                    ),
+                    extra: <Extracurricular isUser={isUser} text={text} />,
+                    academics: (
+                      <Academics
+                        isUser={isUser}
+                        extraLinks={extraLinks}
+                        tables={tables}
+                      />
+                    ),
+                    reviews: <Reviews reviews={reviews} isUser={isUser}/>,
+                    qna: <FAQs isUser={isUser} faqs={faqs} />,
+                  }[activeTab]
+                }
               </Column>
-            </Row>
-          </Flex>
+            </Column>
+          )}
 
-          <Flex fillWidth height={3}></Flex>
-
-          <Flex fillWidth maxWidth={60} center>
-            <SegmentedControl
-              buttons={[
-                { value: "about", label: "About" },
-                { value: "admission", label: "Admission & Fees" },
-                { value: "facilities", label: "Facilities & Infrastructure" },
-                { value: "extra", label: "Extra Curricular" },
-                { value: "academics", label: "Academics" },
-                { value: "reviews", label: "Reviews" },
-                { value: "qna", label: "Q&A" },
-              ]}
-              onToggle={(value) => setActiveTab(value)}
-            />
-          </Flex>
-          <Flex fillWidth height={3}></Flex>
-          <Column
-            fillWidth
-            maxWidth={60}
-            horizontal="start"
-            vertical="start"
-            paddingY="16"
-            gap="8"
-          >
-            {
-              {
-                about: <AboutSchool isUser={isUser} />,
-                admission: <Admission isUser={isUser} />,
-                facilities: <Facilities isUser={isUser} />,
-                extra: <Extracurricular isUser={isUser} />,
-                academics: <Academics />,
-                reviews: <Reviews />,
-                qna: <FAQs isUser={isUser} />,
-              }[activeTab]
-            }
-          </Column>
           <Footer />
         </Column>
       </Column>
@@ -309,11 +226,193 @@ export default function Page() {
   );
 }
 
-interface AboutSchoolProps {
+interface HeroSectionProps {
   isUser: boolean;
+  logo: string;
+  basicInfo: string[];
+}
+function HeroSection({ isUser,logo,basicInfo }: HeroSectionProps) {
+  const router = useRouter();
+  return (
+    <>
+      <Flex maxWidth={60}>
+        {" "}
+        <Row
+          id="herro"
+          horizontal="space-between"
+          vertical="start"
+          fillWidth
+          style={{ maxWidth: "100vw" }}
+          fitHeight
+          gap="40"
+          wrap={true}
+        >
+          <Column fillWidth fitHeight vertical="center" horizontal="start">
+            <Button variant="secondary" weight="default" size="l" arrowIcon>
+              Back
+            </Button>
+            <Flex fillWidth height={0.5}></Flex>
+
+            <Column>
+              <a>
+                <u style={{ textDecorationColor: "#ccc" }}>
+                  <Text
+                    style={{
+                      color: "#181A1D",
+                      fontSize: "70px",
+                      lineHeight: "1em",
+                      fontWeight: "500",
+                      letterSpacing: ".3px",
+                    }}
+                    className={dmsans.className}
+                  >
+                    St. Patrick's Academy,
+                    <span style={{ color: "#626F45" }}> School</span> <br />
+                    in <span style={{ color: "#626F45" }}>India</span>.{" "}
+                  </Text>
+                </u>
+              </a>
+            </Column>
+          </Column>
+          <Column
+            fitWidth
+            fillHeight
+            horizontal="start"
+            vertical="space-between"
+            maxWidth={27.5}
+            maxHeight={13.2}
+            gap="20"
+          >
+            <Row center fitWidth fitHeight gap="20">
+              <AvatarGroup
+                size="l"
+                avatars={[
+                  {
+                    src: "https://yt3.googleusercontent.com/ytc/AIdro_nHcwS0yKNZRaBSjEKQ6GE8po7Si6MtE4D8-rABvFLuAQ=s900-c-k-c0x00ffffff-no-rj",
+                  },
+                ]}
+              />
+              <Line vert width={0.2} height={4} background="neutral-medium" />
+              <Column horizontal="end" vertical="start" fitHeight>
+                <Text
+                  style={{
+                    color: "#181A1D",
+                    fontSize: "41px",
+                  }}
+                  className={dmsans.className}
+                >
+                  +3000
+                </Text>
+                <Text
+                  onBackground="neutral-weak"
+                  style={{
+                    fontSize: "10px",
+                  }}
+                >
+                  Students and Teachers
+                </Text>
+              </Column>
+              <Column horizontal="end" vertical="start" fillHeight>
+                <Text
+                  style={{
+                    color: "#181A1D",
+                    fontSize: "41px",
+                  }}
+                  className={dmsans.className}
+                >
+                  4.7/5
+                </Text>
+                <Text
+                  onBackground="neutral-weak"
+                  style={{
+                    fontSize: "10px",
+                  }}
+                >
+                  Average Rating
+                </Text>
+              </Column>
+            </Row>
+            <Column gap="20" fillWidth>
+              <Text
+                onBackground="neutral-weak"
+                style={{
+                  fontSize: "14px",
+                }}
+              >
+                Welcome to St. Patrick's Academy, a premier educational
+                institution in India, dedicated to nurturing young minds and
+                fostering a love for learning. Our school offers a holistic
+                approach to education.
+              </Text>
+              <Row gap="20">
+                <Button
+                  id="arrow-button-1"
+                  arrowIcon
+                  size="m"
+                  weight="default"
+                  href="#card-d"
+                >
+                  Edit details
+                </Button>
+                <Button
+                  id="arrow-button-1"
+                  arrowIcon={!isUser}
+                  size="m"
+                  weight="default"
+                  href="#card-d"
+                >
+                  Call Us
+                </Button>
+                <Button
+                  id="arrow-button-1"
+                  size="m"
+                  weight="default"
+                  variant="secondary"
+                  style={{ backgroundColor: "#F2F2EF" }}
+                  onMouseEnter={(e: React.MouseEvent<HTMLButtonElement>) =>
+                    (e.currentTarget.style.backgroundColor = "#E0E0DC")
+                  }
+                  onMouseLeave={(e: React.MouseEvent<HTMLButtonElement>) =>
+                    (e.currentTarget.style.backgroundColor = "#F2F2EF")
+                  }
+                  onClick={() => router.push("/profile/a")}
+                >
+                  Email Us
+                </Button>
+                <Button
+                  id="arrow-button-1"
+                  size="m"
+                  weight="default"
+                  variant="secondary"
+                  style={{ backgroundColor: "#F2F2EF" }}
+                  onMouseEnter={(e: React.MouseEvent<HTMLButtonElement>) =>
+                    (e.currentTarget.style.backgroundColor = "#E0E0DC")
+                  }
+                  onMouseLeave={(e: React.MouseEvent<HTMLButtonElement>) =>
+                    (e.currentTarget.style.backgroundColor = "#F2F2EF")
+                  }
+                  onClick={() => router.push("/profile/a")}
+                >
+                  <i className="ri-user-smile-line"></i>&nbsp;Connect with
+                  Students
+                </Button>
+              </Row>
+            </Column>
+          </Column>
+        </Row>
+      </Flex>
+    </>
+  );
 }
 
-function AboutSchool({ isUser }: AboutSchoolProps) {
+interface AboutSchoolProps {
+  isUser: boolean;
+  motto: string;
+  text: string;
+  basicInfo: string[];
+}
+
+function AboutSchool({ isUser,text,motto,basicInfo }: AboutSchoolProps) {
   const [motto, setMotto] = useState("believe in yourself");
   const [institutionAbout, setInstitutionAbout] = useState(
     "St. Patrick's Academy is a prestigious educational institution located in India, dedicated to providing quality education and holistic development to its students. Established in 2014, the school has grown to become a leading institution known for its commitment to academic excellence and character building."
@@ -760,9 +859,12 @@ function AboutSchool({ isUser }: AboutSchoolProps) {
 
 interface AdmissionSchoolProps {
   isUser: boolean;
+  text: string;
+  extraLinks: string[];
+  tables: string[];
 }
 
-function Admission({ isUser }: AdmissionSchoolProps) {
+function Admission({ isUser,text,extraLinks,tables }: AdmissionSchoolProps) {
   const [headerClasses, setHeaderClasses] = useState([
     { content: "Class", key: "class" },
     { content: "Minimum Age", key: "minAge", sortable: true },
@@ -1003,88 +1105,100 @@ function Admission({ isUser }: AdmissionSchoolProps) {
           </Text>
           {isUser ? (
             <>
-            <Column gap="12" fillWidth>
-              {extraLinks.admission.map((link, idx) => (
-                <Row key={link.id} fillWidth gap="12" horizontal="start" vertical="start">
-                  <Text variant="body-default-m" onBackground="neutral-medium">
-                    {link.id}
-                  </Text>
-                  <Flex flex={2}>
-                    <Input
-                      id=""
-                      placeholder="Enter link text"
-                      value={link.label}
-                      onChange={e => {
-                        setExtraLinks(prev => ({
-                          ...prev,
-                          admission: prev.admission.map((l, i) =>
-                            i === idx ? { ...l, label: e.target.value } : l
-                          ),
-                        }));
-                      }}
-                    />
-                  </Flex>
-                  <Flex flex={5}>
-                    <Input
-                      id=""
-                      placeholder="Enter link"
-                      value={link.url}
-                      hasPrefix={
-                        <Text onBackground="neutral-weak" variant="label-default-s">
-                          <i className="ri-links-line"></i>
-                        </Text>
-                      }
-                      onChange={e => {
-                        setExtraLinks(prev => ({
-                          ...prev,
-                          admission: prev.admission.map((l, i) =>
-                            i === idx ? { ...l, url: e.target.value } : l
-                          ),
-                        }));
-                      }}
-                    />
-                  </Flex>
-                </Row>
-              ))}
-            </Column>
-            <Row fillWidth horizontal="end" gap="4">
-              <Button
-                size="l"
-                onClick={() => {
-                  setExtraLinks(prev => ({
-                    ...prev,
-                    admission:
-                      prev.admission.length > 1
-                        ? prev.admission.slice(0, -1)
-                        : prev.admission,
-                  }));
-                }}
-                disabled={extraLinks.admission.length <= 1}
-              >
-                Remove last
-              </Button>
-              <Button
-                size="l"
-                onClick={() => {
-                  setExtraLinks(prev => ({
-                    ...prev,
-                    admission: [
-                      ...prev.admission,
-                      {
-                        id:
-                          prev.admission.length > 0
-                            ? prev.admission[prev.admission.length - 1].id + 1
-                            : 1,
-                        label: "",
-                        url: "",
-                      },
-                    ],
-                  }));
-                }}
-              >
-                Add
-              </Button>
-            </Row>
+              <Column gap="12" fillWidth>
+                {extraLinks.admission.map((link, idx) => (
+                  <Row
+                    key={link.id}
+                    fillWidth
+                    gap="12"
+                    horizontal="start"
+                    vertical="start"
+                  >
+                    <Text
+                      variant="body-default-m"
+                      onBackground="neutral-medium"
+                    >
+                      {link.id}
+                    </Text>
+                    <Flex flex={2}>
+                      <Input
+                        id=""
+                        placeholder="Enter link text"
+                        value={link.label}
+                        onChange={(e) => {
+                          setExtraLinks((prev) => ({
+                            ...prev,
+                            admission: prev.admission.map((l, i) =>
+                              i === idx ? { ...l, label: e.target.value } : l
+                            ),
+                          }));
+                        }}
+                      />
+                    </Flex>
+                    <Flex flex={5}>
+                      <Input
+                        id=""
+                        placeholder="Enter link"
+                        value={link.url}
+                        hasPrefix={
+                          <Text
+                            onBackground="neutral-weak"
+                            variant="label-default-s"
+                          >
+                            <i className="ri-links-line"></i>
+                          </Text>
+                        }
+                        onChange={(e) => {
+                          setExtraLinks((prev) => ({
+                            ...prev,
+                            admission: prev.admission.map((l, i) =>
+                              i === idx ? { ...l, url: e.target.value } : l
+                            ),
+                          }));
+                        }}
+                      />
+                    </Flex>
+                  </Row>
+                ))}
+              </Column>
+              <Row fillWidth horizontal="end" gap="4">
+                <Button
+                  size="l"
+                  onClick={() => {
+                    setExtraLinks((prev) => ({
+                      ...prev,
+                      admission:
+                        prev.admission.length > 1
+                          ? prev.admission.slice(0, -1)
+                          : prev.admission,
+                    }));
+                  }}
+                  disabled={extraLinks.admission.length <= 1}
+                >
+                  Remove last
+                </Button>
+                <Button
+                  size="l"
+                  onClick={() => {
+                    setExtraLinks((prev) => ({
+                      ...prev,
+                      admission: [
+                        ...prev.admission,
+                        {
+                          id:
+                            prev.admission.length > 0
+                              ? prev.admission[prev.admission.length - 1].id + 1
+                              : 1,
+                          label: "",
+                          url: "",
+                        },
+                      ],
+                    }));
+                  }}
+                >
+                  Add
+                </Button>
+              </Row>
             </>
           ) : (
             <Column fillWidth gap="8" style={{ marginTop: "16px" }}>
@@ -1112,10 +1226,11 @@ function Admission({ isUser }: AdmissionSchoolProps) {
   );
 }
 
-interface ExtracurricularProps {
+interface FacilitiesProps {
   isUser: boolean;
+  facilities: string[];
 }
-function Facilities({ isUser }: ExtracurricularProps) {
+function Facilities({ isUser,facilities }: FacilitiesProps) {
   // Helper to randomly assign true/false
   const randomBool = () => Math.random() < 0.5;
 
@@ -2021,9 +2136,10 @@ function Facilities({ isUser }: ExtracurricularProps) {
 
 interface ExtracurricularProps {
   isUser: boolean;
+  text: string;
 }
 
-function Extracurricular({ isUser }: ExtracurricularProps) {
+function Extracurricular({ isUser,text }: ExtracurricularProps) {
   const [extraCurricular, setExtraCurricular] = useState(
     "St. Patrick's Academy offers a wide range of extracurricular activities to enhance the overall development of students. These activities include sports, arts, music, dance, drama, and various clubs that encourage creativity, teamwork, and leadership skills. The school believes in providing a holistic education that goes beyond academics, fostering a well-rounded personality in each student."
   );
@@ -2077,9 +2193,47 @@ function Extracurricular({ isUser }: ExtracurricularProps) {
 
 interface AcademicsProps {
   isUser: boolean;
+  extraLinks: string[];
+  tables: string[];
 }
 
-function Academics({ isUser }: AcademicsProps) {
+function Academics({ isUser,tables,extraLinks }: AcademicsProps) {
+  const [extraLinks, setExtraLinks] = useState({
+    admission: [
+      {
+        label: "Admission process",
+        url: "https://www.stpatricksacademy.com/admission-process",
+        id: 1,
+      },
+      {
+        label: "Fee structure",
+        url: "https://www.stpatricksacademy.com/admission-process",
+        id: 2,
+      },
+      {
+        label: "Website",
+        url: "https://www.stpatricksacademy.com/admission-process",
+        id: 3,
+      },
+    ],
+    academics: [
+      {
+        label: "Admission process",
+        url: "https://www.stpatricksacademy.com/admission-process",
+        id: 1,
+      },
+      {
+        label: "Fee structure",
+        url: "https://www.stpatricksacademy.com/admission-process",
+        id: 2,
+      },
+      {
+        label: "Website",
+        url: "https://www.stpatricksacademy.com/admission-process",
+        id: 3,
+      },
+    ],
+  });
   return (
     <>
       <Column
@@ -2214,38 +2368,131 @@ function Academics({ isUser }: AcademicsProps) {
         >
           Academic Affiliation
         </Text>
-        <Column fillWidth gap="8">
-          {" "}
-          <SmartLink href="https://www.stpatricksacademy.com/admission-process">
-            {" "}
-            <Text
-              style={{
-                fontSize: "16px",
-              }}
-              onBackground="accent-weak"
-            >
-              <InlineCode>
-                International Council Of Senior Secondary Education
-              </InlineCode>
-            </Text>
-          </SmartLink>
-          <SmartLink href="https://www.stpatricksacademy.com/admission-process">
-            {" "}
-            <Text
-              style={{
-                fontSize: "16px",
-              }}
-              onBackground="accent-weak"
-            >
-              <InlineCode>International Secondary Council</InlineCode>
-            </Text>
-          </SmartLink>
-        </Column>
+        {isUser ? (
+          <>
+            <Column gap="12" fillWidth>
+              {extraLinks.academics.map((link, idx) => (
+                <Flex
+                  key={link.id}
+                  fillWidth
+                  gap="12"
+                  horizontal="start"
+                  vertical="start"
+                >
+                  <Text variant="body-default-m" onBackground="neutral-medium">
+                    {link.id}
+                  </Text>
+                  <Flex flex={2}>
+                    <Input
+                      id=""
+                      placeholder="Enter the affiliation "
+                      value={link.label}
+                      onChange={(e) => {
+                        setExtraLinks((prev) => ({
+                          ...prev,
+                          academics: prev.academics.map((l, i) =>
+                            i === idx ? { ...l, label: e.target.value } : l
+                          ),
+                        }));
+                      }}
+                    />
+                  </Flex>
+                  <Flex flex={5}>
+                    <Input
+                      id=""
+                      placeholder="Enter the official website link"
+                      value={link.url}
+                      hasPrefix={
+                        <Text
+                          onBackground="neutral-weak"
+                          variant="label-default-s"
+                        >
+                          <i className="ri-links-line"></i>
+                        </Text>
+                      }
+                      onChange={(e) => {
+                        setExtraLinks((prev) => ({
+                          ...prev,
+                          academics: prev.academics.map((l, i) =>
+                            i === idx ? { ...l, url: e.target.value } : l
+                          ),
+                        }));
+                      }}
+                    />
+                  </Flex>
+                </Flex>
+              ))}
+            </Column>
+
+            <Row fillWidth horizontal="end" gap="4">
+              <Button
+                size="l"
+                onClick={() => {
+                  setExtraLinks((prev) => ({
+                    ...prev,
+                    academics:
+                      prev.academics.length > 1
+                        ? prev.academics.slice(0, -1)
+                        : prev.academics,
+                  }));
+                }}
+                disabled={extraLinks.academics.length <= 1}
+              >
+                Remove last
+              </Button>
+              <Button
+                size="l"
+                onClick={() => {
+                  setExtraLinks((prev) => ({
+                    ...prev,
+                    academics: [
+                      ...prev.academics,
+                      {
+                        id:
+                          prev.academics.length > 0
+                            ? prev.academics[prev.academics.length - 1].id + 1
+                            : 1,
+                        label: "",
+                        url: "",
+                      },
+                    ],
+                  }));
+                }}
+              >
+                Add
+              </Button>
+            </Row>
+          </>
+        ) : (
+          <Column fillWidth gap="8" style={{ marginTop: "16px" }}>
+            {extraLinks.academics.map((link, idx) => (
+              <SmartLink key={idx} href={link.url}>
+                <Text
+                  style={{
+                    fontSize: "16px",
+                  }}
+                  onBackground="accent-weak"
+                >
+                  <InlineCode>{link.label}</InlineCode>
+                </Text>
+              </SmartLink>
+            ))}
+          </Column>
+        )}
       </Column>
+      <Row fillWidth horizontal="end">
+        <Button size="l">Save All</Button>
+      </Row>
     </>
   );
 }
-function Reviews() {
+
+interface ReviewsProps {
+  isUser: boolean;
+  reviews: string[];
+}
+
+function Reviews({ isUser,reviews }: ReviewsProps) {
   return (
     <>
       <Flex center fillWidth>
@@ -2265,8 +2512,9 @@ function Reviews() {
 
 interface FAQsProps {
   isUser: boolean;
+  faqs: string[];
 }
-function FAQs({ isUser }: FAQsProps) {
+function FAQs({ isUser,faqs }: FAQsProps) {
   const [faqs, setFAQS] = useState([
     {
       title: "What is the admission process at St. Patrick's Academy?",
@@ -2392,153 +2640,5 @@ function FAQs({ isUser }: FAQsProps) {
         </>
       )}
     </>
-  );
-}
-const cardCProps = {
-  bg: "#F0F1EC",
-  title: "Hands on searching at your fingertips with AI surfing.",
-  subtitle:
-    "Find tuitions and home tutors easily with our NLP tools which allow you to search instantly and get the best results for you.",
-  tags: [
-    {
-      icon: <i className="ri-home-smile-2-line"></i>,
-      text: "Home tutor",
-      highlight: false,
-    },
-    {
-      icon: <i className="ri-money-rupee-circle-line"></i>,
-      text: "Instant fees",
-      highlight: true,
-    },
-    {
-      icon: <i className="ri-building-line"></i>,
-      text: "Institutions",
-      highlight: true,
-    },
-    {
-      icon: <i className="ri-corner-up-left-double-line"></i>,
-      text: "",
-      highlight: false,
-    },
-    { icon: <i className="ri-school-line"></i>, text: "", highlight: false },
-    {
-      icon: <i className="ri-pencil-line"></i>,
-      text: "Interview",
-      highlight: false,
-    },
-    {
-      icon: <i className="ri-computer-line"></i>,
-      text: "Admissions",
-      highlight: true,
-    },
-  ],
-};
-
-function CardC({ bg, title, subtitle, tags }: typeof cardCProps) {
-  const router = useRouter();
-  return (
-    <Flex
-      radius="l"
-      direction="column"
-      fillHeight
-      flex={2}
-      padding="20"
-      style={{
-        backgroundColor: bg,
-        minWidth: "385px",
-        maxHeight: "520px",
-      }}
-      horizontal="center"
-      vertical="start"
-      gap="20"
-    >
-      <Row
-        fillWidth
-        style={{ backgroundColor: "#fff" }}
-        height={0.3}
-        radius="xl"
-      >
-        <Row
-          width={14}
-          style={{ backgroundColor: "#181A1D" }}
-          height={0.3}
-          radius="xl"
-        />
-      </Row>
-      <Flex fillWidth fillHeight maxHeight={0}></Flex>
-      <Row fillWidth paddingRight={"8"} gap="12" vertical="center">
-        <Flex
-          radius="full"
-          style={{ backgroundColor: "#fff" }}
-          center
-          width={3}
-          minWidth={3}
-          height={3}
-          minHeight={3}
-        >
-          <i className="ri-graduation-cap-fill"></i>
-        </Flex>
-        <Text variant="body-default-s">
-          Find tuitions and home tutors easily
-        </Text>
-        <IconButton
-          variant="secondary"
-          onClick={() => {
-            router.push("/find");
-          }}
-        >
-          <i
-            className="ri-arrow-right-up-line"
-            style={{ fontSize: "23px" }}
-          ></i>
-        </IconButton>
-      </Row>
-      <Column fillWidth gap="8">
-        <Text
-          variant="body-default-xl"
-          style={{
-            color: "#181A1D",
-            fontSize: "25px",
-            fontWeight: "500",
-          }}
-          className={dmsans.className}
-        >
-          {title}
-        </Text>
-        <Text
-          style={{
-            fontSize: "15px",
-            fontWeight: "400",
-          }}
-          onBackground="neutral-weak"
-          className={dmsans.className}
-        >
-          {subtitle}
-        </Text>
-      </Column>
-      <Row wrap={true} horizontal="start" fillWidth gap="8">
-        {tags.map((tag, idx) => (
-          <Flex
-            key={idx}
-            radius="m"
-            border="neutral-medium"
-            borderStyle="solid"
-            paddingX="12"
-            paddingY="12"
-            className={dmsans.className}
-            style={
-              tag.highlight
-                ? { borderColor: "#D7E1B3", backgroundColor: "#D7E1B3" }
-                : undefined
-            }
-          >
-            <Text variant="body-default-s">
-              {tag.icon}
-              {tag.text && <>&nbsp;&nbsp;{tag.text}</>}
-            </Text>
-          </Flex>
-        ))}
-      </Row>
-    </Flex>
   );
 }

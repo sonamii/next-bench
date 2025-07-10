@@ -41,6 +41,7 @@ import {
   RevealFx,
   HeadingLink,
   ThemeSwitcher,
+  TagInput,
 } from "@once-ui-system/core";
 import {
   Lato,
@@ -469,7 +470,7 @@ export default function ProfilePage() {
           year_established: null, // You may want to collect this in your form
           boarding_type: "", // You may want to collect this in your form
           affiliation: {
-            boards: newInstitution.affiliation.trim(), // You may want to collect this in your form
+            boards: newInstitution.affiliation, // You may want to collect this in your form
             type: "", // You may want to collect this in your form
           },
           classes_offered: {
@@ -660,7 +661,7 @@ type Institution = {
   name: string;
   type: string;
   address: string;
-  affiliation: string;
+  affiliation: string[];
   contact: string;
   email: string;
   isPublished: boolean;
@@ -672,7 +673,7 @@ type Institution = {
 type InstitutionInput = {
   name: string;
   type: string;
-  affiliation: string;
+  affiliation: string[];
   phoneNumber: string;
   email: string;
   city: string;
@@ -1208,7 +1209,7 @@ function CreatedInstitutions({
   const [newInstitution, setNewInstitution] = useState<InstitutionInput>({
     name: "",
     type: "",
-    affiliation: "",
+    affiliation: [],
     phoneNumber: "",
     email: "",
     city: "",
@@ -1244,7 +1245,7 @@ function CreatedInstitutions({
     setNewInstitution({
       name: "",
       type: "",
-      affiliation: "",
+      affiliation: [],
       phoneNumber: "",
       email: "",
       city: "",
@@ -1413,27 +1414,25 @@ function CreatedInstitutions({
               disabled={!isCurrentUser}
             />
           </Row>
-          <Row fillWidth vertical="center" gap="8">
-            <Input
+            <Row fillWidth vertical="center" gap="8">
+            <TagInput
               id="affiliation"
-              label="e.g. ICSE/CBSE/IB"
-              spellCheck={false}
-              description={
-                <>
-                  <i className="ri-information-line"></i>&nbsp;Enter the
-                  affiliation offered by your institution
-                </>
-              }
               value={newInstitution.affiliation}
-              onChange={(e: any) =>
-                setNewInstitution((prev) => ({
-                  ...prev,
-                  affiliation: e.target.value,
-                }))
+              onChange={(tags: string[]) =>
+              setNewInstitution((prev) => ({
+                ...prev,
+                affiliation: tags,
+              }))
+              }
+              placeholder="e.g. ICSE/CBSE/IB"
+              hasSuffix={
+              <Kbd position="absolute" top="12" right="12">
+                Enter
+              </Kbd>
               }
               disabled={!isCurrentUser}
             />
-          </Row>
+            </Row>
           <Row fillWidth vertical="center" gap="8">
             <Input
               id="phone"
@@ -1608,8 +1607,10 @@ function InstitutionCard({
       <InstitutionRow label="Short address:">
         {institution.address}
       </InstitutionRow>
-      <InstitutionRow label="Affiliation:">
-        {institution.affiliation}
+      <InstitutionRow label="Affiliations:">
+        {Array.isArray(institution.affiliation)
+          ? institution.affiliation.join("/").toUpperCase()
+          : String(institution.affiliation).toUpperCase()}
       </InstitutionRow>
       <InstitutionRow label="Contact:">
         <InlineCode radius="xs-4">{institution.contact}</InlineCode>
