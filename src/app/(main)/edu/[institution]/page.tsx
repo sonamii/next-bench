@@ -4,12 +4,9 @@ import {
   Accordion,
   AvatarGroup,
   Button,
-  Carousel,
   Chip,
   Column,
   Flex,
-  Grid,
-  HeadingLink,
   IconButton,
   InlineCode,
   Kbd,
@@ -19,23 +16,62 @@ import {
   SmartLink,
   Table,
   Text,
+  Input,
+  Grid,
+  Checkbox,
 } from "@once-ui-system/core";
 import Navbar from "../../components/NavBar";
 
 import { useRouter } from "next/navigation";
 // Font setup
+import { Outfit } from "next/font/google";
 const dmsans = Outfit({
   subsets: ["latin"],
   variable: "--font-inter",
   weight: ["400", "500", "600", "700"],
 });
-import { Outfit } from "next/font/google";
 import Footer from "../../components/Footer";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { supabase } from "@/app/utils/supabase/client";
+import { Textarea } from "@once-ui-system/core";
 
 export default function Page() {
   const [activeTab, setActiveTab] = useState("about");
   const router = useRouter();
+  const [slug, setSlug] = useState("");
+  useEffect(() => {
+    // Get the slug from the URL (the [institution] param)
+    if (typeof window !== "undefined") {
+      const path = window.location.pathname;
+      // path: /edu/[slug] or /edu/[slug]/...
+      const match = path.match(/\/edu\/([^\/]+)/);
+      if (match && match[1]) {
+        setSlug(match[1]);
+      }
+    }
+  }, []);
+
+  const [isUser, setIsUser] = useState(false);
+  useEffect(() => {
+    const checkUser = async () => {
+      if (!slug) return;
+      const session = await supabase.auth.getSession();
+      const userId = session.data?.session?.user?.id;
+      if (!userId) return;
+      const { data, error } = await supabase
+        .from("edu_centers")
+        .select("uuid")
+        .eq("edu_id", slug)
+        .single();
+      if (data && data.uuid === userId) {
+        setIsUser(true);
+      }
+    };
+    checkUser();
+  }, [slug]);
+
+  const [motto, setMotto] = useState("");
+
   return (
     <>
       <Column
@@ -76,21 +112,23 @@ export default function Page() {
                 <Flex fillWidth height={0.5}></Flex>
 
                 <Column>
-                <a><u style={{  textDecorationColor:"#ccc"}}>
-                  <Text
-                    style={{
-                      color: "#181A1D",
-                      fontSize: "70px",
-                      lineHeight: "1em",
-                      fontWeight: "500",
-                      letterSpacing: ".3px",
-                    }}
-                    className={dmsans.className}
-                  >
-                    St. Patrick's Academy,
-                    <span style={{ color: "#626F45" }}> School</span> <br />
-                    in <span style={{ color: "#626F45" }}>India</span>.{" "}
-                  </Text></u>
+                  <a>
+                    <u style={{ textDecorationColor: "#ccc" }}>
+                      <Text
+                        style={{
+                          color: "#181A1D",
+                          fontSize: "70px",
+                          lineHeight: "1em",
+                          fontWeight: "500",
+                          letterSpacing: ".3px",
+                        }}
+                        className={dmsans.className}
+                      >
+                        St. Patrick's Academy,
+                        <span style={{ color: "#626F45" }}> School</span> <br />
+                        in <span style={{ color: "#626F45" }}>India</span>.{" "}
+                      </Text>
+                    </u>
                   </a>
                 </Column>
               </Column>
@@ -177,6 +215,15 @@ export default function Page() {
                       weight="default"
                       href="#card-d"
                     >
+                      Edit details
+                    </Button>
+                    <Button
+                      id="arrow-button-1"
+                      arrowIcon={!isUser}
+                      size="m"
+                      weight="default"
+                      href="#card-d"
+                    >
                       Call Us
                     </Button>
                     <Button
@@ -195,7 +242,7 @@ export default function Page() {
                     >
                       Email Us
                     </Button>
-                     <Button
+                    <Button
                       id="arrow-button-1"
                       size="m"
                       weight="default"
@@ -209,7 +256,8 @@ export default function Page() {
                       }
                       onClick={() => router.push("/profile/a")}
                     >
-                      <i className="ri-user-smile-line"></i>&nbsp;Connect with Students
+                      <i className="ri-user-smile-line"></i>&nbsp;Connect with
+                      Students
                     </Button>
                   </Row>
                 </Column>
@@ -244,13 +292,13 @@ export default function Page() {
           >
             {
               {
-                about: <AboutSchool />,
-                admission: <Admission />,
-                facilities: <Facilities />,
-                extra: <Extracurricular />,
+                about: <AboutSchool isUser={isUser} />,
+                admission: <Admission isUser={isUser} />,
+                facilities: <Facilities isUser={isUser} />,
+                extra: <Extracurricular isUser={isUser} />,
                 academics: <Academics />,
                 reviews: <Reviews />,
-                qna: <FAQs />,
+                qna: <FAQs isUser={isUser} />,
               }[activeTab]
             }
           </Column>
@@ -261,7 +309,22 @@ export default function Page() {
   );
 }
 
-function AboutSchool() {
+interface AboutSchoolProps {
+  isUser: boolean;
+}
+
+function AboutSchool({ isUser }: AboutSchoolProps) {
+  const [motto, setMotto] = useState("believe in yourself");
+  const [institutionAbout, setInstitutionAbout] = useState(
+    "St. Patrick's Academy is a prestigious educational institution located in India, dedicated to providing quality education and holistic development to its students. Established in 2014, the school has grown to become a leading institution known for its commitment to academic excellence and character building."
+  );
+  const [yearEstabilished, setYearEstabilished] = useState("2014");
+  const [schoolType, setSchoolType] = useState("Private");
+  const [schoolGender, setSchoolGender] = useState("Co-Ed");
+  const [boardingType, setBoardingType] = useState("Day boarding");
+  const [classesOffered, setClassesOffered] = useState("LKG to 12th");
+  const [affiliation, setAffiliation] = useState("ICSE/ISC");
+
   return (
     <>
       {" "}
@@ -288,25 +351,26 @@ function AboutSchool() {
             fontSize: "17px",
           }}
           onBackground="neutral-weak"
-        >
-          St. Patrick's Academy is a prestigious educational institution in
-          India, renowned for its commitment to academic excellence and holistic
-          development. With a rich history and a dedicated faculty, the school
-          provides a nurturing environment that fosters creativity, critical
-          thinking, and character building. Our state-of-the-art facilities and
-          diverse extracurricular programs ensure that every student receives a
-          well-rounded education, preparing them for success in an ever-changing
-          world.
-          <br></br>
-          <br></br>
-          We believe in the power of education to transform lives and empower
-          individuals to reach their full potential. Our mission is to inspire a
-          love for learning, instill values of integrity and respect, and
-          cultivate a sense of social responsibility among our students. At St.
-          Patrick's Academy, we are committed to shaping the leaders of
-          tomorrow, equipping them with the knowledge, skills, and values needed
-          to make a positive impact in their communities and beyond.
-        </Text>
+        ></Text>
+        {isUser ? (
+          <Textarea
+            id=""
+            placeholder="Enter about school"
+            resize="vertical"
+            style={{ minHeight: "300px" }}
+            value={institutionAbout}
+            onChange={(e) => setInstitutionAbout(e.target.value)}
+          />
+        ) : (
+          <Text
+            style={{
+              fontSize: "17px",
+            }}
+            onBackground="neutral-weak"
+          >
+            {institutionAbout}
+          </Text>
+        )}
       </Column>
       <Column
         fillWidth
@@ -328,132 +392,323 @@ function AboutSchool() {
           Basic Information about School
         </Text>
         <Column fillWidth gap="8">
-          <Row fillWidth horizontal="start" gap="12" vertical="center">
-            <Text
-              onBackground="neutral-weak"
-              style={{ fontSize: "17px !important" }}
-            >
-              <Kbd
-                background="neutral-medium"
-                border="neutral-medium"
+          {/* Year Established */}
+          {isUser ? (
+            <Flex fillWidth horizontal="start">
+              <Row flex={1}>
+                <Text
+                  onBackground="neutral-weak"
+                  style={{ fontSize: "17px !important" }}
+                >
+                  <Kbd
+                    background="neutral-medium"
+                    border="neutral-medium"
+                    onBackground="neutral-weak"
+                    style={{ minWidth: "fit-content", whiteSpace: "nowrap" }}
+                  >
+                    Year Established :
+                  </Kbd>
+                </Text>
+              </Row>
+              <Row flex={3} fillWidth>
+                <Input
+                  id=""
+                  placeholder="Enter year"
+                  value={yearEstabilished}
+                  onChange={(e) => setYearEstabilished(e.target.value)}
+                />
+              </Row>
+            </Flex>
+          ) : (
+            <Row fillWidth horizontal="start" gap="12" vertical="center">
+              <Text
                 onBackground="neutral-weak"
+                style={{ fontSize: "17px !important" }}
               >
-                Year Estabilished :
-              </Kbd>
-            </Text>
-            <Text
-              onBackground="neutral-weak"
-              style={{ fontSize: "16px" }}
-              className={dmsans.className}
-            >
-              2014
-            </Text>
-          </Row>{" "}
-          <Row fillWidth horizontal="start" gap="12" vertical="center">
-            <Text
-              onBackground="neutral-weak"
-              style={{ fontSize: "17px !important" }}
-            >
-              <Kbd
-                background="neutral-medium"
-                border="neutral-medium"
+                <Kbd
+                  background="neutral-medium"
+                  border="neutral-medium"
+                  onBackground="neutral-weak"
+                  style={{ minWidth: "fit-content", whiteSpace: "nowrap" }}
+                >
+                  Year Established :
+                </Kbd>
+              </Text>
+              <Text
                 onBackground="neutral-weak"
+                style={{ fontSize: "16px" }}
+                className={dmsans.className}
               >
-                School Type :
-              </Kbd>
-            </Text>
-            <Text
-              onBackground="neutral-weak"
-              style={{ fontSize: "16px" }}
-              className={dmsans.className}
-            >
-              Private
-            </Text>
-          </Row>
-          <Row fillWidth horizontal="start" gap="12" vertical="center">
-            <Text
-              onBackground="neutral-weak"
-              style={{ fontSize: "17px !important" }}
-            >
-              <Kbd
-                background="neutral-medium"
-                border="neutral-medium"
+                {yearEstabilished}
+              </Text>
+            </Row>
+          )}
+
+          {/* School Type */}
+          {isUser ? (
+            <Flex fillWidth horizontal="start">
+              <Row flex={1}>
+                <Text
+                  onBackground="neutral-weak"
+                  style={{ fontSize: "17px !important" }}
+                >
+                  <Kbd
+                    background="neutral-medium"
+                    border="neutral-medium"
+                    onBackground="neutral-weak"
+                    style={{ minWidth: "fit-content", whiteSpace: "nowrap" }}
+                  >
+                    School Type :
+                  </Kbd>
+                </Text>
+              </Row>
+              <Row flex={3} fillWidth>
+                <Input
+                  id=""
+                  placeholder="Enter school type"
+                  value={schoolType}
+                  onChange={(e) => setSchoolType(e.target.value)}
+                />
+              </Row>
+            </Flex>
+          ) : (
+            <Row fillWidth horizontal="start" gap="12" vertical="center">
+              <Text
                 onBackground="neutral-weak"
+                style={{ fontSize: "17px !important" }}
               >
-                Gender :
-              </Kbd>
-            </Text>
-            <Text
-              onBackground="neutral-weak"
-              style={{ fontSize: "16px" }}
-              className={dmsans.className}
-            >
-              Co-Ed
-            </Text>
-          </Row>
-          <Row fillWidth horizontal="start" gap="12" vertical="center">
-            <Text
-              onBackground="neutral-weak"
-              style={{ fontSize: "17px !important" }}
-            >
-              <Kbd
-                background="neutral-medium"
-                border="neutral-medium"
+                <Kbd
+                  background="neutral-medium"
+                  border="neutral-medium"
+                  onBackground="neutral-weak"
+                  style={{ minWidth: "fit-content", whiteSpace: "nowrap" }}
+                >
+                  School Type :
+                </Kbd>
+              </Text>
+              <Text
                 onBackground="neutral-weak"
+                style={{ fontSize: "16px" }}
+                className={dmsans.className}
               >
-                Boarding type :
-              </Kbd>
-            </Text>
-            <Text
-              onBackground="neutral-weak"
-              style={{ fontSize: "16px" }}
-              className={dmsans.className}
-            >
-              Day boarding
-            </Text>
-          </Row>
-          <Row fillWidth horizontal="start" gap="12" vertical="center">
-            <Text
-              onBackground="neutral-weak"
-              style={{ fontSize: "17px !important" }}
-            >
-              <Kbd
-                background="neutral-medium"
-                border="neutral-medium"
+                {schoolType}
+              </Text>
+            </Row>
+          )}
+
+          {/* Gender */}
+          {isUser ? (
+            <Flex fillWidth horizontal="start">
+              <Row flex={1}>
+                <Text
+                  onBackground="neutral-weak"
+                  style={{ fontSize: "17px !important" }}
+                >
+                  <Kbd
+                    background="neutral-medium"
+                    border="neutral-medium"
+                    onBackground="neutral-weak"
+                    style={{ minWidth: "fit-content", whiteSpace: "nowrap" }}
+                  >
+                    Gender :
+                  </Kbd>
+                </Text>
+              </Row>
+              <Row flex={3} fillWidth>
+                <Input
+                  id=""
+                  placeholder="Enter gender"
+                  value={schoolGender}
+                  onChange={(e) => setSchoolGender(e.target.value)}
+                />
+              </Row>
+            </Flex>
+          ) : (
+            <Row fillWidth horizontal="start" gap="12" vertical="center">
+              <Text
                 onBackground="neutral-weak"
+                style={{ fontSize: "17px !important" }}
               >
-                Classes :
-              </Kbd>
-            </Text>
-            <Text
-              onBackground="neutral-weak"
-              style={{ fontSize: "16px" }}
-              className={dmsans.className}
-            >
-              LKG to 12th
-            </Text>
-          </Row>
-          <Row fillWidth horizontal="start" gap="12" vertical="center">
-            <Text
-              onBackground="neutral-weak"
-              style={{ fontSize: "17px !important" }}
-            >
-              <Kbd
-                background="neutral-medium"
-                border="neutral-medium"
+                <Kbd
+                  background="neutral-medium"
+                  border="neutral-medium"
+                  onBackground="neutral-weak"
+                  style={{ minWidth: "fit-content", whiteSpace: "nowrap" }}
+                >
+                  Gender :
+                </Kbd>
+              </Text>
+              <Text
                 onBackground="neutral-weak"
+                style={{ fontSize: "16px" }}
+                className={dmsans.className}
               >
-                Curriculum :
-              </Kbd>
-            </Text>
-            <Text
-              onBackground="neutral-weak"
-              style={{ fontSize: "16px" }}
-              className={dmsans.className}
-            >
-              ICSE/ISC
-            </Text>
-          </Row>
+                {schoolGender}
+              </Text>
+            </Row>
+          )}
+
+          {/* Boarding Type */}
+          {isUser ? (
+            <Flex fillWidth horizontal="start">
+              <Row flex={1}>
+                <Text
+                  onBackground="neutral-weak"
+                  style={{ fontSize: "17px !important" }}
+                >
+                  <Kbd
+                    background="neutral-medium"
+                    border="neutral-medium"
+                    onBackground="neutral-weak"
+                    style={{ minWidth: "fit-content", whiteSpace: "nowrap" }}
+                  >
+                    Boarding Type :
+                  </Kbd>
+                </Text>
+              </Row>
+              <Row flex={3} fillWidth>
+                <Input
+                  id=""
+                  placeholder="Enter boarding type"
+                  value={boardingType}
+                  onChange={(e) => setBoardingType(e.target.value)}
+                />
+              </Row>
+            </Flex>
+          ) : (
+            <Row fillWidth horizontal="start" gap="12" vertical="center">
+              <Text
+                onBackground="neutral-weak"
+                style={{ fontSize: "17px !important" }}
+              >
+                <Kbd
+                  background="neutral-medium"
+                  border="neutral-medium"
+                  onBackground="neutral-weak"
+                  style={{ minWidth: "fit-content", whiteSpace: "nowrap" }}
+                >
+                  Boarding Type :
+                </Kbd>
+              </Text>
+              <Text
+                onBackground="neutral-weak"
+                style={{ fontSize: "16px" }}
+                className={dmsans.className}
+              >
+                {boardingType}
+              </Text>
+            </Row>
+          )}
+
+          {/* Classes Offered */}
+          {isUser ? (
+            <Flex fillWidth horizontal="start">
+              <Row flex={1}>
+                <Text
+                  onBackground="neutral-weak"
+                  style={{ fontSize: "17px !important" }}
+                >
+                  <Kbd
+                    background="neutral-medium"
+                    border="neutral-medium"
+                    onBackground="neutral-weak"
+                    style={{ minWidth: "fit-content", whiteSpace: "nowrap" }}
+                  >
+                    Classes :
+                  </Kbd>
+                </Text>
+              </Row>
+              <Row flex={3} fillWidth>
+                <Input
+                  id=""
+                  placeholder="Enter classes offered"
+                  value={classesOffered}
+                  onChange={(e) => setClassesOffered(e.target.value)}
+                />
+              </Row>
+            </Flex>
+          ) : (
+            <Row fillWidth horizontal="start" gap="12" vertical="center">
+              <Text
+                onBackground="neutral-weak"
+                style={{ fontSize: "17px !important" }}
+              >
+                <Kbd
+                  background="neutral-medium"
+                  border="neutral-medium"
+                  onBackground="neutral-weak"
+                  style={{ minWidth: "fit-content", whiteSpace: "nowrap" }}
+                >
+                  Classes :
+                </Kbd>
+              </Text>
+              <Text
+                onBackground="neutral-weak"
+                style={{ fontSize: "16px" }}
+                className={dmsans.className}
+              >
+                {classesOffered}
+              </Text>
+            </Row>
+          )}
+
+          {/* Affiliation */}
+          {isUser ? (
+            <Flex fillWidth horizontal="start">
+              <Row flex={1}>
+                <Text
+                  onBackground="neutral-weak"
+                  style={{ fontSize: "17px !important" }}
+                >
+                  <Kbd
+                    background="neutral-medium"
+                    style={{ minWidth: "fit-content", whiteSpace: "nowrap" }}
+                    border="neutral-medium"
+                    onBackground="neutral-weak"
+                  >
+                    Affiliation :
+                  </Kbd>
+                </Text>
+              </Row>
+              <Row flex={3} fillWidth>
+                <Input
+                  id=""
+                  placeholder="Enter affiliation"
+                  value={affiliation}
+                  disabled
+                  onChange={(e) => setAffiliation(e.target.value)}
+                  hasSuffix={
+                    <Text onBackground="neutral-weak" variant="label-default-s">
+                      HEADER
+                    </Text>
+                  }
+                />
+              </Row>
+            </Flex>
+          ) : (
+            <Row fillWidth horizontal="start" gap="12" vertical="center">
+              <Text
+                onBackground="neutral-weak"
+                style={{ fontSize: "17px !important" }}
+              >
+                <Kbd
+                  background="neutral-medium"
+                  style={{ minWidth: "fit-content", whiteSpace: "nowrap" }}
+                  border="neutral-medium"
+                  onBackground="neutral-weak"
+                >
+                  Affiliation :
+                </Kbd>
+              </Text>
+              <Text
+                onBackground="neutral-weak"
+                style={{ fontSize: "16px" }}
+                className={dmsans.className}
+              >
+                {affiliation}
+              </Text>
+            </Row>
+          )}
         </Column>
       </Column>
       <Column
@@ -463,31 +718,153 @@ function AboutSchool() {
         paddingY="16"
         gap="12"
       >
-        <Text
-          variant="body-default-xl"
-          style={{
-            color: "#181A1D",
-            fontSize: "25px",
-            fontWeight: "500",
-          }}
-          className={dmsans.className}
-        >
-          School Motto
-        </Text>
-        <Text
-          style={{
-            fontSize: "16px",
-          }}
-          onBackground="neutral-weak"
-        >
-          <InlineCode>"Seek the truth"</InlineCode>
-        </Text>
+        <>
+          <Text
+            variant="body-default-xl"
+            style={{
+              color: "#181A1D",
+              fontSize: "25px",
+              fontWeight: "500",
+            }}
+            className={dmsans.className}
+          >
+            School Motto
+          </Text>
+          {isUser ? (
+            <Textarea
+              id=""
+              placeholder="Enter school motto"
+              resize="vertical"
+              value={motto}
+              onChange={(e) => setMotto(e.target.value)}
+            />
+          ) : (
+            <Text
+              style={{
+                fontSize: "16px",
+              }}
+              onBackground="neutral-weak"
+            >
+              <InlineCode>{motto || '"Seek the truth"'}</InlineCode>
+            </Text>
+          )}
+        </>
+        <Row fillWidth horizontal="end">
+          {" "}
+          <Button size="l"> Save All</Button>
+        </Row>{" "}
       </Column>
     </>
   );
 }
 
-function Admission() {
+interface AdmissionSchoolProps {
+  isUser: boolean;
+}
+
+function Admission({ isUser }: AdmissionSchoolProps) {
+  const [headerClasses, setHeaderClasses] = useState([
+    { content: "Class", key: "class" },
+    { content: "Minimum Age", key: "minAge", sortable: true },
+    { content: "Maximum Age", key: "maxAge", sortable: true },
+  ]);
+
+  const [headerClassesRows, setHeaderClassesRows] = useState([
+    ["LKG", "3 years", "4 years"],
+    ["UKG", "4 years", "5 years"],
+    ["1st", "5 years", "6 years"],
+    ["2nd", "6 years", "7 years"],
+    ["3rd", "7 years", "8 years"],
+    ["4th", "8 years", "9 years"],
+    ["5th", "9 years", "10 years"],
+    ["6th", "10 years", "11 years"],
+    ["7th", "11 years", "12 years"],
+    ["8th", "12 years", "13 years"],
+    ["9th", "13 years", "14 years"],
+    ["10th", "14 years", "15 years"],
+    ["11th", "15 years", "16 years"],
+    ["12th", "16 years", "17 years"],
+  ]);
+
+  const [headerAdmission, setHeaderAdmission] = useState([
+    { content: "Class", key: "class" },
+    { content: "Particulars", key: "particulars" },
+    { content: "Date", key: "date", sortable: true },
+  ]);
+
+  const [headerAdmissionRows, setHeaderAdmissionRows] = useState([
+    ["LKG", "Application Form Release", "01/01/2024"],
+    ["LKG", "Last Date for Application Submission", "15/01/2024"],
+    ["LKG", "Entrance Exam Date", "20/01/2024"],
+    ["LKG", "Interview Date", "25/01/2024"],
+    ["UKG", "Application Form Release", "01/02/2024"],
+    ["UKG", "Last Date for Application Submission", "15/02/2024"],
+    ["UKG", "Entrance Exam Date", "20/02/2024"],
+  ]);
+
+  const [headerFees, setHeaderFees] = useState([
+    { content: "Class", key: "class" },
+    { content: "Admission Fee", key: "admissionFee", sortable: true },
+    { content: "Tuition Fee (Monthly)", key: "tuitionFee", sortable: true },
+    { content: "Total Annual Fee", key: "totalAnnualFee", sortable: true },
+  ]);
+
+  const [headerFeesRows, setHeaderFeesRows] = useState([
+    ["LKG", "₹10,000", "₹2,000", "₹34,000"],
+    ["UKG", "₹10,000", "₹2,200", "₹36,400"],
+    ["1st", "₹10,000", "₹2,500", "₹40,000"],
+    ["2nd", "₹10,000", "₹2,500", "₹40,000"],
+    ["3rd", "₹10,000", "₹2,700", "₹44,400"],
+    ["4th", "₹10,000", "₹2,700", "₹44,400"],
+    ["5th", "₹10,000", "₹3,000", "₹50,000"],
+    ["6th", "₹10,000", "₹3,200", "₹54,400"],
+    ["7th", "₹10,000", "₹3,200", "₹54,400"],
+    ["8th", "₹10,000", "₹3,500", "₹60,000"],
+    ["9th", "₹10,000", "₹3,500", "₹60,000"],
+    ["10th", "₹10,000", "₹4,000", "₹70,000"],
+    ["11th", "₹15,000", "₹4,500", "₹80,000"],
+    ["12th", "₹15,000", "₹4,500", "₹80,000"],
+  ]);
+
+  const [extraLinks, setExtraLinks] = useState({
+    admission: [
+      {
+        label: "Admission process",
+        url: "https://www.stpatricksacademy.com/admission-process",
+        id: 1,
+      },
+      {
+        label: "Fee structure",
+        url: "https://www.stpatricksacademy.com/admission-process",
+        id: 2,
+      },
+      {
+        label: "Website",
+        url: "https://www.stpatricksacademy.com/admission-process",
+        id: 3,
+      },
+    ],
+    academics: [
+      {
+        label: "Admission process",
+        url: "https://www.stpatricksacademy.com/admission-process",
+        id: 1,
+      },
+      {
+        label: "Fee structure",
+        url: "https://www.stpatricksacademy.com/admission-process",
+        id: 2,
+      },
+      {
+        label: "Website",
+        url: "https://www.stpatricksacademy.com/admission-process",
+        id: 3,
+      },
+    ],
+  });
+  const [admissionText, setAdmissionText] = useState(
+    "This section provides an overview of the admission process at St. Patrick's Academy, including key steps and requirements for prospective students and their families. The admission process is designed to be transparent and straightforward, ensuring that all applicants have a clear understanding of what is expected."
+  );
   return (
     <>
       <Column
@@ -508,56 +885,23 @@ function Admission() {
         >
           Admission procedure
         </Text>
-        <Text
-          style={{
-            fontSize: "17px",
-          }}
-          onBackground="neutral-weak"
-        >
-          This section provides an overview of the admission process at St.
-          Patrick's Academy, including key steps and requirements for
-          prospective students and their families. The admission process is
-          designed to be transparent and straightforward, ensuring that all
-          applicants have a clear understanding of what is expected.
-          <br />
-          <br />
-          We allow admissions for classes LKG to 12th, with a focus on
-          maintaining a balanced and diverse student body. The admission process
-          typically includes the following steps:
-          <br></br>
-          <br />
-          <ul>
-            <li>
-              <strong>Application Form:</strong> Prospective students must
-              complete and submit an application form, which can be obtained
-              from the school's website or admission office.
-            </li>
-            <li>
-              <strong>Entrance Exam:</strong> Depending on the class applied
-              for, candidates may be required to take an entrance exam to assess
-              their academic readiness.
-            </li>
-            <li>
-              <strong>Interview:</strong> Shortlisted candidates may be invited
-              for an interview with the school's admission committee.
-            </li>
-            <li>
-              <strong>Document Verification:</strong> All necessary documents,
-              including birth certificates, previous school records, and
-              identity proofs, will be verified.
-            </li>
-            <li>
-              <strong>Admission Offer:</strong> Successful candidates will
-              receive an admission offer, which must be accepted within a
-              specified timeframe.
-            </li>
-            <li>
-              <strong>Fee Payment:</strong> Upon acceptance of the admission
-              offer, parents/guardians must pay the required fees to secure the
-              student's place in the school.
-            </li>
-          </ul>
-        </Text>
+        {isUser ? (
+          <Textarea
+            style={{ minHeight: "200px" }}
+            id="d"
+            value={admissionText}
+            onChange={(e) => setAdmissionText(e.target.value)}
+          ></Textarea>
+        ) : (
+          <Text
+            style={{
+              fontSize: "17px",
+            }}
+            onBackground="neutral-weak"
+          >
+            {admissionText}
+          </Text>
+        )}
       </Column>
       <Column
         fillWidth
@@ -577,30 +921,12 @@ function Admission() {
         >
           Age Requirements
         </Text>
+
         <Table
           background="transparent"
           data={{
-            headers: [
-              { content: "Class", key: "class" },
-              { content: "Minimum Age", key: "minAge", sortable: true },
-              { content: "Maximum Age", key: "maxAge", sortable: true },
-            ],
-            rows: [
-              ["LKG", "3 years", "4 years"],
-              ["UKG", "4 years", "5 years"],
-              ["1st", "5 years", "6 years"],
-              ["2nd", "6 years", "7 years"],
-              ["3rd", "7 years", "8 years"],
-              ["4th", "8 years", "9 years"],
-              ["5th", "9 years", "10 years"],
-              ["6th", "10 years", "11 years"],
-              ["7th", "11 years", "12 years"],
-              ["8th", "12 years", "13 years"],
-              ["9th", "13 years", "14 years"],
-              ["10th", "14 years", "15 years"],
-              ["11th", "15 years", "16 years"],
-              ["12th", "16 years", "17 years"],
-            ],
+            headers: headerClasses,
+            rows: headerClassesRows,
           }}
         />
       </Column>
@@ -622,72 +948,12 @@ function Admission() {
         >
           Important Dates for Admission
         </Text>
+
         <Table
           background="transparent"
           data={{
-            headers: [
-              { content: "Class", key: "name" },
-              { content: "Particulars", key: "role" },
-              { content: "Date", key: "date", sortable: true },
-            ],
-            rows: [
-              ["LKG", "Application Form Release", "01/01/2024"],
-              ["LKG", "Last Date for Application Submission", "15/01/2024"],
-              ["LKG", "Entrance Exam Date", "20/01/2024"],
-              ["LKG", "Interview Date", "25/01/2024"],
-              ["UKG", "Application Form Release", "01/02/2024"],
-              ["UKG", "Last Date for Application Submission", "15/02/2024"],
-              ["UKG", "Entrance Exam Date", "20/02/2024"],
-              ["UKG", "Interview Date", "25/02/2024"],
-              ["1st", "Application Form Release", "01/03/2024"],
-              ["1st", "Last Date for Application Submission", "15/03/2024"],
-              ["1st", "Entrance Exam Date", "20/03/2024"],
-              ["1st", "Interview Date", "25/03/2024"],
-              ["2nd", "Application Form Release", "01/04/2024"],
-              ["2nd", "Last Date for Application Submission", "15/04/2024"],
-              ["2nd", "Entrance Exam Date", "20/04/2024"],
-              ["2nd", "Interview Date", "25/04/2024"],
-              ["3rd", "Application Form Release", "01/05/2024"],
-              ["3rd", "Last Date for Application Submission", "15/05/2024"],
-              ["3rd", "Entrance Exam Date", "20/05/2024"],
-              ["3rd", "Interview Date", "25/05/2024"],
-              ["4th", "Application Form Release", "01/06/2024"],
-              ["4th", "Last Date for Application Submission", "15/06/2024"],
-              ["4th", "Entrance Exam Date", "20/06/2024"],
-              ["4th", "Interview Date", "25/06/2024"],
-              ["5th", "Application Form Release", "01/07/2024"],
-              ["5th", "Last Date for Application Submission", "15/07/2024"],
-              ["5th", "Entrance Exam Date", "20/07/2024"],
-              ["5th", "Interview Date", "25/07/2024"],
-              ["6th", "Application Form Release", "01/08/2024"],
-              ["6th", "Last Date for Application Submission", "15/08/2024"],
-              ["6th", "Entrance Exam Date", "20/08/2024"],
-              ["6th", "Interview Date", "25/08/2024"],
-              ["7th", "Application Form Release", "01/09/2024"],
-              ["7th", "Last Date for Application Submission", "15/09/2024"],
-              ["7th", "Entrance Exam Date", "20/09/2024"],
-              ["7th", "Interview Date", "25/09/2024"],
-              ["8th", "Application Form Release", "01/10/2024"],
-              ["8th", "Last Date for Application Submission", "15/10/2024"],
-              ["8th", "Entrance Exam Date", "20/10/2024"],
-              ["8th", "Interview Date", "25/10/2024"],
-              ["9th", "Application Form Release", "01/11/2024"],
-              ["9th", "Last Date for Application Submission", "15/11/2024"],
-              ["9th", "Entrance Exam Date", "20/11/2024"],
-              ["9th", "Interview Date", "25/11/2024"],
-              ["10th", "Application Form Release", "01/12/2024"],
-              ["10th", "Last Date for Application Submission", "15/12/2024"],
-              ["10th", "Entrance Exam Date", "20/12/2024"],
-              ["10th", "Interview Date", "25/12/2024"],
-              ["11th", "Application Form Release", "01/01/2025"],
-              ["11th", "Last Date for Application Submission", "15/01/2025"],
-              ["11th", "Entrance Exam Date", "20/01/2025"],
-              ["11th", "Interview Date", "25/01/2025"],
-              ["12th", "Application Form Release", "01/02/2025"],
-              ["12th", "Last Date for Application Submission", "15/02/2025"],
-              ["12th", "Entrance Exam Date", "20/02/2025"],
-              ["12th", "Interview Date", "25/02/2025"],
-            ],
+            headers: headerAdmission,
+            rows: headerAdmissionRows,
           }}
         />
       </Column>
@@ -709,95 +975,235 @@ function Admission() {
         >
           Fee details and procedure
         </Text>
+
         <Table
           background="transparent"
           data={{
-            headers: [
-              { content: "Class", key: "name" },
-              { content: "Admission Fee", key: "admissionFee", sortable: true },
-              { content: "Tuition Fee", key: "tuitionFee", sortable: true },
-              { content: "Annual Fee", key: "annualFee", sortable: true },
-            ],
-            rows: [
-              ["LKG", "₹10,000", "₹5,000", "₹2,000"],
-              ["UKG", "₹12,000", "₹6,000", "₹2,500"],
-              ["1st", "₹15,000", "₹7,000", "₹3,000"],
-              ["2nd", "₹15,000", "₹7,000", "₹3,000"],
-              ["3rd", "₹15,000", "₹7,000", "₹3,000"],
-              ["4th", "₹15,000", "₹7,000", "₹3,000"],
-              ["5th", "₹15,000", "₹7,000", "₹3,000"],
-              ["6th", "₹15,000", "₹7,000", "₹3,000"],
-              ["7th", "₹15,000", "₹7,000", "₹3,000"],
-              ["8th", "₹15,000", "₹7,000", "₹3,000"],
-              ["9th", "₹20,000", "₹10,000", "₹4,000"],
-              ["10th", "₹20,000", "₹10,000", "₹4,000"],
-              ["11th", "₹25,000", "₹12,000", "₹5,000"],
-              ["12th", "₹25,000", "₹12,000", "₹5,000"],
-            ],
+            headers: headerFees,
+            rows: headerFeesRows,
           }}
         />
-      </Column>
-      <Column
-        fillWidth
-        horizontal="start"
-        vertical="start"
-        paddingY="16"
-        gap="12"
-      >
-        <Text
-          variant="body-default-xl"
-          style={{
-            color: "#181A1D",
-            fontSize: "25px",
-            fontWeight: "500",
-          }}
-          className={dmsans.className}
+        <Column
+          fillWidth
+          horizontal="start"
+          vertical="start"
+          paddingY="16"
+          gap="12"
         >
-          Important Links
-        </Text>
-        <Column fillWidth gap="8">
-          {" "}
-          <SmartLink href="https://www.stpatricksacademy.com/admission-process">
-            {" "}
-            <Text
-              style={{
-                fontSize: "16px",
-              }}
-              onBackground="accent-weak"
-            >
-              <InlineCode>Admission process</InlineCode>
-            </Text>
-          </SmartLink>
-          <SmartLink href="https://www.stpatricksacademy.com/admission-process">
-            {" "}
-            <Text
-              style={{
-                fontSize: "16px",
-              }}
-              onBackground="accent-weak"
-            >
-              <InlineCode>Fee structure</InlineCode>
-            </Text>
-          </SmartLink>
-          <SmartLink href="https://www.stpatricksacademy.com/admission-process">
-            {" "}
-            <Text
-              style={{
-                fontSize: "16px",
-              }}
-              onBackground="accent-weak"
-            >
-              <InlineCode>Website</InlineCode>
-            </Text>
-          </SmartLink>
+          <Text
+            variant="body-default-xl"
+            style={{
+              color: "#181A1D",
+              fontSize: "25px",
+              fontWeight: "500",
+            }}
+            className={dmsans.className}
+          >
+            Extra links
+          </Text>
+          {isUser ? (
+            <>
+            <Column gap="12" fillWidth>
+              {extraLinks.admission.map((link, idx) => (
+                <Row key={link.id} fillWidth gap="12" horizontal="start" vertical="start">
+                  <Text variant="body-default-m" onBackground="neutral-medium">
+                    {link.id}
+                  </Text>
+                  <Flex flex={2}>
+                    <Input
+                      id=""
+                      placeholder="Enter link text"
+                      value={link.label}
+                      onChange={e => {
+                        setExtraLinks(prev => ({
+                          ...prev,
+                          admission: prev.admission.map((l, i) =>
+                            i === idx ? { ...l, label: e.target.value } : l
+                          ),
+                        }));
+                      }}
+                    />
+                  </Flex>
+                  <Flex flex={5}>
+                    <Input
+                      id=""
+                      placeholder="Enter link"
+                      value={link.url}
+                      hasPrefix={
+                        <Text onBackground="neutral-weak" variant="label-default-s">
+                          <i className="ri-links-line"></i>
+                        </Text>
+                      }
+                      onChange={e => {
+                        setExtraLinks(prev => ({
+                          ...prev,
+                          admission: prev.admission.map((l, i) =>
+                            i === idx ? { ...l, url: e.target.value } : l
+                          ),
+                        }));
+                      }}
+                    />
+                  </Flex>
+                </Row>
+              ))}
+            </Column>
+            <Row fillWidth horizontal="end" gap="4">
+              <Button
+                size="l"
+                onClick={() => {
+                  setExtraLinks(prev => ({
+                    ...prev,
+                    admission:
+                      prev.admission.length > 1
+                        ? prev.admission.slice(0, -1)
+                        : prev.admission,
+                  }));
+                }}
+                disabled={extraLinks.admission.length <= 1}
+              >
+                Remove last
+              </Button>
+              <Button
+                size="l"
+                onClick={() => {
+                  setExtraLinks(prev => ({
+                    ...prev,
+                    admission: [
+                      ...prev.admission,
+                      {
+                        id:
+                          prev.admission.length > 0
+                            ? prev.admission[prev.admission.length - 1].id + 1
+                            : 1,
+                        label: "",
+                        url: "",
+                      },
+                    ],
+                  }));
+                }}
+              >
+                Add
+              </Button>
+            </Row>
+            </>
+          ) : (
+            <Column fillWidth gap="8" style={{ marginTop: "16px" }}>
+              {extraLinks.admission.map((link, idx) => (
+                <SmartLink key={idx} href={link.url}>
+                  <Text
+                    style={{
+                      fontSize: "16px",
+                    }}
+                    onBackground="accent-weak"
+                  >
+                    <InlineCode>{link.label}</InlineCode>
+                  </Text>
+                </SmartLink>
+              ))}
+            </Column>
+          )}
         </Column>
+        <Row fillWidth horizontal="end">
+          {" "}
+          <Button size="l"> Save All</Button>
+        </Row>
       </Column>
     </>
   );
 }
-function Facilities() {
+
+interface ExtracurricularProps {
+  isUser: boolean;
+}
+function Facilities({ isUser }: ExtracurricularProps) {
+  // Helper to randomly assign true/false
+  const randomBool = () => Math.random() < 0.5;
+
+  // Memoize so random stays stable per render
+  const [facilities, setFacilities] = useState(() => ({
+    sports: [
+      { label: "Badminton", isSet: randomBool() },
+      { label: "Basketball", isSet: randomBool() },
+      { label: "Football", isSet: randomBool() },
+      { label: "Cricket", isSet: randomBool() },
+      { label: "Table Tennis", isSet: randomBool() },
+      { label: "Volleyball", isSet: randomBool() },
+      { label: "Athletics", isSet: randomBool() },
+      { label: "Swimming", isSet: randomBool() },
+      { label: "Yoga", isSet: randomBool() },
+      { label: "Martial Arts", isSet: randomBool() },
+      { label: "Gymnastics", isSet: randomBool() },
+      { label: "Chess", isSet: randomBool() },
+    ],
+    educational: [
+      { label: "Library", isSet: randomBool() },
+      { label: "Career Counseling", isSet: randomBool() },
+      { label: "Test Center", isSet: randomBool() },
+    ],
+    classroom: [
+      { label: "AV Classrooms", isSet: randomBool() },
+      { label: "Air Purifiers", isSet: randomBool() },
+    ],
+    visualArts: [
+      { label: "Art", isSet: randomBool() },
+      { label: "Dance", isSet: randomBool() },
+      { label: "Music", isSet: randomBool() },
+      { label: "Drama", isSet: randomBool() },
+      { label: "Music", isSet: randomBool() },
+    ],
+    laboratory: [
+      { label: "Science Lab", isSet: randomBool() },
+      { label: "Language Lab", isSet: randomBool() },
+      { label: "Computer Lab", isSet: randomBool() },
+    ],
+    transport: [
+      { label: "Transport Facility", isSet: randomBool() },
+      { label: "AC Buses", isSet: randomBool() },
+      { label: "Private Vans", isSet: randomBool() },
+    ],
+    boarding: [{ label: "Day Boarding", isSet: randomBool() }],
+    digital: [
+      { label: "AV Facilities", isSet: randomBool() },
+      { label: "Interactive Boards", isSet: randomBool() },
+      { label: "School App", isSet: randomBool() },
+      { label: "Wi-Fi", isSet: randomBool() },
+    ],
+    food: [{ label: "Canteen", isSet: randomBool() }],
+    safety: [
+      { label: "CCTV", isSet: randomBool() },
+      { label: "Fire Alarm", isSet: randomBool() },
+      { label: "Fire Extinguisher", isSet: randomBool() },
+      { label: "Security Guards", isSet: randomBool() },
+      { label: "Boundary Wall", isSet: randomBool() },
+      { label: "Fenced Boundary Wall", isSet: randomBool() },
+      { label: "Speedometer In Bus", isSet: randomBool() },
+      { label: "GPS In Bus", isSet: randomBool() },
+      { label: "CCTV In Bus", isSet: randomBool() },
+      { label: "Fire Extinguisher In Bus", isSet: randomBool() },
+      { label: "School Bus Tracking App", isSet: randomBool() },
+    ],
+    medical: [
+      { label: "Medical Facility", isSet: randomBool() },
+      { label: "Medical Room or Clinic", isSet: randomBool() },
+      { label: "Medical Staff", isSet: randomBool() },
+    ],
+    other: [
+      { label: "Kids Play Area", isSet: randomBool() },
+      { label: "Activity Center", isSet: randomBool() },
+      { label: "Toy Room", isSet: randomBool() },
+      { label: "Auditorium", isSet: randomBool() },
+      { label: "Day Care", isSet: randomBool() },
+      { label: "Lego Room", isSet: randomBool() },
+    ],
+  }));
+
+  // Helper to filter only isSet === true
+  const filterSet = (arr: { label: string; isSet: boolean }[]) =>
+    arr.filter((f) => f.isSet);
+
   return (
     <>
+      {/* Sports Facilities */}
       <Column
         fillWidth
         maxWidth={60}
@@ -806,7 +1212,6 @@ function Facilities() {
         paddingY="16"
         gap="12"
       >
-        {" "}
         <Row fillWidth horizontal="space-between">
           <Text
             variant="body-default-xl"
@@ -820,24 +1225,52 @@ function Facilities() {
             Sports Facilities
           </Text>
           <Text onBackground="neutral-weak" variant="label-default-xs">
-            10/52
+            {filterSet(facilities.sports).length}/{facilities.sports.length}
           </Text>
         </Row>
         <Row fillWidth gap="8" maxWidth={60} wrap={true} data-brand="yellow">
-          <Chip label="Badminton" background="neutral-weak" />
-          <Chip label="Basketball" background="neutral-weak" />
-          <Chip label="Football" background="neutral-weak" />
-          <Chip label="Cricket" background="neutral-weak" />
-          <Chip label="Table Tennis" background="neutral-weak" />
-          <Chip label="Volleyball" background="neutral-weak" />
-          <Chip label="Athletics" background="neutral-weak" />
-          <Chip label="Swimming" background="neutral-weak" />
-          <Chip label="Yoga" background="neutral-weak" />
-          <Chip label="Martial Arts" background="neutral-weak" />
-          <Chip label="Gymnastics" background="neutral-weak" />
-          <Chip label="Chess" background="neutral-weak" />
+          {isUser ? (
+            <>
+              <Column gap="12">
+                {facilities.sports.map((facility, idx) => (
+                  <Checkbox
+                    key={idx}
+                    label={
+                      <Text
+                        onBackground="neutral-medium"
+                        variant="body-default-l"
+                      >
+                        {facility.label}
+                      </Text>
+                    }
+                    isChecked={facility.isSet}
+                    onToggle={() => {
+                      setFacilities((prev) => ({
+                        ...prev,
+                        sports: prev.sports.map((f, i) =>
+                          i === idx ? { ...f, isSet: !f.isSet } : f
+                        ),
+                      }));
+                    }}
+                  />
+                ))}
+              </Column>
+            </>
+          ) : (
+            <>
+              {filterSet(facilities.sports).map((facility, idx) => (
+                <Chip
+                  key={idx}
+                  label={facility.label}
+                  background="neutral-weak"
+                />
+              ))}
+            </>
+          )}
         </Row>
       </Column>
+
+      {/* Educational Facilities */}
       <Column
         fillWidth
         maxWidth={60}
@@ -846,7 +1279,6 @@ function Facilities() {
         paddingY="16"
         gap="12"
       >
-        {" "}
         <Row fillWidth horizontal="space-between">
           <Text
             variant="body-default-xl"
@@ -860,16 +1292,53 @@ function Facilities() {
             Educational Facilities
           </Text>
           <Text onBackground="neutral-weak" variant="label-default-xs">
-            3/4
+            {filterSet(facilities.educational).length}/
+            {facilities.educational.length}
           </Text>
         </Row>
-        <Row fillWidth gap="8" maxWidth={60} wrap={true} data-brand="yellow">
-          <Chip label="Library" background="neutral-weak" />
-          <Chip label="Career Counseling" background="neutral-weak" />
-          {/* <Chip label="Student Exchange Programs" background="neutral-weak" /> */}
-          <Chip label="Test Center" background="neutral-weak" />
+        <Row fillWidth gap="8" maxWidth={60} wrap={true}>
+          {isUser ? (
+            <>
+              <Column gap="12">
+                {facilities.educational.map((facility, idx) => (
+                  <Checkbox
+                    key={idx}
+                    label={
+                      <Text
+                        onBackground="neutral-medium"
+                        variant="body-default-l"
+                      >
+                        {facility.label}
+                      </Text>
+                    }
+                    isChecked={facility.isSet}
+                    onToggle={() => {
+                      setFacilities((prev) => ({
+                        ...prev,
+                        educational: prev.educational.map((f, i) =>
+                          i === idx ? { ...f, isSet: !f.isSet } : f
+                        ),
+                      }));
+                    }}
+                  />
+                ))}
+              </Column>
+            </>
+          ) : (
+            <>
+              {filterSet(facilities.educational).map((facility, idx) => (
+                <Chip
+                  key={idx}
+                  label={facility.label}
+                  background="neutral-weak"
+                />
+              ))}
+            </>
+          )}
         </Row>
       </Column>
+
+      {/* Classroom Facilities */}
       <Column
         fillWidth
         maxWidth={60}
@@ -891,15 +1360,53 @@ function Facilities() {
             Classroom Facilities
           </Text>
           <Text onBackground="neutral-weak" variant="label-default-xs">
-            2/5
-          </Text>{" "}
+            {filterSet(facilities.classroom).length}/
+            {facilities.classroom.length}
+          </Text>
         </Row>
-
-        <Row fillWidth gap="8" maxWidth={60} wrap={true} data-brand="yellow">
-          <Chip label="AV Classrooms" background="neutral-weak" />
-          <Chip label="Air Purifiers" background="neutral-weak" />
+        <Row fillWidth gap="8" maxWidth={60} wrap={true}>
+          {isUser ? (
+            <>
+              <Column gap="12">
+                {facilities.classroom.map((facility, idx) => (
+                  <Checkbox
+                    key={idx}
+                    label={
+                      <Text
+                        onBackground="neutral-medium"
+                        variant="body-default-l"
+                      >
+                        {facility.label}
+                      </Text>
+                    }
+                    isChecked={facility.isSet}
+                    onToggle={() => {
+                      setFacilities((prev) => ({
+                        ...prev,
+                        classroom: prev.classroom.map((f, i) =>
+                          i === idx ? { ...f, isSet: !f.isSet } : f
+                        ),
+                      }));
+                    }}
+                  />
+                ))}
+              </Column>
+            </>
+          ) : (
+            <>
+              {filterSet(facilities.classroom).map((facility, idx) => (
+                <Chip
+                  key={idx}
+                  label={facility.label}
+                  background="neutral-weak"
+                />
+              ))}
+            </>
+          )}
         </Row>
       </Column>
+
+      {/* Visual Arts Facilities */}
       <Column
         fillWidth
         maxWidth={60}
@@ -918,20 +1425,56 @@ function Facilities() {
             }}
             className={dmsans.className}
           >
-            Visual and Performing Arts Facilities
+            Visual Arts Facilities
           </Text>
           <Text onBackground="neutral-weak" variant="label-default-xs">
-            5/5
+            {filterSet(facilities.visualArts).length}/
+            {facilities.visualArts.length}
           </Text>
         </Row>
-        <Row fillWidth gap="8" maxWidth={60} wrap={true} data-brand="yellow">
-          <Chip label="Art" background="neutral-weak" />
-          <Chip label="Dance" background="neutral-weak" />
-          <Chip label="Music" background="neutral-weak" />
-          <Chip label="Drama" background="neutral-weak" />
-          <Chip label="Music" background="neutral-weak" />
+        <Row fillWidth gap="8" maxWidth={60} wrap={true}>
+          {isUser ? (
+            <>
+              <Column gap="12">
+                {facilities.visualArts.map((facility, idx) => (
+                  <Checkbox
+                    key={idx}
+                    label={
+                      <Text
+                        onBackground="neutral-medium"
+                        variant="body-default-l"
+                      >
+                        {facility.label}
+                      </Text>
+                    }
+                    isChecked={facility.isSet}
+                    onToggle={() => {
+                      setFacilities((prev) => ({
+                        ...prev,
+                        visualArts: prev.visualArts.map((f, i) =>
+                          i === idx ? { ...f, isSet: !f.isSet } : f
+                        ),
+                      }));
+                    }}
+                  />
+                ))}
+              </Column>
+            </>
+          ) : (
+            <>
+              {filterSet(facilities.visualArts).map((facility, idx) => (
+                <Chip
+                  key={idx}
+                  label={facility.label}
+                  background="neutral-weak"
+                />
+              ))}
+            </>
+          )}
         </Row>
       </Column>
+
+      {/* Laboratory Facilities */}
       <Column
         fillWidth
         maxWidth={60}
@@ -953,18 +1496,53 @@ function Facilities() {
             Laboratory Facilities
           </Text>
           <Text onBackground="neutral-weak" variant="label-default-xs">
-            3/6
+            {filterSet(facilities.laboratory).length}/
+            {facilities.laboratory.length}
           </Text>
         </Row>
-        <Row fillWidth gap="8" maxWidth={60} wrap={true} data-brand="yellow">
-          <Chip label="Science Lab" background="neutral-weak" />
-          <Chip label="Language Lab" background="neutral-weak" />
-          {/* <Chip label="Maths Lab" background="neutral-weak" /> */}
-          {/* <Chip label="Atal Tinkering Lab (ATL)" background="neutral-weak" /> */}
-          <Chip label="Computer Lab" background="neutral-weak" />
-          {/* <Chip label="Robotics Lab" background="neutral-weak" /> */}
+        <Row fillWidth gap="8" maxWidth={60} wrap={true}>
+          {isUser ? (
+            <>
+              <Column gap="12">
+                {facilities.laboratory.map((facility, idx) => (
+                  <Checkbox
+                    key={idx}
+                    label={
+                      <Text
+                        onBackground="neutral-medium"
+                        variant="body-default-l"
+                      >
+                        {facility.label}
+                      </Text>
+                    }
+                    isChecked={facility.isSet}
+                    onToggle={() => {
+                      setFacilities((prev) => ({
+                        ...prev,
+                        laboratory: prev.laboratory.map((f, i) =>
+                          i === idx ? { ...f, isSet: !f.isSet } : f
+                        ),
+                      }));
+                    }}
+                  />
+                ))}
+              </Column>
+            </>
+          ) : (
+            <>
+              {filterSet(facilities.laboratory).map((facility, idx) => (
+                <Chip
+                  key={idx}
+                  label={facility.label}
+                  background="neutral-weak"
+                />
+              ))}
+            </>
+          )}
         </Row>
       </Column>
+
+      {/* Transport Facilities */}
       <Column
         fillWidth
         maxWidth={60}
@@ -986,15 +1564,53 @@ function Facilities() {
             Transport Facilities
           </Text>
           <Text onBackground="neutral-weak" variant="label-default-xs">
-            3/3
+            {filterSet(facilities.transport).length}/
+            {facilities.transport.length}
           </Text>
         </Row>
-        <Row fillWidth gap="8" maxWidth={60} wrap={true} data-brand="yellow">
-          <Chip label="Transport Facility" background="neutral-weak" />
-          <Chip label="AC Buses" background="neutral-weak" />
-          <Chip label="Private Vans" background="neutral-weak" />
+        <Row fillWidth gap="8" maxWidth={60} wrap={true}>
+          {isUser ? (
+            <>
+              <Column gap="12">
+                {facilities.transport.map((facility, idx) => (
+                  <Checkbox
+                    key={idx}
+                    label={
+                      <Text
+                        onBackground="neutral-medium"
+                        variant="body-default-l"
+                      >
+                        {facility.label}
+                      </Text>
+                    }
+                    isChecked={facility.isSet}
+                    onToggle={() => {
+                      setFacilities((prev) => ({
+                        ...prev,
+                        transport: prev.transport.map((f, i) =>
+                          i === idx ? { ...f, isSet: !f.isSet } : f
+                        ),
+                      }));
+                    }}
+                  />
+                ))}
+              </Column>
+            </>
+          ) : (
+            <>
+              {filterSet(facilities.transport).map((facility, idx) => (
+                <Chip
+                  key={idx}
+                  label={facility.label}
+                  background="neutral-weak"
+                />
+              ))}
+            </>
+          )}
         </Row>
       </Column>
+
+      {/* Boarding Facilities */}
       <Column
         fillWidth
         maxWidth={60}
@@ -1016,16 +1632,52 @@ function Facilities() {
             Boarding Facilities
           </Text>
           <Text onBackground="neutral-weak" variant="label-default-xs">
-            <>1/3</>
+            {filterSet(facilities.boarding).length}/{facilities.boarding.length}
           </Text>
         </Row>
-
-        <Row fillWidth gap="8" maxWidth={60} wrap={true} data-brand="yellow">
-          {/* <Chip label="Hostel" background="neutral-weak" /> */}
-          {/* <Chip label="AC Hostel" background="neutral-weak" /> */}
-          <Chip label="Day Boarding" background="neutral-weak" />
+        <Row fillWidth gap="8" maxWidth={60} wrap={true}>
+          {isUser ? (
+            <>
+              <Column gap="12">
+                {facilities.boarding.map((facility, idx) => (
+                  <Checkbox
+                    key={idx}
+                    label={
+                      <Text
+                        onBackground="neutral-medium"
+                        variant="body-default-l"
+                      >
+                        {facility.label}
+                      </Text>
+                    }
+                    isChecked={facility.isSet}
+                    onToggle={() => {
+                      setFacilities((prev) => ({
+                        ...prev,
+                        boarding: prev.boarding.map((f, i) =>
+                          i === idx ? { ...f, isSet: !f.isSet } : f
+                        ),
+                      }));
+                    }}
+                  />
+                ))}
+              </Column>
+            </>
+          ) : (
+            <>
+              {filterSet(facilities.boarding).map((facility, idx) => (
+                <Chip
+                  key={idx}
+                  label={facility.label}
+                  background="neutral-weak"
+                />
+              ))}
+            </>
+          )}
         </Row>
       </Column>
+
+      {/* Digital Facilities */}
       <Column
         fillWidth
         maxWidth={60}
@@ -1034,7 +1686,6 @@ function Facilities() {
         paddingY="16"
         gap="12"
       >
-        {" "}
         <Row fillWidth horizontal="space-between">
           <Text
             variant="body-default-xl"
@@ -1048,16 +1699,52 @@ function Facilities() {
             Digital Facilities
           </Text>
           <Text onBackground="neutral-weak" variant="label-default-xs">
-            4/4
+            {filterSet(facilities.digital).length}/{facilities.digital.length}
           </Text>
         </Row>
-        <Row fillWidth gap="8" maxWidth={60} wrap={true} data-brand="yellow">
-          <Chip label="AV Facilities" background="neutral-weak" />
-          <Chip label="Interactive Boards" background="neutral-weak" />
-          <Chip label="School App" background="neutral-weak" />
-          <Chip label="Wi-Fi" background="neutral-weak" />
+        <Row fillWidth gap="8" maxWidth={60} wrap={true}>
+          {isUser ? (
+            <>
+              <Column gap="12">
+                {facilities.digital.map((facility, idx) => (
+                  <Checkbox
+                    key={idx}
+                    label={
+                      <Text
+                        onBackground="neutral-medium"
+                        variant="body-default-l"
+                      >
+                        {facility.label}
+                      </Text>
+                    }
+                    isChecked={facility.isSet}
+                    onToggle={() => {
+                      setFacilities((prev) => ({
+                        ...prev,
+                        digital: prev.digital.map((f, i) =>
+                          i === idx ? { ...f, isSet: !f.isSet } : f
+                        ),
+                      }));
+                    }}
+                  />
+                ))}
+              </Column>
+            </>
+          ) : (
+            <>
+              {filterSet(facilities.digital).map((facility, idx) => (
+                <Chip
+                  key={idx}
+                  label={facility.label}
+                  background="neutral-weak"
+                />
+              ))}
+            </>
+          )}
         </Row>
       </Column>
+
+      {/* Food Facilities */}
       <Column
         fillWidth
         maxWidth={60}
@@ -1066,7 +1753,6 @@ function Facilities() {
         paddingY="16"
         gap="12"
       >
-        {" "}
         <Row fillWidth horizontal="space-between">
           <Text
             variant="body-default-xl"
@@ -1077,18 +1763,55 @@ function Facilities() {
             }}
             className={dmsans.className}
           >
-            Food and Catering Facilities
+            Food Facilities
           </Text>
           <Text onBackground="neutral-weak" variant="label-default-xs">
-            1/2
+            {filterSet(facilities.food).length}/{facilities.food.length}
           </Text>
         </Row>
-        <Row fillWidth gap="8" maxWidth={60} wrap={true} data-brand="yellow">
-          <Chip label="Canteen" background="neutral-weak" />
-          {/* <Chip label="Meal Served" background="neutral-weak" /> */}
-          {/* <Chip label="Kitchen & Dining Hall" background="neutral-weak" /> */}
+        <Row fillWidth gap="8" maxWidth={60} wrap={true}>
+          {isUser ? (
+            <>
+              <Column gap="12">
+                {facilities.food.map((facility, idx) => (
+                  <Checkbox
+                    key={idx}
+                    label={
+                      <Text
+                        onBackground="neutral-medium"
+                        variant="body-default-l"
+                      >
+                        {facility.label}
+                      </Text>
+                    }
+                    isChecked={facility.isSet}
+                    onToggle={() => {
+                      setFacilities((prev) => ({
+                        ...prev,
+                        food: prev.food.map((f, i) =>
+                          i === idx ? { ...f, isSet: !f.isSet } : f
+                        ),
+                      }));
+                    }}
+                  />
+                ))}
+              </Column>
+            </>
+          ) : (
+            <>
+              {filterSet(facilities.food).map((facility, idx) => (
+                <Chip
+                  key={idx}
+                  label={facility.label}
+                  background="neutral-weak"
+                />
+              ))}
+            </>
+          )}
         </Row>
       </Column>
+
+      {/* Safety Facilities */}
       <Column
         fillWidth
         maxWidth={60}
@@ -1107,26 +1830,55 @@ function Facilities() {
             }}
             className={dmsans.className}
           >
-            Safety and Security Facilities
+            Safety Facilities
           </Text>
           <Text onBackground="neutral-weak" variant="label-default-xs">
-            11/11
+            {filterSet(facilities.safety).length}/{facilities.safety.length}
           </Text>
         </Row>
-        <Row fillWidth gap="8" maxWidth={60} wrap={true} data-brand="yellow">
-          <Chip label="CCTV" background="neutral-weak" />
-          <Chip label="Fire Alarm" background="neutral-weak" />
-          <Chip label="Fire Extinguisher" background="neutral-weak" />
-          <Chip label="Security Guards" background="neutral-weak" />
-          <Chip label="Boundary Wall" background="neutral-weak" />
-          <Chip label="Fenced Boundary Wall" background="neutral-weak" />
-          <Chip label="Speedometer In Bus" background="neutral-weak" />
-          <Chip label="GPS In Bus" background="neutral-weak" />
-          <Chip label="CCTV In Bus" background="neutral-weak" />
-          <Chip label="Fire Extinguisher In Bus" background="neutral-weak" />
-          <Chip label="School Bus Tracking App" background="neutral-weak" />
+        <Row fillWidth gap="8" maxWidth={60} wrap={true}>
+          {isUser ? (
+            <>
+              <Column gap="12">
+                {facilities.safety.map((facility, idx) => (
+                  <Checkbox
+                    key={idx}
+                    label={
+                      <Text
+                        onBackground="neutral-medium"
+                        variant="body-default-l"
+                      >
+                        {facility.label}
+                      </Text>
+                    }
+                    isChecked={facility.isSet}
+                    onToggle={() => {
+                      setFacilities((prev) => ({
+                        ...prev,
+                        safety: prev.safety.map((f, i) =>
+                          i === idx ? { ...f, isSet: !f.isSet } : f
+                        ),
+                      }));
+                    }}
+                  />
+                ))}
+              </Column>
+            </>
+          ) : (
+            <>
+              {filterSet(facilities.safety).map((facility, idx) => (
+                <Chip
+                  key={idx}
+                  label={facility.label}
+                  background="neutral-weak"
+                />
+              ))}
+            </>
+          )}
         </Row>
       </Column>
+
+      {/* Medical Facilities */}
       <Column
         fillWidth
         maxWidth={60}
@@ -1135,7 +1887,6 @@ function Facilities() {
         paddingY="16"
         gap="12"
       >
-        {" "}
         <Row fillWidth horizontal="space-between">
           <Text
             variant="body-default-xl"
@@ -1149,19 +1900,52 @@ function Facilities() {
             Medical Facilities
           </Text>
           <Text onBackground="neutral-weak" variant="label-default-xs">
-            3/8
+            {filterSet(facilities.medical).length}/{facilities.medical.length}
           </Text>
         </Row>
-        <Row fillWidth gap="8" maxWidth={60} wrap={true} data-brand="yellow">
-          <Chip label="Medical Facility" background="neutral-weak" />
-          <Chip label="Medical Room or Clinic" background="neutral-weak" />
-          {/* <Chip label="Resident Doctor" background="neutral-weak" /> */}
-          <Chip label="Medical Staff" background="neutral-weak" />
-          {/* <Chip label="Isolation Room" background="neutral-weak" /> */}
-          {/* <Chip label="ICU" background="neutral-weak" /> */}
-          {/* <Chip label="Dedicated Ambulance" background="neutral-weak" /> */}
+        <Row fillWidth gap="8" maxWidth={60} wrap={true}>
+          {isUser ? (
+            <>
+              <Column gap="12">
+                {facilities.medical.map((facility, idx) => (
+                  <Checkbox
+                    key={idx}
+                    label={
+                      <Text
+                        onBackground="neutral-medium"
+                        variant="body-default-l"
+                      >
+                        {facility.label}
+                      </Text>
+                    }
+                    isChecked={facility.isSet}
+                    onToggle={() => {
+                      setFacilities((prev) => ({
+                        ...prev,
+                        medical: prev.medical.map((f, i) =>
+                          i === idx ? { ...f, isSet: !f.isSet } : f
+                        ),
+                      }));
+                    }}
+                  />
+                ))}
+              </Column>
+            </>
+          ) : (
+            <>
+              {filterSet(facilities.medical).map((facility, idx) => (
+                <Chip
+                  key={idx}
+                  label={facility.label}
+                  background="neutral-weak"
+                />
+              ))}
+            </>
+          )}
         </Row>
       </Column>
+
+      {/* Other Facilities */}
       <Column
         fillWidth
         maxWidth={60}
@@ -1170,7 +1954,6 @@ function Facilities() {
         paddingY="16"
         gap="12"
       >
-        {" "}
         <Row fillWidth horizontal="space-between">
           <Text
             variant="body-default-xl"
@@ -1184,23 +1967,66 @@ function Facilities() {
             Other Facilities
           </Text>
           <Text onBackground="neutral-weak" variant="label-default-xs">
-            6/7
+            {filterSet(facilities.other).length}/{facilities.other.length}
           </Text>
         </Row>
-        <Row fillWidth gap="8" maxWidth={60} wrap={true} data-brand="yellow">
-          <Chip label="Kids Play Area" background="neutral-weak" />
-          <Chip label="Activity Center" background="neutral-weak" />
-          <Chip label="Toy Room" background="neutral-weak" />
-          {/* <Chip label="Amphitheatre" background="neutral-weak" /> */}
-          <Chip label="Auditorium" background="neutral-weak" />
-          <Chip label="Day Care" background="neutral-weak" />
-          <Chip label="Lego Room" background="neutral-weak" />
+        <Row fillWidth gap="8" maxWidth={60} wrap={true}>
+          {isUser ? (
+            <>
+              <Column gap="12">
+                {facilities.other.map((facility, idx) => (
+                  <Checkbox
+                    key={idx}
+                    label={
+                      <Text
+                        onBackground="neutral-medium"
+                        variant="body-default-l"
+                      >
+                        {facility.label}
+                      </Text>
+                    }
+                    isChecked={facility.isSet}
+                    onToggle={() => {
+                      setFacilities((prev) => ({
+                        ...prev,
+                        other: prev.other.map((f, i) =>
+                          i === idx ? { ...f, isSet: !f.isSet } : f
+                        ),
+                      }));
+                    }}
+                  />
+                ))}
+              </Column>
+            </>
+          ) : (
+            <>
+              {filterSet(facilities.other).map((facility, idx) => (
+                <Chip
+                  key={idx}
+                  label={facility.label}
+                  background="neutral-weak"
+                />
+              ))}
+            </>
+          )}
         </Row>
       </Column>
+      <Row fillWidth horizontal="end">
+        {" "}
+        <Button size="l"> Save All</Button>
+      </Row>
     </>
   );
 }
-function Extracurricular() {
+
+interface ExtracurricularProps {
+  isUser: boolean;
+}
+
+function Extracurricular({ isUser }: ExtracurricularProps) {
+  const [extraCurricular, setExtraCurricular] = useState(
+    "St. Patrick's Academy offers a wide range of extracurricular activities to enhance the overall development of students. These activities include sports, arts, music, dance, drama, and various clubs that encourage creativity, teamwork, and leadership skills. The school believes in providing a holistic education that goes beyond academics, fostering a well-rounded personality in each student."
+  );
   return (
     <>
       <Column
@@ -1221,54 +2047,39 @@ function Extracurricular() {
         >
           Extra Curricular Activities
         </Text>
-        <Text
-          style={{
-            fontSize: "17px",
-          }}
-          onBackground="neutral-weak"
-        >
-          We offer a wide range of extracurricular activities to enhance the
-          overall development of our students. These activities are designed to
-          foster creativity, teamwork, and leadership skills. Some of the key
-          extracurricular activities include:
-          <br />
-          <br />
-          <ul>
-            <li>
-              <strong>Sports:</strong> Various sports such as football,
-              basketball, cricket, and athletics are encouraged to promote
-              physical fitness and teamwork.
-            </li>
-            <li>
-              <strong>Arts and Crafts:</strong> Students can explore their
-              creative side through painting, drawing, and other artistic
-              activities.
-            </li>
-            <li>
-              <strong>Music and Dance:</strong> We offer music and dance classes
-              to nurture the artistic talents of our students.
-            </li>
-            <li>
-              <strong>Debates and Public Speaking:</strong> These activities
-              help students develop their communication skills and confidence.
-            </li>
-            <li>
-              <strong>Environmental Clubs:</strong> Students can participate in
-              clubs focused on environmental awareness and sustainability.
-            </li>
-            <li>
-              <strong>Community Service:</strong> We encourage students to
-              engage in community service projects to develop a sense of social
-              responsibility.
-            </li>
-          </ul>
-        </Text>
+        {isUser ? (
+          <Textarea
+            id=""
+            placeholder="Enter about extra curricular activities"
+            resize="vertical"
+            style={{ minHeight: "300px" }}
+            value={extraCurricular}
+            onChange={(e) => setExtraCurricular(e.target.value)}
+          />
+        ) : (
+          <Text
+            style={{
+              fontSize: "17px",
+            }}
+            onBackground="neutral-weak"
+          >
+            {extraCurricular}
+          </Text>
+        )}
       </Column>
+      <Row fillWidth horizontal="end">
+        {" "}
+        <Button size="l"> Save All</Button>
+      </Row>
     </>
   );
 }
 
-function Academics() {
+interface AcademicsProps {
+  isUser: boolean;
+}
+
+function Academics({ isUser }: AcademicsProps) {
   return (
     <>
       <Column
@@ -1451,86 +2262,135 @@ function Reviews() {
     </>
   );
 }
-function FAQs() {
+
+interface FAQsProps {
+  isUser: boolean;
+}
+function FAQs({ isUser }: FAQsProps) {
+  const [faqs, setFAQS] = useState([
+    {
+      title: "What is the admission process at St. Patrick's Academy?",
+      text: "The admission process includes submitting an application form, appearing for an entrance exam (if required), attending an interview, document verification, receiving an admission offer, and fee payment.",
+      id: 1,
+    },
+    {
+      title: "What classes are available at St. Patrick's Academy?",
+      text: "The school offers classes from LKG to 12th, covering pre-primary, primary, middle, secondary, and higher secondary levels.",
+      id: 2,
+    },
+    {
+      title: "What curriculum does the school follow?",
+      text: "St. Patrick's Academy follows the ICSE/ISC curriculum, providing a comprehensive and recognized academic framework.",
+      id: 3,
+    },
+    {
+      title: "Are there any transport facilities available?",
+      text: "Yes, the school provides transport facilities including AC buses and private vans for students.",
+      id: 4,
+    },
+    {
+      title: "What extracurricular activities are offered?",
+      text: "The school offers a wide range of extracurricular activities such as sports, arts, music, dance, drama, and more to support holistic development.",
+      id: 5,
+    },
+    {
+      title: "How can I contact the school for more information?",
+      text: 'You can contact the school via the "Call Us" or "Email Us" buttons on this page, or visit the official website for further details.',
+      id: 6,
+    },
+  ]);
+
+  // Handlers for add and delete
+  const handleAdd = () => {
+    setFAQS((prev) => [
+      ...prev,
+      {
+        id: prev.length > 0 ? prev[prev.length - 1].id + 1 : 1,
+        title: "",
+        text: "",
+      },
+    ]);
+  };
+
+  const handleDelete = () => {
+    setFAQS((prev) => (prev.length > 1 ? prev.slice(0, -1) : prev));
+  };
+
+  const handleChange = (
+    idx: number,
+    field: "title" | "text",
+    value: string
+  ) => {
+    setFAQS((prev) =>
+      prev.map((faq, i) => (i === idx ? { ...faq, [field]: value } : faq))
+    );
+  };
+
   return (
     <>
-      <Accordion
-        title="What is the admission process at St. Patrick's Academy?"
-        size="l"
-      >
-        <Text
-          style={{
-            fontSize: "16px",
-          }}
-          onBackground="neutral-weak"
-        >
-          The admission process includes submitting an application form,
-          appearing for an entrance exam (if required), attending an interview,
-          document verification, receiving an admission offer, and fee payment.
-        </Text>
-      </Accordion>
-      <Accordion
-        title="What classes are available at St. Patrick's Academy?"
-        size="l"
-      >
-        <Text
-          style={{
-            fontSize: "16px",
-          }}
-          onBackground="neutral-weak"
-        >
-          The school offers classes from LKG to 12th, covering pre-primary,
-          primary, middle, secondary, and higher secondary levels.
-        </Text>
-      </Accordion>
-      <Accordion title="What curriculum does the school follow?" size="l">
-        <Text
-          style={{
-            fontSize: "16px",
-          }}
-          onBackground="neutral-weak"
-        >
-          St. Patrick's Academy follows the ICSE/ISC curriculum, providing a
-          comprehensive and recognized academic framework.
-        </Text>
-      </Accordion>
-      <Accordion title="Are there any transport facilities available?" size="l">
-        <Text
-          style={{
-            fontSize: "16px",
-          }}
-          onBackground="neutral-weak"
-        >
-          Yes, the school provides transport facilities including AC buses and
-          private vans for students.
-        </Text>
-      </Accordion>
-      <Accordion title="What extracurricular activities are offered?" size="l">
-        <Text
-          style={{
-            fontSize: "16px",
-          }}
-          onBackground="neutral-weak"
-        >
-          The school offers a wide range of extracurricular activities such as
-          sports, arts, music, dance, drama, and more to support holistic
-          development.
-        </Text>
-      </Accordion>
-      <Accordion
-        title="How can I contact the school for more information?"
-        size="l"
-      >
-        <Text
-          style={{
-            fontSize: "16px",
-          }}
-          onBackground="neutral-weak"
-        >
-          You can contact the school via the "Call Us" or "Email Us" buttons on
-          this page, or visit the official website for further details.
-        </Text>
-      </Accordion>
+      {isUser ? (
+        <Column gap="12" fillWidth>
+          {faqs.map((faq, idx) => (
+            <Row
+              key={faq.id}
+              fillWidth
+              vertical="start"
+              horizontal="start"
+              gap="12"
+            >
+              <Text variant="body-default-m" onBackground="neutral-strong">
+                {faq.id}
+              </Text>
+              <Row flex={2}>
+                <Input
+                  id=""
+                  placeholder="Enter the question"
+                  value={faq.title}
+                  onChange={(e) => handleChange(idx, "title", e.target.value)}
+                />
+              </Row>
+              <Row flex={5}>
+                <Textarea
+                  id=""
+                  placeholder="Enter the answer"
+                  style={{ minHeight: "200px" }}
+                  value={faq.text}
+                  onChange={(e) => handleChange(idx, "text", e.target.value)}
+                />
+              </Row>
+            </Row>
+          ))}
+          <Row fillWidth horizontal="end" gap="4" marginTop="16">
+            <Button
+              variant="primary"
+              size="l"
+              onClick={handleDelete}
+              disabled={faqs.length <= 1}
+            >
+              Delete Last
+            </Button>
+            <Button size="l" onClick={handleAdd}>
+              Add
+            </Button>
+            <Button size="l">Save All</Button>
+          </Row>
+        </Column>
+      ) : (
+        <>
+          {faqs.map((faq, idx) => (
+            <Accordion key={faq.id} title={faq.title} size="l">
+              <Text
+                style={{
+                  fontSize: "16px",
+                }}
+                onBackground="neutral-weak"
+              >
+                {faq.text}
+              </Text>
+            </Accordion>
+          ))}
+        </>
+      )}
     </>
   );
 }

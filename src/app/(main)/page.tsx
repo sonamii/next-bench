@@ -610,6 +610,8 @@ function CardA({
   buttonText,
   icon,
 }: typeof cardAProps) {
+  const router = useRouter();
+  
   return (
     <Flex
       radius="l"
@@ -689,7 +691,7 @@ function CardA({
           horizontal="center"
           vertical="end"
         >
-          <Button size="l" weight="default" fillWidth>
+          <Button size="l" weight="default" fillWidth onClick={() => router.push("/find")}>
             {buttonText}
           </Button>
         </Column>

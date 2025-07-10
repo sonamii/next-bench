@@ -192,7 +192,7 @@ export default function ProfilePage() {
       profile = {
         fullName: pd.personal_details.full_name ?? "",
         introduction: pd.personal_details.introduction ?? "",
-        dob: pd.personal_details.dob ? new Date(pd.dob) : null,
+        dob: pd.personal_details.dob ? new Date(pd.personal_details.dob) : null,
         gender: pd.personal_details.gender ?? "none",
         country: pd.contact.country ?? "",
         address: pd.contact.address ?? "",
@@ -208,7 +208,7 @@ export default function ProfilePage() {
           ? new Date(profileData.last_login)
           : null,
         membershipStatus: pd.membershipStatus ?? "A",
-        languagePreference: pd.contact.languagePreference ?? "English",
+        languagePreference: pd.contact.language_preference ?? "English",
         timezone: pd.contact.timezone ?? "Select timezone",
         avatarSrc: profileData.pfp ?? "",
         count: profileData.count ?? 0,
@@ -354,20 +354,36 @@ export default function ProfilePage() {
     }
 
     // Convert UserProfile to new profile_details structure
+    // Helper to format date as 'YYYY-MM-DD HH:mm:ss.SSSSSS+00'
+    function formatPostgresTimestamp(date: Date): string {
+      // Pad helper
+      const pad = (n: number, z = 2) => String(n).padStart(z, "0");
+      const year = date.getUTCFullYear();
+      const month = pad(date.getUTCMonth() + 1);
+      const day = pad(date.getUTCDate());
+      const hour = pad(date.getUTCHours());
+      const min = pad(date.getUTCMinutes());
+      const sec = pad(date.getUTCSeconds());
+      const ms = String(date.getUTCMilliseconds()).padStart(3, "0");
+      // Generate 6 digits for microseconds (pad with 0s)
+      const micro = ms + "000";
+      return `${year}-${month}-${day} ${hour}:${min}:${sec}.${micro}+00`;
+    }
+
     const profileDetails = {
       personal_details: {
-        full_name: profile.fullName,
-        introduction: profile.introduction,
-        dob: profile.dob ? profile.dob.toISOString() : null,
-        gender: profile.gender,
+      full_name: profile.fullName,
+      introduction: profile.introduction,
+      dob: profile.dob ? formatPostgresTimestamp(profile.dob) : null,
+      gender: profile.gender,
       },
       contact: {
-        country: profile.country,
-        address: profile.address,
-        phone_number: profile.phoneNumber,
-        email: profile.email,
-        language_preference: profile.languagePreference,
-        timezone: profile.timezone,
+      country: profile.country,
+      address: profile.address,
+      phone_number: profile.phoneNumber,
+      email: profile.email,
+      language_preference: profile.languagePreference,
+      timezone: profile.timezone,
       },
       membershipStatus: profile.membershipStatus,
     };
@@ -1057,7 +1073,7 @@ function AccountDetails({
           height="m"
           value={form.accountCreated === null ? undefined : form.accountCreated}
           onChange={(v: Date | null) => onChange("accountCreated", v)}
-          disabled={!isCurrentUser}
+          disabled
         />
       </ProfileRow>
 
@@ -1068,7 +1084,7 @@ function AccountDetails({
           height="m"
           value={form.lastLogin === null ? undefined : form.lastLogin}
           onChange={(v: Date | null) => onChange("lastLogin", v)}
-          disabled={!isCurrentUser}
+          disabled
         />
       </ProfileRow>
 
