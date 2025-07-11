@@ -23,6 +23,7 @@ import {
   NumberInput,
   Dialog,
   TagInput,
+  useToast,
 } from "@once-ui-system/core";
 import Navbar from "../../components/NavBar";
 
@@ -76,6 +77,7 @@ export default function Page() {
   const [logo, setLogo] = useState<string>("");
   const [reviews, setReviews] = useState<string[]>([]);
   const [isDataLoaded, setIsDataLoaded] = useState(false);
+  const [rating, setRating] = useState<number>(0); // Default rating
 
   const [slug, setSlug] = useState("");
   useEffect(() => {
@@ -100,7 +102,7 @@ export default function Page() {
       const { data, error } = await supabase
         .from("edu_centers")
         .select(
-          "uuid,is_published,logo,qna,reviews,tables,extra_links,facilities,texts,basic_info,motto,images"
+          "uuid,is_published,logo,qna,reviews,tables,extra_links,facilities,texts,basic_info,motto,images,rating"
         )
         .eq("edu_id", slug)
         .maybeSingle();
@@ -119,6 +121,7 @@ export default function Page() {
         setImages(data.images || []);
         setFAQS(data.qna || []);
         setReviews(data.reviews || []);
+        setRating(data.rating || 0); // Set rating from data
       }
     };
     checkUser();
@@ -179,6 +182,7 @@ export default function Page() {
                   basicInfo={basicInfo}
                   text={text.hero ?? ""}
                   slug={slug}
+                  rating={rating}
                 ></HeroSection>
               </Flex>
 
@@ -287,7 +291,6 @@ type BasicInfo = {
   };
 };
 
-
 /*===========================================================================================================*/
 interface HeroSectionProps {
   isUser: boolean;
@@ -295,6 +298,7 @@ interface HeroSectionProps {
   basicInfo: BasicInfo;
   text: string;
   slug?: string;
+  rating?: number; // Optional rating prop
 }
 
 function HeroSection({
@@ -303,6 +307,7 @@ function HeroSection({
   basicInfo,
   text,
   slug,
+  rating = 4.7, // Default rating if not provided
 }: HeroSectionProps) {
   const router = useRouter();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -357,9 +362,12 @@ function HeroSection({
       setIsDialogOpen(false);
     }
   }, [slug, basicInfo, newInstitution]);
+  const [loading, setLoading] = useState(false);
+  const{addToast}= useToast();
 
   // Save hero text to Supabase
   const saveTextToSupabase = useCallback(async () => {
+    setLoading(true);
     if (!slug) return;
     const { data, error: fetchError } = await supabase
       .from("edu_centers")
@@ -382,8 +390,13 @@ function HeroSection({
     if (error) {
       alert("Failed to save hero text: " + error.message);
     } else {
-      alert("Hero text saved successfully!");
+      addToast({
+        message: "Description saved successfully!",
+        variant: "success",
+      });
+      setHeroText(updatedTexts.hero || "");
     }
+    setLoading(false);
   }, [slug, heroText]);
 
   return (
@@ -475,7 +488,7 @@ function HeroSection({
                   }}
                   className={dmsans.className}
                 >
-                  4.7/5
+                  {rating}/5
                 </Text>
                 <Text
                   onBackground="neutral-weak"
@@ -492,11 +505,22 @@ function HeroSection({
                 <Row fillWidth>
                   <Textarea
                     id=""
-                    placeholder="Enter a short description"
+                    placeholder="Enter a short description about the institution"
                     resize="none"
                     value={heroText}
                     onChange={(e) => setHeroText(e.target.value)}
-                    hasSuffix={<Button onClick={saveTextToSupabase}>Save</Button>}
+                    hasSuffix={
+                      <Button onClick={saveTextToSupabase}>
+                        {loading ? (
+                          <>
+                            Saving...&nbsp;
+                            <Spinner size="s" />
+                          </>
+                        ) : (
+                          "Save all"
+                        )}
+                      </Button>
+                    }
                   />
                 </Row>
               ) : (
@@ -543,7 +567,9 @@ function HeroSection({
                   onMouseLeave={(e: React.MouseEvent<HTMLButtonElement>) =>
                     (e.currentTarget.style.backgroundColor = "#F2F2EF")
                   }
-                  onClick={() => router.push("/profile/a")}
+                  onClick={() => {
+                    window.open(`mailto:${basicInfo.contact?.email}`, "_blank");
+                  }}
                 >
                   Email Us
                 </Button>
@@ -745,62 +771,69 @@ interface AboutSchoolProps {
   text: string;
   motto: string;
   basicInfo: BasicInfo;
-  slug?: string; // Optional slug for saving data
-  is_DialogOpen?: boolean;
+  slug?: string;
 }
+
 function AboutSchool({
   isUser,
   text,
   motto,
   basicInfo,
-  is_DialogOpen,
   slug,
 }: AboutSchoolProps) {
+  // State for editable fields
+  const [aboutText, setAboutText] = useState(text);
   const [mottoText, setMottoText] = useState(motto);
-  const [institutionAbout, setInstitutionAbout] = useState(text);
-  const [yearEstabilished, setYearEstabilished] = useState(
-    basicInfo.year_established
+  const [yearEstablished, setYearEstablished] = useState(
+    basicInfo.year_established ?? ""
   );
-  const [schoolType, setSchoolType] = useState(basicInfo.type);
-  const [schoolGender, setSchoolGender] = useState(basicInfo.gender);
-  const [boardingType, setBoardingType] = useState(basicInfo.boarding_type);
-  const [minClassesOffered, setMinClassesOffered] = useState(
-    basicInfo.classes_offered?.min
+  const [institutionType, setInstitutionType] = useState(basicInfo.type ?? "");
+  const [gender, setGender] = useState(basicInfo.gender ?? "");
+  const [boardingType, setBoardingType] = useState(
+    basicInfo.boarding_type ?? ""
   );
-  const [maxClassesOffered, setMaxClassesOffered] = useState(
-    basicInfo.classes_offered?.max
+  const [minClass, setMinClass] = useState(
+    basicInfo.classes_offered?.min ?? ""
   );
-
+  const [maxClass, setMaxClass] = useState(
+    basicInfo.classes_offered?.max ?? ""
+  );
   const [studentPopulation, setStudentPopulation] = useState(
-    basicInfo.student_population || 0
+    basicInfo.student_population ?? 0
   );
-  const [affiliation, setAffiliation] = useState(basicInfo.affiliation?.boards);
-  const [govInst, setGovInst] = useState(basicInfo.affiliation?.type);
+  const [affiliationBoards, setAffiliationBoards] = useState(
+    basicInfo.affiliation?.boards ?? ""
+  );
+  const [affiliationType, setAffiliationType] = useState(
+    basicInfo.affiliation?.type ?? ""
+  );
+  const { addToast } = useToast();
+  const[loading, setLoading] = useState(false);
 
-  async function saveDataToSupabase() {
-    if (!isUser) return;
-    // Compose the updated basic info object
-    // Only update the fields that are editable in this form, leave others unchanged in the DB
-    const updatedBasicInfo = {
-      ...basicInfo, // keep all existing keys/values
-      year_established: yearEstabilished || basicInfo.year_established || "",
-      type: schoolType || basicInfo.type || "",
-      gender: schoolGender || basicInfo.gender || "",
-      boarding_type: boardingType || basicInfo.boarding_type || "",
+  // Save handler
+  async function saveAboutSchoolToSupabase() {
+    setLoading(true);
+    if (!isUser || !slug) return;
+
+    const updatedBasicInfo: BasicInfo = {
+      ...basicInfo,
+      year_established: yearEstablished,
+      type: institutionType,
+      gender,
+      boarding_type: boardingType,
       classes_offered: {
-        min: minClassesOffered || basicInfo.classes_offered?.min || "",
-        max: maxClassesOffered || basicInfo.classes_offered?.max || "",
+        min: minClass,
+        max: maxClass,
       },
       affiliation: {
-        boards: basicInfo.affiliation?.boards || "",
-        type: govInst || basicInfo.affiliation?.type || "",
+        boards: affiliationBoards,
+        type: affiliationType,
       },
       student_population: studentPopulation,
     };
 
-    // Compose the update payload
-    const updatePayload: any = {
-      texts: { about: institutionAbout },
+    const updatePayload = {
+      texts: { about: aboutText },
       motto: mottoText,
       basic_info: updatedBasicInfo,
     };
@@ -813,12 +846,17 @@ function AboutSchool({
     if (error) {
       alert("Failed to save data: " + error.message);
     } else {
-      alert("Data saved successfully!");
+      addToast({
+        message: "Data saved successfully!",
+        variant: "success",
+      });
+     
     }
+    setLoading(false);
   }
+
   return (
     <>
-      {" "}
       <Column
         fillWidth
         horizontal="start"
@@ -837,29 +875,19 @@ function AboutSchool({
         >
           About School
         </Text>
-        <Text
-          style={{
-            fontSize: "17px",
-          }}
-          onBackground="neutral-weak"
-        ></Text>
+        <Text style={{ fontSize: "17px" }} onBackground="neutral-weak"></Text>
         {isUser ? (
           <Textarea
             id=""
-            placeholder="Enter about school"
+            placeholder="Enter a detailed description about the school"
             resize="vertical"
             style={{ minHeight: "300px" }}
-            value={institutionAbout}
-            onChange={(e) => setInstitutionAbout(e.target.value)}
+            value={aboutText}
+            onChange={(e) => setAboutText(e.target.value)}
           />
         ) : (
-          <Text
-            style={{
-              fontSize: "17px",
-            }}
-            onBackground="neutral-weak"
-          >
-            {institutionAbout}
+          <Text style={{ fontSize: "17px" }} onBackground="neutral-weak">
+            {aboutText}
           </Text>
         )}
       </Column>
@@ -904,9 +932,9 @@ function AboutSchool({
               <Row flex={3} fillWidth>
                 <Input
                   id=""
-                  placeholder="Enter year"
-                  value={yearEstabilished}
-                  onChange={(e) => setYearEstabilished(e.target.value)}
+                  placeholder="e.g. 1990"
+                  value={yearEstablished}
+                  onChange={(e) => setYearEstablished(e.target.value)}
                 />
               </Row>
             </Flex>
@@ -930,12 +958,12 @@ function AboutSchool({
                 style={{ fontSize: "16px" }}
                 className={dmsans.className}
               >
-                {yearEstabilished}
+                {yearEstablished}
               </Text>
             </Row>
           )}
 
-          {/* School Type */}
+          {/* Institution Type */}
           {isUser ? (
             <Flex fillWidth horizontal="start">
               <Row flex={1}>
@@ -956,9 +984,9 @@ function AboutSchool({
               <Row flex={3} fillWidth>
                 <Input
                   id=""
-                  placeholder="Enter institution type"
-                  value={schoolType}
-                  onChange={(e) => setSchoolType(e.target.value)}
+                  placeholder="e.g. School/Tuition/College"
+                  value={institutionType}
+                  onChange={(e) => setInstitutionType(e.target.value)}
                 />
               </Row>
             </Flex>
@@ -982,7 +1010,7 @@ function AboutSchool({
                 style={{ fontSize: "16px" }}
                 className={dmsans.className}
               >
-                {schoolType}
+                {institutionType}
               </Text>
             </Row>
           )}
@@ -1001,16 +1029,16 @@ function AboutSchool({
                     onBackground="neutral-weak"
                     style={{ minWidth: "fit-content", whiteSpace: "nowrap" }}
                   >
-                    Gender :
+                    Institution gender :
                   </Kbd>
                 </Text>
               </Row>
               <Row flex={3} fillWidth>
                 <Input
                   id=""
-                  placeholder="Enter gender"
-                  value={schoolGender}
-                  onChange={(e) => setSchoolGender(e.target.value)}
+                  placeholder="e.g. Co-Ed/Boys school"
+                  value={gender}
+                  onChange={(e) => setGender(e.target.value)}
                 />
               </Row>
             </Flex>
@@ -1026,7 +1054,7 @@ function AboutSchool({
                   onBackground="neutral-weak"
                   style={{ minWidth: "fit-content", whiteSpace: "nowrap" }}
                 >
-                  Gender :
+                  Institution gender :
                 </Kbd>
               </Text>
               <Text
@@ -1034,7 +1062,7 @@ function AboutSchool({
                 style={{ fontSize: "16px" }}
                 className={dmsans.className}
               >
-                {schoolGender}
+                {gender}
               </Text>
             </Row>
           )}
@@ -1060,7 +1088,7 @@ function AboutSchool({
               <Row flex={3} fillWidth>
                 <Input
                   id=""
-                  placeholder="Enter boarding type"
+                  placeholder="e.g. Day School/Boarding"
                   value={boardingType}
                   onChange={(e) => setBoardingType(e.target.value)}
                 />
@@ -1105,22 +1133,22 @@ function AboutSchool({
                     onBackground="neutral-weak"
                     style={{ minWidth: "fit-content", whiteSpace: "nowrap" }}
                   >
-                    Classes :
+                    Classes offered:
                   </Kbd>
                 </Text>
               </Row>
               <Row flex={3} fillWidth gap="8">
                 <Input
                   id=""
-                  placeholder="Enter minimum class offered"
-                  value={minClassesOffered}
-                  onChange={(e) => setMinClassesOffered(e.target.value)}
+                  placeholder="e.g. 1st/2nd"
+                  value={minClass}
+                  onChange={(e) => setMinClass(e.target.value)}
                 />
                 <Input
                   id=""
-                  placeholder="Enter maximum class offered"
-                  value={maxClassesOffered}
-                  onChange={(e) => setMaxClassesOffered(e.target.value)}
+                  placeholder="e.g. 10th/12th/Graduation"
+                  value={maxClass}
+                  onChange={(e) => setMaxClass(e.target.value)}
                 />
               </Row>
             </Flex>
@@ -1136,7 +1164,7 @@ function AboutSchool({
                   onBackground="neutral-weak"
                   style={{ minWidth: "fit-content", whiteSpace: "nowrap" }}
                 >
-                  Classes :
+                  Classes offered:
                 </Kbd>
               </Text>
               <Text
@@ -1144,12 +1172,12 @@ function AboutSchool({
                 style={{ fontSize: "16px" }}
                 className={dmsans.className}
               >
-                {minClassesOffered} to {maxClassesOffered}
+                {minClass} to {maxClass}
               </Text>
             </Row>
           )}
 
-          {/* Affiliation */}
+          {/* Affiliation Boards */}
           {isUser ? (
             <Flex fillWidth horizontal="start">
               <Row flex={1}>
@@ -1172,12 +1200,12 @@ function AboutSchool({
                   id=""
                   placeholder="Enter affiliation"
                   value={
-                    Array.isArray(affiliation)
-                      ? affiliation.join("/").toUpperCase()
-                      : affiliation || ""
+                    Array.isArray(affiliationBoards)
+                      ? affiliationBoards.join("/").toUpperCase()
+                      : affiliationBoards || ""
                   }
                   disabled
-                  onChange={(e) => setAffiliation(e.target.value)}
+                  onChange={(e) => setAffiliationBoards(e.target.value)}
                   hasSuffix={
                     <Text onBackground="neutral-weak" variant="label-default-s">
                       HEADER
@@ -1206,11 +1234,12 @@ function AboutSchool({
                 style={{ fontSize: "16px" }}
                 className={dmsans.className}
               >
-                {affiliation}
+                {affiliationBoards}
               </Text>
             </Row>
           )}
 
+          {/* Affiliation Type */}
           {isUser ? (
             <Flex fillWidth horizontal="start">
               <Row flex={1}>
@@ -1231,9 +1260,9 @@ function AboutSchool({
               <Row flex={3} fillWidth>
                 <Input
                   id=""
-                  placeholder="Enter school type"
-                  value={govInst}
-                  onChange={(e) => setGovInst(e.target.value)}
+                  placeholder="e.g. Private, Government"
+                  value={affiliationType}
+                  onChange={(e) => setAffiliationType(e.target.value)}
                 />
               </Row>
             </Flex>
@@ -1257,10 +1286,12 @@ function AboutSchool({
                 style={{ fontSize: "16px" }}
                 className={dmsans.className}
               >
-                {govInst}
+                {affiliationType}
               </Text>
             </Row>
           )}
+
+          {/* Student Population */}
           {isUser ? (
             <Flex fillWidth horizontal="start">
               <Row flex={1}>
@@ -1281,7 +1312,7 @@ function AboutSchool({
               <Row flex={3} fillWidth>
                 <NumberInput
                   id=""
-                  placeholder="Enter school type"
+                  placeholder="e.g. 1000"
                   value={studentPopulation}
                   onChange={(value) => setStudentPopulation(Number(value))}
                 />
@@ -1335,28 +1366,28 @@ function AboutSchool({
           {isUser ? (
             <Textarea
               id=""
-              placeholder="Enter school motto"
+              placeholder="Enter the motto of your institution"
               resize="vertical"
               value={mottoText}
               onChange={(e) => setMottoText(e.target.value)}
             />
           ) : (
-            <Text
-              style={{
-                fontSize: "16px",
-              }}
-              onBackground="neutral-weak"
-            >
+            <Text style={{ fontSize: "16px" }} onBackground="neutral-weak">
               <InlineCode>{motto || '"Seek the truth"'}</InlineCode>
             </Text>
           )}
         </>
         {isUser && (
           <Row fillWidth horizontal="end">
-            {" "}
-            <Button size="l" onClick={saveDataToSupabase}>
-              {" "}
-              Save All
+            <Button size="l" onClick={saveAboutSchoolToSupabase}>
+              {loading ? (
+              <>
+                Saving...&nbsp;
+                <Spinner size="s" />
+              </>
+            ) : (
+              "Save all"
+            )}
             </Button>
           </Row>
         )}
