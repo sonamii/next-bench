@@ -600,6 +600,7 @@ export default function Home() {
               name: info.name || "",
               logo: row.logo || "",
               type: info.type || "",
+              gender:"",
               year_established: info.year_established || "",
               boarding_type: info.boarding_type || "",
               affiliation: info.affiliation || { boards: [], type: "" },

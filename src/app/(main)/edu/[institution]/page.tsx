@@ -20,6 +20,9 @@ import {
   Grid,
   Checkbox,
   Spinner,
+  NumberInput,
+  Dialog,
+  TagInput,
 } from "@once-ui-system/core";
 import Navbar from "../../components/NavBar";
 
@@ -41,10 +44,30 @@ export default function Page() {
   const router = useRouter();
 
   const [tables, setTables] = useState([""]);
-  const [basicInfo, setBasicInfo] = useState([""]);
+  type BasicInfo = {
+    year_estabilished?: string;
+    type?: string;
+    gender?: string;
+    boarding_type?: string;
+    classes_offered?: {
+      min?: string;
+      max?: string;
+    };
+    affiliation?: {
+      boards?: string;
+      type?: string;
+    };
+  };
+
+  const [basicInfo, setBasicInfo] = useState<BasicInfo>({});
   const [extraLinks, setExtraLinks] = useState([""]);
   const [faqs, setFAQS] = useState([""]);
-  const [text, setText] = useState("");
+  const [text, setText] = useState<{
+    about?: string;
+    admission?: string;
+    extra_curricular?: string;
+    hero?: string;
+  }>(() => ({ about: "" }));
   const [facilities, setFacilities] = useState([""]);
   const [motto, setMotto] = useState("");
   const [isPublished, setIsPublished] = useState(false);
@@ -148,11 +171,15 @@ export default function Page() {
             </>
           ) : (
             <Column>
-              <HeroSection
-                isUser={isUser}
-                logo={logo}
-                basicInfo={basicInfo}
-              ></HeroSection>
+              <Flex fitHeight style={{ minHeight: "fit-content !important" }}>
+                <HeroSection
+                  isUser={isUser}
+                  logo={logo}
+                  basicInfo={basicInfo}
+                  text={text.hero ?? ""}
+                  slug={slug}
+                ></HeroSection>
+              </Flex>
 
               <Flex fillWidth height={3}></Flex>
 
@@ -188,14 +215,15 @@ export default function Page() {
                       <AboutSchool
                         isUser={isUser}
                         motto={motto}
-                        text={text}
+                        text={text.about ?? ""}
                         basicInfo={basicInfo}
+                        slug={slug}
                       />
                     ),
                     admission: (
                       <Admission
                         isUser={isUser}
-                        text={text}
+                        text={text.admission ?? ""}
                         extraLinks={extraLinks}
                         tables={tables}
                       />
@@ -203,16 +231,22 @@ export default function Page() {
                     facilities: (
                       <Facilities isUser={isUser} facilities={facilities} />
                     ),
-                    extra: <Extracurricular isUser={isUser} text={text} />,
+                    extra: (
+                      <Extracurricular
+                        isUser={isUser}
+                        text={text.extra_curricular ?? ""}
+                      />
+                    ),
                     academics: (
                       <Academics
                         isUser={isUser}
                         extraLinks={extraLinks}
                         tables={tables}
+                        slug={slug}
                       />
                     ),
-                    reviews: <Reviews reviews={reviews} isUser={isUser}/>,
-                    qna: <FAQs isUser={isUser} faqs={faqs} />,
+                    reviews: <Reviews reviews={reviews} isUser={isUser} />,
+                    qna: <FAQs isUser={isUser} faqs={faqs} slug={slug} />,
                   }[activeTab]
                 }
               </Column>
@@ -226,23 +260,139 @@ export default function Page() {
   );
 }
 
+// Move the BasicInfo type definition here so it's available for use below
+type BasicInfo = {
+  year_established?: string;
+  type?: string;
+  gender?: string;
+  boarding_type?: string;
+  classes_offered?: {
+    min?: string;
+    max?: string;
+  };
+  affiliation?: {
+    boards?: string[] | string;
+    type?: string;
+  };
+  student_population?: number;
+  name?: string;
+  location?: {
+    country?: string;
+    city?: string;
+  };
+  contact?: {
+    phone?: string;
+    email?: string;
+  };
+};
+
 interface HeroSectionProps {
   isUser: boolean;
   logo: string;
-  basicInfo: string[];
+  basicInfo: BasicInfo;
+  text: string;
+  slug?: string; // Optional slug for saving data
 }
-function HeroSection({ isUser,logo,basicInfo }: HeroSectionProps) {
+function HeroSection({
+  isUser,
+  logo,
+  basicInfo,
+  text,
+  slug,
+}: HeroSectionProps) {
   const router = useRouter();
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [newInstitution, setNewInstitution] = useState({
+    name: basicInfo.name,
+    country: basicInfo.location?.country,
+    city: basicInfo.location?.city,
+    affiliation: basicInfo.affiliation?.boards,
+    phoneNumber: basicInfo.contact?.phone || "",
+    email: basicInfo.contact?.email || "",
+    type: basicInfo.type || "",
+  });
+
+  const [heroText, setHeroText] = useState(text);
+
+  async function updateInstitutionDataToSupabase() {
+    // Compose the updated basic info object
+    const updatedBasicInfo: BasicInfo = {
+      ...basicInfo,
+      name: newInstitution.name || basicInfo.name || "",
+      location: {
+        country: newInstitution.country || basicInfo.location?.country || "",
+        city: newInstitution.city || basicInfo.location?.city || "",
+      },
+      affiliation: {
+        boards: Array.isArray(newInstitution.affiliation)
+          ? newInstitution.affiliation
+          : [],
+        type: basicInfo.affiliation?.type || "",
+      },
+      contact: {
+        phone: newInstitution.phoneNumber || basicInfo.contact?.phone || "",
+        email: newInstitution.email || basicInfo.contact?.email || "",
+      },
+      type: newInstitution.type || basicInfo.type || "",
+    };
+
+    // Compose the update payload
+    const updatePayload = {
+      basic_info: updatedBasicInfo,
+    };
+
+    const { error } = await supabase
+      .from("edu_centers")
+      .update(updatePayload)
+      .eq("edu_id", slug);
+
+    if (error) {
+      alert("Failed to update institution data: " + error.message);
+      setIsDialogOpen(false);
+    } else {
+      alert("Institution data updated successfully!");
+      setIsDialogOpen(false);
+    }
+  }
+
+  async function saveTextToSupabase() {
+    // Update the hero text in Supabase
+    // Fetch the current texts object from Supabase
+    const { data, error: fetchError } = await supabase
+      .from("edu_centers")
+      .select("texts")
+      .eq("edu_id", slug)
+      .single();
+
+    if (fetchError) {
+      alert("Failed to fetch current hero text: " + fetchError.message);
+      return;
+    }
+
+    // Merge the new hero text with the existing texts object
+    const updatedTexts = { ...(data?.texts || {}), hero: heroText };
+
+    const { error } = await supabase
+      .from("edu_centers")
+      .update({ texts: updatedTexts })
+      .eq("edu_id", slug);
+
+    if (error) {
+      alert("Failed to save hero text: " + error.message);
+    } else {
+      alert("Hero text saved successfully!");
+    }
+  }
   return (
     <>
-      <Flex maxWidth={60}>
+      <Flex maxWidth={60} fitHeight>
         {" "}
         <Row
           id="herro"
           horizontal="space-between"
           vertical="start"
           fillWidth
-          style={{ maxWidth: "100vw" }}
+          style={{ maxWidth: "100%", minHeight: "fit-content" }}
           fitHeight
           gap="40"
           wrap={true}
@@ -266,9 +416,13 @@ function HeroSection({ isUser,logo,basicInfo }: HeroSectionProps) {
                     }}
                     className={dmsans.className}
                   >
-                    St. Patrick's Academy,
-                    <span style={{ color: "#626F45" }}> School</span> <br />
-                    in <span style={{ color: "#626F45" }}>India</span>.{" "}
+                    {basicInfo.name},
+                    <span style={{ color: "#626F45" }}> {basicInfo.type}</span>
+                    &nbsp;in{" "}
+                    <span style={{ color: "#626F45" }}>
+                      {basicInfo.location?.country}
+                    </span>
+                    .{" "}
                   </Text>
                 </u>
               </a>
@@ -288,7 +442,7 @@ function HeroSection({ isUser,logo,basicInfo }: HeroSectionProps) {
                 size="l"
                 avatars={[
                   {
-                    src: "https://yt3.googleusercontent.com/ytc/AIdro_nHcwS0yKNZRaBSjEKQ6GE8po7Si6MtE4D8-rABvFLuAQ=s900-c-k-c0x00ffffff-no-rj",
+                    src: logo,
                   },
                 ]}
               />
@@ -301,7 +455,7 @@ function HeroSection({ isUser,logo,basicInfo }: HeroSectionProps) {
                   }}
                   className={dmsans.className}
                 >
-                  +3000
+                  +{basicInfo.student_population}
                 </Text>
                 <Text
                   onBackground="neutral-weak"
@@ -332,28 +486,46 @@ function HeroSection({ isUser,logo,basicInfo }: HeroSectionProps) {
                 </Text>
               </Column>
             </Row>
-            <Column gap="20" fillWidth>
-              <Text
-                onBackground="neutral-weak"
-                style={{
-                  fontSize: "14px",
-                }}
-              >
-                Welcome to St. Patrick's Academy, a premier educational
-                institution in India, dedicated to nurturing young minds and
-                fostering a love for learning. Our school offers a holistic
-                approach to education.
-              </Text>
-              <Row gap="20">
-                <Button
-                  id="arrow-button-1"
-                  arrowIcon
-                  size="m"
-                  weight="default"
-                  href="#card-d"
+            <Column gap="20" fillWidth fitHeight>
+              {isUser ? (
+                <Row fillWidth>
+                  <Textarea
+                    id=""
+                    placeholder="Enter a short description"
+                    resize="none"
+                    value={heroText}
+                    onChange={(e) => setHeroText(e.target.value)}
+                    hasSuffix={
+                      <Button onClick={saveTextToSupabase}>Save</Button>
+                    }
+                  ></Textarea>
+                </Row>
+              ) : (
+                <Text
+                  onBackground="neutral-weak"
+                  style={{
+                    fontSize: "14px",
+                  }}
                 >
-                  Edit details
-                </Button>
+                  Welcome to St. Patrick's Academy, a premier educational
+                  institution in India, dedicated to nurturing young minds and
+                  fostering a love for learning. Our school offers a holistic
+                  approach to education.
+                </Text>
+              )}
+
+              <Row gap="20">
+                {isUser && (
+                  <Button
+                    id="arrow-button-1"
+                    arrowIcon
+                    size="m"
+                    weight="default"
+                    onClick={() => setIsDialogOpen(true)}
+                  >
+                    Edit header
+                  </Button>
+                )}{" "}
                 <Button
                   id="arrow-button-1"
                   arrowIcon={!isUser}
@@ -401,29 +573,257 @@ function HeroSection({ isUser,logo,basicInfo }: HeroSectionProps) {
           </Column>
         </Row>
       </Flex>
+
+      {/* ===================== */}
+
+      <Dialog
+        isOpen={isDialogOpen}
+        onClose={() => setIsDialogOpen(false)}
+        title="Update your Institution"
+        description="Fill in the details to update your institution."
+        footer={
+          <Row fillWidth horizontal="start" vertical="center">
+            <Text
+              variant="label-default-xs"
+              onBackground="neutral-weak"
+              style={{ fontSize: "13px" }}
+            >
+              <i className="ri-information-line"></i>&nbsp;These details are
+              required to update your institution.{" "}
+            </Text>
+          </Row>
+        }
+      >
+        <Column fillWidth gap="16" marginTop="12">
+          <Row fillWidth vertical="center" gap="8">
+            <Input
+              id="name"
+              spellCheck={false}
+              label="e.g. ABC School"
+              description={
+                <>
+                  <i className="ri-information-line"></i>&nbsp;Enter the name of
+                  your institution
+                </>
+              }
+              value={newInstitution.name}
+              onChange={(e: any) =>
+                setNewInstitution((prev) => ({ ...prev, name: e.target.value }))
+              }
+            />
+          </Row>
+          <Row fillWidth vertical="center" gap="8">
+            <Input
+              spellCheck={false}
+              id="city"
+              label="e.g. Vadodara"
+              description={
+                <>
+                  <i className="ri-information-line"></i>&nbsp;Enter the city
+                </>
+              }
+              value={newInstitution.city}
+              onChange={(e: any) =>
+                setNewInstitution((prev) => ({ ...prev, city: e.target.value }))
+              }
+            />
+            <Input
+              spellCheck={false}
+              id="city"
+              label="e.g. India"
+              description={
+                <>
+                  <i className="ri-information-line"></i>&nbsp;Enter the coutry
+                </>
+              }
+              value={newInstitution.country}
+              onChange={(e: any) =>
+                setNewInstitution((prev) => ({
+                  ...prev,
+                  country: e.target.value,
+                }))
+              }
+            />
+          </Row>
+          <Row fillWidth vertical="center" gap="8">
+            <Input
+              id="type"
+              label="e.g. School/Tuition"
+              spellCheck={false}
+              description={
+                <>
+                  <i className="ri-information-line"></i>&nbsp;Enter the type of
+                  your institution
+                </>
+              }
+              value={newInstitution.type}
+              onChange={(e: any) =>
+                setNewInstitution((prev) => ({ ...prev, type: e.target.value }))
+              }
+            />
+          </Row>
+          <Row fillWidth vertical="center" gap="8">
+            <TagInput
+              id="affiliation"
+              value={
+                Array.isArray(newInstitution.affiliation)
+                  ? newInstitution.affiliation
+                  : []
+              }
+              onChange={(tags: string[]) =>
+                setNewInstitution((prev) => ({
+                  ...prev,
+                  affiliation: tags,
+                }))
+              }
+              placeholder="e.g. ICSE/CBSE/IB"
+              hasSuffix={
+                <Kbd position="absolute" top="12" right="12">
+                  Enter
+                </Kbd>
+              }
+            />
+          </Row>
+          <Row fillWidth vertical="center" gap="8">
+            <Input
+              id="phone"
+              label="e.g. 1234567890"
+              spellCheck={false}
+              description={
+                <>
+                  <i className="ri-information-line"></i>&nbsp;Enter the
+                  institution's phone number
+                </>
+              }
+              value={newInstitution.phoneNumber}
+              onChange={(e: any) =>
+                setNewInstitution((prev) => ({
+                  ...prev,
+                  phoneNumber: e.target.value,
+                }))
+              }
+            />
+          </Row>
+          <Row fillWidth vertical="center" gap="8">
+            <Input
+              id="email"
+              label="e.g. ABCschool@edu.in"
+              spellCheck={false}
+              description={
+                <>
+                  <i className="ri-information-line"></i>&nbsp;Enter the
+                  institution's email address
+                </>
+              }
+              value={newInstitution.email}
+              onChange={(e: any) =>
+                setNewInstitution((prev) => ({
+                  ...prev,
+                  email: e.target.value,
+                }))
+              }
+            />
+          </Row>
+          <Row fillWidth vertical="center" horizontal="end" gap="8">
+            <Button
+              size="m"
+              disabled={
+                !newInstitution.name ||
+                !newInstitution.affiliation ||
+                !newInstitution.phoneNumber ||
+                !newInstitution.email ||
+                !newInstitution.type ||
+                !newInstitution.city
+              }
+              onClick={
+                updateInstitutionDataToSupabase
+              }
+            >
+              Update
+            </Button>
+          </Row>
+        </Column>
+      </Dialog>
     </>
   );
 }
 
 interface AboutSchoolProps {
   isUser: boolean;
-  motto: string;
   text: string;
-  basicInfo: string[];
+  motto: string;
+  basicInfo: BasicInfo;
+  slug?: string; // Optional slug for saving data
+  is_DialogOpen?: boolean;
 }
-
-function AboutSchool({ isUser,text,motto,basicInfo }: AboutSchoolProps) {
-  const [motto, setMotto] = useState("believe in yourself");
-  const [institutionAbout, setInstitutionAbout] = useState(
-    "St. Patrick's Academy is a prestigious educational institution located in India, dedicated to providing quality education and holistic development to its students. Established in 2014, the school has grown to become a leading institution known for its commitment to academic excellence and character building."
+function AboutSchool({
+  isUser,
+  text,
+  motto,
+  basicInfo,
+  is_DialogOpen,
+  slug,
+}: AboutSchoolProps) {
+  const [mottoText, setMottoText] = useState(motto);
+  const [institutionAbout, setInstitutionAbout] = useState(text);
+  const [yearEstabilished, setYearEstabilished] = useState(
+    basicInfo.year_established
   );
-  const [yearEstabilished, setYearEstabilished] = useState("2014");
-  const [schoolType, setSchoolType] = useState("Private");
-  const [schoolGender, setSchoolGender] = useState("Co-Ed");
-  const [boardingType, setBoardingType] = useState("Day boarding");
-  const [classesOffered, setClassesOffered] = useState("LKG to 12th");
-  const [affiliation, setAffiliation] = useState("ICSE/ISC");
+  const [schoolType, setSchoolType] = useState(basicInfo.type);
+  const [schoolGender, setSchoolGender] = useState(basicInfo.gender);
+  const [boardingType, setBoardingType] = useState(basicInfo.boarding_type);
+  const [minClassesOffered, setMinClassesOffered] = useState(
+    basicInfo.classes_offered?.min
+  );
+  const [maxClassesOffered, setMaxClassesOffered] = useState(
+    basicInfo.classes_offered?.max
+  );
 
+  const [studentPopulation, setStudentPopulation] = useState(
+    basicInfo.student_population || 0
+  );
+  const [affiliation, setAffiliation] = useState(basicInfo.affiliation?.boards);
+  const [govInst, setGovInst] = useState(basicInfo.affiliation?.type);
+
+  async function saveDataToSupabase() {
+    if (!isUser) return;
+    // Compose the updated basic info object
+    // Only update the fields that are editable in this form, leave others unchanged in the DB
+    const updatedBasicInfo = {
+      ...basicInfo, // keep all existing keys/values
+      year_established: yearEstabilished || basicInfo.year_established || "",
+      type: schoolType || basicInfo.type || "",
+      gender: schoolGender || basicInfo.gender || "",
+      boarding_type: boardingType || basicInfo.boarding_type || "",
+      classes_offered: {
+        min: minClassesOffered || basicInfo.classes_offered?.min || "",
+        max: maxClassesOffered || basicInfo.classes_offered?.max || "",
+      },
+      affiliation: {
+        boards: basicInfo.affiliation?.boards || "",
+        type: govInst || basicInfo.affiliation?.type || "",
+      },
+      student_population: studentPopulation,
+    };
+
+    // Compose the update payload
+    const updatePayload: any = {
+      texts: { about: institutionAbout },
+      motto: mottoText,
+      basic_info: updatedBasicInfo,
+    };
+
+    const { error } = await supabase
+      .from("edu_centers")
+      .update(updatePayload)
+      .eq("edu_id", slug);
+
+    if (error) {
+      alert("Failed to save data: " + error.message);
+    } else {
+      alert("Data saved successfully!");
+    }
+  }
   return (
     <>
       {" "}
@@ -557,14 +957,14 @@ function AboutSchool({ isUser,text,motto,basicInfo }: AboutSchoolProps) {
                     onBackground="neutral-weak"
                     style={{ minWidth: "fit-content", whiteSpace: "nowrap" }}
                   >
-                    School Type :
+                    Institution Type :
                   </Kbd>
                 </Text>
               </Row>
               <Row flex={3} fillWidth>
                 <Input
                   id=""
-                  placeholder="Enter school type"
+                  placeholder="Enter institution type"
                   value={schoolType}
                   onChange={(e) => setSchoolType(e.target.value)}
                 />
@@ -582,7 +982,7 @@ function AboutSchool({ isUser,text,motto,basicInfo }: AboutSchoolProps) {
                   onBackground="neutral-weak"
                   style={{ minWidth: "fit-content", whiteSpace: "nowrap" }}
                 >
-                  School Type :
+                  Institution Type :
                 </Kbd>
               </Text>
               <Text
@@ -717,12 +1117,18 @@ function AboutSchool({ isUser,text,motto,basicInfo }: AboutSchoolProps) {
                   </Kbd>
                 </Text>
               </Row>
-              <Row flex={3} fillWidth>
+              <Row flex={3} fillWidth gap="8">
                 <Input
                   id=""
-                  placeholder="Enter classes offered"
-                  value={classesOffered}
-                  onChange={(e) => setClassesOffered(e.target.value)}
+                  placeholder="Enter minimum class offered"
+                  value={minClassesOffered}
+                  onChange={(e) => setMinClassesOffered(e.target.value)}
+                />
+                <Input
+                  id=""
+                  placeholder="Enter maximum class offered"
+                  value={maxClassesOffered}
+                  onChange={(e) => setMaxClassesOffered(e.target.value)}
                 />
               </Row>
             </Flex>
@@ -746,7 +1152,7 @@ function AboutSchool({ isUser,text,motto,basicInfo }: AboutSchoolProps) {
                 style={{ fontSize: "16px" }}
                 className={dmsans.className}
               >
-                {classesOffered}
+                {minClassesOffered} to {maxClassesOffered}
               </Text>
             </Row>
           )}
@@ -773,7 +1179,11 @@ function AboutSchool({ isUser,text,motto,basicInfo }: AboutSchoolProps) {
                 <Input
                   id=""
                   placeholder="Enter affiliation"
-                  value={affiliation}
+                  value={
+                    Array.isArray(affiliation)
+                      ? affiliation.join("/").toUpperCase()
+                      : affiliation || ""
+                  }
                   disabled
                   onChange={(e) => setAffiliation(e.target.value)}
                   hasSuffix={
@@ -808,6 +1218,107 @@ function AboutSchool({ isUser,text,motto,basicInfo }: AboutSchoolProps) {
               </Text>
             </Row>
           )}
+
+          {isUser ? (
+            <Flex fillWidth horizontal="start">
+              <Row flex={1}>
+                <Text
+                  onBackground="neutral-weak"
+                  style={{ fontSize: "17px !important" }}
+                >
+                  <Kbd
+                    background="neutral-medium"
+                    border="neutral-medium"
+                    onBackground="neutral-weak"
+                    style={{ minWidth: "fit-content", whiteSpace: "nowrap" }}
+                  >
+                    Affiliation type:
+                  </Kbd>
+                </Text>
+              </Row>
+              <Row flex={3} fillWidth>
+                <Input
+                  id=""
+                  placeholder="Enter school type"
+                  value={govInst}
+                  onChange={(e) => setGovInst(e.target.value)}
+                />
+              </Row>
+            </Flex>
+          ) : (
+            <Row fillWidth horizontal="start" gap="12" vertical="center">
+              <Text
+                onBackground="neutral-weak"
+                style={{ fontSize: "17px !important" }}
+              >
+                <Kbd
+                  background="neutral-medium"
+                  border="neutral-medium"
+                  onBackground="neutral-weak"
+                  style={{ minWidth: "fit-content", whiteSpace: "nowrap" }}
+                >
+                  Affiliation Type :
+                </Kbd>
+              </Text>
+              <Text
+                onBackground="neutral-weak"
+                style={{ fontSize: "16px" }}
+                className={dmsans.className}
+              >
+                {govInst}
+              </Text>
+            </Row>
+          )}
+          {isUser ? (
+            <Flex fillWidth horizontal="start">
+              <Row flex={1}>
+                <Text
+                  onBackground="neutral-weak"
+                  style={{ fontSize: "17px !important" }}
+                >
+                  <Kbd
+                    background="neutral-medium"
+                    border="neutral-medium"
+                    onBackground="neutral-weak"
+                    style={{ minWidth: "fit-content", whiteSpace: "nowrap" }}
+                  >
+                    Total population:
+                  </Kbd>
+                </Text>
+              </Row>
+              <Row flex={3} fillWidth>
+                <NumberInput
+                  id=""
+                  placeholder="Enter school type"
+                  value={studentPopulation}
+                  onChange={(value) => setStudentPopulation(Number(value))}
+                />
+              </Row>
+            </Flex>
+          ) : (
+            <Row fillWidth horizontal="start" gap="12" vertical="center">
+              <Text
+                onBackground="neutral-weak"
+                style={{ fontSize: "17px !important" }}
+              >
+                <Kbd
+                  background="neutral-medium"
+                  border="neutral-medium"
+                  onBackground="neutral-weak"
+                  style={{ minWidth: "fit-content", whiteSpace: "nowrap" }}
+                >
+                  Total population :
+                </Kbd>
+              </Text>
+              <Text
+                onBackground="neutral-weak"
+                style={{ fontSize: "16px" }}
+                className={dmsans.className}
+              >
+                {studentPopulation}
+              </Text>
+            </Row>
+          )}
         </Column>
       </Column>
       <Column
@@ -834,8 +1345,8 @@ function AboutSchool({ isUser,text,motto,basicInfo }: AboutSchoolProps) {
               id=""
               placeholder="Enter school motto"
               resize="vertical"
-              value={motto}
-              onChange={(e) => setMotto(e.target.value)}
+              value={mottoText}
+              onChange={(e) => setMottoText(e.target.value)}
             />
           ) : (
             <Text
@@ -848,10 +1359,15 @@ function AboutSchool({ isUser,text,motto,basicInfo }: AboutSchoolProps) {
             </Text>
           )}
         </>
-        <Row fillWidth horizontal="end">
-          {" "}
-          <Button size="l"> Save All</Button>
-        </Row>{" "}
+        {isUser && (
+          <Row fillWidth horizontal="end">
+            {" "}
+            <Button size="l" onClick={saveDataToSupabase}>
+              {" "}
+              Save All
+            </Button>
+          </Row>
+        )}
       </Column>
     </>
   );
@@ -864,7 +1380,7 @@ interface AdmissionSchoolProps {
   tables: string[];
 }
 
-function Admission({ isUser,text,extraLinks,tables }: AdmissionSchoolProps) {
+function Admission({ isUser, text, tables }: AdmissionSchoolProps) {
   const [headerClasses, setHeaderClasses] = useState([
     { content: "Class", key: "class" },
     { content: "Minimum Age", key: "minAge", sortable: true },
@@ -1230,7 +1746,7 @@ interface FacilitiesProps {
   isUser: boolean;
   facilities: string[];
 }
-function Facilities({ isUser,facilities }: FacilitiesProps) {
+function Facilities({ isUser }: FacilitiesProps) {
   // Helper to randomly assign true/false
   const randomBool = () => Math.random() < 0.5;
 
@@ -2139,7 +2655,7 @@ interface ExtracurricularProps {
   text: string;
 }
 
-function Extracurricular({ isUser,text }: ExtracurricularProps) {
+function Extracurricular({ isUser, text }: ExtracurricularProps) {
   const [extraCurricular, setExtraCurricular] = useState(
     "St. Patrick's Academy offers a wide range of extracurricular activities to enhance the overall development of students. These activities include sports, arts, music, dance, drama, and various clubs that encourage creativity, teamwork, and leadership skills. The school believes in providing a holistic education that goes beyond academics, fostering a well-rounded personality in each student."
   );
@@ -2195,42 +2711,43 @@ interface AcademicsProps {
   isUser: boolean;
   extraLinks: string[];
   tables: string[];
+  slug: string;
 }
 
-function Academics({ isUser,tables,extraLinks }: AcademicsProps) {
+function Academics({ isUser, tables, slug }: AcademicsProps) {
   const [extraLinks, setExtraLinks] = useState({
     admission: [
       {
+        id: 1,
         label: "Admission process",
         url: "https://www.stpatricksacademy.com/admission-process",
-        id: 1,
       },
       {
+        id: 2,
         label: "Fee structure",
         url: "https://www.stpatricksacademy.com/admission-process",
-        id: 2,
       },
       {
+        id: 3,
         label: "Website",
         url: "https://www.stpatricksacademy.com/admission-process",
-        id: 3,
       },
     ],
     academics: [
       {
+        id: 1,
         label: "Admission process",
         url: "https://www.stpatricksacademy.com/admission-process",
-        id: 1,
       },
       {
+        id: 2,
         label: "Fee structure",
         url: "https://www.stpatricksacademy.com/admission-process",
-        id: 2,
       },
       {
+        id: 3,
         label: "Website",
         url: "https://www.stpatricksacademy.com/admission-process",
-        id: 3,
       },
     ],
   });
@@ -2492,7 +3009,7 @@ interface ReviewsProps {
   reviews: string[];
 }
 
-function Reviews({ isUser,reviews }: ReviewsProps) {
+function Reviews({ isUser, reviews }: ReviewsProps) {
   return (
     <>
       <Flex center fillWidth>
@@ -2513,40 +3030,21 @@ function Reviews({ isUser,reviews }: ReviewsProps) {
 interface FAQsProps {
   isUser: boolean;
   faqs: string[];
+  slug?: string; // Optional slug for Supabase updates
 }
-function FAQs({ isUser,faqs }: FAQsProps) {
-  const [faqs, setFAQS] = useState([
-    {
-      title: "What is the admission process at St. Patrick's Academy?",
-      text: "The admission process includes submitting an application form, appearing for an entrance exam (if required), attending an interview, document verification, receiving an admission offer, and fee payment.",
-      id: 1,
-    },
-    {
-      title: "What classes are available at St. Patrick's Academy?",
-      text: "The school offers classes from LKG to 12th, covering pre-primary, primary, middle, secondary, and higher secondary levels.",
-      id: 2,
-    },
-    {
-      title: "What curriculum does the school follow?",
-      text: "St. Patrick's Academy follows the ICSE/ISC curriculum, providing a comprehensive and recognized academic framework.",
-      id: 3,
-    },
-    {
-      title: "Are there any transport facilities available?",
-      text: "Yes, the school provides transport facilities including AC buses and private vans for students.",
-      id: 4,
-    },
-    {
-      title: "What extracurricular activities are offered?",
-      text: "The school offers a wide range of extracurricular activities such as sports, arts, music, dance, drama, and more to support holistic development.",
-      id: 5,
-    },
-    {
-      title: "How can I contact the school for more information?",
-      text: 'You can contact the school via the "Call Us" or "Email Us" buttons on this page, or visit the official website for further details.',
-      id: 6,
-    },
-  ]);
+// Define FAQ type for proper typing
+type FAQ = { id: number; title: string; text: string; slug?: string };
+
+function FAQs({ isUser, faqs, slug }: FAQsProps) {
+  // Convert incoming faqs (string[] or FAQ[]) to FAQ[] if needed
+  const initialFaqs: FAQ[] =
+    Array.isArray(faqs) && faqs.length > 0 && typeof faqs[0] === "object"
+      ? (faqs as unknown as FAQ[])
+      : Array.isArray(faqs)
+      ? faqs.map((q, i) => ({ id: i + 1, title: q, text: "" }))
+      : [];
+
+  const [faqList, setFAQS] = useState<FAQ[]>(initialFaqs);
 
   // Handlers for add and delete
   const handleAdd = () => {
@@ -2574,11 +3072,23 @@ function FAQs({ isUser,faqs }: FAQsProps) {
     );
   };
 
+  async function saveFAQSToSupabase() {
+    if (!slug) return;
+    const { error } = await supabase
+      .from("edu_centers")
+      .update({ qna: faqList })
+      .eq("edu_id", slug);
+    if (error) {
+      alert("Failed to save FAQs: " + error.message);
+    } else {
+      alert("FAQs saved successfully!");
+    }
+  }
   return (
     <>
       {isUser ? (
         <Column gap="12" fillWidth>
-          {faqs.map((faq, idx) => (
+          {faqList.map((faq, idx) => (
             <Row
               key={faq.id}
               fillWidth
@@ -2613,19 +3123,21 @@ function FAQs({ isUser,faqs }: FAQsProps) {
               variant="primary"
               size="l"
               onClick={handleDelete}
-              disabled={faqs.length <= 1}
+              disabled={faqList.length <= 1}
             >
               Delete Last
             </Button>
             <Button size="l" onClick={handleAdd}>
               Add
             </Button>
-            <Button size="l">Save All</Button>
+            <Button size="l" onClick={saveFAQSToSupabase}>
+              Save All
+            </Button>
           </Row>
         </Column>
       ) : (
         <>
-          {faqs.map((faq, idx) => (
+          {faqList.map((faq) => (
             <Accordion key={faq.id} title={faq.title} size="l">
               <Text
                 style={{
