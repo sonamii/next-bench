@@ -38,6 +38,7 @@ import Footer from "../../components/Footer";
 import { useState, useEffect } from "react";
 import { supabase } from "@/app/utils/supabase/client";
 import { Textarea } from "@once-ui-system/core";
+import { useCallback } from "react";
 
 export default function Page() {
   const [activeTab, setActiveTab] = useState("about");
@@ -286,13 +287,16 @@ type BasicInfo = {
   };
 };
 
+
+/*===========================================================================================================*/
 interface HeroSectionProps {
   isUser: boolean;
   logo: string;
   basicInfo: BasicInfo;
   text: string;
-  slug?: string; // Optional slug for saving data
+  slug?: string;
 }
+
 function HeroSection({
   isUser,
   logo,
@@ -302,62 +306,61 @@ function HeroSection({
 }: HeroSectionProps) {
   const router = useRouter();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [newInstitution, setNewInstitution] = useState({
-    name: basicInfo.name,
-    country: basicInfo.location?.country,
-    city: basicInfo.location?.city,
-    affiliation: basicInfo.affiliation?.boards,
+
+  // Compose initial state from basicInfo
+  const initialInstitution = {
+    name: basicInfo.name || "",
+    country: basicInfo.location?.country || "",
+    city: basicInfo.location?.city || "",
+    affiliation: Array.isArray(basicInfo.affiliation?.boards)
+      ? basicInfo.affiliation?.boards
+      : typeof basicInfo.affiliation?.boards === "string"
+      ? [basicInfo.affiliation?.boards]
+      : [],
     phoneNumber: basicInfo.contact?.phone || "",
     email: basicInfo.contact?.email || "",
     type: basicInfo.type || "",
-  });
+  };
 
+  const [newInstitution, setNewInstitution] = useState(initialInstitution);
   const [heroText, setHeroText] = useState(text);
 
-  async function updateInstitutionDataToSupabase() {
-    // Compose the updated basic info object
+  // Update institution data in Supabase
+  const updateInstitutionDataToSupabase = useCallback(async () => {
+    if (!slug) return;
     const updatedBasicInfo: BasicInfo = {
       ...basicInfo,
-      name: newInstitution.name || basicInfo.name || "",
+      name: newInstitution.name,
       location: {
-        country: newInstitution.country || basicInfo.location?.country || "",
-        city: newInstitution.city || basicInfo.location?.city || "",
+        country: newInstitution.country,
+        city: newInstitution.city,
       },
       affiliation: {
-        boards: Array.isArray(newInstitution.affiliation)
-          ? newInstitution.affiliation
-          : [],
+        boards: newInstitution.affiliation,
         type: basicInfo.affiliation?.type || "",
       },
       contact: {
-        phone: newInstitution.phoneNumber || basicInfo.contact?.phone || "",
-        email: newInstitution.email || basicInfo.contact?.email || "",
+        phone: newInstitution.phoneNumber,
+        email: newInstitution.email,
       },
-      type: newInstitution.type || basicInfo.type || "",
-    };
-
-    // Compose the update payload
-    const updatePayload = {
-      basic_info: updatedBasicInfo,
+      type: newInstitution.type,
     };
 
     const { error } = await supabase
       .from("edu_centers")
-      .update(updatePayload)
+      .update({ basic_info: updatedBasicInfo })
       .eq("edu_id", slug);
 
     if (error) {
       alert("Failed to update institution data: " + error.message);
-      setIsDialogOpen(false);
     } else {
-      alert("Institution data updated successfully!");
       setIsDialogOpen(false);
     }
-  }
+  }, [slug, basicInfo, newInstitution]);
 
-  async function saveTextToSupabase() {
-    // Update the hero text in Supabase
-    // Fetch the current texts object from Supabase
+  // Save hero text to Supabase
+  const saveTextToSupabase = useCallback(async () => {
+    if (!slug) return;
     const { data, error: fetchError } = await supabase
       .from("edu_centers")
       .select("texts")
@@ -369,7 +372,6 @@ function HeroSection({
       return;
     }
 
-    // Merge the new hero text with the existing texts object
     const updatedTexts = { ...(data?.texts || {}), hero: heroText };
 
     const { error } = await supabase
@@ -382,11 +384,11 @@ function HeroSection({
     } else {
       alert("Hero text saved successfully!");
     }
-  }
+  }, [slug, heroText]);
+
   return (
     <>
       <Flex maxWidth={60} fitHeight>
-        {" "}
         <Row
           id="herro"
           horizontal="space-between"
@@ -395,14 +397,13 @@ function HeroSection({
           style={{ maxWidth: "100%", minHeight: "fit-content" }}
           fitHeight
           gap="40"
-          wrap={true}
+          wrap
         >
           <Column fillWidth fitHeight vertical="center" horizontal="start">
             <Button variant="secondary" weight="default" size="l" arrowIcon>
               Back
             </Button>
-            <Flex fillWidth height={0.5}></Flex>
-
+            <Flex fillWidth height={0.5} />
             <Column>
               <a>
                 <u style={{ textDecorationColor: "#ccc" }}>
@@ -495,10 +496,8 @@ function HeroSection({
                     resize="none"
                     value={heroText}
                     onChange={(e) => setHeroText(e.target.value)}
-                    hasSuffix={
-                      <Button onClick={saveTextToSupabase}>Save</Button>
-                    }
-                  ></Textarea>
+                    hasSuffix={<Button onClick={saveTextToSupabase}>Save</Button>}
+                  />
                 </Row>
               ) : (
                 <Text
@@ -507,10 +506,7 @@ function HeroSection({
                     fontSize: "14px",
                   }}
                 >
-                  Welcome to St. Patrick's Academy, a premier educational
-                  institution in India, dedicated to nurturing young minds and
-                  fostering a love for learning. Our school offers a holistic
-                  approach to education.
+                  {text || "No description available."}
                 </Text>
               )}
 
@@ -525,7 +521,7 @@ function HeroSection({
                   >
                     Edit header
                   </Button>
-                )}{" "}
+                )}
                 <Button
                   id="arrow-button-1"
                   arrowIcon={!isUser}
@@ -574,8 +570,6 @@ function HeroSection({
         </Row>
       </Flex>
 
-      {/* ===================== */}
-
       <Dialog
         isOpen={isDialogOpen}
         onClose={() => setIsDialogOpen(false)}
@@ -607,7 +601,7 @@ function HeroSection({
                 </>
               }
               value={newInstitution.name}
-              onChange={(e: any) =>
+              onChange={(e) =>
                 setNewInstitution((prev) => ({ ...prev, name: e.target.value }))
               }
             />
@@ -623,21 +617,21 @@ function HeroSection({
                 </>
               }
               value={newInstitution.city}
-              onChange={(e: any) =>
+              onChange={(e) =>
                 setNewInstitution((prev) => ({ ...prev, city: e.target.value }))
               }
             />
             <Input
               spellCheck={false}
-              id="city"
+              id="country"
               label="e.g. India"
               description={
                 <>
-                  <i className="ri-information-line"></i>&nbsp;Enter the coutry
+                  <i className="ri-information-line"></i>&nbsp;Enter the country
                 </>
               }
               value={newInstitution.country}
-              onChange={(e: any) =>
+              onChange={(e) =>
                 setNewInstitution((prev) => ({
                   ...prev,
                   country: e.target.value,
@@ -657,7 +651,7 @@ function HeroSection({
                 </>
               }
               value={newInstitution.type}
-              onChange={(e: any) =>
+              onChange={(e) =>
                 setNewInstitution((prev) => ({ ...prev, type: e.target.value }))
               }
             />
@@ -696,7 +690,7 @@ function HeroSection({
                 </>
               }
               value={newInstitution.phoneNumber}
-              onChange={(e: any) =>
+              onChange={(e) =>
                 setNewInstitution((prev) => ({
                   ...prev,
                   phoneNumber: e.target.value,
@@ -716,7 +710,7 @@ function HeroSection({
                 </>
               }
               value={newInstitution.email}
-              onChange={(e: any) =>
+              onChange={(e) =>
                 setNewInstitution((prev) => ({
                   ...prev,
                   email: e.target.value,
@@ -729,15 +723,13 @@ function HeroSection({
               size="m"
               disabled={
                 !newInstitution.name ||
-                !newInstitution.affiliation ||
+                !newInstitution.affiliation.length ||
                 !newInstitution.phoneNumber ||
                 !newInstitution.email ||
                 !newInstitution.type ||
                 !newInstitution.city
               }
-              onClick={
-                updateInstitutionDataToSupabase
-              }
+              onClick={updateInstitutionDataToSupabase}
             >
               Update
             </Button>
@@ -747,7 +739,7 @@ function HeroSection({
     </>
   );
 }
-
+/*=========================================================================================================== */
 interface AboutSchoolProps {
   isUser: boolean;
   text: string;
