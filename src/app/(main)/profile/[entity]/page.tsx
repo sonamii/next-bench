@@ -796,7 +796,7 @@ function ProfileHeader({
         </Row>
       )}
       <Text onBackground="neutral-weak" style={{ fontSize: "14px" }}>
-        {profile?.introduction}
+        {(profile?.introduction?.trim() ? profile.introduction : "User at Next Bench")}
       </Text>
       <Flex fillWidth center paddingY="8">
         <SegmentedControl
@@ -1305,21 +1305,27 @@ function CreatedInstitutions({
               </Grid>
             ) : (
               <Flex fillWidth center paddingY="32">
-                <Text>No institution found with that ID.</Text>
+                <Text onBackground="neutral-medium">No institution found with that ID.</Text>
               </Flex>
             );
           })()
         ) : (
-          <Grid fillWidth fitHeight columns={2} gap="4">
-            {institutions.map((inst) => (
-              <InstitutionCard
-                key={inst.id}
-                institution={inst}
-                onPublish={onPublish}
-                isCurrentUser={isCurrentUser}
-              />
-            ))}
-          </Grid>
+          institutions.length === 0 ? (
+            <Flex fillWidth center paddingY="32">
+              <Text onBackground="neutral-medium">No institution found.</Text>
+            </Flex>
+          ) : (
+            <Grid fillWidth fitHeight columns={2} gap="4">
+              {institutions.map((inst) => (
+                <InstitutionCard
+                  key={inst.id}
+                  institution={inst}
+                  onPublish={onPublish}
+                  isCurrentUser={isCurrentUser}
+                />
+              ))}
+            </Grid>
+          )
         )}
       </Column>
       {/* Create Institution Dialog */}

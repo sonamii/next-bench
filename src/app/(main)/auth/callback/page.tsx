@@ -34,15 +34,33 @@ export default function AuthCallbackPage() {
         pfp = existingProfile.pfp;
       }
 
-      await supabase.from("user_profiles").upsert([
-        {
-          uuid,
-          pfp,
-          joined_at,
-          last_login,
-          primary_email,
+      const profile_data = {
+        uuid,
+        pfp,
+        joined_at,
+        last_login,
+        primary_email,
+        // Add new column with structured data
+        profile_details: {
+          contact: {
+            email: primary_email,
+            address: user_metadata?.address || "",
+            country: user_metadata?.country || "",
+            timezone: user_metadata?.timezone || "",
+            phone_number: user_metadata?.phone_number || "",
+            language_preference: user_metadata?.language_preference || "",
+          },
+          membershipStatus: user_metadata?.membershipStatus || "",
+          personal_details: {
+            dob: user_metadata?.dob || "",
+            gender: user_metadata?.gender || "",
+            full_name: user_metadata?.full_name || user_metadata?.name || "",
+            introduction: user_metadata?.introduction || "",
+          },
         },
-      ]);
+      };
+
+      await supabase.from("user_profiles").upsert([profile_data]);
 
       router.push(`/profile/${uuid}`);
     }

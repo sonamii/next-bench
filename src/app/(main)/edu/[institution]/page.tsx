@@ -70,7 +70,7 @@ export default function Page() {
     extra_curricular?: string;
     hero?: string;
   }>(() => ({ about: "" }));
-  const [facilities, setFacilities] = useState([""]);
+  const [facilities, setFacilities] = useState<FacilitiesJson>({});
   const [motto, setMotto] = useState("");
   const [isPublished, setIsPublished] = useState(false);
   const [images, setImages] = useState<string[]>([]);
@@ -234,12 +234,17 @@ export default function Page() {
                       />
                     ),
                     facilities: (
-                      <Facilities isUser={isUser} facilities={facilities} />
+                      <Facilities
+                        isUser={isUser}
+                        facilities={facilities}
+                        slug={slug}
+                      />
                     ),
                     extra: (
                       <Extracurricular
                         isUser={isUser}
                         text={text.extra_curricular ?? ""}
+                        slug={slug}
                       />
                     ),
                     academics: (
@@ -332,7 +337,9 @@ function HeroSection({
 
   // Update institution data in Supabase
   const updateInstitutionDataToSupabase = useCallback(async () => {
+    setLoading(true);
     if (!slug) return;
+    // Prepare updated basic info
     const updatedBasicInfo: BasicInfo = {
       ...basicInfo,
       name: newInstitution.name,
@@ -351,24 +358,7 @@ function HeroSection({
       type: newInstitution.type,
     };
 
-    const { error } = await supabase
-      .from("edu_centers")
-      .update({ basic_info: updatedBasicInfo })
-      .eq("edu_id", slug);
-
-    if (error) {
-      alert("Failed to update institution data: " + error.message);
-    } else {
-      setIsDialogOpen(false);
-    }
-  }, [slug, basicInfo, newInstitution]);
-  const [loading, setLoading] = useState(false);
-  const{addToast}= useToast();
-
-  // Save hero text to Supabase
-  const saveTextToSupabase = useCallback(async () => {
-    setLoading(true);
-    if (!slug) return;
+    // Fetch current texts to preserve other fields
     const { data, error: fetchError } = await supabase
       .from("edu_centers")
       .select("texts")
@@ -377,27 +367,35 @@ function HeroSection({
 
     if (fetchError) {
       alert("Failed to fetch current hero text: " + fetchError.message);
+      setLoading(false);
       return;
     }
 
     const updatedTexts = { ...(data?.texts || {}), hero: heroText };
 
+    // Update both basic_info and texts
     const { error } = await supabase
       .from("edu_centers")
-      .update({ texts: updatedTexts })
+      .update({ basic_info: updatedBasicInfo, texts: updatedTexts })
       .eq("edu_id", slug);
 
     if (error) {
-      alert("Failed to save hero text: " + error.message);
+      alert("Failed to update institution data: " + error.message);
     } else {
       addToast({
-        message: "Description saved successfully!",
+        message: "Institution details updated successfully!",
         variant: "success",
       });
       setHeroText(updatedTexts.hero || "");
+      setIsDialogOpen(false);
     }
     setLoading(false);
-  }, [slug, heroText]);
+  }, [slug, basicInfo, newInstitution, heroText]);
+
+  const [loading, setLoading] = useState(false);
+  const { addToast } = useToast();
+
+  // Save hero text to Supabase
 
   return (
     <>
@@ -501,38 +499,14 @@ function HeroSection({
               </Column>
             </Row>
             <Column gap="20" fillWidth fitHeight>
-              {isUser ? (
-                <Row fillWidth>
-                  <Textarea
-                    id=""
-                    placeholder="Enter a short description about the institution"
-                    resize="none"
-                    value={heroText}
-                    onChange={(e) => setHeroText(e.target.value)}
-                    hasSuffix={
-                      <Button onClick={saveTextToSupabase}>
-                        {loading ? (
-                          <>
-                            Saving...&nbsp;
-                            <Spinner size="s" />
-                          </>
-                        ) : (
-                          "Save all"
-                        )}
-                      </Button>
-                    }
-                  />
-                </Row>
-              ) : (
-                <Text
-                  onBackground="neutral-weak"
-                  style={{
-                    fontSize: "14px",
-                  }}
-                >
-                  {text || "No description available."}
-                </Text>
-              )}
+              <Text
+                onBackground="neutral-weak"
+                style={{
+                  fontSize: "14px",
+                }}
+              >
+                {text.trim() || "No description available."}
+              </Text>
 
               <Row gap="20">
                 {isUser && (
@@ -546,33 +520,49 @@ function HeroSection({
                     Edit header
                   </Button>
                 )}
-                <Button
-                  id="arrow-button-1"
-                  arrowIcon={!isUser}
-                  size="m"
-                  weight="default"
-                  href="#card-d"
-                >
-                  Call Us
-                </Button>
-                <Button
-                  id="arrow-button-1"
-                  size="m"
-                  weight="default"
-                  variant="secondary"
-                  style={{ backgroundColor: "#F2F2EF" }}
-                  onMouseEnter={(e: React.MouseEvent<HTMLButtonElement>) =>
-                    (e.currentTarget.style.backgroundColor = "#E0E0DC")
-                  }
-                  onMouseLeave={(e: React.MouseEvent<HTMLButtonElement>) =>
-                    (e.currentTarget.style.backgroundColor = "#F2F2EF")
-                  }
-                  onClick={() => {
-                    window.open(`mailto:${basicInfo.contact?.email}`, "_blank");
-                  }}
-                >
-                  Email Us
-                </Button>
+                {!isUser && (
+                  <>
+                    <Button
+                      id="arrow-button-1"
+                      arrowIcon={!isUser}
+                      size="m"
+                      weight="default"
+                      onClick={() => {
+                        if (basicInfo.contact?.phone) {
+                          window.open(
+                            `tel:${basicInfo.contact.phone}`,
+                            "_self"
+                          );
+                        } else {
+                          alert("Phone number not available.");
+                        }
+                      }}
+                    >
+                      Call Us
+                    </Button>
+                    <Button
+                      id="arrow-button-1"
+                      size="m"
+                      weight="default"
+                      variant="secondary"
+                      style={{ backgroundColor: "#F2F2EF" }}
+                      onMouseEnter={(e: React.MouseEvent<HTMLButtonElement>) =>
+                        (e.currentTarget.style.backgroundColor = "#E0E0DC")
+                      }
+                      onMouseLeave={(e: React.MouseEvent<HTMLButtonElement>) =>
+                        (e.currentTarget.style.backgroundColor = "#F2F2EF")
+                      }
+                      onClick={() => {
+                        window.open(
+                          `mailto:${basicInfo.contact?.email}`,
+                          "_blank"
+                        );
+                      }}
+                    >
+                      Email Us
+                    </Button>
+                  </>
+                )}
                 <Button
                   id="arrow-button-1"
                   size="m"
@@ -744,6 +734,21 @@ function HeroSection({
               }
             />
           </Row>
+          <Row fillWidth vertical="center" gap="8">
+            <Textarea
+              id=""
+              placeholder="Enter a short description"
+              resize="vertical"
+              description={
+                <>
+                  <i className="ri-information-line"></i>&nbsp;Enter a short
+                  description about the institution
+                </>
+              }
+              value={heroText}
+              onChange={(e) => setHeroText(e.target.value)}
+            />
+          </Row>
           <Row fillWidth vertical="center" horizontal="end" gap="8">
             <Button
               size="m"
@@ -757,7 +762,14 @@ function HeroSection({
               }
               onClick={updateInstitutionDataToSupabase}
             >
-              Update
+              {loading ? (
+                <>
+                  Saving...&nbsp;
+                  <Spinner size="s" />
+                </>
+              ) : (
+                "Save all"
+              )}
             </Button>
           </Row>
         </Column>
@@ -808,7 +820,7 @@ function AboutSchool({
     basicInfo.affiliation?.type ?? ""
   );
   const { addToast } = useToast();
-  const[loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   // Save handler
   async function saveAboutSchoolToSupabase() {
@@ -850,7 +862,6 @@ function AboutSchool({
         message: "Data saved successfully!",
         variant: "success",
       });
-     
     }
     setLoading(false);
   }
@@ -1373,7 +1384,7 @@ function AboutSchool({
             />
           ) : (
             <Text style={{ fontSize: "16px" }} onBackground="neutral-weak">
-              <InlineCode>{motto || '"Seek the truth"'}</InlineCode>
+              <InlineCode>"{motto}"</InlineCode>
             </Text>
           )}
         </>
@@ -1381,13 +1392,13 @@ function AboutSchool({
           <Row fillWidth horizontal="end">
             <Button size="l" onClick={saveAboutSchoolToSupabase}>
               {loading ? (
-              <>
-                Saving...&nbsp;
-                <Spinner size="s" />
-              </>
-            ) : (
-              "Save all"
-            )}
+                <>
+                  Saving...&nbsp;
+                  <Spinner size="s" />
+                </>
+              ) : (
+                "Save all"
+              )}
             </Button>
           </Row>
         )}
@@ -1764,129 +1775,99 @@ function Admission({ isUser, text, tables }: AdmissionSchoolProps) {
     </>
   );
 }
+interface FacilityItem {
+  label: string;
+  isSet: boolean;
+}
+type FacilitiesJson = Record<string, FacilityItem[]>;
 
 interface FacilitiesProps {
   isUser: boolean;
-  facilities: string[];
+  facilities: FacilitiesJson;
+  slug: string;
 }
-function Facilities({ isUser }: FacilitiesProps) {
-  // Helper to randomly assign true/false
-  const randomBool = () => Math.random() < 0.5;
+function Facilities({
+  isUser,
+  facilities: initialFacilities,
+  slug,
+}: FacilitiesProps) {
+  const [facilities, setFacilities] = useState<FacilitiesJson>(
+    initialFacilities || {}
+  );
+  const { addToast } = useToast();
+  const [loading, setLoading] = useState(false);
 
-  // Memoize so random stays stable per render
-  const [facilities, setFacilities] = useState(() => ({
-    sports: [
-      { label: "Badminton", isSet: randomBool() },
-      { label: "Basketball", isSet: randomBool() },
-      { label: "Football", isSet: randomBool() },
-      { label: "Cricket", isSet: randomBool() },
-      { label: "Table Tennis", isSet: randomBool() },
-      { label: "Volleyball", isSet: randomBool() },
-      { label: "Athletics", isSet: randomBool() },
-      { label: "Swimming", isSet: randomBool() },
-      { label: "Yoga", isSet: randomBool() },
-      { label: "Martial Arts", isSet: randomBool() },
-      { label: "Gymnastics", isSet: randomBool() },
-      { label: "Chess", isSet: randomBool() },
-    ],
-    educational: [
-      { label: "Library", isSet: randomBool() },
-      { label: "Career Counseling", isSet: randomBool() },
-      { label: "Test Center", isSet: randomBool() },
-    ],
-    classroom: [
-      { label: "AV Classrooms", isSet: randomBool() },
-      { label: "Air Purifiers", isSet: randomBool() },
-    ],
-    visualArts: [
-      { label: "Art", isSet: randomBool() },
-      { label: "Dance", isSet: randomBool() },
-      { label: "Music", isSet: randomBool() },
-      { label: "Drama", isSet: randomBool() },
-      { label: "Music", isSet: randomBool() },
-    ],
-    laboratory: [
-      { label: "Science Lab", isSet: randomBool() },
-      { label: "Language Lab", isSet: randomBool() },
-      { label: "Computer Lab", isSet: randomBool() },
-    ],
-    transport: [
-      { label: "Transport Facility", isSet: randomBool() },
-      { label: "AC Buses", isSet: randomBool() },
-      { label: "Private Vans", isSet: randomBool() },
-    ],
-    boarding: [{ label: "Day Boarding", isSet: randomBool() }],
-    digital: [
-      { label: "AV Facilities", isSet: randomBool() },
-      { label: "Interactive Boards", isSet: randomBool() },
-      { label: "School App", isSet: randomBool() },
-      { label: "Wi-Fi", isSet: randomBool() },
-    ],
-    food: [{ label: "Canteen", isSet: randomBool() }],
-    safety: [
-      { label: "CCTV", isSet: randomBool() },
-      { label: "Fire Alarm", isSet: randomBool() },
-      { label: "Fire Extinguisher", isSet: randomBool() },
-      { label: "Security Guards", isSet: randomBool() },
-      { label: "Boundary Wall", isSet: randomBool() },
-      { label: "Fenced Boundary Wall", isSet: randomBool() },
-      { label: "Speedometer In Bus", isSet: randomBool() },
-      { label: "GPS In Bus", isSet: randomBool() },
-      { label: "CCTV In Bus", isSet: randomBool() },
-      { label: "Fire Extinguisher In Bus", isSet: randomBool() },
-      { label: "School Bus Tracking App", isSet: randomBool() },
-    ],
-    medical: [
-      { label: "Medical Facility", isSet: randomBool() },
-      { label: "Medical Room or Clinic", isSet: randomBool() },
-      { label: "Medical Staff", isSet: randomBool() },
-    ],
-    other: [
-      { label: "Kids Play Area", isSet: randomBool() },
-      { label: "Activity Center", isSet: randomBool() },
-      { label: "Toy Room", isSet: randomBool() },
-      { label: "Auditorium", isSet: randomBool() },
-      { label: "Day Care", isSet: randomBool() },
-      { label: "Lego Room", isSet: randomBool() },
-    ],
-  }));
+  // Update local state if initialFacilities changes (for correct checked state on load)
+  useEffect(() => {
+    setFacilities(initialFacilities || {});
+  }, [initialFacilities]);
 
-  // Helper to filter only isSet === true
-  const filterSet = (arr: { label: string; isSet: boolean }[]) =>
-    arr.filter((f) => f.isSet);
+  // Save handler to Supabase
+  const saveFacilitiesToSupabase = useCallback(async () => {
+    setLoading(true);
+    if (!slug) {
+      console.log("slug value:", slug);
+
+      alert("Institution identifier (slug) is missing.");
+      setLoading(false);
+      return;
+    }
+    try {
+      const { error } = await supabase
+        .from("edu_centers")
+        .update({ facilities })
+        .eq("edu_id", slug);
+      if (error) {
+        alert("Failed to save facilities: " + error.message);
+      } else {
+        addToast({
+          message: "Facilities saved successfully!",
+          variant: "success",
+        });
+      }
+    } catch (err) {
+      alert("An unexpected error occurred while saving facilities.");
+    } finally {
+      setLoading(false);
+    }
+  }, [facilities, slug, addToast]);
+
+  // Capitalize key for section title
+  const capitalize = (str: string) =>
+    str.charAt(0).toUpperCase() + str.slice(1).replace(/([A-Z])/g, " $1");
 
   return (
     <>
-      {/* Sports Facilities */}
-      <Column
-        fillWidth
-        maxWidth={60}
-        horizontal="start"
-        vertical="start"
-        paddingY="16"
-        gap="12"
-      >
-        <Row fillWidth horizontal="space-between">
-          <Text
-            variant="body-default-xl"
-            style={{
-              color: "#181A1D",
-              fontSize: "25px",
-              fontWeight: "500",
-            }}
-            className={dmsans.className}
-          >
-            Sports Facilities
-          </Text>
-          <Text onBackground="neutral-weak" variant="label-default-xs">
-            {filterSet(facilities.sports).length}/{facilities.sports.length}
-          </Text>
-        </Row>
-        <Row fillWidth gap="8" maxWidth={60} wrap={true} data-brand="yellow">
-          {isUser ? (
-            <>
+      {Object.entries(facilities).map(([sectionKey, items]) => (
+        <Column
+          key={sectionKey}
+          fillWidth
+          maxWidth={60}
+          horizontal="start"
+          vertical="start"
+          paddingY="16"
+          gap="12"
+        >
+          <Row fillWidth horizontal="space-between">
+            <Text
+              variant="body-default-xl"
+              style={{
+                color: "#181A1D",
+                fontSize: "25px",
+                fontWeight: "500",
+              }}
+              className={dmsans.className}
+            >
+              {capitalize(sectionKey.replace(/([A-Z])/g, " $1"))} Facilities
+            </Text>
+            <Text onBackground="neutral-weak" variant="label-default-xs">
+              {items.filter((f) => f.isSet).length}/{items.length}
+            </Text>
+          </Row>
+          <Row fillWidth gap="8" maxWidth={60} wrap={true}>
+            {isUser ? (
               <Column gap="12">
-                {facilities.sports.map((facility, idx) => (
+                {items.map((facility, idx) => (
                   <Checkbox
                     key={idx}
                     label={
@@ -1901,7 +1882,7 @@ function Facilities({ isUser }: FacilitiesProps) {
                     onToggle={() => {
                       setFacilities((prev) => ({
                         ...prev,
-                        sports: prev.sports.map((f, i) =>
+                        [sectionKey]: prev[sectionKey].map((f, i) =>
                           i === idx ? { ...f, isSet: !f.isSet } : f
                         ),
                       }));
@@ -1909,766 +1890,50 @@ function Facilities({ isUser }: FacilitiesProps) {
                   />
                 ))}
               </Column>
-            </>
-          ) : (
-            <>
-              {filterSet(facilities.sports).map((facility, idx) => (
-                <Chip
-                  key={idx}
-                  label={facility.label}
-                  background="neutral-weak"
-                />
-              ))}
-            </>
-          )}
-        </Row>
-      </Column>
-
-      {/* Educational Facilities */}
-      <Column
-        fillWidth
-        maxWidth={60}
-        horizontal="start"
-        vertical="start"
-        paddingY="16"
-        gap="12"
-      >
-        <Row fillWidth horizontal="space-between">
-          <Text
-            variant="body-default-xl"
-            style={{
-              color: "#181A1D",
-              fontSize: "25px",
-              fontWeight: "500",
-            }}
-            className={dmsans.className}
+            ) : (
+              <>
+                {items.filter((facility) => facility.isSet).length === 0 ? (
+                  <Chip
+                    label="Not provided"
+                    style={{
+                      backgroundColor: "#f0f0f0",
+                      color: "darkslategrey",
+                    }}
+                  />
+                ) : (
+                  items
+                    .filter((facility) => facility.isSet)
+                    .map((facility, idx) => (
+                      <Chip
+                        key={idx}
+                        label={facility.label}
+                        background="neutral-weak"
+                      />
+                    ))
+                )}
+              </>
+            )}
+          </Row>
+        </Column>
+      ))}
+      {isUser && (
+        <Row fillWidth horizontal="end">
+          <Button
+            size="l"
+            onClick={saveFacilitiesToSupabase}
+            disabled={loading}
           >
-            Educational Facilities
-          </Text>
-          <Text onBackground="neutral-weak" variant="label-default-xs">
-            {filterSet(facilities.educational).length}/
-            {facilities.educational.length}
-          </Text>
+            {loading ? (
+              <>
+                Saving...&nbsp;
+                <Spinner size="s" />
+              </>
+            ) : (
+              "Save All"
+            )}
+          </Button>
         </Row>
-        <Row fillWidth gap="8" maxWidth={60} wrap={true}>
-          {isUser ? (
-            <>
-              <Column gap="12">
-                {facilities.educational.map((facility, idx) => (
-                  <Checkbox
-                    key={idx}
-                    label={
-                      <Text
-                        onBackground="neutral-medium"
-                        variant="body-default-l"
-                      >
-                        {facility.label}
-                      </Text>
-                    }
-                    isChecked={facility.isSet}
-                    onToggle={() => {
-                      setFacilities((prev) => ({
-                        ...prev,
-                        educational: prev.educational.map((f, i) =>
-                          i === idx ? { ...f, isSet: !f.isSet } : f
-                        ),
-                      }));
-                    }}
-                  />
-                ))}
-              </Column>
-            </>
-          ) : (
-            <>
-              {filterSet(facilities.educational).map((facility, idx) => (
-                <Chip
-                  key={idx}
-                  label={facility.label}
-                  background="neutral-weak"
-                />
-              ))}
-            </>
-          )}
-        </Row>
-      </Column>
-
-      {/* Classroom Facilities */}
-      <Column
-        fillWidth
-        maxWidth={60}
-        horizontal="start"
-        vertical="start"
-        paddingY="16"
-        gap="12"
-      >
-        <Row fillWidth horizontal="space-between">
-          <Text
-            variant="body-default-xl"
-            style={{
-              color: "#181A1D",
-              fontSize: "25px",
-              fontWeight: "500",
-            }}
-            className={dmsans.className}
-          >
-            Classroom Facilities
-          </Text>
-          <Text onBackground="neutral-weak" variant="label-default-xs">
-            {filterSet(facilities.classroom).length}/
-            {facilities.classroom.length}
-          </Text>
-        </Row>
-        <Row fillWidth gap="8" maxWidth={60} wrap={true}>
-          {isUser ? (
-            <>
-              <Column gap="12">
-                {facilities.classroom.map((facility, idx) => (
-                  <Checkbox
-                    key={idx}
-                    label={
-                      <Text
-                        onBackground="neutral-medium"
-                        variant="body-default-l"
-                      >
-                        {facility.label}
-                      </Text>
-                    }
-                    isChecked={facility.isSet}
-                    onToggle={() => {
-                      setFacilities((prev) => ({
-                        ...prev,
-                        classroom: prev.classroom.map((f, i) =>
-                          i === idx ? { ...f, isSet: !f.isSet } : f
-                        ),
-                      }));
-                    }}
-                  />
-                ))}
-              </Column>
-            </>
-          ) : (
-            <>
-              {filterSet(facilities.classroom).map((facility, idx) => (
-                <Chip
-                  key={idx}
-                  label={facility.label}
-                  background="neutral-weak"
-                />
-              ))}
-            </>
-          )}
-        </Row>
-      </Column>
-
-      {/* Visual Arts Facilities */}
-      <Column
-        fillWidth
-        maxWidth={60}
-        horizontal="start"
-        vertical="start"
-        paddingY="16"
-        gap="12"
-      >
-        <Row fillWidth horizontal="space-between">
-          <Text
-            variant="body-default-xl"
-            style={{
-              color: "#181A1D",
-              fontSize: "25px",
-              fontWeight: "500",
-            }}
-            className={dmsans.className}
-          >
-            Visual Arts Facilities
-          </Text>
-          <Text onBackground="neutral-weak" variant="label-default-xs">
-            {filterSet(facilities.visualArts).length}/
-            {facilities.visualArts.length}
-          </Text>
-        </Row>
-        <Row fillWidth gap="8" maxWidth={60} wrap={true}>
-          {isUser ? (
-            <>
-              <Column gap="12">
-                {facilities.visualArts.map((facility, idx) => (
-                  <Checkbox
-                    key={idx}
-                    label={
-                      <Text
-                        onBackground="neutral-medium"
-                        variant="body-default-l"
-                      >
-                        {facility.label}
-                      </Text>
-                    }
-                    isChecked={facility.isSet}
-                    onToggle={() => {
-                      setFacilities((prev) => ({
-                        ...prev,
-                        visualArts: prev.visualArts.map((f, i) =>
-                          i === idx ? { ...f, isSet: !f.isSet } : f
-                        ),
-                      }));
-                    }}
-                  />
-                ))}
-              </Column>
-            </>
-          ) : (
-            <>
-              {filterSet(facilities.visualArts).map((facility, idx) => (
-                <Chip
-                  key={idx}
-                  label={facility.label}
-                  background="neutral-weak"
-                />
-              ))}
-            </>
-          )}
-        </Row>
-      </Column>
-
-      {/* Laboratory Facilities */}
-      <Column
-        fillWidth
-        maxWidth={60}
-        horizontal="start"
-        vertical="start"
-        paddingY="16"
-        gap="12"
-      >
-        <Row fillWidth horizontal="space-between">
-          <Text
-            variant="body-default-xl"
-            style={{
-              color: "#181A1D",
-              fontSize: "25px",
-              fontWeight: "500",
-            }}
-            className={dmsans.className}
-          >
-            Laboratory Facilities
-          </Text>
-          <Text onBackground="neutral-weak" variant="label-default-xs">
-            {filterSet(facilities.laboratory).length}/
-            {facilities.laboratory.length}
-          </Text>
-        </Row>
-        <Row fillWidth gap="8" maxWidth={60} wrap={true}>
-          {isUser ? (
-            <>
-              <Column gap="12">
-                {facilities.laboratory.map((facility, idx) => (
-                  <Checkbox
-                    key={idx}
-                    label={
-                      <Text
-                        onBackground="neutral-medium"
-                        variant="body-default-l"
-                      >
-                        {facility.label}
-                      </Text>
-                    }
-                    isChecked={facility.isSet}
-                    onToggle={() => {
-                      setFacilities((prev) => ({
-                        ...prev,
-                        laboratory: prev.laboratory.map((f, i) =>
-                          i === idx ? { ...f, isSet: !f.isSet } : f
-                        ),
-                      }));
-                    }}
-                  />
-                ))}
-              </Column>
-            </>
-          ) : (
-            <>
-              {filterSet(facilities.laboratory).map((facility, idx) => (
-                <Chip
-                  key={idx}
-                  label={facility.label}
-                  background="neutral-weak"
-                />
-              ))}
-            </>
-          )}
-        </Row>
-      </Column>
-
-      {/* Transport Facilities */}
-      <Column
-        fillWidth
-        maxWidth={60}
-        horizontal="start"
-        vertical="start"
-        paddingY="16"
-        gap="12"
-      >
-        <Row fillWidth horizontal="space-between">
-          <Text
-            variant="body-default-xl"
-            style={{
-              color: "#181A1D",
-              fontSize: "25px",
-              fontWeight: "500",
-            }}
-            className={dmsans.className}
-          >
-            Transport Facilities
-          </Text>
-          <Text onBackground="neutral-weak" variant="label-default-xs">
-            {filterSet(facilities.transport).length}/
-            {facilities.transport.length}
-          </Text>
-        </Row>
-        <Row fillWidth gap="8" maxWidth={60} wrap={true}>
-          {isUser ? (
-            <>
-              <Column gap="12">
-                {facilities.transport.map((facility, idx) => (
-                  <Checkbox
-                    key={idx}
-                    label={
-                      <Text
-                        onBackground="neutral-medium"
-                        variant="body-default-l"
-                      >
-                        {facility.label}
-                      </Text>
-                    }
-                    isChecked={facility.isSet}
-                    onToggle={() => {
-                      setFacilities((prev) => ({
-                        ...prev,
-                        transport: prev.transport.map((f, i) =>
-                          i === idx ? { ...f, isSet: !f.isSet } : f
-                        ),
-                      }));
-                    }}
-                  />
-                ))}
-              </Column>
-            </>
-          ) : (
-            <>
-              {filterSet(facilities.transport).map((facility, idx) => (
-                <Chip
-                  key={idx}
-                  label={facility.label}
-                  background="neutral-weak"
-                />
-              ))}
-            </>
-          )}
-        </Row>
-      </Column>
-
-      {/* Boarding Facilities */}
-      <Column
-        fillWidth
-        maxWidth={60}
-        horizontal="start"
-        vertical="start"
-        paddingY="16"
-        gap="12"
-      >
-        <Row fillWidth horizontal="space-between">
-          <Text
-            variant="body-default-xl"
-            style={{
-              color: "#181A1D",
-              fontSize: "25px",
-              fontWeight: "500",
-            }}
-            className={dmsans.className}
-          >
-            Boarding Facilities
-          </Text>
-          <Text onBackground="neutral-weak" variant="label-default-xs">
-            {filterSet(facilities.boarding).length}/{facilities.boarding.length}
-          </Text>
-        </Row>
-        <Row fillWidth gap="8" maxWidth={60} wrap={true}>
-          {isUser ? (
-            <>
-              <Column gap="12">
-                {facilities.boarding.map((facility, idx) => (
-                  <Checkbox
-                    key={idx}
-                    label={
-                      <Text
-                        onBackground="neutral-medium"
-                        variant="body-default-l"
-                      >
-                        {facility.label}
-                      </Text>
-                    }
-                    isChecked={facility.isSet}
-                    onToggle={() => {
-                      setFacilities((prev) => ({
-                        ...prev,
-                        boarding: prev.boarding.map((f, i) =>
-                          i === idx ? { ...f, isSet: !f.isSet } : f
-                        ),
-                      }));
-                    }}
-                  />
-                ))}
-              </Column>
-            </>
-          ) : (
-            <>
-              {filterSet(facilities.boarding).map((facility, idx) => (
-                <Chip
-                  key={idx}
-                  label={facility.label}
-                  background="neutral-weak"
-                />
-              ))}
-            </>
-          )}
-        </Row>
-      </Column>
-
-      {/* Digital Facilities */}
-      <Column
-        fillWidth
-        maxWidth={60}
-        horizontal="start"
-        vertical="start"
-        paddingY="16"
-        gap="12"
-      >
-        <Row fillWidth horizontal="space-between">
-          <Text
-            variant="body-default-xl"
-            style={{
-              color: "#181A1D",
-              fontSize: "25px",
-              fontWeight: "500",
-            }}
-            className={dmsans.className}
-          >
-            Digital Facilities
-          </Text>
-          <Text onBackground="neutral-weak" variant="label-default-xs">
-            {filterSet(facilities.digital).length}/{facilities.digital.length}
-          </Text>
-        </Row>
-        <Row fillWidth gap="8" maxWidth={60} wrap={true}>
-          {isUser ? (
-            <>
-              <Column gap="12">
-                {facilities.digital.map((facility, idx) => (
-                  <Checkbox
-                    key={idx}
-                    label={
-                      <Text
-                        onBackground="neutral-medium"
-                        variant="body-default-l"
-                      >
-                        {facility.label}
-                      </Text>
-                    }
-                    isChecked={facility.isSet}
-                    onToggle={() => {
-                      setFacilities((prev) => ({
-                        ...prev,
-                        digital: prev.digital.map((f, i) =>
-                          i === idx ? { ...f, isSet: !f.isSet } : f
-                        ),
-                      }));
-                    }}
-                  />
-                ))}
-              </Column>
-            </>
-          ) : (
-            <>
-              {filterSet(facilities.digital).map((facility, idx) => (
-                <Chip
-                  key={idx}
-                  label={facility.label}
-                  background="neutral-weak"
-                />
-              ))}
-            </>
-          )}
-        </Row>
-      </Column>
-
-      {/* Food Facilities */}
-      <Column
-        fillWidth
-        maxWidth={60}
-        horizontal="start"
-        vertical="start"
-        paddingY="16"
-        gap="12"
-      >
-        <Row fillWidth horizontal="space-between">
-          <Text
-            variant="body-default-xl"
-            style={{
-              color: "#181A1D",
-              fontSize: "25px",
-              fontWeight: "500",
-            }}
-            className={dmsans.className}
-          >
-            Food Facilities
-          </Text>
-          <Text onBackground="neutral-weak" variant="label-default-xs">
-            {filterSet(facilities.food).length}/{facilities.food.length}
-          </Text>
-        </Row>
-        <Row fillWidth gap="8" maxWidth={60} wrap={true}>
-          {isUser ? (
-            <>
-              <Column gap="12">
-                {facilities.food.map((facility, idx) => (
-                  <Checkbox
-                    key={idx}
-                    label={
-                      <Text
-                        onBackground="neutral-medium"
-                        variant="body-default-l"
-                      >
-                        {facility.label}
-                      </Text>
-                    }
-                    isChecked={facility.isSet}
-                    onToggle={() => {
-                      setFacilities((prev) => ({
-                        ...prev,
-                        food: prev.food.map((f, i) =>
-                          i === idx ? { ...f, isSet: !f.isSet } : f
-                        ),
-                      }));
-                    }}
-                  />
-                ))}
-              </Column>
-            </>
-          ) : (
-            <>
-              {filterSet(facilities.food).map((facility, idx) => (
-                <Chip
-                  key={idx}
-                  label={facility.label}
-                  background="neutral-weak"
-                />
-              ))}
-            </>
-          )}
-        </Row>
-      </Column>
-
-      {/* Safety Facilities */}
-      <Column
-        fillWidth
-        maxWidth={60}
-        horizontal="start"
-        vertical="start"
-        paddingY="16"
-        gap="12"
-      >
-        <Row fillWidth horizontal="space-between">
-          <Text
-            variant="body-default-xl"
-            style={{
-              color: "#181A1D",
-              fontSize: "25px",
-              fontWeight: "500",
-            }}
-            className={dmsans.className}
-          >
-            Safety Facilities
-          </Text>
-          <Text onBackground="neutral-weak" variant="label-default-xs">
-            {filterSet(facilities.safety).length}/{facilities.safety.length}
-          </Text>
-        </Row>
-        <Row fillWidth gap="8" maxWidth={60} wrap={true}>
-          {isUser ? (
-            <>
-              <Column gap="12">
-                {facilities.safety.map((facility, idx) => (
-                  <Checkbox
-                    key={idx}
-                    label={
-                      <Text
-                        onBackground="neutral-medium"
-                        variant="body-default-l"
-                      >
-                        {facility.label}
-                      </Text>
-                    }
-                    isChecked={facility.isSet}
-                    onToggle={() => {
-                      setFacilities((prev) => ({
-                        ...prev,
-                        safety: prev.safety.map((f, i) =>
-                          i === idx ? { ...f, isSet: !f.isSet } : f
-                        ),
-                      }));
-                    }}
-                  />
-                ))}
-              </Column>
-            </>
-          ) : (
-            <>
-              {filterSet(facilities.safety).map((facility, idx) => (
-                <Chip
-                  key={idx}
-                  label={facility.label}
-                  background="neutral-weak"
-                />
-              ))}
-            </>
-          )}
-        </Row>
-      </Column>
-
-      {/* Medical Facilities */}
-      <Column
-        fillWidth
-        maxWidth={60}
-        horizontal="start"
-        vertical="start"
-        paddingY="16"
-        gap="12"
-      >
-        <Row fillWidth horizontal="space-between">
-          <Text
-            variant="body-default-xl"
-            style={{
-              color: "#181A1D",
-              fontSize: "25px",
-              fontWeight: "500",
-            }}
-            className={dmsans.className}
-          >
-            Medical Facilities
-          </Text>
-          <Text onBackground="neutral-weak" variant="label-default-xs">
-            {filterSet(facilities.medical).length}/{facilities.medical.length}
-          </Text>
-        </Row>
-        <Row fillWidth gap="8" maxWidth={60} wrap={true}>
-          {isUser ? (
-            <>
-              <Column gap="12">
-                {facilities.medical.map((facility, idx) => (
-                  <Checkbox
-                    key={idx}
-                    label={
-                      <Text
-                        onBackground="neutral-medium"
-                        variant="body-default-l"
-                      >
-                        {facility.label}
-                      </Text>
-                    }
-                    isChecked={facility.isSet}
-                    onToggle={() => {
-                      setFacilities((prev) => ({
-                        ...prev,
-                        medical: prev.medical.map((f, i) =>
-                          i === idx ? { ...f, isSet: !f.isSet } : f
-                        ),
-                      }));
-                    }}
-                  />
-                ))}
-              </Column>
-            </>
-          ) : (
-            <>
-              {filterSet(facilities.medical).map((facility, idx) => (
-                <Chip
-                  key={idx}
-                  label={facility.label}
-                  background="neutral-weak"
-                />
-              ))}
-            </>
-          )}
-        </Row>
-      </Column>
-
-      {/* Other Facilities */}
-      <Column
-        fillWidth
-        maxWidth={60}
-        horizontal="start"
-        vertical="start"
-        paddingY="16"
-        gap="12"
-      >
-        <Row fillWidth horizontal="space-between">
-          <Text
-            variant="body-default-xl"
-            style={{
-              color: "#181A1D",
-              fontSize: "25px",
-              fontWeight: "500",
-            }}
-            className={dmsans.className}
-          >
-            Other Facilities
-          </Text>
-          <Text onBackground="neutral-weak" variant="label-default-xs">
-            {filterSet(facilities.other).length}/{facilities.other.length}
-          </Text>
-        </Row>
-        <Row fillWidth gap="8" maxWidth={60} wrap={true}>
-          {isUser ? (
-            <>
-              <Column gap="12">
-                {facilities.other.map((facility, idx) => (
-                  <Checkbox
-                    key={idx}
-                    label={
-                      <Text
-                        onBackground="neutral-medium"
-                        variant="body-default-l"
-                      >
-                        {facility.label}
-                      </Text>
-                    }
-                    isChecked={facility.isSet}
-                    onToggle={() => {
-                      setFacilities((prev) => ({
-                        ...prev,
-                        other: prev.other.map((f, i) =>
-                          i === idx ? { ...f, isSet: !f.isSet } : f
-                        ),
-                      }));
-                    }}
-                  />
-                ))}
-              </Column>
-            </>
-          ) : (
-            <>
-              {filterSet(facilities.other).map((facility, idx) => (
-                <Chip
-                  key={idx}
-                  label={facility.label}
-                  background="neutral-weak"
-                />
-              ))}
-            </>
-          )}
-        </Row>
-      </Column>
-      <Row fillWidth horizontal="end">
-        {" "}
-        <Button size="l"> Save All</Button>
-      </Row>
+      )}
     </>
   );
 }
@@ -2676,12 +1941,51 @@ function Facilities({ isUser }: FacilitiesProps) {
 interface ExtracurricularProps {
   isUser: boolean;
   text: string;
+  slug: string;
 }
 
-function Extracurricular({ isUser, text }: ExtracurricularProps) {
-  const [extraCurricular, setExtraCurricular] = useState(
-    "St. Patrick's Academy offers a wide range of extracurricular activities to enhance the overall development of students. These activities include sports, arts, music, dance, drama, and various clubs that encourage creativity, teamwork, and leadership skills. The school believes in providing a holistic education that goes beyond academics, fostering a well-rounded personality in each student."
-  );
+function Extracurricular({ isUser, text, slug }: ExtracurricularProps) {
+  const [extraCurricular, setExtraCurricular] = useState(text);
+  const [loading, setLoading] = useState(false);
+  const { addToast } = useToast();
+
+  async function saveDataToSupabase() {
+    setLoading(true);
+    if (!slug) return;
+    const { data, error: fetchError } = await supabase
+      .from("edu_centers")
+      .select("texts")
+      .eq("edu_id", slug)
+      .single();
+
+    if (fetchError) {
+      alert(
+        "Failed to fetch current extra curricular text: " + fetchError.message
+      );
+      setLoading(false);
+      return;
+    }
+
+    const updatedTexts = {
+      ...(data?.texts || {}),
+      extra_curricular: extraCurricular,
+    };
+
+    const { error } = await supabase
+      .from("edu_centers")
+      .update({ texts: updatedTexts })
+      .eq("edu_id", slug);
+
+    if (error) {
+      alert("Failed to save extra curricular text: " + error.message);
+    } else {
+      addToast({
+        message: "Description saved successfully!",
+        variant: "success",
+      });
+    }
+    setLoading(false);
+  }
   return (
     <>
       <Column
@@ -2705,7 +2009,7 @@ function Extracurricular({ isUser, text }: ExtracurricularProps) {
         {isUser ? (
           <Textarea
             id=""
-            placeholder="Enter about extra curricular activities"
+            placeholder="Enter the other extra curricular activities offered by the institution in detail"
             resize="vertical"
             style={{ minHeight: "300px" }}
             value={extraCurricular}
@@ -2724,7 +2028,17 @@ function Extracurricular({ isUser, text }: ExtracurricularProps) {
       </Column>
       <Row fillWidth horizontal="end">
         {" "}
-        <Button size="l"> Save All</Button>
+        <Button size="l" onClick={saveDataToSupabase}>
+          {" "}
+          {loading ? (
+            <>
+              Saving...&nbsp;
+              <Spinner size="s" />
+            </>
+          ) : (
+            "Save all"
+          )}
+        </Button>
       </Row>
     </>
   );
@@ -3080,6 +2394,8 @@ function FAQs({ isUser, faqs, slug }: FAQsProps) {
       },
     ]);
   };
+  const { addToast } = useToast();
+  const [loading, setLoading] = useState(false);
 
   const handleDelete = () => {
     setFAQS((prev) => (prev.length > 1 ? prev.slice(0, -1) : prev));
@@ -3096,6 +2412,7 @@ function FAQs({ isUser, faqs, slug }: FAQsProps) {
   };
 
   async function saveFAQSToSupabase() {
+    setLoading(true);
     if (!slug) return;
     const { error } = await supabase
       .from("edu_centers")
@@ -3104,8 +2421,12 @@ function FAQs({ isUser, faqs, slug }: FAQsProps) {
     if (error) {
       alert("Failed to save FAQs: " + error.message);
     } else {
-      alert("FAQs saved successfully!");
+      addToast({
+        message: "Data saved successfully!",
+        variant: "success",
+      });
     }
+    setLoading(false);
   }
   return (
     <>
@@ -3120,7 +2441,7 @@ function FAQs({ isUser, faqs, slug }: FAQsProps) {
               gap="12"
             >
               <Text variant="body-default-m" onBackground="neutral-strong">
-                {faq.id}
+                <b>{faq.id}.</b>
               </Text>
               <Row flex={2}>
                 <Input
@@ -3154,7 +2475,14 @@ function FAQs({ isUser, faqs, slug }: FAQsProps) {
               Add
             </Button>
             <Button size="l" onClick={saveFAQSToSupabase}>
-              Save All
+              {loading ? (
+                <>
+                  Saving...&nbsp;
+                  <Spinner size="s" />
+                </>
+              ) : (
+                "Save all"
+              )}
             </Button>
           </Row>
         </Column>
