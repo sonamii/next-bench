@@ -24,6 +24,9 @@ import {
   Dialog,
   TagInput,
   useToast,
+  DateInput,
+  DateRangeInput,
+  DateRangePicker,
 } from "@once-ui-system/core";
 import Navbar from "../../components/NavBar";
 
@@ -144,10 +147,6 @@ export default function Page() {
     );
   }, []);
 
-  if (isPublished === false) {
-    return null;
-  }
-
   return (
     <>
       <Column
@@ -229,8 +228,35 @@ export default function Page() {
                       <Admission
                         isUser={isUser}
                         text={text.admission ?? ""}
-                        extraLinks={extraLinks}
-                        tables={tables}
+                        extra_links={
+                          Array.isArray(extraLinks)
+                            ? { admission: [], academics: [] }
+                            : {
+                                admission:
+                                  (extraLinks as ExtraLinksObject).admission ??
+                                  [],
+                                academics:
+                                  (extraLinks as ExtraLinksObject).academics ??
+                                  [],
+                              }
+                        }
+                        tables={
+                          Array.isArray(tables)
+                            ? {
+                                admission: {
+                                  admissionRows: [],
+                                  classesRows: [],
+                                  feesRows: [],
+                                },
+                              }
+                            : (tables as {
+                                admission: {
+                                  admissionRows: string[][];
+                                  classesRows: string[][];
+                                  feesRows: string[][];
+                                };
+                              })
+                        }
                       />
                     ),
                     facilities: (
@@ -250,8 +276,38 @@ export default function Page() {
                     academics: (
                       <Academics
                         isUser={isUser}
-                        extraLinks={extraLinks}
-                        tables={tables}
+                        extra_links={
+                          Array.isArray(extraLinks)
+                            ? { admission: [], academics: [] }
+                            : {
+                                admission:
+                                  (extraLinks as ExtraLinksObject).admission ??
+                                  [],
+                                academics:
+                                  (extraLinks as ExtraLinksObject).academics ??
+                                  [],
+                              }
+                        }
+                        tables={
+                          typeof tables === "object" &&
+                          "timeRow" in tables &&
+                          "vacationRow" in tables &&
+                          "classRow" in tables
+                            ? {
+                                academics: {
+                                  timeRow: (tables as any).timeRow,
+                                  vacationRow: (tables as any).vacationRow,
+                                  classRow: (tables as any).classRow,
+                                },
+                              }
+                            : {
+                                academics: {
+                                  timeRow: [],
+                                  vacationRow: [],
+                                  classRow: [],
+                                },
+                              }
+                        }
                         slug={slug}
                       />
                     ),
@@ -1410,113 +1466,162 @@ function AboutSchool({
 interface AdmissionSchoolProps {
   isUser: boolean;
   text: string;
-  extraLinks: string[];
-  tables: string[];
+  extra_links: ExtraLinksObject;
+  tables: {
+    admission: {
+      feesRows: string[][];
+      classesRows: string[][];
+      admissionRows: string[][];
+    };
+  };
+  slug?: string;
 }
 
-function Admission({ isUser, text, tables }: AdmissionSchoolProps) {
-  const [headerClasses, setHeaderClasses] = useState([
+function Admission({
+  isUser,
+  text,
+  tables,
+  extra_links,
+  slug,
+}: AdmissionSchoolProps) {
+  // Table headers
+  const [headerClasses] = useState([
     { content: "Class", key: "class" },
     { content: "Minimum Age", key: "minAge", sortable: true },
     { content: "Maximum Age", key: "maxAge", sortable: true },
   ]);
-
-  const [headerClassesRows, setHeaderClassesRows] = useState([
-    ["LKG", "3 years", "4 years"],
-    ["UKG", "4 years", "5 years"],
-    ["1st", "5 years", "6 years"],
-    ["2nd", "6 years", "7 years"],
-    ["3rd", "7 years", "8 years"],
-    ["4th", "8 years", "9 years"],
-    ["5th", "9 years", "10 years"],
-    ["6th", "10 years", "11 years"],
-    ["7th", "11 years", "12 years"],
-    ["8th", "12 years", "13 years"],
-    ["9th", "13 years", "14 years"],
-    ["10th", "14 years", "15 years"],
-    ["11th", "15 years", "16 years"],
-    ["12th", "16 years", "17 years"],
-  ]);
-
-  const [headerAdmission, setHeaderAdmission] = useState([
+  const [headerAdmission] = useState([
     { content: "Class", key: "class" },
     { content: "Particulars", key: "particulars" },
     { content: "Date", key: "date", sortable: true },
   ]);
-
-  const [headerAdmissionRows, setHeaderAdmissionRows] = useState([
-    ["LKG", "Application Form Release", "01/01/2024"],
-    ["LKG", "Last Date for Application Submission", "15/01/2024"],
-    ["LKG", "Entrance Exam Date", "20/01/2024"],
-    ["LKG", "Interview Date", "25/01/2024"],
-    ["UKG", "Application Form Release", "01/02/2024"],
-    ["UKG", "Last Date for Application Submission", "15/02/2024"],
-    ["UKG", "Entrance Exam Date", "20/02/2024"],
-  ]);
-
-  const [headerFees, setHeaderFees] = useState([
+  const [headerFees] = useState([
     { content: "Class", key: "class" },
     { content: "Admission Fee", key: "admissionFee", sortable: true },
     { content: "Tuition Fee (Monthly)", key: "tuitionFee", sortable: true },
     { content: "Total Annual Fee", key: "totalAnnualFee", sortable: true },
   ]);
 
-  const [headerFeesRows, setHeaderFeesRows] = useState([
-    ["LKG", "₹10,000", "₹2,000", "₹34,000"],
-    ["UKG", "₹10,000", "₹2,200", "₹36,400"],
-    ["1st", "₹10,000", "₹2,500", "₹40,000"],
-    ["2nd", "₹10,000", "₹2,500", "₹40,000"],
-    ["3rd", "₹10,000", "₹2,700", "₹44,400"],
-    ["4th", "₹10,000", "₹2,700", "₹44,400"],
-    ["5th", "₹10,000", "₹3,000", "₹50,000"],
-    ["6th", "₹10,000", "₹3,200", "₹54,400"],
-    ["7th", "₹10,000", "₹3,200", "₹54,400"],
-    ["8th", "₹10,000", "₹3,500", "₹60,000"],
-    ["9th", "₹10,000", "₹3,500", "₹60,000"],
-    ["10th", "₹10,000", "₹4,000", "₹70,000"],
-    ["11th", "₹15,000", "₹4,500", "₹80,000"],
-    ["12th", "₹15,000", "₹4,500", "₹80,000"],
-  ]);
-
-  const [extraLinks, setExtraLinks] = useState({
-    admission: [
-      {
-        label: "Admission process",
-        url: "https://www.stpatricksacademy.com/admission-process",
-        id: 1,
-      },
-      {
-        label: "Fee structure",
-        url: "https://www.stpatricksacademy.com/admission-process",
-        id: 2,
-      },
-      {
-        label: "Website",
-        url: "https://www.stpatricksacademy.com/admission-process",
-        id: 3,
-      },
-    ],
-    academics: [
-      {
-        label: "Admission process",
-        url: "https://www.stpatricksacademy.com/admission-process",
-        id: 1,
-      },
-      {
-        label: "Fee structure",
-        url: "https://www.stpatricksacademy.com/admission-process",
-        id: 2,
-      },
-      {
-        label: "Website",
-        url: "https://www.stpatricksacademy.com/admission-process",
-        id: 3,
-      },
-    ],
-  });
-  const [admissionText, setAdmissionText] = useState(
-    "This section provides an overview of the admission process at St. Patrick's Academy, including key steps and requirements for prospective students and their families. The admission process is designed to be transparent and straightforward, ensuring that all applicants have a clear understanding of what is expected."
+  // Table rows state
+  function sanitizeRows(rows: any, length: number) {
+    if (!Array.isArray(rows) || rows.length === 0) return [Array(length).fill("")];
+    return rows.map((row: any) =>
+      Array.isArray(row) ? row : Array(length).fill("")
+    );
+  }
+  const [headerClassesRows, setHeaderClassesRows] = useState<string[][]>(
+    sanitizeRows(tables?.admission?.classesRows, 3)
   );
+  const [headerAdmissionRows, setHeaderAdmissionRows] = useState<string[][]>(
+    sanitizeRows(tables?.admission?.admissionRows, 3)
+  );
+  const [headerFeesRows, setHeaderFeesRows] = useState<string[][]>(
+    sanitizeRows(tables?.admission?.feesRows, 4)
+  );
+
+  // Table row handlers
+  const handleClassesRowChange = (idx: number, col: number, value: string) => {
+    setHeaderClassesRows((prev) =>
+      prev.map((row, i) =>
+        i === idx ? row.map((cell, j) => (j === col ? value : cell)) : row
+      )
+    );
+  };
+  const handleAdmissionRowChange = (
+    idx: number,
+    col: number,
+    value: string
+  ) => {
+    setHeaderAdmissionRows((prev) =>
+      prev.map((row, i) =>
+        i === idx ? row.map((cell, j) => (j === col ? value : cell)) : row
+      )
+    );
+  };
+  const handleFeesRowChange = (idx: number, col: number, value: string) => {
+    setHeaderFeesRows((prev) =>
+      prev.map((row, i) =>
+        i === idx ? row.map((cell, j) => (j === col ? value : cell)) : row
+      )
+    );
+  };
+
+  // Add/Remove row handlers
+  const addClassesRow = () =>
+    setHeaderClassesRows((prev) => [...prev, ["", "", ""]]);
+  const removeClassesRow = () =>
+    setHeaderClassesRows((prev) =>
+      prev.length > 1 ? prev.slice(0, -1) : prev
+    );
+
+  const addAdmissionRow = () =>
+    setHeaderAdmissionRows((prev) => [...prev, ["", "", ""]]);
+  const removeAdmissionRow = () =>
+    setHeaderAdmissionRows((prev) =>
+      prev.length > 1 ? prev.slice(0, -1) : prev
+    );
+
+  const addFeesRow = () =>
+    setHeaderFeesRows((prev) => [...prev, ["", "", "", ""]]);
+  const removeFeesRow = () =>
+    setHeaderFeesRows((prev) => (prev.length > 1 ? prev.slice(0, -1) : prev));
+
+  // Extra links
+  const [extraLinks, setExtraLinks] = useState(extra_links);
+  // Admission text
+  const [admissionText, setAdmissionText] = useState(text);
+
+  // Save handler
+  const [loading, setLoading] = useState(false);
+  const { addToast } = useToast();
+
+  const handleSave = async () => {
+    setLoading(true);
+    if (!slug) {
+      setLoading(false);
+      return;
+    }
+    try {
+      // Fetch current texts to preserve other fields
+      const { data, error: fetchError } = await supabase
+        .from("edu_centers")
+        .select("texts")
+        .eq("edu_id", slug)
+        .single();
+
+      if (fetchError) {
+        alert("Failed to fetch current admission text: " + fetchError.message);
+        setLoading(false);
+        return;
+      }
+
+      const updatedTexts = { ...(data?.texts || {}), admission: admissionText };
+
+      await supabase
+        .from("edu_centers")
+        .update({
+          tables: {
+            ...tables,
+            admission: {
+              admissionRows: headerAdmissionRows,
+              classesRows: headerClassesRows,
+              feesRows: headerFeesRows,
+            },
+          },
+          extra_links: extraLinks,
+          texts: updatedTexts,
+        })
+        .eq("edu_id", slug);
+      addToast({
+        message: "Admission details saved successfully!",
+        variant: "success",
+      });
+    } catch (err) {
+      alert("Failed to save admission details.");
+    }
+    setLoading(false);
+  };
+
   return (
     <>
       <Column
@@ -1573,14 +1678,61 @@ function Admission({ isUser, text, tables }: AdmissionSchoolProps) {
         >
           Age Requirements
         </Text>
-
-        <Table
-          background="transparent"
-          data={{
-            headers: headerClasses,
-            rows: headerClassesRows,
-          }}
-        />
+        {isUser ? (
+          <Column gap="12" fillWidth>
+            {headerClassesRows.map((row, idx) => (
+              <Row gap="12" key={idx}>
+                <Text variant="body-default-m" onBackground="neutral-medium">
+                  {idx + 1}.
+                </Text>
+                <Input
+                  id=""
+                  placeholder="Class"
+                  value={row[0]}
+                  onChange={(e) =>
+                    handleClassesRowChange(idx, 0, e.target.value)
+                  }
+                />
+                <Input
+                  id=""
+                  placeholder="Minimum Age"
+                  value={row[1]}
+                  onChange={(e) =>
+                    handleClassesRowChange(idx, 1, e.target.value)
+                  }
+                />
+                <Input
+                  id=""
+                  placeholder="Maximum Age"
+                  value={row[2]}
+                  onChange={(e) =>
+                    handleClassesRowChange(idx, 2, e.target.value)
+                  }
+                />
+              </Row>
+            ))}
+            <Row gap="8" fillWidth horizontal="end" marginTop="12">
+              <Button
+                size="m"
+                onClick={removeClassesRow}
+                disabled={headerClassesRows.length <= 1}
+              >
+                Remove last
+              </Button>
+              <Button size="m" onClick={addClassesRow}>
+                Add
+              </Button>
+            </Row>
+          </Column>
+        ) : (
+          <Table
+            background="transparent"
+            data={{
+              headers: headerClasses,
+              rows: headerClassesRows,
+            }}
+          />
+        )}
       </Column>
       <Column
         fillWidth
@@ -1600,14 +1752,61 @@ function Admission({ isUser, text, tables }: AdmissionSchoolProps) {
         >
           Important Dates for Admission
         </Text>
-
-        <Table
-          background="transparent"
-          data={{
-            headers: headerAdmission,
-            rows: headerAdmissionRows,
-          }}
-        />
+        {isUser ? (
+          <Column gap="12" fillWidth>
+            {headerAdmissionRows.map((row, idx) => (
+              <Row gap="12" key={idx}>
+                <Text variant="body-default-m" onBackground="neutral-medium">
+                  {idx + 1}.
+                </Text>
+                <Input
+                  id=""
+                  placeholder="Class"
+                  value={row[0]}
+                  onChange={(e) =>
+                    handleAdmissionRowChange(idx, 0, e.target.value)
+                  }
+                />
+                <Input
+                  id=""
+                  placeholder="Particulars"
+                  value={row[1]}
+                  onChange={(e) =>
+                    handleAdmissionRowChange(idx, 1, e.target.value)
+                  }
+                />
+                <Input
+                  id=""
+                  placeholder="Date"
+                  value={row[2]}
+                  onChange={(e) =>
+                    handleAdmissionRowChange(idx, 2, e.target.value)
+                  }
+                />
+              </Row>
+            ))}
+            <Row gap="8" fillWidth horizontal="end" marginTop="12">
+              <Button
+                size="m"
+                onClick={removeAdmissionRow}
+                disabled={headerAdmissionRows.length <= 1}
+              >
+                Remove last
+              </Button>
+              <Button size="m" onClick={addAdmissionRow}>
+                Add
+              </Button>
+            </Row>
+          </Column>
+        ) : (
+          <Table
+            background="transparent"
+            data={{
+              headers: headerAdmission,
+              rows: headerAdmissionRows,
+            }}
+          />
+        )}
       </Column>
       <Column
         fillWidth
@@ -1627,14 +1826,61 @@ function Admission({ isUser, text, tables }: AdmissionSchoolProps) {
         >
           Fee details and procedure
         </Text>
-
-        <Table
-          background="transparent"
-          data={{
-            headers: headerFees,
-            rows: headerFeesRows,
-          }}
-        />
+        {isUser ? (
+          <Column gap="12" fillWidth>
+            {headerFeesRows.map((row, idx) => (
+              <Row gap="12" key={idx}>
+                <Text variant="body-default-m" onBackground="neutral-medium">
+                  {idx + 1}.
+                </Text>
+                <Input
+                  id=""
+                  placeholder="Class"
+                  value={row[0]}
+                  onChange={(e) => handleFeesRowChange(idx, 0, e.target.value)}
+                />
+                <Input
+                  id=""
+                  placeholder="Admission Fee"
+                  value={row[1]}
+                  onChange={(e) => handleFeesRowChange(idx, 1, e.target.value)}
+                />
+                <Input
+                  id=""
+                  placeholder="Tuition Fee (Monthly)"
+                  value={row[2]}
+                  onChange={(e) => handleFeesRowChange(idx, 2, e.target.value)}
+                />
+                <Input
+                  id=""
+                  placeholder="Total Annual Fee"
+                  value={row[3]}
+                  onChange={(e) => handleFeesRowChange(idx, 3, e.target.value)}
+                />
+              </Row>
+            ))}
+            <Row gap="8" fillWidth horizontal="end" marginTop="12">
+              <Button
+                size="m"
+                onClick={removeFeesRow}
+                disabled={headerFeesRows.length <= 1}
+              >
+                Remove last
+              </Button>
+              <Button size="m" onClick={addFeesRow}>
+                Add
+              </Button>
+            </Row>
+          </Column>
+        ) : (
+          <Table
+            background="transparent"
+            data={{
+              headers: headerFees,
+              rows: headerFeesRows,
+            }}
+          />
+        )}
         <Column
           fillWidth
           horizontal="start"
@@ -1656,66 +1902,72 @@ function Admission({ isUser, text, tables }: AdmissionSchoolProps) {
           {isUser ? (
             <>
               <Column gap="12" fillWidth>
-                {extraLinks.admission.map((link, idx) => (
-                  <Row
-                    key={link.id}
-                    fillWidth
-                    gap="12"
-                    horizontal="start"
-                    vertical="start"
-                  >
-                    <Text
-                      variant="body-default-m"
-                      onBackground="neutral-medium"
+                {extraLinks.admission.map(
+                  (link: ExtraLinkItem, idx: number) => (
+                    <Row
+                      key={link.id}
+                      fillWidth
+                      gap="12"
+                      horizontal="start"
+                      vertical="start"
                     >
-                      {link.id}
-                    </Text>
-                    <Flex flex={2}>
-                      <Input
-                        id=""
-                        placeholder="Enter link text"
-                        value={link.label}
-                        onChange={(e) => {
-                          setExtraLinks((prev) => ({
-                            ...prev,
-                            admission: prev.admission.map((l, i) =>
-                              i === idx ? { ...l, label: e.target.value } : l
-                            ),
-                          }));
-                        }}
-                      />
-                    </Flex>
-                    <Flex flex={5}>
-                      <Input
-                        id=""
-                        placeholder="Enter link"
-                        value={link.url}
-                        hasPrefix={
-                          <Text
-                            onBackground="neutral-weak"
-                            variant="label-default-s"
-                          >
-                            <i className="ri-links-line"></i>
-                          </Text>
-                        }
-                        onChange={(e) => {
-                          setExtraLinks((prev) => ({
-                            ...prev,
-                            admission: prev.admission.map((l, i) =>
-                              i === idx ? { ...l, url: e.target.value } : l
-                            ),
-                          }));
-                        }}
-                      />
-                    </Flex>
-                  </Row>
-                ))}
+                      <Text
+                        variant="body-default-m"
+                        onBackground="neutral-medium"
+                      >
+                        {link.id}.
+                      </Text>
+                      <Flex flex={2}>
+                        <Input
+                          id=""
+                          placeholder="Enter link text"
+                          value={link.label}
+                          onChange={(e) => {
+                            setExtraLinks((prev: ExtraLinksObject) => ({
+                              ...prev,
+                              admission: prev.admission.map(
+                                (l: ExtraLinkItem, i: number) =>
+                                  i === idx
+                                    ? { ...l, label: e.target.value }
+                                    : l
+                              ),
+                            }));
+                          }}
+                        />
+                      </Flex>
+                      <Flex flex={5}>
+                        <Input
+                          id=""
+                          placeholder="Enter link"
+                          value={link.url}
+                          hasPrefix={
+                            <Text
+                              onBackground="neutral-weak"
+                              variant="label-default-s"
+                            >
+                              <i className="ri-links-line"></i>
+                            </Text>
+                          }
+                          onChange={(e) => {
+                            setExtraLinks((prev: ExtraLinksObject) => ({
+                              ...prev,
+                              admission: prev.admission.map(
+                                (l: ExtraLinkItem, i: number) =>
+                                  i === idx ? { ...l, url: e.target.value } : l
+                              ),
+                            }));
+                          }}
+                        />
+                      </Flex>
+                    </Row>
+                  )
+                )}
               </Column>
               <Row fillWidth horizontal="end" gap="4">
                 <Button
                   size="l"
                   onClick={() => {
-                    setExtraLinks((prev) => ({
+                    setExtraLinks((prev: ExtraLinksObject) => ({
                       ...prev,
                       admission:
                         prev.admission.length > 1
@@ -1730,7 +1982,7 @@ function Admission({ isUser, text, tables }: AdmissionSchoolProps) {
                 <Button
                   size="l"
                   onClick={() => {
-                    setExtraLinks((prev) => ({
+                    setExtraLinks((prev: ExtraLinksObject) => ({
                       ...prev,
                       admission: [
                         ...prev.admission,
@@ -1749,10 +2001,22 @@ function Admission({ isUser, text, tables }: AdmissionSchoolProps) {
                   Add
                 </Button>
               </Row>
+              <Row fillWidth horizontal="end">
+          <Button size="l" onClick={handleSave} disabled={loading}>
+            {loading ? (
+              <>
+                Saving...&nbsp;
+                <Spinner size="s" />
+              </>
+            ) : (
+              "Save All"
+            )}
+          </Button>
+        </Row>
             </>
           ) : (
             <Column fillWidth gap="8" style={{ marginTop: "16px" }}>
-              {extraLinks.admission.map((link, idx) => (
+              {extraLinks.admission.map((link: ExtraLinkItem, idx: number) => (
                 <SmartLink key={idx} href={link.url}>
                   <Text
                     style={{
@@ -1767,14 +2031,12 @@ function Admission({ isUser, text, tables }: AdmissionSchoolProps) {
             </Column>
           )}
         </Column>
-        <Row fillWidth horizontal="end">
-          {" "}
-          <Button size="l"> Save All</Button>
-        </Row>
+        
       </Column>
     </>
   );
 }
+
 interface FacilityItem {
   label: string;
   isSet: boolean;
@@ -2044,50 +2306,103 @@ function Extracurricular({ isUser, text, slug }: ExtracurricularProps) {
   );
 }
 
+interface ExtraLinkItem {
+  id: number;
+  label: string;
+  url: string;
+}
+interface ExtraLinksObject {
+  academics: ExtraLinkItem[];
+  [key: string]: ExtraLinkItem[];
+}
 interface AcademicsProps {
   isUser: boolean;
-  extraLinks: string[];
-  tables: string[];
+  extra_links: ExtraLinksObject;
+  tables: {
+    academics: {
+      timeRow: string[][];
+      vacationRow: string[][];
+      classRow: string[][];
+    };
+
+    // Add other table properties here if needed
+  };
   slug: string;
 }
+function Academics({ isUser, tables, slug, extra_links }: AcademicsProps) {
+  const [extraLinks, setExtraLinks] = useState<ExtraLinksObject>(extra_links);
+  const [classRow, setClassRow] = useState<string[][]>(
+    tables.academics.classRow
+  );
+  const [vacationRow, setVacationRow] = useState<string[][]>(
+    tables.academics.vacationRow
+  );
+  const [timeRow, setTimeRow] = useState<string[][]>(tables.academics.timeRow);
 
-function Academics({ isUser, tables, slug }: AcademicsProps) {
-  const [extraLinks, setExtraLinks] = useState({
-    admission: [
-      {
-        id: 1,
-        label: "Admission process",
-        url: "https://www.stpatricksacademy.com/admission-process",
-      },
-      {
-        id: 2,
-        label: "Fee structure",
-        url: "https://www.stpatricksacademy.com/admission-process",
-      },
-      {
-        id: 3,
-        label: "Website",
-        url: "https://www.stpatricksacademy.com/admission-process",
-      },
-    ],
-    academics: [
-      {
-        id: 1,
-        label: "Admission process",
-        url: "https://www.stpatricksacademy.com/admission-process",
-      },
-      {
-        id: 2,
-        label: "Fee structure",
-        url: "https://www.stpatricksacademy.com/admission-process",
-      },
-      {
-        id: 3,
-        label: "Website",
-        url: "https://www.stpatricksacademy.com/admission-process",
-      },
-    ],
-  });
+  // Handlers for editing table rows in edit mode
+  const handleTimeRowChange = (idx: number, col: number, value: string) => {
+    setTimeRow((prev) =>
+      prev.map((row, i) =>
+        i === idx ? row.map((cell, j) => (j === col ? value : cell)) : row
+      )
+    );
+  };
+  const handleVacationRowChange = (idx: number, col: number, value: string) => {
+    setVacationRow((prev) =>
+      prev.map((row, i) =>
+        i === idx ? row.map((cell, j) => (j === col ? value : cell)) : row
+      )
+    );
+  };
+  const handleClassRowChange = (idx: number, col: number, value: string) => {
+    setClassRow((prev) =>
+      prev.map((row, i) =>
+        i === idx ? row.map((cell, j) => (j === col ? value : cell)) : row
+      )
+    );
+  };
+
+  // Add/Remove row handlers
+  const addTimeRow = () => setTimeRow((prev) => [...prev, ["", "", ""]]);
+  const removeTimeRow = () =>
+    setTimeRow((prev) => (prev.length > 1 ? prev.slice(0, -1) : prev));
+
+  const addVacationRow = () =>
+    setVacationRow((prev) => [...prev, ["", "", "", ""]]);
+  const removeVacationRow = () =>
+    setVacationRow((prev) => (prev.length > 1 ? prev.slice(0, -1) : prev));
+
+  const addClassRow = () => setClassRow((prev) => [...prev, ["", ""]]);
+  const removeClassRow = () =>
+    setClassRow((prev) => (prev.length > 1 ? prev.slice(0, -1) : prev));
+
+  // Save handler (implement Supabase update if needed)
+  const [loading, setLoading] = useState(false);
+  const { addToast } = useToast();
+  const handleSave = async () => {
+    setLoading(true);
+    if (!slug) return;
+    try {
+      await supabase
+        .from("edu_centers")
+        .update({
+          tables: {
+            ...tables,
+            academics: { timeRow, vacationRow, classRow },
+          },
+          extra_links: extraLinks,
+        })
+        .eq("edu_id", slug);
+      addToast({
+        message: "Academic details saved successfully!",
+        variant: "success",
+      });
+    } catch (err) {
+      alert("Failed to save academic details.");
+    }
+    setLoading(false);
+  };
+
   return (
     <>
       <Column
@@ -2096,6 +2411,7 @@ function Academics({ isUser, tables, slug }: AcademicsProps) {
         vertical="start"
         paddingY="16"
         gap="12"
+        maxWidth={47}
       >
         <Text
           variant="body-default-xl"
@@ -2108,32 +2424,69 @@ function Academics({ isUser, tables, slug }: AcademicsProps) {
         >
           School Timings
         </Text>
-        <Table
-          background="transparent"
-          data={{
-            headers: [
-              { content: "Class", key: "class" },
-              { content: "Start Time", key: "startTime", sortable: true },
-              { content: "End Time", key: "endTime", sortable: true },
-            ],
-            rows: [
-              ["LKG", "8:00 AM", "12:00 PM"],
-              ["UKG", "8:00 AM", "12:00 PM"],
-              ["1st", "8:00 AM", "1:00 PM"],
-              ["2nd", "8:00 AM", "1:00 PM"],
-              ["3rd", "8:00 AM", "1:00 PM"],
-              ["4th", "8:00 AM", "1:00 PM"],
-              ["5th", "8:00 AM", "1:00 PM"],
-              ["6th", "8:00 AM", "2:30 PM"],
-              ["7th", "8:00 AM", "2:30 PM"],
-              ["8th", "8:00 AM", "2:30 PM"],
-              ["9th", "8:00 AM", "3:30 PM"],
-              ["10th", "8:00 AM", "3:30 PM"],
-              ["11th", "8:00 AM", "3:30 PM"],
-              ["12th", "8:00 AM", "3:30 PM"],
-            ],
-          }}
-        />
+        {isUser ? (
+          <Column gap="12" fillWidth>
+            {timeRow.map((row, idx) => (
+              <Row gap="12" key={idx}>
+                <Text variant="body-default-m" onBackground="neutral-medium">
+                  {idx + 1}.
+                </Text>
+                <Input
+                  id=""
+                  placeholder="Class e.g. 12th"
+                  value={row[0]}
+                  onChange={(e) => handleTimeRowChange(idx, 0, e.target.value)}
+                />
+                <Flex gap="4">
+                  <Input
+                    id=""
+                    placeholder="Start"
+                    value={row[1]}
+                    description=" 24-hour format"
+                    onChange={(e) =>
+                      handleTimeRowChange(idx, 1, e.target.value)
+                    }
+                    hasSuffix={<Text onBackground="neutral-weak">24HR</Text>}
+                  />
+                  <Input
+                    id=""
+                    placeholder="End"
+                    description=" 24-hour format"
+                    value={row[2]}
+                    onChange={(e) =>
+                      handleTimeRowChange(idx, 2, e.target.value)
+                    }
+                    hasSuffix={<Text onBackground="neutral-weak">24HR</Text>}
+                  />
+                </Flex>
+              </Row>
+            ))}
+            <Row gap="8" fillWidth horizontal="end" marginTop="12">
+              <Button
+                size="m"
+                onClick={removeTimeRow}
+                disabled={timeRow.length <= 1}
+              >
+                Remove last
+              </Button>
+              <Button size="m" onClick={addTimeRow}>
+                Add
+              </Button>
+            </Row>
+          </Column>
+        ) : (
+          <Table
+            background="transparent"
+            data={{
+              headers: [
+                { content: "Class", key: "class" },
+                { content: "Start Time", key: "startTime", sortable: true },
+                { content: "End Time", key: "endTime", sortable: true },
+              ],
+              rows: timeRow,
+            }}
+          />
+        )}
       </Column>
       <Column
         fillWidth
@@ -2141,6 +2494,7 @@ function Academics({ isUser, tables, slug }: AcademicsProps) {
         vertical="start"
         paddingY="16"
         gap="12"
+        maxWidth={47}
       >
         <Text
           variant="body-default-xl"
@@ -2153,21 +2507,106 @@ function Academics({ isUser, tables, slug }: AcademicsProps) {
         >
           Vacation Schedule
         </Text>
-        <Table
-          background="transparent"
-          data={{
-            headers: [
-              { content: "Vacation", key: "class" },
-              { content: "Start Date", key: "startDate", sortable: true },
-              { content: "End Date", key: "endDate", sortable: true },
-              { content: "Total Days", key: "totalDays", sortable: true },
-            ],
-            rows: [
-              ["Summer Vacation", "01/05/2024", "30/06/2024", "60"],
-              ["Winter Vacation", "20/12/2024", "05/01/2025", "17"],
-            ],
-          }}
-        />
+        {isUser ? (
+          <Column gap="12" fillWidth>
+            {vacationRow.map((row, idx) => (
+              <Row gap="12" key={idx}>
+                <Text variant="body-default-m" onBackground="neutral-medium">
+                  {idx + 1}.
+                </Text>
+                <Input
+                  id=""
+                  placeholder="Vacation"
+                  value={row[0]}
+                  onChange={(e) =>
+                    handleVacationRowChange(idx, 0, e.target.value)
+                  }
+                />
+                <DateRangeInput
+                  id=""
+                  startLabel="Start Date"
+                  height="s"
+                  style={{ minWidth: "300px" }}
+                  cursor="interactive"
+                  endLabel="End Date"
+                  value={{
+                    startDate: row[1] ? new Date(row[1]) : undefined,
+                    endDate: row[2] ? new Date(row[2]) : undefined,
+                  }}
+                  onChange={(value) => {
+                    handleVacationRowChange(
+                      idx,
+                      1,
+                      value.startDate instanceof Date &&
+                        !isNaN(value.startDate.getTime())
+                        ? value.startDate.toISOString()
+                        : ""
+                    );
+                    handleVacationRowChange(
+                      idx,
+                      2,
+                      value.endDate instanceof Date &&
+                        !isNaN(value.endDate.getTime())
+                        ? value.endDate.toISOString()
+                        : ""
+                    );
+                    // Calculate total days between start and end date
+                    if (
+                      value.startDate instanceof Date &&
+                      value.endDate instanceof Date &&
+                      !isNaN(value.startDate.getTime()) &&
+                      !isNaN(value.endDate.getTime())
+                    ) {
+                      const msPerDay = 1000 * 60 * 60 * 24;
+                      const diff =
+                        Math.round(
+                          (value.endDate.getTime() -
+                            value.startDate.getTime()) /
+                            msPerDay
+                        ) + 1;
+                      handleVacationRowChange(
+                        idx,
+                        3,
+                        diff > 0 ? diff.toString() : ""
+                      );
+                    }
+                  }}
+                />
+                <Input id="" placeholder="Total days" value={row[3]} disabled />
+              </Row>
+            ))}
+            <Row gap="8" fillWidth horizontal="end" marginTop="12">
+              <Button
+                size="m"
+                onClick={removeVacationRow}
+                disabled={vacationRow.length <= 1}
+              >
+                Remove last
+              </Button>
+              <Button size="m" onClick={addVacationRow}>
+                Add
+              </Button>
+            </Row>
+          </Column>
+        ) : (
+          <Table
+            background="transparent"
+            data={{
+              headers: [
+                { content: "Vacation", key: "class" },
+                { content: "Start Date", key: "startDate", sortable: true },
+                { content: "End Date", key: "endDate", sortable: true },
+                { content: "Total Days", key: "totalDays", sortable: true },
+              ],
+              rows: vacationRow.map((row) => [
+                row[0],
+                row[1] ? new Date(row[1]).toLocaleDateString() : "",
+                row[2] ? new Date(row[2]).toLocaleDateString() : "",
+                row[3],
+              ]),
+            }}
+          />
+        )}
       </Column>
       <Column
         fillWidth
@@ -2175,6 +2614,7 @@ function Academics({ isUser, tables, slug }: AcademicsProps) {
         vertical="start"
         paddingY="16"
         gap="12"
+        maxWidth={47}
       >
         <Text
           variant="body-default-xl"
@@ -2187,22 +2627,52 @@ function Academics({ isUser, tables, slug }: AcademicsProps) {
         >
           School Levels and Classes
         </Text>
-        <Table
-          background="transparent"
-          data={{
-            headers: [
-              { content: "Level", key: "class" },
-              { content: "Classes", key: "startTime", sortable: true },
-            ],
-            rows: [
-              ["Pre-Primary", "LKG, UKG"],
-              ["Primary", "1st, 2nd, 3rd, 4th, 5th"],
-              ["Middle School", "6th, 7th, 8th"],
-              ["Secondary School", "9th, 10th"],
-              ["Higher Secondary", "11th, 12th"],
-            ],
-          }}
-        />
+        {isUser ? (
+          <Column gap="12" fillWidth>
+            {classRow.map((row, idx) => (
+              <Row gap="12" key={idx}>
+                <Text variant="body-default-m" onBackground="neutral-medium">
+                  {idx + 1}.
+                </Text>
+                <Input
+                  id=""
+                  placeholder="Level"
+                  value={row[0]}
+                  onChange={(e) => handleClassRowChange(idx, 0, e.target.value)}
+                />
+                <Input
+                  id=""
+                  placeholder="Classes"
+                  value={row[1]}
+                  onChange={(e) => handleClassRowChange(idx, 1, e.target.value)}
+                />
+              </Row>
+            ))}
+            <Row gap="8" fillWidth horizontal="end" marginTop="12">
+              <Button
+                size="m"
+                onClick={removeClassRow}
+                disabled={classRow.length <= 1}
+              >
+                Remove last
+              </Button>
+              <Button size="m" onClick={addClassRow}>
+                Add
+              </Button>
+            </Row>
+          </Column>
+        ) : (
+          <Table
+            background="transparent"
+            data={{
+              headers: [
+                { content: "Level", key: "class" },
+                { content: "Classes", key: "startTime", sortable: true },
+              ],
+              rows: classRow,
+            }}
+          />
+        )}
       </Column>
       <Column
         fillWidth
@@ -2210,6 +2680,7 @@ function Academics({ isUser, tables, slug }: AcademicsProps) {
         vertical="start"
         paddingY="16"
         gap="12"
+        maxWidth={47}
       >
         <Text
           variant="body-default-xl"
@@ -2225,7 +2696,7 @@ function Academics({ isUser, tables, slug }: AcademicsProps) {
         {isUser ? (
           <>
             <Column gap="12" fillWidth>
-              {extraLinks.academics.map((link, idx) => (
+              {extraLinks.academics.map((link: ExtraLinkItem, idx: number) => (
                 <Flex
                   key={link.id}
                   fillWidth
@@ -2234,7 +2705,7 @@ function Academics({ isUser, tables, slug }: AcademicsProps) {
                   vertical="start"
                 >
                   <Text variant="body-default-m" onBackground="neutral-medium">
-                    {link.id}
+                    {link.id}.
                   </Text>
                   <Flex flex={2}>
                     <Input
@@ -2244,8 +2715,9 @@ function Academics({ isUser, tables, slug }: AcademicsProps) {
                       onChange={(e) => {
                         setExtraLinks((prev) => ({
                           ...prev,
-                          academics: prev.academics.map((l, i) =>
-                            i === idx ? { ...l, label: e.target.value } : l
+                          academics: prev.academics.map(
+                            (l: ExtraLinkItem, i: number) =>
+                              i === idx ? { ...l, label: e.target.value } : l
                           ),
                         }));
                       }}
@@ -2267,8 +2739,9 @@ function Academics({ isUser, tables, slug }: AcademicsProps) {
                       onChange={(e) => {
                         setExtraLinks((prev) => ({
                           ...prev,
-                          academics: prev.academics.map((l, i) =>
-                            i === idx ? { ...l, url: e.target.value } : l
+                          academics: prev.academics.map(
+                            (l: ExtraLinkItem, i: number) =>
+                              i === idx ? { ...l, url: e.target.value } : l
                           ),
                         }));
                       }}
@@ -2334,9 +2807,20 @@ function Academics({ isUser, tables, slug }: AcademicsProps) {
           </Column>
         )}
       </Column>
-      <Row fillWidth horizontal="end">
-        <Button size="l">Save All</Button>
-      </Row>
+      {isUser && (
+        <Row fillWidth horizontal="end" maxWidth={47}>
+          <Button size="l" onClick={handleSave} disabled={loading}>
+            {loading ? (
+              <>
+                Saving...&nbsp;
+                <Spinner size="s" />
+              </>
+            ) : (
+              "Save All"
+            )}
+          </Button>
+        </Row>
+      )}
     </>
   );
 }
