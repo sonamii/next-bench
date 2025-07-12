@@ -1219,6 +1219,7 @@ function AboutSchool({
       return;
     }
 
+    // Merge updatedBasicInfo into the existing basic_info, preserving old fields
     const updatePayload = {
       texts: { ...(data?.texts || {}), about: aboutText },
       motto: mottoText,
