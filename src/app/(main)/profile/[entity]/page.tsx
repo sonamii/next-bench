@@ -743,8 +743,10 @@ function ProfileHeader({
         }}
         className={dmsansClass}
       >
-        <Row center gap="8">
-          {profile?.fullName}
+        <Row center gap="8" wrap={true}>
+            <Row center style={{ textAlign: "center", width: "100%" }}>
+            {profile?.fullName}
+            </Row>
           {profile && (
             <>
               <Line vert width={0.1} height={2.5} background="neutral-medium" />
@@ -840,7 +842,7 @@ function ProfileEdit({
 
   return (
     <RevealFx fillWidth direction="column">
-      <Grid fillWidth padding="m" fitHeight columns={2} gap="104">
+      <Grid fillWidth padding="m" fitHeight columns={2} gap="104" className="personal-account-details-grid">
         <PersonalDetails
           countries={countries}
           form={form}
@@ -1298,7 +1300,7 @@ function CreatedInstitutions({
               inst.name.toLowerCase().includes(searchValue.toLowerCase())
             );
             return found ? (
-              <Grid fillWidth fitHeight columns={2} gap="16">
+              <Grid fillWidth fitHeight columns={2} gap="16"  className="personal-account-details-grid">
                 <InstitutionCard
                   key={found.id}
                   institution={found}
@@ -1319,7 +1321,7 @@ function CreatedInstitutions({
             <Text onBackground="neutral-medium">No institution found.</Text>
           </Flex>
         ) : (
-          <Grid fillWidth fitHeight columns={2} gap="4">
+          <Grid fillWidth fitHeight columns={2} gap="4"  className="personal-account-details-grid">
             {institutions.map((inst) => (
               <InstitutionCard
                 key={inst.id}
@@ -1702,7 +1704,7 @@ function Socials({
 
   return (
     <>
-      <Grid fillWidth padding="m" fitHeight columns={2} gap="104">
+      <Grid fillWidth padding="m" fitHeight columns={2} gap="104"  className="personal-account-details-grid">
         <SocialsSection
           title="Social Details"
           rows={[
@@ -1908,7 +1910,7 @@ function Security() {
   }
 
   return (
-    <Grid fillWidth padding="m" fitHeight columns={2} gap="104">
+    <Grid fillWidth padding="m" fitHeight columns={2} gap="104"  className="personal-account-details-grid">
       {/* Account Deletion */}
       <Column fillWidth horizontal="start" vertical="start" gap="20">
         <Text

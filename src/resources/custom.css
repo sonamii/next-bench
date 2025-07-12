@@ -115,3 +115,8 @@ html {
     max-width: 95vw !important;
   }
 }
+@media (max-width: 1100px) {
+  .personal-account-details-grid{
+    grid-template-columns: repeat(1, 4fr) !important;
+    }
+}

@@ -262,6 +262,7 @@ export default function Page() {
                       { value: "qna", label: "Q&A" },
                     ]}
                     onToggle={(value) => setActiveTab(value)}
+                    maxWidth={60}
                   />
                 </RevealFx>
               </Flex>
