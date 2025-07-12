@@ -257,6 +257,7 @@ export default function Page() {
                                 };
                               })
                         }
+                        slug={slug}
                       />
                     ),
                     facilities: (
@@ -1462,7 +1463,6 @@ function AboutSchool({
     </>
   );
 }
-
 interface AdmissionSchoolProps {
   isUser: boolean;
   text: string;
@@ -1504,7 +1504,8 @@ function Admission({
 
   // Table rows state
   function sanitizeRows(rows: any, length: number) {
-    if (!Array.isArray(rows) || rows.length === 0) return [Array(length).fill("")];
+    if (!Array.isArray(rows) || rows.length === 0)
+      return [Array(length).fill("")];
     return rows.map((row: any) =>
       Array.isArray(row) ? row : Array(length).fill("")
     );
@@ -1574,41 +1575,42 @@ function Admission({
   // Save handler
   const [loading, setLoading] = useState(false);
   const { addToast } = useToast();
-
   const handleSave = async () => {
     setLoading(true);
-    if (!slug) {
-      setLoading(false);
-      return;
-    }
+
     try {
-      // Fetch current texts to preserve other fields
+      // Fetch current texts, tables, and extra_links to preserve other fields
       const { data, error: fetchError } = await supabase
         .from("edu_centers")
-        .select("texts")
+        .select("texts, tables, extra_links")
         .eq("edu_id", slug)
         .single();
 
       if (fetchError) {
-        alert("Failed to fetch current admission text: " + fetchError.message);
+        alert("Failed to fetch current admission data: " + fetchError.message);
         setLoading(false);
         return;
       }
 
       const updatedTexts = { ...(data?.texts || {}), admission: admissionText };
+      const prevTables = data?.tables || {};
+      const prevExtraLinks = data?.extra_links || {};
 
       await supabase
         .from("edu_centers")
         .update({
           tables: {
-            ...tables,
+            ...prevTables,
             admission: {
               admissionRows: headerAdmissionRows,
               classesRows: headerClassesRows,
               feesRows: headerFeesRows,
             },
           },
-          extra_links: extraLinks,
+          extra_links: {
+            ...prevExtraLinks,
+            ...extraLinks,
+          },
           texts: updatedTexts,
         })
         .eq("edu_id", slug);
@@ -2002,17 +2004,17 @@ function Admission({
                 </Button>
               </Row>
               <Row fillWidth horizontal="end">
-          <Button size="l" onClick={handleSave} disabled={loading}>
-            {loading ? (
-              <>
-                Saving...&nbsp;
-                <Spinner size="s" />
-              </>
-            ) : (
-              "Save All"
-            )}
-          </Button>
-        </Row>
+                <Button size="l" onClick={handleSave} disabled={loading}>
+                  {loading ? (
+                    <>
+                      Saving...&nbsp;
+                      <Spinner size="s" />
+                    </>
+                  ) : (
+                    "Save All"
+                  )}
+                </Button>
+              </Row>
             </>
           ) : (
             <Column fillWidth gap="8" style={{ marginTop: "16px" }}>
@@ -2031,7 +2033,6 @@ function Admission({
             </Column>
           )}
         </Column>
-        
       </Column>
     </>
   );
@@ -2211,9 +2212,21 @@ function Extracurricular({ isUser, text, slug }: ExtracurricularProps) {
   const [loading, setLoading] = useState(false);
   const { addToast } = useToast();
 
+  useEffect(() => {
+    if (slug) {
+      console.log("slug value:", slug);
+    }
+  }, [slug]);
+
   async function saveDataToSupabase() {
     setLoading(true);
-    if (!slug) return;
+
+    if (!slug) {
+      alert("Institution identifier (slug) is missing.");
+      setLoading(false);
+      return;
+    }
+
     const { data, error: fetchError } = await supabase
       .from("edu_centers")
       .select("texts")
@@ -2375,24 +2388,44 @@ function Academics({ isUser, tables, slug, extra_links }: AcademicsProps) {
   const addClassRow = () => setClassRow((prev) => [...prev, ["", ""]]);
   const removeClassRow = () =>
     setClassRow((prev) => (prev.length > 1 ? prev.slice(0, -1) : prev));
-
   // Save handler (implement Supabase update if needed)
   const [loading, setLoading] = useState(false);
   const { addToast } = useToast();
   const handleSave = async () => {
     setLoading(true);
-    if (!slug) return;
+
     try {
+      // Fetch current texts and tables to preserve other fields
+      const { data, error: fetchError } = await supabase
+        .from("edu_centers")
+        .select("texts, tables, extra_links")
+        .eq("edu_id", slug)
+        .single();
+
+      if (fetchError) {
+        alert("Failed to fetch current academic data: " + fetchError.message);
+        setLoading(false);
+        return;
+      }
+
+      // Merge with old tables and extra_links to keep old data
+      const prevTables = data?.tables || {};
+      const prevExtraLinks = data?.extra_links || {};
+
       await supabase
         .from("edu_centers")
         .update({
           tables: {
-            ...tables,
+            ...prevTables,
             academics: { timeRow, vacationRow, classRow },
           },
-          extra_links: extraLinks,
+          extra_links: {
+            ...prevExtraLinks,
+            ...extraLinks,
+          },
         })
         .eq("edu_id", slug);
+
       addToast({
         message: "Academic details saved successfully!",
         variant: "success",

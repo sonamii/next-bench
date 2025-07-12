@@ -373,18 +373,18 @@ export default function ProfilePage() {
 
     const profileDetails = {
       personal_details: {
-      full_name: profile.fullName,
-      introduction: profile.introduction,
-      dob: profile.dob ? formatPostgresTimestamp(profile.dob) : null,
-      gender: profile.gender,
+        full_name: profile.fullName,
+        introduction: profile.introduction,
+        dob: profile.dob ? formatPostgresTimestamp(profile.dob) : null,
+        gender: profile.gender,
       },
       contact: {
-      country: profile.country,
-      address: profile.address,
-      phone_number: profile.phoneNumber,
-      email: profile.email,
-      language_preference: profile.languagePreference,
-      timezone: profile.timezone,
+        country: profile.country,
+        address: profile.address,
+        phone_number: profile.phoneNumber,
+        email: profile.email,
+        language_preference: profile.languagePreference,
+        timezone: profile.timezone,
       },
       membershipStatus: profile.membershipStatus,
     };
@@ -477,8 +477,8 @@ export default function ProfilePage() {
             min: "", // You may want to collect this in your form
             max: "", // You may want to collect this in your form
           },
-          student_population: "", // You may want to collect this in your form
-          star_rating: null, // You may want to collect this in your form
+          student_population: 0, // You may want to collect this in your form
+          star_rating: 0, // You may want to collect this in your form
 
           location: {
             city: newInstitution.city.trim(),
@@ -796,7 +796,9 @@ function ProfileHeader({
         </Row>
       )}
       <Text onBackground="neutral-weak" style={{ fontSize: "14px" }}>
-        {(profile?.introduction?.trim() ? profile.introduction : "User at Next Bench")}
+        {profile?.introduction?.trim()
+          ? profile.introduction
+          : "User at Next Bench"}
       </Text>
       <Flex fillWidth center paddingY="8">
         <SegmentedControl
@@ -1305,27 +1307,27 @@ function CreatedInstitutions({
               </Grid>
             ) : (
               <Flex fillWidth center paddingY="32">
-                <Text onBackground="neutral-medium">No institution found with that ID.</Text>
+                <Text onBackground="neutral-medium">
+                  No institution found with that ID.
+                </Text>
               </Flex>
             );
           })()
+        ) : institutions.length === 0 ? (
+          <Flex fillWidth center paddingY="32">
+            <Text onBackground="neutral-medium">No institution found.</Text>
+          </Flex>
         ) : (
-          institutions.length === 0 ? (
-            <Flex fillWidth center paddingY="32">
-              <Text onBackground="neutral-medium">No institution found.</Text>
-            </Flex>
-          ) : (
-            <Grid fillWidth fitHeight columns={2} gap="4">
-              {institutions.map((inst) => (
-                <InstitutionCard
-                  key={inst.id}
-                  institution={inst}
-                  onPublish={onPublish}
-                  isCurrentUser={isCurrentUser}
-                />
-              ))}
-            </Grid>
-          )
+          <Grid fillWidth fitHeight columns={2} gap="4">
+            {institutions.map((inst) => (
+              <InstitutionCard
+                key={inst.id}
+                institution={inst}
+                onPublish={onPublish}
+                isCurrentUser={isCurrentUser}
+              />
+            ))}
+          </Grid>
         )}
       </Column>
       {/* Create Institution Dialog */}
@@ -1420,25 +1422,25 @@ function CreatedInstitutions({
               disabled={!isCurrentUser}
             />
           </Row>
-            <Row fillWidth vertical="center" gap="8">
+          <Row fillWidth vertical="center" gap="8">
             <TagInput
               id="affiliation"
               value={newInstitution.affiliation}
               onChange={(tags: string[]) =>
-              setNewInstitution((prev) => ({
-                ...prev,
-                affiliation: tags,
-              }))
+                setNewInstitution((prev) => ({
+                  ...prev,
+                  affiliation: tags,
+                }))
               }
               placeholder="e.g. ICSE/CBSE/IB"
               hasSuffix={
-              <Kbd position="absolute" top="12" right="12">
-                Enter
-              </Kbd>
+                <Kbd position="absolute" top="12" right="12">
+                  Enter
+                </Kbd>
               }
               disabled={!isCurrentUser}
             />
-            </Row>
+          </Row>
           <Row fillWidth vertical="center" gap="8">
             <Input
               id="phone"
