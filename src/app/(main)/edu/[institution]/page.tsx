@@ -30,6 +30,7 @@ import {
   MediaUpload,
   Carousel,
   Media,
+  RevealFx,
 } from "@once-ui-system/core";
 import Navbar from "../../components/NavBar";
 
@@ -79,7 +80,9 @@ export default function Page() {
   const [facilities, setFacilities] = useState<FacilitiesJson>({});
   const [motto, setMotto] = useState("");
   const [isPublished, setIsPublished] = useState(false);
-  const [images, setImages] = useState<{ slide: string; alt: string }[]>([{ slide: "", alt: "Cover Image" }]);
+  const [images, setImages] = useState<{ slide: string; alt: string }[]>([
+    { slide: "", alt: "Cover Image" },
+  ]);
   const [logo, setLogo] = useState<string>("");
   const [reviews, setReviews] = useState<string[]>([]);
   const [isDataLoaded, setIsDataLoaded] = useState(false);
@@ -133,6 +136,44 @@ export default function Page() {
     checkUser();
     setIsDataLoaded(true);
   }, [slug]);
+  useEffect(() => {
+    if (!slug) return;
+    // Subscribe to changes for this institution
+    const channel = supabase
+      .channel("edu_centers_changes")
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "edu_centers",
+          filter: `edu_id=eq.${slug}`,
+        },
+        (payload) => {
+          // Update state with new data
+          const newData = payload.new as any;
+          if (newData) {
+            setIsPublished(newData.is_published);
+            setLogo(newData.logo);
+            setTables(newData.tables ?? []);
+            setExtraLinks(newData.extra_links ?? []);
+            setFacilities(newData.facilities ?? {});
+            setText(newData.texts ?? {});
+            setBasicInfo(newData.basic_info ?? {});
+            setMotto(newData.motto ?? "");
+            setImages(newData.images ?? []);
+            setFAQS(newData.qna ?? []);
+            setReviews(newData.reviews ?? []);
+            setRating(newData.rating ?? 0);
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [slug]);
 
   useEffect(() => {
     console.log(
@@ -171,12 +212,14 @@ export default function Page() {
         >
           <Navbar />
           <Flex fillWidth height={7}></Flex>
-          {!isDataLoaded ? (
-            <>
+          {!isDataLoaded
+           ? (
+            <div style={{alignContent:"center",minWidth:"100vw",minHeight:"100vh"}}>
               <Spinner size="xl"></Spinner>
-            </>
+            </div>
           ) : (
             <Column>
+            <RevealFx>
               <Flex fitHeight style={{ minHeight: "fit-content !important" }}>
                 <HeroSection
                   isUser={isUser}
@@ -186,11 +229,12 @@ export default function Page() {
                   slug={slug}
                   rating={rating}
                 ></HeroSection>
-              </Flex>
+              </Flex></RevealFx>
 
               <Flex fillWidth height={3}></Flex>
 
               <Flex fillWidth maxWidth={60} center>
+                <RevealFx>
                 <SegmentedControl
                   buttons={[
                     { value: "about", label: "About" },
@@ -206,6 +250,7 @@ export default function Page() {
                   ]}
                   onToggle={(value) => setActiveTab(value)}
                 />
+                </RevealFx>
               </Flex>
               <Flex fillWidth height={3}></Flex>
               <Column
@@ -219,16 +264,16 @@ export default function Page() {
                 {
                   {
                     about: (
+                      <RevealFx direction="column">
                       <AboutSchool
                         isUser={isUser}
                         motto={motto}
                         text={text.about ?? ""}
                         basicInfo={basicInfo}
                         slug={slug}
-                        cover_image={
-                         images[0]?.slide
-                        }
+                        cover_image={images[0]?.slide}
                       />
+                      </RevealFx>
                     ),
                     admission: (
                       <Admission
@@ -369,7 +414,6 @@ interface HeroSectionProps {
   slug?: string;
   rating?: number; // Optional rating prop
 }
-
 function HeroSection({
   isUser,
   logo,
@@ -383,7 +427,6 @@ function HeroSection({
   const [isDialog2Open, setIsDialog2Open] = useState(false);
 
   // Compose initial state from basicInfo
-
   const [newInstitution, setNewInstitution] = useState({
     name: basicInfo.name || "",
     country: basicInfo.location?.country || "",
@@ -418,6 +461,27 @@ function HeroSection({
       setHeroText(text);
     }
   }, [isDialogOpen, basicInfo, text]);
+
+  // --- FIX: Sync state with props on every change (for real-time updates) ---
+  useEffect(() => {
+    setNewInstitution({
+      name: basicInfo.name || "",
+      country: basicInfo.location?.country || "",
+      city: basicInfo.location?.city || "",
+      affiliation: Array.isArray(basicInfo.affiliation?.boards)
+        ? basicInfo.affiliation?.boards
+        : typeof basicInfo.affiliation?.boards === "string"
+        ? [basicInfo.affiliation?.boards]
+        : [],
+      phoneNumber: basicInfo.contact?.phone || "",
+      email: basicInfo.contact?.email || "",
+      type: basicInfo.type || "",
+    });
+  }, [basicInfo]);
+  useEffect(() => {
+    setHeroText(text);
+  }, [text]);
+  // --------------------------------------------------------------------------
 
   // Update institution data in Supabase
   const updateInstitutionDataToSupabase = useCallback(async () => {
@@ -478,84 +542,83 @@ function HeroSection({
 
   const [loading, setLoading] = useState(false);
   const { addToast } = useToast();
-const[logoImage, setLogoImage] = useState<File | null>(null);
+  const [logoImage, setLogoImage] = useState<File | null>(null);
   const [coverImage, setCoverImage] = useState<File | null>(null);
-  // Save hero text to Supabase
 
   async function uploadImagesToSupabase() {
-setLoading(true);
-if (!slug) {
-  alert("Institution identifier (slug) is missing.");
-  setLoading(false);
-  return;
-}
-
-try {
-  let logoUrl = "";
-  let coverUrl = "";
-
-  // Upload logo image if selected
-  if (logoImage) {
-    const logoPath = `${basicInfo.name}/${slug}/${logoImage.name}`;
-    const { error: logoUploadError } = await supabase.storage
-      .from("logo")
-      .upload(logoPath, logoImage);
-    if (logoUploadError) {
-      alert("Failed to upload logo: " + logoUploadError.message);
+    setLoading(true);
+    if (!slug) {
+      alert("Institution identifier (slug) is missing.");
       setLoading(false);
       return;
     }
-    const { data: logoPublic } = supabase.storage
-      .from("logo")
-      .getPublicUrl(logoPath);
-    logoUrl = logoPublic?.publicUrl || "";
-  }
 
-  // Upload cover image if selected
-  if (coverImage) {
-    const coverPath = `${basicInfo.name}/${slug}/${coverImage.name}`;
-    const { error: coverUploadError } = await supabase.storage
-      .from("cover-image")
-      .upload(coverPath, coverImage);
-    if (coverUploadError) {
-      alert("Failed to upload cover image: " + coverUploadError.message);
-      setLoading(false);
-      return;
+    try {
+      let logoUrl = "";
+      let coverUrl = "";
+
+      // Upload logo image if selected
+      if (logoImage) {
+        const logoPath = `${basicInfo.name}/${slug}/${logoImage.name}`;
+        const { error: logoUploadError } = await supabase.storage
+          .from("logo")
+          .upload(logoPath, logoImage);
+        if (logoUploadError) {
+          alert("Failed to upload logo: " + logoUploadError.message);
+          setLoading(false);
+          return;
+        }
+        const { data: logoPublic } = supabase.storage
+          .from("logo")
+          .getPublicUrl(logoPath);
+        logoUrl = logoPublic?.publicUrl || "";
+      }
+
+      // Upload cover image if selected
+      if (coverImage) {
+        const coverPath = `${basicInfo.name}/${slug}/${coverImage.name}`;
+        const { error: coverUploadError } = await supabase.storage
+          .from("cover-image")
+          .upload(coverPath, coverImage);
+        if (coverUploadError) {
+          alert("Failed to upload cover image: " + coverUploadError.message);
+          setLoading(false);
+          return;
+        }
+        const { data: coverPublic } = supabase.storage
+          .from("cover-image")
+          .getPublicUrl(coverPath);
+        coverUrl = coverPublic?.publicUrl || "";
+      }
+
+      // Update the database with the new URLs
+      const updatePayload: Record<string, any> = {};
+      if (logoUrl) updatePayload.logo = logoUrl;
+      if (coverUrl)
+        updatePayload.images = [{ slide: coverUrl, alt: "Cover Image" }];
+
+      if (Object.keys(updatePayload).length > 0) {
+        const { error: updateError } = await supabase
+          .from("edu_centers")
+          .update(updatePayload)
+          .eq("edu_id", slug);
+        if (updateError) {
+          console.log("Failed to update image URLs: " + updateError);
+          setLoading(false);
+          return;
+        }
+      }
+
+      addToast({
+        message: "Images uploaded successfully!",
+        variant: "success",
+      });
+      setIsDialog2Open(false);
+    } catch (err: any) {
+      alert("Unexpected error: " + (err?.message || err));
     }
-    const { data: coverPublic } = supabase.storage
-      .from("cover-image")
-      .getPublicUrl(coverPath);
-    coverUrl = coverPublic?.publicUrl || "";
-  }
-  
-
-  // Update the database with the new URLs
-  const updatePayload: Record<string, any> = {};
-  if (logoUrl) updatePayload.logo = logoUrl;
-  if (coverUrl) updatePayload.images = [{slide: coverUrl ,alt: "Cover Image"}];
-
-  if (Object.keys(updatePayload).length > 0) {
-    const { error: updateError } = await supabase
-      .from("edu_centers")
-      .update(updatePayload)
-      .eq("edu_id", slug);
-    if (updateError) {
-      console.log("Failed to update image URLs: " + updateError);
-      setLoading(false);
-      return;
-    }
-  }
-
-  addToast({
-    message: "Images uploaded successfully!",
-    variant: "success",
-  });
-  setIsDialog2Open(false);
-} catch (err: any) {
-  alert("Unexpected error: " + (err?.message || err));
-}
-setLoading(false);
-
+    setLoading(false);
+    window.location.reload();
   }
 
   return (
@@ -572,7 +635,7 @@ setLoading(false);
           wrap
         >
           <Column fillWidth fitHeight vertical="center" horizontal="start">
-            <Button variant="secondary" weight="default" size="l" arrowIcon>
+            <Button variant="secondary" weight="default" size="l" arrowIcon onClick={() => router.back()}>
               Back
             </Button>
             <Flex fillWidth height={0.5} />
@@ -589,12 +652,15 @@ setLoading(false);
                     }}
                     className={dmsans.className}
                   >
-                    {basicInfo.name},
-                    <span style={{ color: "#626F45" }}> {basicInfo.type}</span>
-                    &nbsp;in{" "}
+                    {newInstitution.name || basicInfo.name},
                     <span style={{ color: "#626F45" }}>
-                      {basicInfo.location?.country}
+                      {" "}
+                      {newInstitution.type || basicInfo.type}
                     </span>
+                    &nbsp;in{" "}
+                    <span style={{ color: "#626F45" }}></span>
+                      {newInstitution.country ||
+                        basicInfo.location?.country}
                     .{" "}
                   </Text>
                 </u>
@@ -666,7 +732,7 @@ setLoading(false);
                   fontSize: "14px",
                 }}
               >
-                {text.trim() || "No description available."}
+                {heroText.trim() || text.trim() || "No description available."}
               </Text>
 
               <Row gap="20">
@@ -783,9 +849,12 @@ setLoading(false);
       >
         {" "}
         <Column fillWidth gap="16" horizontal="space-between" vertical="start">
-          <MediaUpload initialPreviewImage={""} aspectRatio="16/9" onFileUpload={async (file: File) => {
-            setCoverImage(file);
-          }} 
+          <MediaUpload
+            initialPreviewImage={""}
+            aspectRatio="16/9"
+            onFileUpload={async (file: File) => {
+              setCoverImage(file);
+            }}
           />
           <Text
             variant="label-default-xs"
@@ -802,11 +871,14 @@ setLoading(false);
           vertical="start"
           marginTop="16"
         >
-          <MediaUpload aspectRatio="1/1" maxWidth={15} maxHeight={15} onFileUpload={
-            async (file: File) => {
+          <MediaUpload
+            aspectRatio="1/1"
+            maxWidth={15}
+            maxHeight={15}
+            onFileUpload={async (file: File) => {
               setLogoImage(file);
-            }
-          } />
+            }}
+          />
           <Text
             variant="label-default-xs"
             onBackground="neutral-weak"
@@ -934,6 +1006,12 @@ setLoading(false);
                   Enter
                 </Kbd>
               }
+               description={
+                <>
+                  <i className="ri-information-line"></i>&nbsp;Enter the affiliations 
+                  of your institution
+                </>
+              }
             />
           </Row>
           <Row fillWidth vertical="center" gap="8">
@@ -1040,15 +1118,29 @@ function AboutSchool({
   // State for editable fields
   const [aboutText, setAboutText] = useState(text);
   const [mottoText, setMottoText] = useState(motto);
-  const [yearEstablished, setYearEstablished] = useState(basicInfo.year_established ?? "");
+  const [yearEstablished, setYearEstablished] = useState(
+    basicInfo.year_established ?? ""
+  );
   const [institutionType, setInstitutionType] = useState(basicInfo.type ?? "");
   const [gender, setGender] = useState(basicInfo.gender ?? "");
-  const [boardingType, setBoardingType] = useState(basicInfo.boarding_type ?? "");
-  const [minClass, setMinClass] = useState(basicInfo.classes_offered?.min ?? "");
-  const [maxClass, setMaxClass] = useState(basicInfo.classes_offered?.max ?? "");
-  const [studentPopulation, setStudentPopulation] = useState(basicInfo.student_population ?? 0);
-  const [affiliationBoards, setAffiliationBoards] = useState(basicInfo.affiliation?.boards ?? "");
-  const [affiliationType, setAffiliationType] = useState(basicInfo.affiliation?.type ?? "");
+  const [boardingType, setBoardingType] = useState(
+    basicInfo.boarding_type ?? ""
+  );
+  const [minClass, setMinClass] = useState(
+    basicInfo.classes_offered?.min ?? ""
+  );
+  const [maxClass, setMaxClass] = useState(
+    basicInfo.classes_offered?.max ?? ""
+  );
+  const [studentPopulation, setStudentPopulation] = useState(
+    basicInfo.student_population ?? 0
+  );
+  const [affiliationBoards, setAffiliationBoards] = useState(
+    basicInfo.affiliation?.boards ?? ""
+  );
+  const [affiliationType, setAffiliationType] = useState(
+    basicInfo.affiliation?.type ?? ""
+  );
   const { addToast } = useToast();
   const [loading, setLoading] = useState(false);
 
@@ -1646,7 +1738,7 @@ function AboutSchool({
         paddingY="16"
         gap="12"
       >
-        <Text
+        <Accordion title={<Text
           variant="body-default-xl"
           style={{
             color: "#181A1D",
@@ -1656,8 +1748,14 @@ function AboutSchool({
           className={dmsans.className}
         >
           Images
-        </Text>
-        <Media aspectRatio="16/9" src={cover_image} alt="Cover Image" unoptimized/>
+        </Text>}> <Media
+          aspectRatio="16/9"
+          src={cover_image}
+          alt="Cover Image"
+          unoptimized
+        /></Accordion>
+        
+       
       </Column>
 
       {isUser && (
@@ -1903,7 +2001,7 @@ function Admission({
                   {idx + 1}.
                 </Text>
                 <Input
-                disabled
+                  disabled
                   id=""
                   placeholder="Class"
                   value={row[0]}
@@ -1912,7 +2010,7 @@ function Admission({
                   }
                 />
                 <Input
-                disabled
+                  disabled
                   id=""
                   placeholder="Minimum Age"
                   value={row[1]}
@@ -1921,7 +2019,7 @@ function Admission({
                   }
                 />
                 <Input
-                disabled
+                  disabled
                   id=""
                   placeholder="Maximum Age"
                   value={row[2]}
@@ -1939,8 +2037,7 @@ function Admission({
               >
                 Remove last
               </Button>
-              <Button size="m" onClick={addClassesRow}                 disabled
->
+              <Button size="m" onClick={addClassesRow} disabled>
                 Add
               </Button>
             </Row>
@@ -1981,8 +2078,8 @@ function Admission({
                   {idx + 1}.
                 </Text>
                 <Input
-                  id=""                disabled
-
+                  id=""
+                  disabled
                   placeholder="Class"
                   value={row[0]}
                   onChange={(e) =>
@@ -1992,8 +2089,8 @@ function Admission({
                 <Input
                   id=""
                   placeholder="Particulars"
-                  value={row[1]}                disabled
-
+                  value={row[1]}
+                  disabled
                   onChange={(e) =>
                     handleAdmissionRowChange(idx, 1, e.target.value)
                   }
@@ -2001,8 +2098,8 @@ function Admission({
                 <Input
                   id=""
                   placeholder="Date"
-                  value={row[2]}                disabled
-
+                  value={row[2]}
+                  disabled
                   onChange={(e) =>
                     handleAdmissionRowChange(idx, 2, e.target.value)
                   }
@@ -2017,8 +2114,7 @@ function Admission({
               >
                 Remove last
               </Button>
-              <Button size="m" onClick={addAdmissionRow}                 disabled
->
+              <Button size="m" onClick={addAdmissionRow} disabled>
                 Add
               </Button>
             </Row>
@@ -2061,27 +2157,27 @@ function Admission({
                 <Input
                   id=""
                   placeholder="Class"
-                  value={row[0]}                disabled
-
+                  value={row[0]}
+                  disabled
                   onChange={(e) => handleFeesRowChange(idx, 0, e.target.value)}
                 />
                 <Input
-                  id=""                disabled
-
+                  id=""
+                  disabled
                   placeholder="Admission Fee"
                   value={row[1]}
                   onChange={(e) => handleFeesRowChange(idx, 1, e.target.value)}
                 />
                 <Input
-                  id=""                disabled
-
+                  id=""
+                  disabled
                   placeholder="Tuition Fee (Monthly)"
                   value={row[2]}
                   onChange={(e) => handleFeesRowChange(idx, 2, e.target.value)}
                 />
                 <Input
-                  id=""                disabled
-
+                  id=""
+                  disabled
                   placeholder="Total Annual Fee"
                   value={row[3]}
                   onChange={(e) => handleFeesRowChange(idx, 3, e.target.value)}
@@ -2096,8 +2192,7 @@ function Admission({
               >
                 Remove last
               </Button>
-              <Button size="m" onClick={addFeesRow}                 disabled
->
+              <Button size="m" onClick={addFeesRow} disabled>
                 Add
               </Button>
             </Row>
@@ -2699,15 +2794,15 @@ function Academics({ isUser, tables, slug, extra_links }: AcademicsProps) {
                   {idx + 1}.
                 </Text>
                 <Input
-                  id=""                disabled
-
+                  id=""
+                  disabled
                   placeholder="Class e.g. 12th"
                   value={row[0]}
                   onChange={(e) => handleTimeRowChange(idx, 0, e.target.value)}
                 />
                 <Flex gap="4">
-                  <Input                disabled
-
+                  <Input
+                    disabled
                     id=""
                     placeholder="Start"
                     value={row[1]}
@@ -2718,8 +2813,8 @@ function Academics({ isUser, tables, slug, extra_links }: AcademicsProps) {
                     hasSuffix={<Text onBackground="neutral-weak">24HR</Text>}
                   />
                   <Input
-                    id=""                disabled
-
+                    id=""
+                    disabled
                     placeholder="End"
                     description=" 24-hour format"
                     value={row[2]}
@@ -2739,8 +2834,7 @@ function Academics({ isUser, tables, slug, extra_links }: AcademicsProps) {
               >
                 Remove last
               </Button>
-              <Button size="m" onClick={addTimeRow}                 disabled
->
+              <Button size="m" onClick={addTimeRow} disabled>
                 Add
               </Button>
             </Row>
@@ -2785,8 +2879,8 @@ function Academics({ isUser, tables, slug, extra_links }: AcademicsProps) {
                   {idx + 1}.
                 </Text>
                 <Input
-                  id=""                disabled
-
+                  id=""
+                  disabled
                   placeholder="Vacation"
                   value={row[0]}
                   onChange={(e) =>
@@ -2796,8 +2890,8 @@ function Academics({ isUser, tables, slug, extra_links }: AcademicsProps) {
                 <DateRangeInput
                   id=""
                   startLabel="Start Date"
-                  height="s"                disabled
-
+                  height="s"
+                  disabled
                   style={{ minWidth: "300px" }}
                   cursor="interactive"
                   endLabel="End Date"
@@ -2855,8 +2949,7 @@ function Academics({ isUser, tables, slug, extra_links }: AcademicsProps) {
               >
                 Remove last
               </Button>
-              <Button size="m" onClick={addVacationRow}                 disabled
->
+              <Button size="m" onClick={addVacationRow} disabled>
                 Add
               </Button>
             </Row>
@@ -2907,15 +3000,15 @@ function Academics({ isUser, tables, slug, extra_links }: AcademicsProps) {
                   {idx + 1}.
                 </Text>
                 <Input
-                  id=""                disabled
-
+                  id=""
+                  disabled
                   placeholder="Level"
                   value={row[0]}
                   onChange={(e) => handleClassRowChange(idx, 0, e.target.value)}
                 />
                 <Input
-                  id=""                disabled
-
+                  id=""
+                  disabled
                   placeholder="Classes"
                   value={row[1]}
                   onChange={(e) => handleClassRowChange(idx, 1, e.target.value)}
@@ -2930,8 +3023,7 @@ function Academics({ isUser, tables, slug, extra_links }: AcademicsProps) {
               >
                 Remove last
               </Button>
-              <Button size="m" onClick={addClassRow}                 disabled
->
+              <Button size="m" onClick={addClassRow} disabled>
                 Add
               </Button>
             </Row>
