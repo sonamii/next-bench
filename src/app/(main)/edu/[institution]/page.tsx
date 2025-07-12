@@ -1,5 +1,6 @@
 "use client";
 
+import React from "react";
 import {
   Accordion,
   AvatarGroup,
@@ -107,7 +108,6 @@ export default function Page() {
       if (!slug) return;
       const session = await supabase.auth.getSession();
       const userId = session.data?.session?.user?.id;
-      if (!userId) return;
       const { data, error } = await supabase
         .from("edu_centers")
         .select(
@@ -115,10 +115,17 @@ export default function Page() {
         )
         .eq("edu_id", slug)
         .maybeSingle();
+      if (error) {
+        console.error("Error fetching edu_centers data:", error.message);
+        // Optionally show a toast or alert here
+        return;
+      }
       if (data && data.uuid === userId) {
         setIsUser(true);
       }
+
       if (data) {
+        console.log("Fetched data:", isUser);
         setIsPublished(data.is_published);
         setLogo(data.logo);
         setTables(data.tables || []);
@@ -483,7 +490,7 @@ function HeroSection({
       email: basicInfo.contact?.email || "",
       type: basicInfo.type || "",
     });
-  }, [basicInfo]);
+  }, []);
   useEffect(() => {
     setHeroText(text);
   }, [text]);
@@ -816,7 +823,7 @@ function HeroSection({
                   <i className="ri-user-smile-line"></i>&nbsp;Connect with
                   Students
                 </Button>
-                <Button
+                {isUser && (<Button
                   id="arrow-button-1"
                   size="m"
                   weight="default"
@@ -831,7 +838,8 @@ function HeroSection({
                   onClick={() => setIsDialog2Open(true)}
                 >
                   <i className="ri-camera-line"></i>&nbsp;Upload logo and image
-                </Button>
+                </Button>)}
+                
               </Row>
             </Column>
           </Column>
@@ -1247,9 +1255,22 @@ function AboutSchool({
             onChange={(e) => setAboutText(e.target.value)}
           />
         ) : (
-          <Text style={{ fontSize: "17px" }} onBackground="neutral-weak">
-            {aboutText}
-          </Text>
+            aboutText.trim() ? (
+              <Text style={{ fontSize: "17px" }} onBackground="neutral-weak">
+                {aboutText
+                  .split("\n")
+                  .map((line, idx) => (
+                    <React.Fragment key={idx}>
+                      {line}
+                      {idx < aboutText.split("\n").length - 1 && <br />}
+                    </React.Fragment>
+                  ))}
+              </Text>
+            ) : (
+              <Text style={{ fontSize: "17px", color: "#888" }} onBackground="neutral-weak">
+                No information provided.
+              </Text>
+            )
         )}
       </Column>
       <Column
@@ -1271,7 +1292,7 @@ function AboutSchool({
         >
           Basic Information about School
         </Text>
-        <Column fillWidth gap="8">
+        <Column fillWidth gap="12">
           {/* Year Established */}
           {isUser ? (
             <Flex fillWidth horizontal="start">
@@ -1286,7 +1307,7 @@ function AboutSchool({
                     onBackground="neutral-weak"
                     style={{ minWidth: "fit-content", whiteSpace: "nowrap" }}
                   >
-                    Year Established :
+                    1. Year Established :
                   </Kbd>
                 </Text>
               </Row>
@@ -1311,7 +1332,7 @@ function AboutSchool({
                   onBackground="neutral-weak"
                   style={{ minWidth: "fit-content", whiteSpace: "nowrap" }}
                 >
-                  Year Established :
+                  1. Year Established :
                 </Kbd>
               </Text>
               <Text
@@ -1338,7 +1359,7 @@ function AboutSchool({
                     onBackground="neutral-weak"
                     style={{ minWidth: "fit-content", whiteSpace: "nowrap" }}
                   >
-                    Institution Type :
+                    2. Institution Type :
                   </Kbd>
                 </Text>
               </Row>
@@ -1363,7 +1384,7 @@ function AboutSchool({
                   onBackground="neutral-weak"
                   style={{ minWidth: "fit-content", whiteSpace: "nowrap" }}
                 >
-                  Institution Type :
+                  2. Institution Type :
                 </Kbd>
               </Text>
               <Text
@@ -1390,7 +1411,7 @@ function AboutSchool({
                     onBackground="neutral-weak"
                     style={{ minWidth: "fit-content", whiteSpace: "nowrap" }}
                   >
-                    Institution gender :
+                    3. Institution gender :
                   </Kbd>
                 </Text>
               </Row>
@@ -1415,7 +1436,7 @@ function AboutSchool({
                   onBackground="neutral-weak"
                   style={{ minWidth: "fit-content", whiteSpace: "nowrap" }}
                 >
-                  Institution gender :
+                  3. Institution gender :
                 </Kbd>
               </Text>
               <Text
@@ -1442,7 +1463,7 @@ function AboutSchool({
                     onBackground="neutral-weak"
                     style={{ minWidth: "fit-content", whiteSpace: "nowrap" }}
                   >
-                    Boarding Type :
+                    4. Boarding Type :
                   </Kbd>
                 </Text>
               </Row>
@@ -1467,7 +1488,7 @@ function AboutSchool({
                   onBackground="neutral-weak"
                   style={{ minWidth: "fit-content", whiteSpace: "nowrap" }}
                 >
-                  Boarding Type :
+                 4. Boarding Type :
                 </Kbd>
               </Text>
               <Text
@@ -1494,7 +1515,7 @@ function AboutSchool({
                     onBackground="neutral-weak"
                     style={{ minWidth: "fit-content", whiteSpace: "nowrap" }}
                   >
-                    Classes offered:
+                    5. Classes offered:
                   </Kbd>
                 </Text>
               </Row>
@@ -1525,7 +1546,7 @@ function AboutSchool({
                   onBackground="neutral-weak"
                   style={{ minWidth: "fit-content", whiteSpace: "nowrap" }}
                 >
-                  Classes offered:
+                  5. Classes offered:
                 </Kbd>
               </Text>
               <Text
@@ -1552,7 +1573,7 @@ function AboutSchool({
                     border="neutral-medium"
                     onBackground="neutral-weak"
                   >
-                    Affiliation :
+                    6. Affiliation :
                   </Kbd>
                 </Text>
               </Row>
@@ -1587,7 +1608,7 @@ function AboutSchool({
                   border="neutral-medium"
                   onBackground="neutral-weak"
                 >
-                  Affiliation :
+                  6. Affiliation :
                 </Kbd>
               </Text>
               <Text
@@ -1614,7 +1635,7 @@ function AboutSchool({
                     onBackground="neutral-weak"
                     style={{ minWidth: "fit-content", whiteSpace: "nowrap" }}
                   >
-                    Affiliation type:
+                    7. Affiliation type:
                   </Kbd>
                 </Text>
               </Row>
@@ -1639,7 +1660,7 @@ function AboutSchool({
                   onBackground="neutral-weak"
                   style={{ minWidth: "fit-content", whiteSpace: "nowrap" }}
                 >
-                  Affiliation Type :
+                  7. Affiliation Type :
                 </Kbd>
               </Text>
               <Text
@@ -1666,7 +1687,7 @@ function AboutSchool({
                     onBackground="neutral-weak"
                     style={{ minWidth: "fit-content", whiteSpace: "nowrap" }}
                   >
-                    Total population:
+                    8. Total population :
                   </Kbd>
                 </Text>
               </Row>
@@ -1691,7 +1712,7 @@ function AboutSchool({
                   onBackground="neutral-weak"
                   style={{ minWidth: "fit-content", whiteSpace: "nowrap" }}
                 >
-                  Total population :
+                  8. Total population :
                 </Kbd>
               </Text>
               <Text
@@ -1733,8 +1754,8 @@ function AboutSchool({
               onChange={(e) => setMottoText(e.target.value)}
             />
           ) : (
-            <Text style={{ fontSize: "16px" }} onBackground="neutral-weak">
-              <InlineCode>"{motto}"</InlineCode>
+            <Text style={{ fontSize: "16px" }} onBackground="neutral-medium">
+              <InlineCode>{motto}</InlineCode>
             </Text>
           )}
         </>
@@ -1978,14 +1999,31 @@ function Admission({
             value={admissionText}
             onChange={(e) => setAdmissionText(e.target.value)}
           ></Textarea>
-        ) : (
+        ) : admissionText.trim() ? (
           <Text
             style={{
               fontSize: "17px",
             }}
             onBackground="neutral-weak"
           >
-            {admissionText}
+            {admissionText
+              .split("\n")
+              .map((line, idx) => (
+                <React.Fragment key={idx}>
+                  {line}
+                  {idx < admissionText.split("\n").length - 1 && <br />}
+                </React.Fragment>
+              ))}
+          </Text>
+        ) : (
+          <Text
+            style={{
+              fontSize: "17px",
+              color: "#888",
+            }}
+            onBackground="neutral-weak"
+          >
+            No information provided.
           </Text>
         )}
       </Column>
@@ -2355,18 +2393,22 @@ function Admission({
             </>
           ) : (
             <Column fillWidth gap="8" style={{ marginTop: "16px" }}>
-              {extraLinks.admission.map((link: ExtraLinkItem, idx: number) => (
+              {extraLinks.admission && extraLinks.admission.length > 0 && extraLinks.admission.some(link => link.label || link.url) ? (
+              extraLinks.admission.map((link: ExtraLinkItem, idx: number) => (
                 <SmartLink key={idx} href={link.url}>
-                  <Text
-                    style={{
-                      fontSize: "16px",
-                    }}
-                    onBackground="accent-weak"
-                  >
-                    <InlineCode>{link.label}</InlineCode>
-                  </Text>
+                <Text
+                  style={{
+                  fontSize: "16px",
+                  }}
+                  onBackground="accent-weak"
+                >
+                  <InlineCode>{link.label}</InlineCode>
+                </Text>
                 </SmartLink>
-              ))}
+              ))
+              ) : (
+              <InlineCode >No links provided</InlineCode>
+              )}
             </Column>
           )}
         </Column>
@@ -2628,30 +2670,50 @@ function Extracurricular({ isUser, text, slug }: ExtracurricularProps) {
             onChange={(e) => setExtraCurricular(e.target.value)}
           />
         ) : (
-          <Text
-            style={{
-              fontSize: "17px",
-            }}
-            onBackground="neutral-weak"
-          >
-            {extraCurricular}
-          </Text>
+          extraCurricular.trim() ? (
+            <Text
+              style={{
+                fontSize: "17px",
+              }}
+              onBackground="neutral-weak"
+            >
+              {extraCurricular
+                .split("\n")
+                .map((line, idx) => (
+                  <React.Fragment key={idx}>
+                    {line}
+                    {idx < extraCurricular.split("\n").length - 1 && <br />}
+                  </React.Fragment>
+                ))}
+            </Text>
+          ) : (
+            <Text
+              style={{
+                fontSize: "17px",
+                color: "#888",
+              }}
+              onBackground="neutral-weak"
+            >
+              No information provided.
+            </Text>
+          )
         )}
       </Column>
-      <Row fillWidth horizontal="end">
-        {" "}
-        <Button size="l" onClick={saveDataToSupabase}>
-          {" "}
-          {loading ? (
-            <>
-              Saving...&nbsp;
-              <Spinner size="s" />
-            </>
-          ) : (
-            "Save all"
-          )}
-        </Button>
-      </Row>
+      {isUser && (
+        <Row fillWidth horizontal="end">
+          <Button size="l" onClick={saveDataToSupabase} disabled={loading}>
+            {loading ? (
+              <>
+                Saving...&nbsp;
+                <Spinner size="s" />
+              </>
+            ) : (
+              "Save all"
+            )}
+          </Button>
+        </Row>
+      )}
+     
     </>
   );
 }
@@ -3172,18 +3234,22 @@ function Academics({ isUser, tables, slug, extra_links }: AcademicsProps) {
           </>
         ) : (
           <Column fillWidth gap="8" style={{ marginTop: "16px" }}>
-            {extraLinks.academics.map((link, idx) => (
-              <SmartLink key={idx} href={link.url}>
-                <Text
-                  style={{
-                    fontSize: "16px",
-                  }}
-                  onBackground="accent-weak"
-                >
-                  <InlineCode>{link.label}</InlineCode>
-                </Text>
-              </SmartLink>
-            ))}
+            {extraLinks.academics && extraLinks.academics.length > 0 && extraLinks.academics.some(link => link.label || link.url) ? (
+              extraLinks.academics.map((link, idx) => (
+                <SmartLink key={idx} href={link.url}>
+                  <Text
+                    style={{
+                      fontSize: "16px",
+                    }}
+                    onBackground="accent-weak"
+                  >
+                    <InlineCode>{link.label}</InlineCode>
+                  </Text>
+                </SmartLink>
+              ))
+            ) : (
+              <InlineCode>No information provided</InlineCode>
+            )}
           </Column>
         )}
       </Column>
@@ -3296,6 +3362,18 @@ function FAQs({ isUser, faqs, slug }: FAQsProps) {
     <>
       {isUser ? (
         <Column gap="12" fillWidth>
+           <Text
+          variant="body-default-xl"
+          style={{
+            color: "#181A1D",
+            fontSize: "25px",
+            fontWeight: "500",
+            marginBottom: "16px",
+          }}
+          className={dmsans.className}
+        >
+          Q&A
+        </Text>
           {faqList.map((faq, idx) => (
             <Row
               key={faq.id}
@@ -3352,6 +3430,19 @@ function FAQs({ isUser, faqs, slug }: FAQsProps) {
         </Column>
       ) : (
         <>
+         <Text
+          variant="body-default-xl"
+          style={{
+            color: "#181A1D",
+            fontSize: "25px",
+            fontWeight: "500",
+            marginBottom: "16px",
+          }}
+
+          className={dmsans.className}
+        >
+          Q&A
+        </Text>
           {faqList.map((faq) => (
             <Accordion key={faq.id} title={faq.title} size="l">
               <Text
