@@ -1,95 +1,77 @@
-# 🪑 Next Bench — Sonamii
+# Once UI for Next.js
 
-<Br>
+A design system for indie builders, startups and freelancers. Once UI combines the simplicity of low-code with the power of code: write 70% less compared to shadcn + tailwind.
 
-🌟 [**Next Bench**](https://next-bench-dev.vercel.app/) is a user-friendly **`web`** application that helps 🧑‍🎓 students to find the best 🏫 **`institutions`**, offering advanced search and school comparisons. It is a **`startup`** designed to overhaul the school admission process for 👩‍🦰 **`parents`**. Our vision **`extends`** beyond admissions, providing individually tailored 🗺️ **`roadmaps`** to students' dream 🍁 **`universities`**.
+![Once UI](public/images/og/home.jpg)
 
-  <br>
+## Features
 
-  
-```dart
- 🙏 We aim to eliminate the *stress* and *inefficiency* of finding and applying to schools by offering a *unified platform*.
+A lightweight starter template with the [Once UI Core](https://github.com/once-ui-system/core) package and our recommended setup to move fast and break limits without neglecting quality.
+
+* **Customization**: Manage design config in a single file.
+* **Components**: Access advanced components with simple APIs.
+* **Data-viz**: Add responsive charts with a few lines of code.
+* **SEO**: Use our SEO components to simplify meta and schema setup.
+* **PRO**: Launch ready-made apps with minimal coding with Once UI Pro.
+
+[Get Once UI Pro](https://once-ui.com/pricing)
+
+## Demo
+
+Check the [starter demo app](https://demo.once-ui.com).
+
+![Once UI](public/images/demo.jpg)
+
+## Documentation
+
+Learn how to build with Once UI at [docs.once-ui.com](https://docs.once-ui.com/once-ui/quick-start).
+
+## Quick start
+
+[Magic Portfolio](https://once-ui.com/products/magic-portfolio): Our free portfolio starter used and loved by thousands of creatives. Simple, customizable, responsive.
+
+[Magic Store](https://once-ui.com/products/magic-store) (PRO): Our premium ecommerce storefront that lets you launch your merch store in minutes. Payment, production and shipping managed by Fourthwall.
+
+[Magic Docs](https://once-ui.com/products/magic-docs) (PRO): Our premium documentation generator. Just add your MDX files and let Magic Docs handle the rest.
+
+[Magic Bio](https://once-ui.com/products/magic-bio) (PRO): Our premium link-in-bio template that automatically fetches open-graph data. Just add your links and deploy.
+
+[Once UI Blocks](https://once-ui.com/blocks) (PRO): Copy-paste pre-designed blocks and deploy fully-functional sites with lightning speed.
+
+[Once UI for Figma](https://once-ui.com/figma) (PRO): Design and prototype entire products from scratch in hours.
+
+## Get started
+
+Clone the starter template from GitHub:
+```bash
+git clone https://github.com/once-ui-system/nextjs-starter.git
 ```
 
-<br>
+Deploy to Vercel with a single click:
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fonce-ui-system%2Fnextjs-starter&redirect-url=https%3A%2F%2Fonce-ui.com%2F)
 
-## 🤔 Why?
-  **`1.`** Parents often struggle with fragmented school information spread across **`websites`**, **`brochures`**, and **`word-of-mouth`**.
-     
-  **`2.`** Applying to schools can mean filling out **`repetitive forms`** and chasing deadlines with little guidance.  
-  
-  **`3.`** Students lack clear pathways connecting their current education to **`future goals`** like **`university`** admission.  
-  
-  **`4.`** Schools could benefit from a **`better`** way to reach their desired school by providing **`admissions pipeline`**
+## Creators
 
-<br>
+Connect with us!
 
-  > [!IMPORTANT]
-> 🍰 **`NEXT-AI`** is specifically designed to give step by step **`roadmap`** to the users desired institute providing all the details and recommendations on **`resume`** building, application **`letter`**, and more. 
+**Lorant One**: [Site](https://lorant.one) / [Threads](https://www.threads.net/@lorant.one) / [LinkedIn](https://www.linkedin.com/in/lorant-one/)
 
-<br>
-<br>
+**Zsofia Komaromi**: [Site](https://zsofia.pro) / [Threads](https://www.threads.net/@zsofia_kom) / [LinkedIn](https://www.linkedin.com/in/zsofiakomaromi/)
 
-## ✨ Core Features
+## Become a Oncer
 
-  ### `1.` 🌌 School Exploration Hub:  
-  
-  - Browse a wide range of schools with filters for **`location`**, **`grade level`**, and **`more`**.
-    
-  - Compare options **`side-by-side`** with standardized data for easy decision-making.  
-    
-    <br>
-    
-  ### `2.` 📁 Seamless Application System: 
-  
-  - Submit applications to **`multiple schools`** through a single, user-friendly interface.
-    
-  - Track application statuses in **`real time`**, reducing follow-up hassles.  
-    
-    <br>
-    
-  ### `3.` 🚎 Detailed School Profiles:  
-  
-  - Access in-depth info like **`curriculum specifics`**, **`transportation schedules`**, and **`extracurricular offerings`**.
-    
-  - View **`tuition costs`**, **`admission criteria`**, and **`parent reviews`** (where available).  
+![Design Engineers Club](https://docs.once-ui.com/images/docs/vibe-coding-dark.jpg)
 
-    <br>
-    
-  ### `4.` ☀️ End-to-End Services:  
-  
-  - Guide parents from **`initial research`** through enrollment with step-by-step **`support`**.
-    
-  - Future integrations may include **`uniform ordering`** or **`study material`** delivery.  
-    
-    <br>
-    
-  ### `5.` ⚙️ AI-Powered University Roadmap (_future feature_):  
-  
-  - Analyze a student’s **`academic record`**, **`interests`**, and **`goals`** using ***ADVANCED AI.***
-    
-  - Generate a **`personalized`** plan with **`milestones`** to reach their dream university.  
-  
-  - Offer actionable advice, like recommended **`courses`** or **`extracurriculars`**, tailored to each student.
+Join the [Design Engineers Club](https://discord.com/invite/5EyAQ4eNdS) on Discord to connect with us and share your projects.
 
-<br>
-<br>
+Found a bug? Report it [here](https://github.com/once-ui-system/nextjs-starter/issues/new?labels=bug&template=bug_report.md). Got a feature request? Submit it [here](https://github.com/once-ui-system/nextjs-starter/issues/new?labels=feature%20request&template=feature_request.md).
 
-## 😀 Target Audience  
+Please use the Once UI Core [GitHub repository](https://github.com/once-ui-system/core) for design system contributions.
 
-  **`1.`** **Parents:** Seeking an easier way to find and secure the **`right school`** for their **`kids`**.
-  
-  **`2.`** **Students:** Aspiring to **`higher education`** and needing a **`roadmap`** to get there.
-  
-  **`3.`** **Educators:** Potentially using the platform to find **`teaching opportunities`** (_future feature_).  
+## Sponsors
 
-<br>
-<br>
+Once UI is an indie project. [Sponsor us](https://github.com/sponsors/once-ui-system) and get featured on our site!
 
-## 🔖 Our Unique Value
+## License
 
-  **`1.`** Centralizes a scattered process into one **`reliable platform`**, unlike basic school directories.  
-  
-  **`2.`** Combines immediate utility (admissions) with **`long-term vision`** **(AI roadmaps).**  
-  
-  **`3.`** Prioritizes user trust with **`accurate`**, **`up-to-date`** data and a **`smooth experience`**.
+Distributed under the MIT License. See `LICENSE.txt` for more information.
