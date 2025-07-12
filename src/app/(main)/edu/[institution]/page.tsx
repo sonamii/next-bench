@@ -677,7 +677,8 @@ function HeroSection({
                       {newInstitution.type || basicInfo.type}
                     </span>
                     &nbsp;in <span style={{ color: "#626F45" }}></span>
-                    {newInstitution.country || basicInfo.location?.country}.{" "}
+                    {newInstitution.country ||
+                      basicInfo.location?.country}.{" "}
                   </Text>
                 </u>
               </a>
@@ -823,23 +824,25 @@ function HeroSection({
                   <i className="ri-user-smile-line"></i>&nbsp;Connect with
                   Students
                 </Button>
-                {isUser && (<Button
-                  id="arrow-button-1"
-                  size="m"
-                  weight="default"
-                  variant="secondary"
-                  style={{ backgroundColor: "#F2F2EF" }}
-                  onMouseEnter={(e: React.MouseEvent<HTMLButtonElement>) =>
-                    (e.currentTarget.style.backgroundColor = "#E0E0DC")
-                  }
-                  onMouseLeave={(e: React.MouseEvent<HTMLButtonElement>) =>
-                    (e.currentTarget.style.backgroundColor = "#F2F2EF")
-                  }
-                  onClick={() => setIsDialog2Open(true)}
-                >
-                  <i className="ri-camera-line"></i>&nbsp;Upload logo and image
-                </Button>)}
-                
+                {isUser && (
+                  <Button
+                    id="arrow-button-1"
+                    size="m"
+                    weight="default"
+                    variant="secondary"
+                    style={{ backgroundColor: "#F2F2EF" }}
+                    onMouseEnter={(e: React.MouseEvent<HTMLButtonElement>) =>
+                      (e.currentTarget.style.backgroundColor = "#E0E0DC")
+                    }
+                    onMouseLeave={(e: React.MouseEvent<HTMLButtonElement>) =>
+                      (e.currentTarget.style.backgroundColor = "#F2F2EF")
+                    }
+                    onClick={() => setIsDialog2Open(true)}
+                  >
+                    <i className="ri-camera-line"></i>&nbsp;Upload logo and
+                    image
+                  </Button>
+                )}
               </Row>
             </Column>
           </Column>
@@ -1202,10 +1205,23 @@ function AboutSchool({
       student_population: studentPopulation,
     };
 
+    // Fetch current texts and basic_info to preserve other fields
+    const { data, error: fetchError } = await supabase
+      .from("edu_centers")
+      .select("texts, basic_info")
+      .eq("edu_id", slug)
+      .single();
+
+    if (fetchError) {
+      alert("Failed to fetch current data: " + fetchError.message);
+      setLoading(false);
+      return;
+    }
+
     const updatePayload = {
-      texts: { about: aboutText },
+      texts: { ...(data?.texts || {}), about: aboutText },
       motto: mottoText,
-      basic_info: updatedBasicInfo,
+      basic_info: { ...(data?.basic_info || {}), ...updatedBasicInfo },
     };
 
     const { error } = await supabase
@@ -1254,23 +1270,22 @@ function AboutSchool({
             value={aboutText}
             onChange={(e) => setAboutText(e.target.value)}
           />
+        ) : aboutText.trim() ? (
+          <Text style={{ fontSize: "17px" }} onBackground="neutral-weak">
+            {aboutText.split("\n").map((line, idx) => (
+              <React.Fragment key={idx}>
+                {line}
+                {idx < aboutText.split("\n").length - 1 && <br />}
+              </React.Fragment>
+            ))}
+          </Text>
         ) : (
-            aboutText.trim() ? (
-              <Text style={{ fontSize: "17px" }} onBackground="neutral-weak">
-                {aboutText
-                  .split("\n")
-                  .map((line, idx) => (
-                    <React.Fragment key={idx}>
-                      {line}
-                      {idx < aboutText.split("\n").length - 1 && <br />}
-                    </React.Fragment>
-                  ))}
-              </Text>
-            ) : (
-              <Text style={{ fontSize: "17px", color: "#888" }} onBackground="neutral-weak">
-                No information provided.
-              </Text>
-            )
+          <Text
+            style={{ fontSize: "17px", color: "#888" }}
+            onBackground="neutral-weak"
+          >
+            No information provided.
+          </Text>
         )}
       </Column>
       <Column
@@ -1488,7 +1503,7 @@ function AboutSchool({
                   onBackground="neutral-weak"
                   style={{ minWidth: "fit-content", whiteSpace: "nowrap" }}
                 >
-                 4. Boarding Type :
+                  4. Boarding Type :
                 </Kbd>
               </Text>
               <Text
@@ -1769,6 +1784,7 @@ function AboutSchool({
         gap="12"
       >
         <Accordion
+        open
           title={
             <Text
               variant="body-default-xl"
@@ -2006,14 +2022,12 @@ function Admission({
             }}
             onBackground="neutral-weak"
           >
-            {admissionText
-              .split("\n")
-              .map((line, idx) => (
-                <React.Fragment key={idx}>
-                  {line}
-                  {idx < admissionText.split("\n").length - 1 && <br />}
-                </React.Fragment>
-              ))}
+            {admissionText.split("\n").map((line, idx) => (
+              <React.Fragment key={idx}>
+                {line}
+                {idx < admissionText.split("\n").length - 1 && <br />}
+              </React.Fragment>
+            ))}
           </Text>
         ) : (
           <Text
@@ -2393,21 +2407,23 @@ function Admission({
             </>
           ) : (
             <Column fillWidth gap="8" style={{ marginTop: "16px" }}>
-              {extraLinks.admission && extraLinks.admission.length > 0 && extraLinks.admission.some(link => link.label || link.url) ? (
-              extraLinks.admission.map((link: ExtraLinkItem, idx: number) => (
-                <SmartLink key={idx} href={link.url}>
-                <Text
-                  style={{
-                  fontSize: "16px",
-                  }}
-                  onBackground="accent-weak"
-                >
-                  <InlineCode>{link.label}</InlineCode>
-                </Text>
-                </SmartLink>
-              ))
+              {extraLinks.admission &&
+              extraLinks.admission.length > 0 &&
+              extraLinks.admission.some((link) => link.label || link.url) ? (
+                extraLinks.admission.map((link: ExtraLinkItem, idx: number) => (
+                  <SmartLink key={idx} href={link.url}>
+                    <Text
+                      style={{
+                        fontSize: "16px",
+                      }}
+                      onBackground="accent-weak"
+                    >
+                      <InlineCode>{link.label}</InlineCode>
+                    </Text>
+                  </SmartLink>
+                ))
               ) : (
-              <InlineCode >No links provided</InlineCode>
+                <InlineCode>No links provided</InlineCode>
               )}
             </Column>
           )}
@@ -2669,34 +2685,30 @@ function Extracurricular({ isUser, text, slug }: ExtracurricularProps) {
             value={extraCurricular}
             onChange={(e) => setExtraCurricular(e.target.value)}
           />
+        ) : extraCurricular.trim() ? (
+          <Text
+            style={{
+              fontSize: "17px",
+            }}
+            onBackground="neutral-weak"
+          >
+            {extraCurricular.split("\n").map((line, idx) => (
+              <React.Fragment key={idx}>
+                {line}
+                {idx < extraCurricular.split("\n").length - 1 && <br />}
+              </React.Fragment>
+            ))}
+          </Text>
         ) : (
-          extraCurricular.trim() ? (
-            <Text
-              style={{
-                fontSize: "17px",
-              }}
-              onBackground="neutral-weak"
-            >
-              {extraCurricular
-                .split("\n")
-                .map((line, idx) => (
-                  <React.Fragment key={idx}>
-                    {line}
-                    {idx < extraCurricular.split("\n").length - 1 && <br />}
-                  </React.Fragment>
-                ))}
-            </Text>
-          ) : (
-            <Text
-              style={{
-                fontSize: "17px",
-                color: "#888",
-              }}
-              onBackground="neutral-weak"
-            >
-              No information provided.
-            </Text>
-          )
+          <Text
+            style={{
+              fontSize: "17px",
+              color: "#888",
+            }}
+            onBackground="neutral-weak"
+          >
+            No information provided.
+          </Text>
         )}
       </Column>
       {isUser && (
@@ -2713,7 +2725,6 @@ function Extracurricular({ isUser, text, slug }: ExtracurricularProps) {
           </Button>
         </Row>
       )}
-     
     </>
   );
 }
@@ -3234,7 +3245,9 @@ function Academics({ isUser, tables, slug, extra_links }: AcademicsProps) {
           </>
         ) : (
           <Column fillWidth gap="8" style={{ marginTop: "16px" }}>
-            {extraLinks.academics && extraLinks.academics.length > 0 && extraLinks.academics.some(link => link.label || link.url) ? (
+            {extraLinks.academics &&
+            extraLinks.academics.length > 0 &&
+            extraLinks.academics.some((link) => link.label || link.url) ? (
               extraLinks.academics.map((link, idx) => (
                 <SmartLink key={idx} href={link.url}>
                   <Text
@@ -3362,18 +3375,18 @@ function FAQs({ isUser, faqs, slug }: FAQsProps) {
     <>
       {isUser ? (
         <Column gap="12" fillWidth>
-           <Text
-          variant="body-default-xl"
-          style={{
-            color: "#181A1D",
-            fontSize: "25px",
-            fontWeight: "500",
-            marginBottom: "16px",
-          }}
-          className={dmsans.className}
-        >
-          Q&A
-        </Text>
+          <Text
+            variant="body-default-xl"
+            style={{
+              color: "#181A1D",
+              fontSize: "25px",
+              fontWeight: "500",
+              marginBottom: "16px",
+            }}
+            className={dmsans.className}
+          >
+            Q&A
+          </Text>
           {faqList.map((faq, idx) => (
             <Row
               key={faq.id}
@@ -3430,19 +3443,18 @@ function FAQs({ isUser, faqs, slug }: FAQsProps) {
         </Column>
       ) : (
         <>
-         <Text
-          variant="body-default-xl"
-          style={{
-            color: "#181A1D",
-            fontSize: "25px",
-            fontWeight: "500",
-            marginBottom: "16px",
-          }}
-
-          className={dmsans.className}
-        >
-          Q&A
-        </Text>
+          <Text
+            variant="body-default-xl"
+            style={{
+              color: "#181A1D",
+              fontSize: "25px",
+              fontWeight: "500",
+              marginBottom: "16px",
+            }}
+            className={dmsans.className}
+          >
+            Q&A
+          </Text>
           {faqList.map((faq) => (
             <Accordion key={faq.id} title={faq.title} size="l">
               <Text
