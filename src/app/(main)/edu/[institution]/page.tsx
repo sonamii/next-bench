@@ -375,7 +375,8 @@ function HeroSection({
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   // Compose initial state from basicInfo
-  const initialInstitution = {
+
+  const [newInstitution, setNewInstitution] = useState({
     name: basicInfo.name || "",
     country: basicInfo.location?.country || "",
     city: basicInfo.location?.city || "",
@@ -387,9 +388,7 @@ function HeroSection({
     phoneNumber: basicInfo.contact?.phone || "",
     email: basicInfo.contact?.email || "",
     type: basicInfo.type || "",
-  };
-
-  const [newInstitution, setNewInstitution] = useState(initialInstitution);
+  });
   const [heroText, setHeroText] = useState(text);
 
   // Update institution data in Supabase
@@ -2343,14 +2342,21 @@ interface AcademicsProps {
   slug: string;
 }
 function Academics({ isUser, tables, slug, extra_links }: AcademicsProps) {
+  // Ensure at least one default row if nothing is present
+  function ensureRows<T>(rows: T[], defaultRow: T): T[] {
+    return Array.isArray(rows) && rows.length > 0 ? rows : [defaultRow];
+  }
+
   const [extraLinks, setExtraLinks] = useState<ExtraLinksObject>(extra_links);
   const [classRow, setClassRow] = useState<string[][]>(
-    tables.academics.classRow
+    ensureRows(tables.academics.classRow, ["", ""])
   );
   const [vacationRow, setVacationRow] = useState<string[][]>(
-    tables.academics.vacationRow
+    ensureRows(tables.academics.vacationRow, ["", "", "", ""])
   );
-  const [timeRow, setTimeRow] = useState<string[][]>(tables.academics.timeRow);
+  const [timeRow, setTimeRow] = useState<string[][]>(
+    ensureRows(tables.academics.timeRow, ["", "", ""])
+  );
 
   // Handlers for editing table rows in edit mode
   const handleTimeRowChange = (idx: number, col: number, value: string) => {
@@ -2444,7 +2450,6 @@ function Academics({ isUser, tables, slug, extra_links }: AcademicsProps) {
         vertical="start"
         paddingY="16"
         gap="12"
-        maxWidth={47}
       >
         <Text
           variant="body-default-xl"
@@ -2527,7 +2532,6 @@ function Academics({ isUser, tables, slug, extra_links }: AcademicsProps) {
         vertical="start"
         paddingY="16"
         gap="12"
-        maxWidth={47}
       >
         <Text
           variant="body-default-xl"
@@ -2647,7 +2651,6 @@ function Academics({ isUser, tables, slug, extra_links }: AcademicsProps) {
         vertical="start"
         paddingY="16"
         gap="12"
-        maxWidth={47}
       >
         <Text
           variant="body-default-xl"
@@ -2713,7 +2716,6 @@ function Academics({ isUser, tables, slug, extra_links }: AcademicsProps) {
         vertical="start"
         paddingY="16"
         gap="12"
-        maxWidth={47}
       >
         <Text
           variant="body-default-xl"
@@ -2841,7 +2843,7 @@ function Academics({ isUser, tables, slug, extra_links }: AcademicsProps) {
         )}
       </Column>
       {isUser && (
-        <Row fillWidth horizontal="end" maxWidth={47}>
+        <Row fillWidth horizontal="end" >
           <Button size="l" onClick={handleSave} disabled={loading}>
             {loading ? (
               <>
