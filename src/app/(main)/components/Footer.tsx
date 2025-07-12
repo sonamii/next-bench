@@ -59,6 +59,7 @@ function FooterSection({
       style={{ maxWidth: "1600px" }}
       padding="20"
       paddingTop="32"
+      className="footer"
     >
       <Column
         fillWidth
@@ -71,7 +72,7 @@ function FooterSection({
         padding="32"
         paddingX="xl"
       >
-        <Row fillWidth vertical="space-between" horizontal="center">
+        <Flex fillWidth vertical="space-between" horizontal="center" gap="20" id="row1">
           <Row flex={2} vertical="center">
             <Input
               id="a"
@@ -103,7 +104,7 @@ function FooterSection({
               Let's talk!
             </Text>
           </Row>
-        </Row>
+        </Flex>
         <Line fillWidth />
         <Row horizontal="space-between" fillWidth height={9.5}>
           <Row fillHeight fillWidth gap="64">

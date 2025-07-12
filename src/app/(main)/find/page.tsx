@@ -271,6 +271,7 @@ function InstitutionCard({ data }: { data: any }) {
     >
       <Grid
         fillWidth
+        className="findInstitutionGrid"
         padding="m"
         radius="l"
         background="transparent"
@@ -303,7 +304,7 @@ function InstitutionCard({ data }: { data: any }) {
               </Text>
               <Text
                 onBackground="neutral-weak"
-                style={{ fontSize: "14px", lineHeight: "0.5em" }}
+                style={{ fontSize: "14px", lineHeight: "1em" }}
                 className={dmsans.className}
               >
                 {center.type} at {center.location.city}

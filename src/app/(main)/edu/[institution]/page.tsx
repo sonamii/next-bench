@@ -819,7 +819,7 @@ function HeroSection({
                   onMouseLeave={(e: React.MouseEvent<HTMLButtonElement>) =>
                     (e.currentTarget.style.backgroundColor = "#F2F2EF")
                   }
-                  onClick={() => router.push("/profile/a")}
+                  
                 >
                   <i className="ri-user-smile-line"></i>&nbsp;Connect with
                   Students

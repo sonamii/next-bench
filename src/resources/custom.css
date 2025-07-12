@@ -57,3 +57,61 @@
 html {
   scroll-behavior: smooth !important;
 }
+
+
+@media (max-width: 650px) {
+  .findInstitutionGrid {
+    grid-template-columns: repeat(1, 4fr) !important;
+    height: fit-content !important;
+    gap: 40px;
+
+  }
+}
+
+
+@media (max-width: 1100px) {
+  .findInstitutionGrid {
+    grid-template-columns: repeat(2, 4fr) ;
+    height: fit-content ;
+    gap: 40px;
+
+  }
+}
+
+.navIcon{
+  display: none;
+}
+
+
+@media (max-width: 770px) {
+  .navIcon{
+    display: flex;
+  }
+}
+
+.cardPage {
+  min-width: 385px ;
+  max-height: 480px;
+}
+
+@media (max-width: 650px) {
+  .cardPage{
+    min-width: 95vw !important;
+    max-width: 95vw !important;
+  }
+}
+
+.row1{
+  flex-direction: row;
+  display: flex;
+}
+@media (max-width: 875px) {
+  .row1{
+    flex-direction: column !important;
+    display: flex !important;
+  }
+
+  .footer{
+    max-width: 95vw !important;
+  }
+}

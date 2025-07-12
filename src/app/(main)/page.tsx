@@ -682,9 +682,9 @@ function CardA({
       fillHeight
       style={{
         backgroundColor: bg,
-        minWidth: "385px",
-        maxHeight: "480px",
+        
       }}
+      className="cardPage"
       horizontal="center"
       vertical="start"
       overflow="hidden"
@@ -775,12 +775,12 @@ function CardB({ bg, label, title, subtitle, features }: typeof cardBProps) {
       radius="l"
       direction="column"
       flex={2}
-      fillHeight
+      fillHeight      className="cardPage"
+
       padding="20"
       style={{
         backgroundColor: bg,
-        minWidth: "385px",
-        maxHeight: "480px",
+       
       }}
       horizontal="center"
       vertical="start"
@@ -885,13 +885,13 @@ function CardC({ bg, title, subtitle, tags }: typeof cardCProps) {
     <Flex
       radius="l"
       direction="column"
-      flex={2}
+      flex={2}      className="cardPage"
+
       fillHeight
       padding="20"
       style={{
         backgroundColor: bg,
-        minWidth: "385px",
-        maxHeight: "480px",
+       
       }}
       horizontal="center"
       vertical="start"
@@ -1021,14 +1021,14 @@ function CardD({
       <Flex
         radius="l"
         direction="column"
-        flex={2}
+        flex={2}      className="cardPage"
+
         padding="20"
         fillHeight
         horizontal="center"
         style={{
           backgroundColor: bg,
-          minWidth: "385px",
-          maxHeight: "480px",
+        
         }}
         vertical="start"
       >
