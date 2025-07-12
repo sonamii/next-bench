@@ -27,6 +27,9 @@ import {
   DateInput,
   DateRangeInput,
   DateRangePicker,
+  MediaUpload,
+  Carousel,
+  Media,
 } from "@once-ui-system/core";
 import Navbar from "../../components/NavBar";
 
@@ -76,7 +79,7 @@ export default function Page() {
   const [facilities, setFacilities] = useState<FacilitiesJson>({});
   const [motto, setMotto] = useState("");
   const [isPublished, setIsPublished] = useState(false);
-  const [images, setImages] = useState<string[]>([]);
+  const [images, setImages] = useState<{ slide: string; alt: string }[]>([{ slide: "", alt: "Cover Image" }]);
   const [logo, setLogo] = useState<string>("");
   const [reviews, setReviews] = useState<string[]>([]);
   const [isDataLoaded, setIsDataLoaded] = useState(false);
@@ -222,6 +225,9 @@ export default function Page() {
                         text={text.about ?? ""}
                         basicInfo={basicInfo}
                         slug={slug}
+                        cover_image={
+                         images[0]?.slide
+                        }
                       />
                     ),
                     admission: (
@@ -329,6 +335,7 @@ export default function Page() {
 
 // Move the BasicInfo type definition here so it's available for use below
 type BasicInfo = {
+  uuid?: string;
   year_established?: string;
   type?: string;
   gender?: string;
@@ -373,6 +380,7 @@ function HeroSection({
 }: HeroSectionProps) {
   const router = useRouter();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isDialog2Open, setIsDialog2Open] = useState(false);
 
   // Compose initial state from basicInfo
 
@@ -390,6 +398,26 @@ function HeroSection({
     type: basicInfo.type || "",
   });
   const [heroText, setHeroText] = useState(text);
+
+  // Sync dialog fields with latest props when dialog is opened
+  useEffect(() => {
+    if (isDialogOpen) {
+      setNewInstitution({
+        name: basicInfo.name || "",
+        country: basicInfo.location?.country || "",
+        city: basicInfo.location?.city || "",
+        affiliation: Array.isArray(basicInfo.affiliation?.boards)
+          ? basicInfo.affiliation?.boards
+          : typeof basicInfo.affiliation?.boards === "string"
+          ? [basicInfo.affiliation?.boards]
+          : [],
+        phoneNumber: basicInfo.contact?.phone || "",
+        email: basicInfo.contact?.email || "",
+        type: basicInfo.type || "",
+      });
+      setHeroText(text);
+    }
+  }, [isDialogOpen, basicInfo, text]);
 
   // Update institution data in Supabase
   const updateInstitutionDataToSupabase = useCallback(async () => {
@@ -450,8 +478,85 @@ function HeroSection({
 
   const [loading, setLoading] = useState(false);
   const { addToast } = useToast();
-
+const[logoImage, setLogoImage] = useState<File | null>(null);
+  const [coverImage, setCoverImage] = useState<File | null>(null);
   // Save hero text to Supabase
+
+  async function uploadImagesToSupabase() {
+setLoading(true);
+if (!slug) {
+  alert("Institution identifier (slug) is missing.");
+  setLoading(false);
+  return;
+}
+
+try {
+  let logoUrl = "";
+  let coverUrl = "";
+
+  // Upload logo image if selected
+  if (logoImage) {
+    const logoPath = `${basicInfo.name}/${slug}/${logoImage.name}`;
+    const { error: logoUploadError } = await supabase.storage
+      .from("logo")
+      .upload(logoPath, logoImage);
+    if (logoUploadError) {
+      alert("Failed to upload logo: " + logoUploadError.message);
+      setLoading(false);
+      return;
+    }
+    const { data: logoPublic } = supabase.storage
+      .from("logo")
+      .getPublicUrl(logoPath);
+    logoUrl = logoPublic?.publicUrl || "";
+  }
+
+  // Upload cover image if selected
+  if (coverImage) {
+    const coverPath = `${basicInfo.name}/${slug}/${coverImage.name}`;
+    const { error: coverUploadError } = await supabase.storage
+      .from("cover-image")
+      .upload(coverPath, coverImage);
+    if (coverUploadError) {
+      alert("Failed to upload cover image: " + coverUploadError.message);
+      setLoading(false);
+      return;
+    }
+    const { data: coverPublic } = supabase.storage
+      .from("cover-image")
+      .getPublicUrl(coverPath);
+    coverUrl = coverPublic?.publicUrl || "";
+  }
+  
+
+  // Update the database with the new URLs
+  const updatePayload: Record<string, any> = {};
+  if (logoUrl) updatePayload.logo = logoUrl;
+  if (coverUrl) updatePayload.images = [{slide: coverUrl ,alt: "Cover Image"}];
+
+  if (Object.keys(updatePayload).length > 0) {
+    const { error: updateError } = await supabase
+      .from("edu_centers")
+      .update(updatePayload)
+      .eq("edu_id", slug);
+    if (updateError) {
+      console.log("Failed to update image URLs: " + updateError);
+      setLoading(false);
+      return;
+    }
+  }
+
+  addToast({
+    message: "Images uploaded successfully!",
+    variant: "success",
+  });
+  setIsDialog2Open(false);
+} catch (err: any) {
+  alert("Unexpected error: " + (err?.message || err));
+}
+setLoading(false);
+
+  }
 
   return (
     <>
@@ -636,12 +741,93 @@ function HeroSection({
                   <i className="ri-user-smile-line"></i>&nbsp;Connect with
                   Students
                 </Button>
+                <Button
+                  id="arrow-button-1"
+                  size="m"
+                  weight="default"
+                  variant="secondary"
+                  style={{ backgroundColor: "#F2F2EF" }}
+                  onMouseEnter={(e: React.MouseEvent<HTMLButtonElement>) =>
+                    (e.currentTarget.style.backgroundColor = "#E0E0DC")
+                  }
+                  onMouseLeave={(e: React.MouseEvent<HTMLButtonElement>) =>
+                    (e.currentTarget.style.backgroundColor = "#F2F2EF")
+                  }
+                  onClick={() => setIsDialog2Open(true)}
+                >
+                  <i className="ri-camera-line"></i>&nbsp;Upload logo and image
+                </Button>
               </Row>
             </Column>
           </Column>
         </Row>
       </Flex>
 
+      <Dialog
+        isOpen={isDialog2Open}
+        onClose={() => setIsDialog2Open(false)}
+        title="Upload the logo and image"
+        description="This will help in better representation of your institution."
+        footer={
+          <Row fillWidth horizontal="start" vertical="center">
+            <Text
+              variant="label-default-xs"
+              onBackground="neutral-weak"
+              style={{ fontSize: "13px" }}
+            >
+              <i className="ri-information-line"></i>&nbsp;The images submitted
+              will be reviewed before being published.
+            </Text>
+          </Row>
+        }
+      >
+        {" "}
+        <Column fillWidth gap="16" horizontal="space-between" vertical="start">
+          <MediaUpload initialPreviewImage={""} aspectRatio="16/9" onFileUpload={async (file: File) => {
+            setCoverImage(file);
+          }} 
+          />
+          <Text
+            variant="label-default-xs"
+            onBackground="neutral-weak"
+            style={{ fontSize: "13px" }}
+          >
+            Aspect ratio of 16:9 is recommended for the cover image.
+          </Text>
+        </Column>
+        <Column
+          fillWidth
+          gap="16"
+          horizontal="space-between"
+          vertical="start"
+          marginTop="16"
+        >
+          <MediaUpload aspectRatio="1/1" maxWidth={15} maxHeight={15} onFileUpload={
+            async (file: File) => {
+              setLogoImage(file);
+            }
+          } />
+          <Text
+            variant="label-default-xs"
+            onBackground="neutral-weak"
+            style={{ fontSize: "13px" }}
+          >
+            Aspect ratio of 1:1 is recommended for the logo.
+          </Text>
+        </Column>
+        <Row fillWidth horizontal="end">
+          <Button size="m" onClick={uploadImagesToSupabase}>
+            {loading ? (
+              <>
+                Uploading...&nbsp;
+                <Spinner size="s" />
+              </>
+            ) : (
+              "Upload"
+            )}
+          </Button>
+        </Row>
+      </Dialog>
       <Dialog
         isOpen={isDialogOpen}
         onClose={() => setIsDialogOpen(false)}
@@ -840,6 +1026,7 @@ interface AboutSchoolProps {
   motto: string;
   basicInfo: BasicInfo;
   slug?: string;
+  cover_image: string;
 }
 
 function AboutSchool({
@@ -848,35 +1035,41 @@ function AboutSchool({
   motto,
   basicInfo,
   slug,
+  cover_image,
 }: AboutSchoolProps) {
   // State for editable fields
   const [aboutText, setAboutText] = useState(text);
   const [mottoText, setMottoText] = useState(motto);
-  const [yearEstablished, setYearEstablished] = useState(
-    basicInfo.year_established ?? ""
-  );
+  const [yearEstablished, setYearEstablished] = useState(basicInfo.year_established ?? "");
   const [institutionType, setInstitutionType] = useState(basicInfo.type ?? "");
   const [gender, setGender] = useState(basicInfo.gender ?? "");
-  const [boardingType, setBoardingType] = useState(
-    basicInfo.boarding_type ?? ""
-  );
-  const [minClass, setMinClass] = useState(
-    basicInfo.classes_offered?.min ?? ""
-  );
-  const [maxClass, setMaxClass] = useState(
-    basicInfo.classes_offered?.max ?? ""
-  );
-  const [studentPopulation, setStudentPopulation] = useState(
-    basicInfo.student_population ?? 0
-  );
-  const [affiliationBoards, setAffiliationBoards] = useState(
-    basicInfo.affiliation?.boards ?? ""
-  );
-  const [affiliationType, setAffiliationType] = useState(
-    basicInfo.affiliation?.type ?? ""
-  );
+  const [boardingType, setBoardingType] = useState(basicInfo.boarding_type ?? "");
+  const [minClass, setMinClass] = useState(basicInfo.classes_offered?.min ?? "");
+  const [maxClass, setMaxClass] = useState(basicInfo.classes_offered?.max ?? "");
+  const [studentPopulation, setStudentPopulation] = useState(basicInfo.student_population ?? 0);
+  const [affiliationBoards, setAffiliationBoards] = useState(basicInfo.affiliation?.boards ?? "");
+  const [affiliationType, setAffiliationType] = useState(basicInfo.affiliation?.type ?? "");
   const { addToast } = useToast();
   const [loading, setLoading] = useState(false);
+
+  // Sync state with props when they change (fixes initial value bug)
+  useEffect(() => {
+    setAboutText(text);
+  }, [text]);
+  useEffect(() => {
+    setMottoText(motto);
+  }, [motto]);
+  useEffect(() => {
+    setYearEstablished(basicInfo.year_established ?? "");
+    setInstitutionType(basicInfo.type ?? "");
+    setGender(basicInfo.gender ?? "");
+    setBoardingType(basicInfo.boarding_type ?? "");
+    setMinClass(basicInfo.classes_offered?.min ?? "");
+    setMaxClass(basicInfo.classes_offered?.max ?? "");
+    setStudentPopulation(basicInfo.student_population ?? 0);
+    setAffiliationBoards(basicInfo.affiliation?.boards ?? "");
+    setAffiliationType(basicInfo.affiliation?.type ?? "");
+  }, [basicInfo]);
 
   // Save handler
   async function saveAboutSchoolToSupabase() {
@@ -1444,21 +1637,43 @@ function AboutSchool({
             </Text>
           )}
         </>
-        {isUser && (
-          <Row fillWidth horizontal="end">
-            <Button size="l" onClick={saveAboutSchoolToSupabase}>
-              {loading ? (
-                <>
-                  Saving...&nbsp;
-                  <Spinner size="s" />
-                </>
-              ) : (
-                "Save all"
-              )}
-            </Button>
-          </Row>
-        )}
       </Column>
+
+      <Column
+        fillWidth
+        horizontal="start"
+        vertical="start"
+        paddingY="16"
+        gap="12"
+      >
+        <Text
+          variant="body-default-xl"
+          style={{
+            color: "#181A1D",
+            fontSize: "25px",
+            fontWeight: "500",
+          }}
+          className={dmsans.className}
+        >
+          Images
+        </Text>
+        <Media aspectRatio="16/9" src={cover_image} alt="Cover Image" unoptimized/>
+      </Column>
+
+      {isUser && (
+        <Row fillWidth horizontal="end">
+          <Button size="l" onClick={saveAboutSchoolToSupabase}>
+            {loading ? (
+              <>
+                Saving...&nbsp;
+                <Spinner size="s" />
+              </>
+            ) : (
+              "Save all"
+            )}
+          </Button>
+        </Row>
+      )}
     </>
   );
 }
@@ -1598,14 +1813,14 @@ function Admission({
       await supabase
         .from("edu_centers")
         .update({
-          tables: {
-            ...prevTables,
-            admission: {
-              admissionRows: headerAdmissionRows,
-              classesRows: headerClassesRows,
-              feesRows: headerFeesRows,
-            },
-          },
+          // tables: {
+          //   ...prevTables,
+          //   admission: {
+          //     admissionRows: headerAdmissionRows,
+          //     classesRows: headerClassesRows,
+          //     feesRows: headerFeesRows,
+          //   },
+          // },
           extra_links: {
             ...prevExtraLinks,
             ...extraLinks,
@@ -1647,6 +1862,7 @@ function Admission({
           <Textarea
             style={{ minHeight: "200px" }}
             id="d"
+            placeholder="Enter the admission procedure for your institution"
             value={admissionText}
             onChange={(e) => setAdmissionText(e.target.value)}
           ></Textarea>
@@ -1687,6 +1903,7 @@ function Admission({
                   {idx + 1}.
                 </Text>
                 <Input
+                disabled
                   id=""
                   placeholder="Class"
                   value={row[0]}
@@ -1695,6 +1912,7 @@ function Admission({
                   }
                 />
                 <Input
+                disabled
                   id=""
                   placeholder="Minimum Age"
                   value={row[1]}
@@ -1703,6 +1921,7 @@ function Admission({
                   }
                 />
                 <Input
+                disabled
                   id=""
                   placeholder="Maximum Age"
                   value={row[2]}
@@ -1720,7 +1939,8 @@ function Admission({
               >
                 Remove last
               </Button>
-              <Button size="m" onClick={addClassesRow}>
+              <Button size="m" onClick={addClassesRow}                 disabled
+>
                 Add
               </Button>
             </Row>
@@ -1761,7 +1981,8 @@ function Admission({
                   {idx + 1}.
                 </Text>
                 <Input
-                  id=""
+                  id=""                disabled
+
                   placeholder="Class"
                   value={row[0]}
                   onChange={(e) =>
@@ -1771,7 +1992,8 @@ function Admission({
                 <Input
                   id=""
                   placeholder="Particulars"
-                  value={row[1]}
+                  value={row[1]}                disabled
+
                   onChange={(e) =>
                     handleAdmissionRowChange(idx, 1, e.target.value)
                   }
@@ -1779,7 +2001,8 @@ function Admission({
                 <Input
                   id=""
                   placeholder="Date"
-                  value={row[2]}
+                  value={row[2]}                disabled
+
                   onChange={(e) =>
                     handleAdmissionRowChange(idx, 2, e.target.value)
                   }
@@ -1794,7 +2017,8 @@ function Admission({
               >
                 Remove last
               </Button>
-              <Button size="m" onClick={addAdmissionRow}>
+              <Button size="m" onClick={addAdmissionRow}                 disabled
+>
                 Add
               </Button>
             </Row>
@@ -1837,23 +2061,27 @@ function Admission({
                 <Input
                   id=""
                   placeholder="Class"
-                  value={row[0]}
+                  value={row[0]}                disabled
+
                   onChange={(e) => handleFeesRowChange(idx, 0, e.target.value)}
                 />
                 <Input
-                  id=""
+                  id=""                disabled
+
                   placeholder="Admission Fee"
                   value={row[1]}
                   onChange={(e) => handleFeesRowChange(idx, 1, e.target.value)}
                 />
                 <Input
-                  id=""
+                  id=""                disabled
+
                   placeholder="Tuition Fee (Monthly)"
                   value={row[2]}
                   onChange={(e) => handleFeesRowChange(idx, 2, e.target.value)}
                 />
                 <Input
-                  id=""
+                  id=""                disabled
+
                   placeholder="Total Annual Fee"
                   value={row[3]}
                   onChange={(e) => handleFeesRowChange(idx, 3, e.target.value)}
@@ -1868,7 +2096,8 @@ function Admission({
               >
                 Remove last
               </Button>
-              <Button size="m" onClick={addFeesRow}>
+              <Button size="m" onClick={addFeesRow}                 disabled
+>
                 Add
               </Button>
             </Row>
@@ -2421,10 +2650,10 @@ function Academics({ isUser, tables, slug, extra_links }: AcademicsProps) {
       await supabase
         .from("edu_centers")
         .update({
-          tables: {
-            ...prevTables,
-            academics: { timeRow, vacationRow, classRow },
-          },
+          // tables: {
+          //   ...prevTables,
+          //   academics: { timeRow, vacationRow, classRow },
+          // },
           extra_links: {
             ...prevExtraLinks,
             ...extraLinks,
@@ -2470,13 +2699,15 @@ function Academics({ isUser, tables, slug, extra_links }: AcademicsProps) {
                   {idx + 1}.
                 </Text>
                 <Input
-                  id=""
+                  id=""                disabled
+
                   placeholder="Class e.g. 12th"
                   value={row[0]}
                   onChange={(e) => handleTimeRowChange(idx, 0, e.target.value)}
                 />
                 <Flex gap="4">
-                  <Input
+                  <Input                disabled
+
                     id=""
                     placeholder="Start"
                     value={row[1]}
@@ -2487,7 +2718,8 @@ function Academics({ isUser, tables, slug, extra_links }: AcademicsProps) {
                     hasSuffix={<Text onBackground="neutral-weak">24HR</Text>}
                   />
                   <Input
-                    id=""
+                    id=""                disabled
+
                     placeholder="End"
                     description=" 24-hour format"
                     value={row[2]}
@@ -2507,7 +2739,8 @@ function Academics({ isUser, tables, slug, extra_links }: AcademicsProps) {
               >
                 Remove last
               </Button>
-              <Button size="m" onClick={addTimeRow}>
+              <Button size="m" onClick={addTimeRow}                 disabled
+>
                 Add
               </Button>
             </Row>
@@ -2552,7 +2785,8 @@ function Academics({ isUser, tables, slug, extra_links }: AcademicsProps) {
                   {idx + 1}.
                 </Text>
                 <Input
-                  id=""
+                  id=""                disabled
+
                   placeholder="Vacation"
                   value={row[0]}
                   onChange={(e) =>
@@ -2562,7 +2796,8 @@ function Academics({ isUser, tables, slug, extra_links }: AcademicsProps) {
                 <DateRangeInput
                   id=""
                   startLabel="Start Date"
-                  height="s"
+                  height="s"                disabled
+
                   style={{ minWidth: "300px" }}
                   cursor="interactive"
                   endLabel="End Date"
@@ -2620,7 +2855,8 @@ function Academics({ isUser, tables, slug, extra_links }: AcademicsProps) {
               >
                 Remove last
               </Button>
-              <Button size="m" onClick={addVacationRow}>
+              <Button size="m" onClick={addVacationRow}                 disabled
+>
                 Add
               </Button>
             </Row>
@@ -2671,13 +2907,15 @@ function Academics({ isUser, tables, slug, extra_links }: AcademicsProps) {
                   {idx + 1}.
                 </Text>
                 <Input
-                  id=""
+                  id=""                disabled
+
                   placeholder="Level"
                   value={row[0]}
                   onChange={(e) => handleClassRowChange(idx, 0, e.target.value)}
                 />
                 <Input
-                  id=""
+                  id=""                disabled
+
                   placeholder="Classes"
                   value={row[1]}
                   onChange={(e) => handleClassRowChange(idx, 1, e.target.value)}
@@ -2692,7 +2930,8 @@ function Academics({ isUser, tables, slug, extra_links }: AcademicsProps) {
               >
                 Remove last
               </Button>
-              <Button size="m" onClick={addClassRow}>
+              <Button size="m" onClick={addClassRow}                 disabled
+>
                 Add
               </Button>
             </Row>
@@ -2843,7 +3082,7 @@ function Academics({ isUser, tables, slug, extra_links }: AcademicsProps) {
         )}
       </Column>
       {isUser && (
-        <Row fillWidth horizontal="end" >
+        <Row fillWidth horizontal="end">
           <Button size="l" onClick={handleSave} disabled={loading}>
             {loading ? (
               <>

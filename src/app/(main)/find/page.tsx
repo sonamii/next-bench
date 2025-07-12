@@ -352,36 +352,43 @@ function InstitutionCard({ data }: { data: any }) {
           </Card>
           <InfoRow
             icon="ri-map-pin-2-line"
-            text={`${center.location.city}, ${center.location.country}`}
+            text={`${center.location.city || "0"}, ${center.location.country || "0"}`}
           />
           <InfoRow
             icon="ri-artboard-2-line"
             text={
               Array.isArray(center.affiliation.boards)
-                ? center.affiliation.boards.join("/").toUpperCase()
-                : (center.affiliation.boards || "Not provided").toUpperCase()
+          ? (center.affiliation.boards.length > 0
+              ? center.affiliation.boards.join("/").toUpperCase()
+              : "Not provided")
+          : (center.affiliation.boards || "Not provided").toUpperCase()
             }
           />
           <InfoRow
             icon="ri-user-smile-line"
-            text={`${center.classes_offered.min || "0000"} to ${
-              center.classes_offered.max || "0000"
+            text={`${center.classes_offered.min || "-th"} to ${
+              center.classes_offered.max || "-th"
             }`}
           />
           <InfoRow
             icon="ri-building-4-line"
             text={
-              center.student_population?.toString() +
-                "+ students and teachers" || "Not provided"
+              center.student_population
+          ? center.student_population.toString() + "+ students and teachers"
+          : "0+ students and teachers"
             }
           />
           <InfoRow
             icon="ri-star-line"
-            text={center.star_rating?.toString() + "/5.0" || "Not provided"}
+            text={
+              center.star_rating
+          ? center.star_rating.toString() + "/5"
+          : "0/5"
+            }
           />
           <InfoRow
             icon="ri-store-2-line"
-            text={center.facilities || "Not provided"}
+            text={center.facilities || "NOT PROVIDED"}
           />
         </Column>
         <Column flex={2} gap="8">

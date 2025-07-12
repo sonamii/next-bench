@@ -43,6 +43,7 @@ import {
   ThemeSwitcher,
   TagInput,
 } from "@once-ui-system/core";
+import { useRouter } from "next/navigation";
 import {
   Lato,
   Montserrat,
@@ -1297,7 +1298,7 @@ function CreatedInstitutions({
               inst.name.toLowerCase().includes(searchValue.toLowerCase())
             );
             return found ? (
-              <Grid fillWidth fitHeight columns={2} gap="4">
+              <Grid fillWidth fitHeight columns={2} gap="16">
                 <InstitutionCard
                   key={found.id}
                   institution={found}
@@ -1587,6 +1588,7 @@ function InstitutionCard({
   if (!isCurrentUser && !published) {
     return null;
   }
+  const router = useRouter();
   return (
     <Card
       fillWidth
@@ -1595,22 +1597,29 @@ function InstitutionCard({
       gap="20"
       direction="column"
       padding="m"
+      radius="m"
       style={{ border: "none" }}
       background="transparent"
       id={institution.name.toLowerCase().replace(/\s+/g, "-").trim() + "-card"}
     >
-      <HeadingLink as="h6" id={`edu-${institution.id}`}>
-        <Text
+       <Row gap="12" vertical="center" > <Text
           onBackground="neutral-strong"
-          style={{ fontSize: "16px" }}
-          onClick={() => {
-            window.location.href = `/edu/${institution.id}`;
-          }}
+          style={{ fontSize: "18px" }}
+          
         >
           {institution.name}
-        </Text>{" "}
-      </HeadingLink>
-      <InstitutionRow label="Type:">{institution.type}</InstitutionRow>
+        </Text>{" "}<IconButton
+          variant="secondary"
+          onClick={() => {
+            router.push(`/edu/${institution.id}`);
+          }}
+        >
+          <i
+            className="ri-arrow-right-up-line"
+            style={{ fontSize: "23px" }}
+          ></i>
+        </IconButton></Row>
+      {/* <InstitutionRow label="Type:">{institution.type}</InstitutionRow>
 
       <InstitutionRow label="Short address:">
         {institution.address}
@@ -1625,7 +1634,7 @@ function InstitutionCard({
       </InstitutionRow>
       <InstitutionRow label="Email:">
         <InlineCode radius="xs-4">{institution.email}</InlineCode>
-      </InstitutionRow>
+      </InstitutionRow> */}
       {isCurrentUser && (
         <>
           {" "}

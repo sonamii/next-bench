@@ -26,6 +26,10 @@ import {
   User,
   UserMenu,
   Dialog,
+  Option,
+  Icon,
+  Skeleton,
+  RevealFx,
 } from "@once-ui-system/core";
 import { useEffect, useState } from "react";
 import {
@@ -238,6 +242,31 @@ const faqList = [
 ];
 
 function AboutBadge() {
+  const [session, setSession] = useState<any>(null);
+  const [profile, setProfile] = useState<{
+    pfp?: string;
+    profile_details?: any;
+  } | null>(null);
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data }) => {
+      if (data?.session) {
+        setSession(data.session);
+        const userId = data.session.user.id;
+        supabase
+          .from("user_profiles")
+          .select("pfp, profile_details")
+          .eq("uuid", userId)
+          .single()
+          .then(({ data: profileData }) => {
+            setProfile(profileData);
+          });
+      } else {
+        setSession(null);
+        setProfile(null);
+      }
+    });
+  }, []);
   return (
     <Flex
       fillWidth
@@ -245,7 +274,18 @@ function AboutBadge() {
       minHeight={4}
       vertical="center"
       horizontal="start"
+      gap="4"
     >
+      {session ? (
+        <UserMenu
+          name={profile?.profile_details?.personal_details.name}
+          placement="right-end"
+          selected={false}
+          avatarProps={{ src: profile?.pfp }}
+        />
+      ) : (
+        <Skeleton shape="circle" width="m" height="m"></Skeleton>
+      )}
       <Badge
         id="badge-6"
         paddingY="4"
@@ -282,21 +322,23 @@ function HeroSection() {
         horizontal="start"
         maxWidth={50}
       >
-        <Column>
-          <Text
-            style={{
-              color: "#181A1D",
-              fontSize: "70px",
-              lineHeight: "1em",
-              fontWeight: "500",
-              letterSpacing: ".3px",
-            }}
-            className={dmsans.className}
-          >
-            AI education center: where{" "}
-            <span style={{ color: "#626F45" }}>innovation</span> <br />
-            and <span style={{ color: "#626F45" }}>learning</span> converge
-          </Text>
+        <Column><Text
+              style={{
+                color: "#181A1D",
+                fontSize: "70px",
+                lineHeight: "1em",
+                fontWeight: "500",
+                letterSpacing: ".3px",
+              }}
+              className={dmsans.className}
+            >
+         
+            
+              AI education center: where{" "}
+              <span style={{ color: "#626F45" }}>innovation</span> <br />
+              and <span style={{ color: "#626F45" }}>learning</span> converge
+           
+        </Text>
         </Column>
       </Column>
       <HeroStats />
