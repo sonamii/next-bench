@@ -352,16 +352,18 @@ function InstitutionCard({ data }: { data: any }) {
           </Card>
           <InfoRow
             icon="ri-map-pin-2-line"
-            text={`${center.location.city || "0"}, ${center.location.country || "0"}`}
+            text={`${center.location.city || "0"}, ${
+              center.location.country || "0"
+            }`}
           />
           <InfoRow
             icon="ri-artboard-2-line"
             text={
               Array.isArray(center.affiliation.boards)
-          ? (center.affiliation.boards.length > 0
-              ? center.affiliation.boards.join("/").toUpperCase()
-              : "Not provided")
-          : (center.affiliation.boards || "Not provided").toUpperCase()
+                ? center.affiliation.boards.length > 0
+                  ? center.affiliation.boards.join("/").toUpperCase()
+                  : "Not provided"
+                : (center.affiliation.boards || "Not provided").toUpperCase()
             }
           />
           <InfoRow
@@ -374,16 +376,15 @@ function InstitutionCard({ data }: { data: any }) {
             icon="ri-building-4-line"
             text={
               center.student_population
-          ? center.student_population.toString() + "+ students and teachers"
-          : "0+ students and teachers"
+                ? center.student_population.toString() +
+                  "+ students and teachers"
+                : "0+ students and teachers"
             }
           />
           <InfoRow
             icon="ri-star-line"
             text={
-              center.star_rating
-          ? center.star_rating.toString() + "/5"
-          : "0/5"
+              center.star_rating ? center.star_rating.toString() + "/5" : "0/5"
             }
           />
           <InfoRow
@@ -535,6 +536,7 @@ function TableSection({
         <Select
           id="searchable-select"
           label="Choose a category"
+          disabled
           height="s"
           style={{ maxWidth: "250px" }}
           value={category}
@@ -544,7 +546,7 @@ function TableSection({
           ]}
           onSelect={setCategory}
         />
-        <Button weight="default" variant="primary" size="l">
+        <Button weight="default" variant="primary" size="l" disabled={true}>
           Filters
         </Button>
       </Row>
@@ -607,7 +609,7 @@ export default function Home() {
               name: info.name || "",
               logo: row.logo || "",
               type: info.type || "",
-              gender:"",
+              gender: "",
               year_established: info.year_established || "",
               boarding_type: info.boarding_type || "",
               affiliation: info.affiliation || { boards: [], type: "" },

@@ -212,44 +212,50 @@ export default function Page() {
         >
           <Navbar />
           <Flex fillWidth height={7}></Flex>
-          {!isDataLoaded
-           ? (
-            <div style={{alignContent:"center",minWidth:"100vw",minHeight:"100vh"}}>
+          {!isDataLoaded ? (
+            <div
+              style={{
+                alignContent: "center",
+                minWidth: "100vw",
+                minHeight: "100vh",
+              }}
+            >
               <Spinner size="xl"></Spinner>
             </div>
           ) : (
             <Column>
-            <RevealFx>
-              <Flex fitHeight style={{ minHeight: "fit-content !important" }}>
-                <HeroSection
-                  isUser={isUser}
-                  logo={logo}
-                  basicInfo={basicInfo}
-                  text={text.hero ?? ""}
-                  slug={slug}
-                  rating={rating}
-                ></HeroSection>
-              </Flex></RevealFx>
+              <RevealFx>
+                <Flex fitHeight style={{ minHeight: "fit-content !important" }}>
+                  <HeroSection
+                    isUser={isUser}
+                    logo={logo}
+                    basicInfo={basicInfo}
+                    text={text.hero ?? ""}
+                    slug={slug}
+                    rating={rating}
+                  ></HeroSection>
+                </Flex>
+              </RevealFx>
 
               <Flex fillWidth height={3}></Flex>
 
               <Flex fillWidth maxWidth={60} center>
                 <RevealFx>
-                <SegmentedControl
-                  buttons={[
-                    { value: "about", label: "About" },
-                    { value: "admission", label: "Admission & Fees" },
-                    {
-                      value: "facilities",
-                      label: "Facilities & Infrastructure",
-                    },
-                    { value: "extra", label: "Extra Curricular" },
-                    { value: "academics", label: "Academics" },
-                    { value: "reviews", label: "Reviews" },
-                    { value: "qna", label: "Q&A" },
-                  ]}
-                  onToggle={(value) => setActiveTab(value)}
-                />
+                  <SegmentedControl
+                    buttons={[
+                      { value: "about", label: "About" },
+                      { value: "admission", label: "Admission & Fees" },
+                      {
+                        value: "facilities",
+                        label: "Facilities & Infrastructure",
+                      },
+                      { value: "extra", label: "Extra Curricular" },
+                      { value: "academics", label: "Academics" },
+                      { value: "reviews", label: "Reviews" },
+                      { value: "qna", label: "Q&A" },
+                    ]}
+                    onToggle={(value) => setActiveTab(value)}
+                  />
                 </RevealFx>
               </Flex>
               <Flex fillWidth height={3}></Flex>
@@ -265,14 +271,14 @@ export default function Page() {
                   {
                     about: (
                       <RevealFx direction="column">
-                      <AboutSchool
-                        isUser={isUser}
-                        motto={motto}
-                        text={text.about ?? ""}
-                        basicInfo={basicInfo}
-                        slug={slug}
-                        cover_image={images[0]?.slide}
-                      />
+                        <AboutSchool
+                          isUser={isUser}
+                          motto={motto}
+                          text={text.about ?? ""}
+                          basicInfo={basicInfo}
+                          slug={slug}
+                          cover_image={images[0]?.slide}
+                        />
                       </RevealFx>
                     ),
                     admission: (
@@ -635,7 +641,13 @@ function HeroSection({
           wrap
         >
           <Column fillWidth fitHeight vertical="center" horizontal="start">
-            <Button variant="secondary" weight="default" size="l" arrowIcon onClick={() => router.back()}>
+            <Button
+              variant="secondary"
+              weight="default"
+              size="l"
+              arrowIcon
+              onClick={() => router.back()}
+            >
               Back
             </Button>
             <Flex fillWidth height={0.5} />
@@ -657,11 +669,8 @@ function HeroSection({
                       {" "}
                       {newInstitution.type || basicInfo.type}
                     </span>
-                    &nbsp;in{" "}
-                    <span style={{ color: "#626F45" }}></span>
-                      {newInstitution.country ||
-                        basicInfo.location?.country}
-                    .{" "}
+                    &nbsp;in <span style={{ color: "#626F45" }}></span>
+                    {newInstitution.country || basicInfo.location?.country}.{" "}
                   </Text>
                 </u>
               </a>
@@ -1006,10 +1015,10 @@ function HeroSection({
                   Enter
                 </Kbd>
               }
-               description={
+              description={
                 <>
-                  <i className="ri-information-line"></i>&nbsp;Enter the affiliations 
-                  of your institution
+                  <i className="ri-information-line"></i>&nbsp;Enter the
+                  affiliations of your institution
                 </>
               }
             />
@@ -1738,24 +1747,29 @@ function AboutSchool({
         paddingY="16"
         gap="12"
       >
-        <Accordion title={<Text
-          variant="body-default-xl"
-          style={{
-            color: "#181A1D",
-            fontSize: "25px",
-            fontWeight: "500",
-          }}
-          className={dmsans.className}
+        <Accordion
+          title={
+            <Text
+              variant="body-default-xl"
+              style={{
+                color: "#181A1D",
+                fontSize: "25px",
+                fontWeight: "500",
+              }}
+              className={dmsans.className}
+            >
+              Images
+            </Text>
+          }
         >
-          Images
-        </Text>}> <Media
-          aspectRatio="16/9"
-          src={cover_image}
-          alt="Cover Image"
-          unoptimized
-        /></Accordion>
-        
-       
+          {" "}
+          <Media
+            aspectRatio="16/9"
+            src={cover_image}
+            alt="Cover Image"
+            unoptimized
+          />
+        </Accordion>
       </Column>
 
       {isUser && (
