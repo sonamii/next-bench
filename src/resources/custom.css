@@ -71,52 +71,215 @@ html {
 
 @media (max-width: 1100px) {
   .findInstitutionGrid {
-    grid-template-columns: repeat(2, 4fr) ;
-    height: fit-content ;
+    grid-template-columns: repeat(2, 4fr);
+    height: fit-content;
     gap: 40px;
 
   }
 }
 
-.navIcon{
+.navIcon {
   display: none;
 }
 
 
 @media (max-width: 770px) {
-  .navIcon{
+  .navIcon {
     display: flex;
   }
 }
 
 .cardPage {
-  min-width: 385px ;
+  min-width: 385px;
   max-height: 480px;
 }
 
 @media (max-width: 650px) {
-  .cardPage{
-    min-width: 95vw !important;
-    max-width: 95vw !important;
+  .cardPage {
+    min-width: 87vw !important;
+    max-width: 87vw !important;
   }
 }
 
-.row1{
+.row1 {
   flex-direction: row;
   display: flex;
 }
+
 @media (max-width: 875px) {
-  .row1{
+  .row1 {
     flex-direction: column !important;
     display: flex !important;
   }
 
-  .footer{
-    max-width: 95vw !important;
+  .footer {
+    max-width: 99vw !important;
+    width: 100% !important;
   }
 }
+
 @media (max-width: 1100px) {
-  .personal-account-details-grid{
+  .personal-account-details-grid {
     grid-template-columns: repeat(1, 4fr) !important;
+  }
+}
+
+.cardDLabelText {
+  color: #626f45;
+  font-size: 160px;
+  line-height: 1em;
+  font-weight: 400;
+  letter-spacing: .3px;
+  position: absolute;
+  top: 8%;
+  opacity: 0.5;
+}
+
+.cardTextColumn {
+  padding-right: 128px;
+}
+
+.trustedText {
+  font-size: 18px;
+  font-weight: 400;
+  text-align: center;
+}
+
+@media (max-width: 875px) {
+
+  .logo{
+    width: 40px !important;
+    height: 30px !important;
+  }
+  .logoText {
+    font-size: 14px !important;
+    margin-top: 5px !important;
     }
+  .titleTexts {
+    font-size: 45px !important;
+  }
+
+  .statsTexts {
+    font-size: 30px !important;
+  }
+
+  .statsColumn {
+    align-items: start !important;
+  }
+
+  .cardDLabelText {
+    font-size: 100px !important;
+    top: 16% !important;
+  }
+
+  .faqText {
+    font-size: 15px !important;
+  }
+
+  .cardTextColumn {
+    align-items: center !important;
+    text-align: center !important;
+    padding-right: 0 !important;
+    padding-inline: 10px !important;
+  }
+
+  .cardTextTitle {
+    font-size: 30px !important;
+
+  }
+
+  .cardBRow {
+    gap: 8px !important;
+  }
+
+  .cardB {
+    min-height: 530px !important;
+  }
+
+  .cardCTextColumn {
+    gap: 12px !important;
+  }
+
+  .cardCLabelText {
+    font-size: 12px !important;
+  }
+
+  .cardDSubtitleText {
+    text-align: center !important;
+  }
+
+  .cardDTitleText {
+    text-align: center !important;
+  }
+
+  .trustedText {
+    padding-inline: 20px !important;
+    font-size: 15px !important;
+  }
+
+  .trustedSection {
+    padding-top: 0px !important;
+  }
+
+  .footerTop {
+    flex-direction: column !important;
+  }
+  .footerTitle{
+    text-align: center !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  .footerBottom{
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  .footerAvatar{
+    scale: 0.7  !important;
+  }
+  .footerAvatarGroup{
+    flex-direction: row !important;
+    flex-wrap: wrap !important;
+    margin-top: 20px;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  .footerGroup{
+    align-content: center !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+  }
+
+.footerLinkTexts{
+  font-size: 15px !important;
+}
+
+
+
+  /* ========================================= */
+
+  .profileFullName{
+    font-size: 33px !important;
+  }
+
+
+
+
+  /* ======= */
+
+  .findDescriptionColumn{
+    margin-top: 20px !important;
+  }
+
+  .findInstitutionColumn{
+    padding-inline: 12px;
+  }
+
+  .selectCategory{
+    display: none !important;
+  }
 }

@@ -12,6 +12,15 @@ import {
 } from "@once-ui-system/core";
 import { useState } from "react";
 
+import { Outfit } from "next/font/google";
+
+const outfit = Outfit({
+  subsets: ["latin"],
+  variable: "--font-inter",
+  weight: ["400", "500", "600", "700"],
+});
+
+
 export default function Navbar() {
    const [isActive, setIsActive] = useState(false);
   
@@ -32,8 +41,9 @@ export default function Navbar() {
           width={4}
           height={3}
           alt="A"
+          className="logo"
         />
-        <Text variant="label-default-xl">Next Bench</Text>
+        <Text variant="label-default-xl" className={"logoText" + " " +outfit.className }>Next Bench</Text>
       </Flex>
       <Flex>
         <MegaMenu
