@@ -112,10 +112,7 @@ html {
     display: flex !important;
   }
 
-  .footer {
-    max-width: 99vw !important;
-    width: 100% !important;
-  }
+  
 }
 
 @media (max-width: 1100px) {
@@ -222,6 +219,9 @@ html {
   .trustedSection {
     padding-top: 0px !important;
   }
+  .footer{
+    min-width: 99vw !important;
+  }
 
   .footerTop {
     flex-direction: column !important;
@@ -304,5 +304,15 @@ html {
 
   .eduText {
     font-size: 14px !important;
+  }
+
+
+  .qnaColumn{
+    flex-direction: column !important;
+  }
+
+  .basicInformationColumn{
+    flex-direction: column !important;
+    
   }
 }

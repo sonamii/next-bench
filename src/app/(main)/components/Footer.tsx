@@ -36,6 +36,7 @@ export default function Footer() {
       gap="16"
       style={{ maxWidth: "1600px", minWidth: "fit-content" }}
       wrap={true}
+      className="footer"
     >
       <FooterSection footerLinks={footerLinks} avatarGroup2={avatarGroup2} />
     </Row>

@@ -32,6 +32,10 @@ import {
   Carousel,
   Media,
   RevealFx,
+  UserMenu,
+  Badge,
+  Skeleton,
+  Tag,
 } from "@once-ui-system/core";
 import Navbar from "../../components/NavBar";
 
@@ -653,15 +657,9 @@ function HeroSection({
           wrap
         >
           <Column fillWidth fitHeight vertical="center" horizontal="start">
-            <Button
-              variant="secondary"
-              weight="default"
-              size="l"
-              arrowIcon
-              onClick={() => router.back()}
-            >
-              Back
-            </Button>
+           
+                        <AboutBadge/>
+
             <Flex fillWidth height={0.5} />
             <Column>
               <a>
@@ -1329,7 +1327,7 @@ function AboutSchool({
         <Column fillWidth gap="12">
           {/* Year Established */}
           {isUser ? (
-            <Flex fillWidth horizontal="start">
+            <Flex fillWidth horizontal="start" wrap={true} gap="20" className="basicInformationColumn">
               <Row flex={1}>
                 <Text
                   onBackground="neutral-weak"
@@ -1339,7 +1337,7 @@ function AboutSchool({
                   <Kbd
                     background="neutral-medium"
                     border="neutral-medium"
-                    onBackground="neutral-weak"
+                    onBackground="neutral-medium"
                     style={{ minWidth: "fit-content", whiteSpace: "nowrap" }}
                   >
                     1. Year Established :
@@ -1365,7 +1363,7 @@ function AboutSchool({
                 <Kbd
                   background="neutral-medium"
                   border="neutral-medium"
-                  onBackground="neutral-weak"
+                    onBackground="neutral-medium"
                   style={{ minWidth: "fit-content", whiteSpace: "nowrap" }}
                 >
                   1. Year Established :
@@ -1383,7 +1381,7 @@ function AboutSchool({
 
           {/* Institution Type */}
           {isUser ? (
-            <Flex fillWidth horizontal="start">
+            <Flex fillWidth horizontal="start" wrap={true} gap="20"className="basicInformationColumn">
               <Row flex={1}>
                 <Text
                   onBackground="neutral-weak"
@@ -1392,7 +1390,7 @@ function AboutSchool({
                   <Kbd
                     background="neutral-medium"
                     border="neutral-medium"
-                    onBackground="neutral-weak"
+                    onBackground="neutral-medium"
                     style={{ minWidth: "fit-content", whiteSpace: "nowrap" }}
                   >
                     2. Institution Type :
@@ -1417,7 +1415,7 @@ function AboutSchool({
                 <Kbd
                   background="neutral-medium"
                   border="neutral-medium"
-                  onBackground="neutral-weak"
+                    onBackground="neutral-medium"
                   style={{ minWidth: "fit-content", whiteSpace: "nowrap" }}
                 >
                   2. Institution Type :
@@ -1435,7 +1433,7 @@ function AboutSchool({
 
           {/* Gender */}
           {isUser ? (
-            <Flex fillWidth horizontal="start">
+            <Flex fillWidth horizontal="start" wrap={true} gap="20"className="basicInformationColumn">
               <Row flex={1}>
                 <Text
                   onBackground="neutral-weak"
@@ -1444,7 +1442,7 @@ function AboutSchool({
                   <Kbd
                     background="neutral-medium"
                     border="neutral-medium"
-                    onBackground="neutral-weak"
+                    onBackground="neutral-medium"
                     style={{ minWidth: "fit-content", whiteSpace: "nowrap" }}
                   >
                     3. Institution gender :
@@ -1469,7 +1467,7 @@ function AboutSchool({
                 <Kbd
                   background="neutral-medium"
                   border="neutral-medium"
-                  onBackground="neutral-weak"
+                    onBackground="neutral-medium"
                   style={{ minWidth: "fit-content", whiteSpace: "nowrap" }}
                 >
                   3. Institution gender :
@@ -1487,7 +1485,7 @@ function AboutSchool({
 
           {/* Boarding Type */}
           {isUser ? (
-            <Flex fillWidth horizontal="start">
+            <Flex fillWidth horizontal="start" wrap={true} gap="20"className="basicInformationColumn">
               <Row flex={1}>
                 <Text
                   onBackground="neutral-weak"
@@ -1496,7 +1494,7 @@ function AboutSchool({
                   <Kbd
                     background="neutral-medium"
                     border="neutral-medium"
-                    onBackground="neutral-weak"
+                    onBackground="neutral-medium"
                     style={{ minWidth: "fit-content", whiteSpace: "nowrap" }}
                   >
                     4. Boarding Type :
@@ -1521,7 +1519,7 @@ function AboutSchool({
                 <Kbd
                   background="neutral-medium"
                   border="neutral-medium"
-                  onBackground="neutral-weak"
+                    onBackground="neutral-medium"
                   style={{ minWidth: "fit-content", whiteSpace: "nowrap" }}
                 >
                   4. Boarding Type :
@@ -1539,7 +1537,7 @@ function AboutSchool({
 
           {/* Classes Offered */}
           {isUser ? (
-            <Flex fillWidth horizontal="start">
+            <Flex fillWidth horizontal="start" wrap={true} gap="20"className="basicInformationColumn">
               <Row flex={1}>
                 <Text
                   onBackground="neutral-weak"
@@ -1548,14 +1546,14 @@ function AboutSchool({
                   <Kbd
                     background="neutral-medium"
                     border="neutral-medium"
-                    onBackground="neutral-weak"
+                    onBackground="neutral-medium"
                     style={{ minWidth: "fit-content", whiteSpace: "nowrap" }}
                   >
                     5. Classes offered:
                   </Kbd>
                 </Text>
               </Row>
-              <Row flex={3} fillWidth gap="8">
+              <Row flex={3} fillWidth gap="8" className="basicInformationColumn">
                 <Input
                   id=""
                   placeholder="e.g. 1st/2nd"
@@ -1579,7 +1577,7 @@ function AboutSchool({
                 <Kbd
                   background="neutral-medium"
                   border="neutral-medium"
-                  onBackground="neutral-weak"
+                    onBackground="neutral-medium"
                   style={{ minWidth: "fit-content", whiteSpace: "nowrap" }}
                 >
                   5. Classes offered:
@@ -1597,7 +1595,7 @@ function AboutSchool({
 
           {/* Affiliation Boards */}
           {isUser ? (
-            <Flex fillWidth horizontal="start">
+            <Flex fillWidth horizontal="start" wrap={true} gap="20"className="basicInformationColumn">
               <Row flex={1}>
                 <Text
                   onBackground="neutral-weak"
@@ -1607,7 +1605,7 @@ function AboutSchool({
                     background="neutral-medium"
                     style={{ minWidth: "fit-content", whiteSpace: "nowrap" }}
                     border="neutral-medium"
-                    onBackground="neutral-weak"
+                    onBackground="neutral-medium"
                   >
                     6. Affiliation :
                   </Kbd>
@@ -1642,7 +1640,7 @@ function AboutSchool({
                   background="neutral-medium"
                   style={{ minWidth: "fit-content", whiteSpace: "nowrap" }}
                   border="neutral-medium"
-                  onBackground="neutral-weak"
+                    onBackground="neutral-medium"
                 >
                   6. Affiliation :
                 </Kbd>
@@ -1659,7 +1657,7 @@ function AboutSchool({
 
           {/* Affiliation Type */}
           {isUser ? (
-            <Flex fillWidth horizontal="start">
+            <Flex fillWidth horizontal="start" wrap={true} gap="20"className="basicInformationColumn">
               <Row flex={1}>
                 <Text
                   onBackground="neutral-weak"
@@ -1668,7 +1666,7 @@ function AboutSchool({
                   <Kbd
                     background="neutral-medium"
                     border="neutral-medium"
-                    onBackground="neutral-weak"
+                    onBackground="neutral-medium"
                     style={{ minWidth: "fit-content", whiteSpace: "nowrap" }}
                   >
                     7. Affiliation type:
@@ -1693,7 +1691,7 @@ function AboutSchool({
                 <Kbd
                   background="neutral-medium"
                   border="neutral-medium"
-                  onBackground="neutral-weak"
+                    onBackground="neutral-medium"
                   style={{ minWidth: "fit-content", whiteSpace: "nowrap" }}
                 >
                   7. Affiliation Type :
@@ -1711,7 +1709,7 @@ function AboutSchool({
 
           {/* Student Population */}
           {isUser ? (
-            <Flex fillWidth horizontal="start">
+            <Flex fillWidth horizontal="start" wrap={true} gap="20"className="basicInformationColumn">
               <Row flex={1}>
                 <Text
                   onBackground="neutral-weak"
@@ -1720,7 +1718,7 @@ function AboutSchool({
                   <Kbd
                     background="neutral-medium"
                     border="neutral-medium"
-                    onBackground="neutral-weak"
+                    onBackground="neutral-medium"
                     style={{ minWidth: "fit-content", whiteSpace: "nowrap" }}
                   >
                     8. Total population :
@@ -1745,7 +1743,7 @@ function AboutSchool({
                 <Kbd
                   background="neutral-medium"
                   border="neutral-medium"
-                  onBackground="neutral-weak"
+                    onBackground="neutral-medium"
                   style={{ minWidth: "fit-content", whiteSpace: "nowrap" }}
                 >
                   8. Total population :
@@ -1805,7 +1803,7 @@ function AboutSchool({
         gap="12"
       >
         <Accordion
-          open
+          open = {!isUser}
           title={
             <Text
               variant="body-default-xl"
@@ -2089,6 +2087,7 @@ function Admission({
                 <Text variant="body-default-m" onBackground="neutral-medium">
                   {idx + 1}.
                 </Text>
+                <Flex fillWidth direction="row" className="qnaColumn" gap="4">      
                 <Input
                   disabled
                   id=""
@@ -2116,6 +2115,7 @@ function Admission({
                     handleClassesRowChange(idx, 2, e.target.value)
                   }
                 />
+                </Flex>
               </Row>
             ))}
             <Row gap="8" fillWidth horizontal="end" marginTop="12">
@@ -2165,7 +2165,7 @@ function Admission({
               <Row gap="12" key={idx}>
                 <Text variant="body-default-m" onBackground="neutral-medium">
                   {idx + 1}.
-                </Text>
+                </Text><Flex fillWidth direction="row" className="qnaColumn" gap="4">      
                 <Input
                   id=""
                   disabled
@@ -2193,6 +2193,7 @@ function Admission({
                     handleAdmissionRowChange(idx, 2, e.target.value)
                   }
                 />
+                </Flex>
               </Row>
             ))}
             <Row gap="8" fillWidth horizontal="end" marginTop="12">
@@ -2242,7 +2243,7 @@ function Admission({
               <Row gap="12" key={idx}>
                 <Text variant="body-default-m" onBackground="neutral-medium">
                   {idx + 1}.
-                </Text>
+                </Text><Flex fillWidth direction="row" className="qnaColumn" gap="4">      
                 <Input
                   id=""
                   placeholder="Class"
@@ -2271,6 +2272,7 @@ function Admission({
                   value={row[3]}
                   onChange={(e) => handleFeesRowChange(idx, 3, e.target.value)}
                 />
+                </Flex>
               </Row>
             ))}
             <Row gap="8" fillWidth horizontal="end" marginTop="12">
@@ -2905,7 +2907,7 @@ function Academics({ isUser, tables, slug, extra_links }: AcademicsProps) {
                 <Text variant="body-default-m" onBackground="neutral-medium">
                   {idx + 1}.
                 </Text>
-                <Input
+<Flex fillWidth direction="row" className="qnaColumn" gap="4">                <Input
                   id=""
                   disabled
                   placeholder="Class e.g. 12th"
@@ -2935,6 +2937,7 @@ function Academics({ isUser, tables, slug, extra_links }: AcademicsProps) {
                     }
                     hasSuffix={<Text onBackground="neutral-weak">24HR</Text>}
                   />
+                </Flex>
                 </Flex>
               </Row>
             ))}
@@ -2990,6 +2993,7 @@ function Academics({ isUser, tables, slug, extra_links }: AcademicsProps) {
                 <Text variant="body-default-m" onBackground="neutral-medium">
                   {idx + 1}.
                 </Text>
+                <Flex fillWidth direction="row" className="qnaColumn" gap="4">      
                 <Input
                   id=""
                   disabled
@@ -3051,6 +3055,7 @@ function Academics({ isUser, tables, slug, extra_links }: AcademicsProps) {
                   }}
                 />
                 <Input id="" placeholder="Total days" value={row[3]} disabled />
+                </Flex>
               </Row>
             ))}
             <Row gap="8" fillWidth horizontal="end" marginTop="12">
@@ -3111,6 +3116,7 @@ function Academics({ isUser, tables, slug, extra_links }: AcademicsProps) {
                 <Text variant="body-default-m" onBackground="neutral-medium">
                   {idx + 1}.
                 </Text>
+                <Flex fillWidth direction="row" className="qnaColumn" gap="4">      
                 <Input
                   id=""
                   disabled
@@ -3125,6 +3131,7 @@ function Academics({ isUser, tables, slug, extra_links }: AcademicsProps) {
                   value={row[1]}
                   onChange={(e) => handleClassRowChange(idx, 1, e.target.value)}
                 />
+                </Flex>
               </Row>
             ))}
             <Row gap="8" fillWidth horizontal="end" marginTop="12">
@@ -3185,7 +3192,7 @@ function Academics({ isUser, tables, slug, extra_links }: AcademicsProps) {
                   <Text variant="body-default-m" onBackground="neutral-medium">
                     {link.id}.
                   </Text>
-                  <Flex flex={2}>
+                  <Column fillWidth direction="row" className="qnaColumn" gap="8"> <Flex flex={2}>
                     <Input
                       id=""
                       placeholder="Enter the affiliation "
@@ -3224,14 +3231,15 @@ function Academics({ isUser, tables, slug, extra_links }: AcademicsProps) {
                         }));
                       }}
                     />
-                  </Flex>
+                  </Flex></Column>
+                 
                 </Flex>
               ))}
             </Column>
 
             <Row fillWidth horizontal="end" gap="4">
               <Button
-                size="l"
+                size="m"
                 onClick={() => {
                   setExtraLinks((prev) => ({
                     ...prev,
@@ -3246,7 +3254,7 @@ function Academics({ isUser, tables, slug, extra_links }: AcademicsProps) {
                 Remove last
               </Button>
               <Button
-                size="l"
+                size="m"
                 onClick={() => {
                   setExtraLinks((prev) => ({
                     ...prev,
@@ -3423,7 +3431,7 @@ function FAQs({ isUser, faqs, slug }: FAQsProps) {
               <Text variant="body-default-m" onBackground="neutral-strong">
                 <b>{faq.id}.</b>
               </Text>
-              <Row flex={2}>
+              <Flex gap="8" direction="row" fillWidth className="qnaColumn"><Row flex={2}>
                 <Input
                   id=""
                   placeholder="Enter the question"
@@ -3439,7 +3447,8 @@ function FAQs({ isUser, faqs, slug }: FAQsProps) {
                   value={faq.text}
                   onChange={(e) => handleChange(idx, "text", e.target.value)}
                 />
-              </Row>
+              </Row></Flex>
+              
             </Row>
           ))}
           <Row fillWidth horizontal="end" gap="4" marginTop="16">
@@ -3496,5 +3505,64 @@ function FAQs({ isUser, faqs, slug }: FAQsProps) {
         </>
       )}
     </>
+  );
+}
+
+
+function AboutBadge() {
+  const [session, setSession] = useState<any>(null);
+  const [profile, setProfile] = useState<any>(null);
+
+  useEffect(() => {
+    async function getSessionAndProfile() {
+      const { data: { session } } = await supabase.auth.getSession();
+      setSession(session);
+
+      if (session?.user) {
+        const { data, error } = await supabase
+          .from("user_profiles")
+          .select("*")
+          .eq("uuid", session.user.id)
+          .single();
+        if (!error && data) {
+          setProfile(data);
+        }
+      }
+    }
+    getSessionAndProfile();
+  }, []);
+
+  return (
+    <Flex
+      fillWidth
+      height={4}
+      minHeight={4}
+      vertical="center"
+      horizontal="start"
+    >
+      {session ? (
+        <UserMenu
+          name={profile?.profile_details?.personal_details.name}
+          placement="right-end"
+          selected={false}
+          avatarProps={{ src: profile?.pfp }}
+        />
+      ) : (
+        <Skeleton shape="circle" width="m" height="m"></Skeleton>
+      )}
+      <Badge
+        id="badge-6"
+        paddingY="4"
+        paddingLeft="4"
+        paddingRight="8"
+        gap="12"
+        textVariant="label-default-s"
+        border="neutral-medium"
+        background="neutral-alpha-weak"
+      >
+        <Tag>03</Tag>
+        Institution
+      </Badge>
+    </Flex>
   );
 }

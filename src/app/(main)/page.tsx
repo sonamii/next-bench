@@ -323,23 +323,21 @@ function HeroSection() {
         horizontal="start"
         maxWidth={50}
       >
-        <Column><Text
-              style={{
-                color: "#181A1D",
-                fontSize: "70px",
-                lineHeight: "1em",
-                fontWeight: "500",
-                letterSpacing: ".3px",
-              }}
-              className={dmsans.className + " titleTexts"}
-            >
-         
-            
-              AI education center: where{" "}
-              <span style={{ color: "#626F45" }}>innovation</span> <br />
-              and <span style={{ color: "#626F45" }}>learning</span> converge
-           
-        </Text>
+        <Column>
+          <Text
+            style={{
+              color: "#181A1D",
+              fontSize: "70px",
+              lineHeight: "1em",
+              fontWeight: "500",
+              letterSpacing: ".3px",
+            }}
+            className={dmsans.className + " titleTexts"}
+          >
+            AI education center: where{" "}
+            <span style={{ color: "#626F45" }}>innovation</span> <br />
+            and <span style={{ color: "#626F45" }}>learning</span> converge
+          </Text>
         </Column>
       </Column>
       <HeroStats />
@@ -371,7 +369,12 @@ function HeroStats() {
       <Row center fitWidth fitHeight gap="20">
         <AvatarGroup size="l" avatars={avatarGroup1} />
         <Line vert width={0.2} height={4} background="neutral-medium" />
-        <Column horizontal="end" vertical="start" fitHeight className="statsColumn">
+        <Column
+          horizontal="end"
+          vertical="start"
+          fitHeight
+          className="statsColumn"
+        >
           <Text
             style={{
               color: "#181A1D",
@@ -390,7 +393,12 @@ function HeroStats() {
             Students enrolled/growing
           </Text>
         </Column>
-        <Column horizontal="end" vertical="start" fillHeight className="statsColumn">
+        <Column
+          horizontal="end"
+          vertical="start"
+          fillHeight
+          className="statsColumn"
+        >
           <Text
             style={{
               color: "#181A1D",
@@ -505,7 +513,6 @@ function TrustedSection() {
       className="trustedSection"
     >
       <Text
-       
         onBackground="neutral-medium"
         className={dmsans.className + " trustedText"}
       >
@@ -513,7 +520,7 @@ function TrustedSection() {
       </Text>
       <Row center gap="64" wrap={true}>
         {trustedLogos.map((logo, idx) => (
-          <Logo key={idx} wordmark={logo}  />
+          <Logo key={idx} wordmark={logo} />
         ))}
       </Row>
     </Column>
@@ -577,7 +584,7 @@ const cardAProps = {
   subtitle:
     "Latest insights and trends in the education sector to help you anytime.",
   inputPlaceholder: "Enter keyword",
-  buttonText: "Join community",
+  buttonText: "Explore community",
   icon: <i className="ri-send-plane-line"></i>,
 };
 
@@ -681,7 +688,6 @@ function CardA({
       fillHeight
       style={{
         backgroundColor: bg,
-        
       }}
       className="cardPage"
       horizontal="center"
@@ -775,11 +781,11 @@ function CardB({ bg, label, title, subtitle, features }: typeof cardBProps) {
       radius="l"
       direction="column"
       flex={2}
-      fillHeight      className="cardPage cardB"
+      fillHeight
+      className="cardPage cardB"
       padding="20"
       style={{
         backgroundColor: bg,
-       
       }}
       horizontal="center"
       vertical="start"
@@ -815,7 +821,7 @@ function CardB({ bg, label, title, subtitle, features }: typeof cardBProps) {
         </IconButton>
       </Row>
       <Column vertical="space-between" fillHeight>
-        <Column fillWidth gap="8" paddingTop="32" >
+        <Column fillWidth gap="8" paddingTop="32">
           <Text
             variant="body-default-xl"
             style={{
@@ -837,7 +843,13 @@ function CardB({ bg, label, title, subtitle, features }: typeof cardBProps) {
           >
             {subtitle}
           </Text>
-          <Row gap="12" paddingTop="8" horizontal="space-between" wrap={true} className="cardBRow">
+          <Row
+            gap="12"
+            paddingTop="8"
+            horizontal="space-between"
+            wrap={true}
+            className="cardBRow"
+          >
             {features.map((f, idx) => (
               <Row
                 key={idx}
@@ -884,13 +896,12 @@ function CardC({ bg, title, subtitle, tags }: typeof cardCProps) {
     <Flex
       radius="l"
       direction="column"
-      flex={2}      className="cardPage"
-
+      flex={2}
+      className="cardPage"
       fillHeight
       padding="20"
       style={{
         backgroundColor: bg,
-       
       }}
       horizontal="center"
       vertical="start"
@@ -922,7 +933,10 @@ function CardC({ bg, title, subtitle, tags }: typeof cardCProps) {
         >
           <i className="ri-graduation-cap-fill"></i>
         </Flex>
-        <Text variant="body-default-s" className={"cardCLabelText" + " " + dmsans.className}>
+        <Text
+          variant="body-default-s"
+          className={"cardCLabelText" + " " + dmsans.className}
+        >
           Find tuitions and home tutors easily
         </Text>
         <IconButton
@@ -945,7 +959,7 @@ function CardC({ bg, title, subtitle, tags }: typeof cardCProps) {
             fontSize: "25px",
             fontWeight: "500",
           }}
-          className={dmsans.className +  " cardTextTitle"}
+          className={dmsans.className + " cardTextTitle"}
         >
           {title}
         </Text>
@@ -1020,14 +1034,13 @@ function CardD({
       <Flex
         radius="l"
         direction="column"
-        flex={2}      className="cardPage"
-
+        flex={2}
+        className="cardPage"
         padding="20"
         fillHeight
         horizontal="center"
         style={{
           backgroundColor: bg,
-        
         }}
         vertical="start"
       >
@@ -1046,12 +1059,7 @@ function CardD({
             radius="xl"
           />
         </Row>
-        <Text
-         
-          className={dmsans.className + " cardDLabelText"}
-        >
-          {label}
-        </Text>
+        <Text className={dmsans.className + " cardDLabelText"}>{label}</Text>
         <Flex
           fillWidth
           fitHeight
@@ -1169,7 +1177,7 @@ export default function Home() {
           horizontal="center"
           vertical="center"
           gap="16"
-          style={{ maxWidth: "1600px"}}
+          style={{ maxWidth: "1600px" }}
           wrap={true}
           className="cardRow"
         >

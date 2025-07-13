@@ -34,6 +34,7 @@ import {
   Select,
   Spinner,
   RevealFx,
+  Skeleton,
 } from "@once-ui-system/core";
 import { useState, useEffect } from "react";
 import { supabase } from "@/app/utils/supabase/client";
@@ -90,6 +91,28 @@ const avatarGroup1 = [{ value: "A" }, { value: "B" }, { value: "C" }];
 
 // About Badge
 function AboutBadge() {
+  const [session, setSession] = useState<any>(null);
+  const [profile, setProfile] = useState<any>(null);
+
+  useEffect(() => {
+    async function getSessionAndProfile() {
+      const { data: { session } } = await supabase.auth.getSession();
+      setSession(session);
+
+      if (session?.user) {
+        const { data, error } = await supabase
+          .from("user_profiles")
+          .select("*")
+          .eq("uuid", session.user.id)
+          .single();
+        if (!error && data) {
+          setProfile(data);
+        }
+      }
+    }
+    getSessionAndProfile();
+  }, []);
+
   return (
     <Flex
       fillWidth
@@ -98,6 +121,16 @@ function AboutBadge() {
       vertical="center"
       horizontal="start"
     >
+      {session ? (
+        <UserMenu
+          name={profile?.profile_details?.personal_details.name}
+          placement="right-end"
+          selected={false}
+          avatarProps={{ src: profile?.pfp }}
+        />
+      ) : (
+        <Skeleton shape="circle" width="m" height="m"></Skeleton>
+      )}
       <Badge
         id="badge-6"
         paddingY="4"
@@ -409,23 +442,25 @@ function InstitutionCard({ data }: { data: any }) {
         <Column flex={2} gap="8" className="findInstitutionColumn">
           <ContactRow
             label="Email"
-            value={center.contact.email || "Not provided"}
-            verified={center.verified}
+            value={(center.contact.email || "Not provided").trim()}
+            verified={center.verified === true}
           />
           <ContactRow
             label="Phone"
-            value={center.contact.phone || "Not provided"}
-            verified={center.verified}
+            value={
+              center.contact.phone && center.contact.phone.trim() !== ""
+          ? center.contact.phone.trim()
+          : "+__-__________"
+            }
+            verified={center.verified === true && center.contact.phone && center.contact.phone.trim() !== ""}
           />
           <ContactRow
             label="Office"
-            value={`${center.contact.office_hours?.start || "0000"} - ${
-              center.contact.office_hours?.end || "0000"
-            }`}
+            value={`${(center.contact.office_hours?.start || "____").trim()} - ${(center.contact.office_hours?.end || "____").trim()}`}
           />
           <ContactRow
             label="Fees"
-            value={center.fees_structure || "Not provided"}
+            value={(center.fees_structure || "Not provided").trim()}
           />
         </Column>
         <Column flex={2} horizontal="start" vertical="start">
