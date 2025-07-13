@@ -743,13 +743,13 @@ function ProfileHeader({
         }}
         className={dmsansClass}
       >
-        <Row center gap="8" wrap={true}>
-            <Row center style={{ textAlign: "center", width: "100%" }}>
+        <Row center gap="12" wrap={true} fillWidth>
+            <Row center style={{ textAlign: "center", width: "100%" }} className="profileFullName" fillWidth>
             {profile?.fullName}
+
             </Row>
           {profile && (
             <>
-              <Line vert width={0.1} height={2.5} background="neutral-medium" />
               <Text
                 style={{
                   fontSize: "21px",
@@ -798,7 +798,7 @@ function ProfileHeader({
           ) : null}
         </Row>
       )}
-      <Text onBackground="neutral-weak" style={{ fontSize: "14px" }}>
+      <Text onBackground="neutral-weak" style={{ fontSize: "14px",textAlign:"center" }} >
         {profile?.introduction?.trim()
           ? profile.introduction
           : "User at Next Bench"}

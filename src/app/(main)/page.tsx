@@ -295,6 +295,7 @@ function AboutBadge() {
         textVariant="label-default-s"
         border="neutral-medium"
         background="neutral-alpha-weak"
+        className="aboutBadge"
       >
         <Tag>01</Tag>
         About Us
@@ -322,23 +323,21 @@ function HeroSection() {
         horizontal="start"
         maxWidth={50}
       >
-        <Column><Text
-              style={{
-                color: "#181A1D",
-                fontSize: "70px",
-                lineHeight: "1em",
-                fontWeight: "500",
-                letterSpacing: ".3px",
-              }}
-              className={dmsans.className}
-            >
-         
-            
-              AI education center: where{" "}
-              <span style={{ color: "#626F45" }}>innovation</span> <br />
-              and <span style={{ color: "#626F45" }}>learning</span> converge
-           
-        </Text>
+        <Column>
+          <Text
+            style={{
+              color: "#181A1D",
+              fontSize: "70px",
+              lineHeight: "1em",
+              fontWeight: "500",
+              letterSpacing: ".3px",
+            }}
+            className={dmsans.className + " titleTexts"}
+          >
+            AI education center: where{" "}
+            <span style={{ color: "#626F45" }}>innovation</span> <br />
+            and <span style={{ color: "#626F45" }}>learning</span> converge
+          </Text>
         </Column>
       </Column>
       <HeroStats />
@@ -370,13 +369,18 @@ function HeroStats() {
       <Row center fitWidth fitHeight gap="20">
         <AvatarGroup size="l" avatars={avatarGroup1} />
         <Line vert width={0.2} height={4} background="neutral-medium" />
-        <Column horizontal="end" vertical="start" fitHeight>
+        <Column
+          horizontal="end"
+          vertical="start"
+          fitHeight
+          className="statsColumn"
+        >
           <Text
             style={{
               color: "#181A1D",
               fontSize: "41px",
             }}
-            className={dmsans.className}
+            className={dmsans.className + " statsTexts"}
           >
             +250
           </Text>
@@ -389,13 +393,18 @@ function HeroStats() {
             Students enrolled/growing
           </Text>
         </Column>
-        <Column horizontal="end" vertical="start" fillHeight>
+        <Column
+          horizontal="end"
+          vertical="start"
+          fillHeight
+          className="statsColumn"
+        >
           <Text
             style={{
               color: "#181A1D",
               fontSize: "41px",
             }}
-            className={dmsans.className}
+            className={dmsans.className + " statsTexts"}
           >
             1645
           </Text>
@@ -501,20 +510,17 @@ function TrustedSection() {
       paddingY="12"
       gap="40"
       fitHeight
+      className="trustedSection"
     >
       <Text
-        style={{
-          fontSize: "18px",
-          fontWeight: "400",
-        }}
         onBackground="neutral-medium"
-        className={dmsans.className}
+        className={dmsans.className + " trustedText"}
       >
         Trusted by 2000+ students and teachers worldwide.
       </Text>
       <Row center gap="64" wrap={true}>
         {trustedLogos.map((logo, idx) => (
-          <Logo key={idx} wordmark={logo} size="l" />
+          <Logo key={idx} wordmark={logo} />
         ))}
       </Row>
     </Column>
@@ -539,7 +545,7 @@ function FAQSection() {
           letterSpacing: ".3px",
           textAlign: "center",
         }}
-        className={dmsans.className}
+        className={dmsans.className + " titleTexts"}
       >
         <span style={{ color: "#626F45" }}>Frequently</span> Asked,&nbsp;
         <span style={{ color: "#626F45" }}>Clearly</span> Answered
@@ -553,7 +559,7 @@ function FAQSection() {
           maxWidth: "800px",
         }}
         onBackground="neutral-weak"
-        className={dmsans.className}
+        className={dmsans.className + " faqText"}
       >
         Explore our comprehensive FAQ section to find answers to your questions
         about our platform, services, and more. If you need further assistance,
@@ -578,7 +584,7 @@ const cardAProps = {
   subtitle:
     "Latest insights and trends in the education sector to help you anytime.",
   inputPlaceholder: "Enter keyword",
-  buttonText: "Join community",
+  buttonText: "Explore community",
   icon: <i className="ri-send-plane-line"></i>,
 };
 
@@ -682,7 +688,6 @@ function CardA({
       fillHeight
       style={{
         backgroundColor: bg,
-        
       }}
       className="cardPage"
       horizontal="center"
@@ -724,8 +729,8 @@ function CardA({
         vertical="start"
         fitHeight
         fillWidth
-        paddingRight="32"
         gap="4"
+        className="cardTextColumn"
       >
         <Text
           style={{
@@ -733,15 +738,16 @@ function CardA({
             fontSize: "30px",
             fontWeight: "500",
           }}
-          className={dmsans.className}
+          className={dmsans.className + " cardTextTitle"}
         >
           {title}
         </Text>
         <Text
           onBackground="neutral-weak"
           style={{
-            fontSize: "13px",
+            fontSize: "15px",
           }}
+          className={dmsans.className}
         >
           {subtitle}
         </Text>
@@ -775,12 +781,11 @@ function CardB({ bg, label, title, subtitle, features }: typeof cardBProps) {
       radius="l"
       direction="column"
       flex={2}
-      fillHeight      className="cardPage"
-
+      fillHeight
+      className="cardPage cardB"
       padding="20"
       style={{
         backgroundColor: bg,
-       
       }}
       horizontal="center"
       vertical="start"
@@ -824,7 +829,7 @@ function CardB({ bg, label, title, subtitle, features }: typeof cardBProps) {
               fontSize: "25px",
               fontWeight: "500",
             }}
-            className={dmsans.className}
+            className={dmsans.className + " cardTextTitle"}
           >
             {title}
           </Text>
@@ -838,7 +843,13 @@ function CardB({ bg, label, title, subtitle, features }: typeof cardBProps) {
           >
             {subtitle}
           </Text>
-          <Row gap="12" paddingTop="8" horizontal="space-between" wrap={true}>
+          <Row
+            gap="12"
+            paddingTop="8"
+            horizontal="space-between"
+            wrap={true}
+            className="cardBRow"
+          >
             {features.map((f, idx) => (
               <Row
                 key={idx}
@@ -885,13 +896,12 @@ function CardC({ bg, title, subtitle, tags }: typeof cardCProps) {
     <Flex
       radius="l"
       direction="column"
-      flex={2}      className="cardPage"
-
+      flex={2}
+      className="cardPage"
       fillHeight
       padding="20"
       style={{
         backgroundColor: bg,
-       
       }}
       horizontal="center"
       vertical="start"
@@ -923,7 +933,10 @@ function CardC({ bg, title, subtitle, tags }: typeof cardCProps) {
         >
           <i className="ri-graduation-cap-fill"></i>
         </Flex>
-        <Text variant="body-default-s">
+        <Text
+          variant="body-default-s"
+          className={"cardCLabelText" + " " + dmsans.className}
+        >
           Find tuitions and home tutors easily
         </Text>
         <IconButton
@@ -938,7 +951,7 @@ function CardC({ bg, title, subtitle, tags }: typeof cardCProps) {
           ></i>
         </IconButton>
       </Row>
-      <Column fillWidth gap="8">
+      <Column fillWidth gap="8" className="cardCTextColumn">
         <Text
           variant="body-default-xl"
           style={{
@@ -946,7 +959,7 @@ function CardC({ bg, title, subtitle, tags }: typeof cardCProps) {
             fontSize: "25px",
             fontWeight: "500",
           }}
-          className={dmsans.className}
+          className={dmsans.className + " cardTextTitle"}
         >
           {title}
         </Text>
@@ -1017,18 +1030,17 @@ function CardD({
     }
   };
   return (
-    <Flex fillWidth id="card-d">
+    <Flex fillWidth id="card-d" horizontal="center">
       <Flex
         radius="l"
         direction="column"
-        flex={2}      className="cardPage"
-
+        flex={2}
+        className="cardPage"
         padding="20"
         fillHeight
         horizontal="center"
         style={{
           backgroundColor: bg,
-        
         }}
         vertical="start"
       >
@@ -1047,21 +1059,7 @@ function CardD({
             radius="xl"
           />
         </Row>
-        <Text
-          style={{
-            color: "#626f45",
-            fontSize: "160px",
-            lineHeight: "1em",
-            fontWeight: "400",
-            letterSpacing: ".3px",
-            position: "absolute",
-            top: "8%",
-            opacity: 0.5,
-          }}
-          className={dmsans.className}
-        >
-          {label}
-        </Text>
+        <Text className={dmsans.className + " cardDLabelText"}>{label}</Text>
         <Flex
           fillWidth
           fitHeight
@@ -1074,6 +1072,7 @@ function CardD({
             fitHeight
             fillWidth
             gap="4"
+            className="cardTextColumn"
           >
             <Text
               variant="body-default-xl"
@@ -1083,7 +1082,7 @@ function CardD({
                 fontWeight: "500",
                 textAlign: "left",
               }}
-              className={dmsans.className}
+              className={dmsans.className + " cardTextTitle cardDTitleText"}
             >
               {title}
             </Text>
@@ -1094,7 +1093,7 @@ function CardD({
                 textAlign: "left",
               }}
               onBackground="neutral-weak"
-              className={dmsans.className}
+              className={dmsans.className + " cardDSubtitleText"}
             >
               {subtitle}
             </Text>
@@ -1175,11 +1174,12 @@ export default function Home() {
         <Row
           fillWidth
           fitHeight
-          horizontal="start"
+          horizontal="center"
           vertical="center"
           gap="16"
-          style={{ maxWidth: "1600px", minWidth: "fit-content" }}
+          style={{ maxWidth: "1600px" }}
           wrap={true}
+          className="cardRow"
         >
           <CardA {...cardAProps} />
           <CardB {...cardBProps} />

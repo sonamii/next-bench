@@ -36,6 +36,7 @@ export default function Footer() {
       gap="16"
       style={{ maxWidth: "1600px", minWidth: "fit-content" }}
       wrap={true}
+      className="footer"
     >
       <FooterSection footerLinks={footerLinks} avatarGroup2={avatarGroup2} />
     </Row>
@@ -72,8 +73,15 @@ function FooterSection({
         padding="32"
         paddingX="xl"
       >
-        <Flex fillWidth vertical="space-between" horizontal="center" gap="20" id="row1">
-          <Row flex={2} vertical="center">
+        <Flex
+          fillWidth
+          vertical="space-between"
+          horizontal="center"
+          gap="20"
+          id="row1"
+          className="footerTop"
+        >
+          <Flex flex={2} vertical="center">
             <Input
               id="a"
               placeholder="Enter your email"
@@ -89,8 +97,13 @@ function FooterSection({
                 <i className="ri-send-plane-line"></i>
               </Text>
             </IconButton>
-          </Row>
-          <Row flex={5} vertical="center" horizontal="end">
+          </Flex>
+          <Row
+            flex={5}
+            vertical="center"
+            horizontal="end"
+            className="footerTitle"
+          >
             <Text
               style={{
                 color: "#181A1D",
@@ -106,8 +119,14 @@ function FooterSection({
           </Row>
         </Flex>
         <Line fillWidth />
-        <Row horizontal="space-between" fillWidth height={9.5}>
-          <Row fillHeight fillWidth gap="64">
+        <Flex
+          horizontal="space-between"
+          fillWidth
+          vertical="end"
+          direction="row"
+          className="footerBottom"
+        >
+          <Row fillHeight fillWidth gap="64" className="footerLinksColumn">
             {footerLinks.map((group: string[], idx: number) => (
               <Column gap="2" key={idx}>
                 {group.map((item: string, i: number) => (
@@ -115,7 +134,7 @@ function FooterSection({
                     key={i}
                     onBackground="neutral-weak"
                     variant="body-default-l"
-                    className={dmsans.className}
+                    className={dmsans.className + " footerLinkTexts"}
                   >
                     <Flex
                       cursor="interactive"
@@ -143,11 +162,18 @@ function FooterSection({
             vertical="space-between"
             fillWidth
             fillHeight
+            className="footerGroup"
           >
-            <Row fillWidth>&nbsp;</Row>
-            <Row gap="64">
-              <AvatarGroup size="l" avatars={avatarGroup2} />
-              <Row fitWidth vertical="center" gap="12">
+            <Flex className="footerAvatarGroup" gap="20" direction="row" center>
+              <Flex fillWidth center>
+                {" "}
+                <AvatarGroup
+                  size="l"
+                  avatars={avatarGroup2}
+                  className="footerAvatar"
+                />
+              </Flex>
+              <Row fillWidth vertical="center" gap="12" horizontal="center">
                 <IconButton size="l" variant="secondary" href="#top">
                   <i className="ri-arrow-up-line"></i>
                 </IconButton>
@@ -159,9 +185,9 @@ function FooterSection({
                   Back To Top
                 </Text>
               </Row>
-            </Row>
+            </Flex>
           </Column>
-        </Row>
+        </Flex>
       </Column>
     </Flex>
   );

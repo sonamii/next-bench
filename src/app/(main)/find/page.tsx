@@ -34,6 +34,7 @@ import {
   Select,
   Spinner,
   RevealFx,
+  Skeleton,
 } from "@once-ui-system/core";
 import { useState, useEffect } from "react";
 import { supabase } from "@/app/utils/supabase/client";
@@ -90,6 +91,28 @@ const avatarGroup1 = [{ value: "A" }, { value: "B" }, { value: "C" }];
 
 // About Badge
 function AboutBadge() {
+  const [session, setSession] = useState<any>(null);
+  const [profile, setProfile] = useState<any>(null);
+
+  useEffect(() => {
+    async function getSessionAndProfile() {
+      const { data: { session } } = await supabase.auth.getSession();
+      setSession(session);
+
+      if (session?.user) {
+        const { data, error } = await supabase
+          .from("user_profiles")
+          .select("*")
+          .eq("uuid", session.user.id)
+          .single();
+        if (!error && data) {
+          setProfile(data);
+        }
+      }
+    }
+    getSessionAndProfile();
+  }, []);
+
   return (
     <Flex
       fillWidth
@@ -98,6 +121,16 @@ function AboutBadge() {
       vertical="center"
       horizontal="start"
     >
+      {session ? (
+        <UserMenu
+          name={profile?.profile_details?.personal_details.name}
+          placement="right-end"
+          selected={false}
+          avatarProps={{ src: profile?.pfp }}
+        />
+      ) : (
+        <Skeleton shape="circle" width="m" height="m"></Skeleton>
+      )}
       <Badge
         id="badge-6"
         paddingY="4"
@@ -144,7 +177,7 @@ function HeroSection() {
               fontWeight: "500",
               letterSpacing: ".3px",
             }}
-            className={dmsans.className}
+            className={dmsans.className + " titleTexts"}
           >
             Discover, and search <br />
             the best <span style={{ color: "#626F45" }}>
@@ -173,13 +206,18 @@ function HeroStats() {
       <Row center fitWidth fitHeight gap="20">
         <AvatarGroup size="l" avatars={avatarGroup1} />
         <Line vert width={0.2} height={4} background="neutral-medium" />
-        <Column horizontal="end" vertical="start" fitHeight>
+        <Column
+          horizontal="end"
+          vertical="start"
+          fitHeight
+          className="statsColumn"
+        >
           <Text
             style={{
               color: "#181A1D",
               fontSize: "41px",
             }}
-            className={dmsans.className}
+            className={dmsans.className + " statsText"}
           >
             +50
           </Text>
@@ -192,13 +230,18 @@ function HeroStats() {
             Verified consultants
           </Text>
         </Column>
-        <Column horizontal="end" vertical="start" fillHeight>
+        <Column
+          horizontal="end"
+          vertical="start"
+          fillHeight
+          className="statsColumn"
+        >
           <Text
             style={{
               color: "#181A1D",
               fontSize: "41px",
             }}
-            className={dmsans.className}
+            className={dmsans.className + " statsText"}
           >
             +240
           </Text>
@@ -212,7 +255,7 @@ function HeroStats() {
           </Text>
         </Column>
       </Row>
-      <Column gap="20" fillWidth>
+      <Column gap="20" fillWidth className="findDescriptionColumn">
         <Text
           onBackground="neutral-weak"
           style={{
@@ -279,37 +322,40 @@ function InstitutionCard({ data }: { data: any }) {
         gap="32"
       >
         <Column flex={2}>
-          <Row vertical="center" gap="16">
-            <Media
-              src={center.logo}
-              objectFit="contain"
-              width={3}
-              height={3}
-              alt={center.name}
-              radius="full"
-              borderWidth={2}
-              border="neutral-weak"
-            />
-            <Column gap="0" marginTop="16">
-              <Text
-                onBackground="neutral-strong"
-                style={{
-                  fontSize: "18px",
-                  marginBottom: "12px",
-                  lineHeight: "1em",
-                }}
-                className={dmsans.className}
-              >
-                <Row gap="8">{center.name} </Row>
-              </Text>
-              <Text
-                onBackground="neutral-weak"
-                style={{ fontSize: "14px", lineHeight: "1em" }}
-                className={dmsans.className}
-              >
-                {center.type} at {center.location.city}
-              </Text>
-            </Column>
+          <Row vertical="center" gap="16" horizontal="space-between">
+            <Row gap="16" vertical="center">
+              <Media
+                src={center.logo}
+                objectFit="contain"
+                width={3}
+                height={3}
+                alt={center.name}
+                radius="full"
+                borderWidth={2}
+                border="neutral-weak"
+              />
+              <Column gap="0" marginTop="16">
+                <Text
+                  onBackground="neutral-strong"
+                  style={{
+                    fontSize: "18px",
+                    marginBottom: "12px",
+                    lineHeight: "1em",
+                  }}
+                  className={dmsans.className}
+                >
+                  {center.name}
+                </Text>
+                <Text
+                  onBackground="neutral-weak"
+                  style={{ fontSize: "14px", lineHeight: "1em" }}
+                  className={dmsans.className}
+                >
+                  {center.type} at {center.location.city}
+                </Text>
+              </Column>
+            </Row>
+
             <IconButton
               variant="secondary"
               size="m"
@@ -328,8 +374,8 @@ function InstitutionCard({ data }: { data: any }) {
             </IconButton>
           </Row>
         </Column>
-        <Column flex={2} gap="8">
-          <Card
+        <Column flex={2} gap="8" className="findInstitutionColumn">
+          {/* <Card
             gap="8"
             vertical="center"
             radius="s"
@@ -350,7 +396,7 @@ function InstitutionCard({ data }: { data: any }) {
             >
               {center.full_name}
             </Text>
-          </Card>
+          </Card> */}
           <InfoRow
             icon="ri-map-pin-2-line"
             text={`${center.location.city || "0"}, ${
@@ -393,26 +439,28 @@ function InstitutionCard({ data }: { data: any }) {
             text={center.facilities || "NOT PROVIDED"}
           />
         </Column>
-        <Column flex={2} gap="8">
+        <Column flex={2} gap="8" className="findInstitutionColumn">
           <ContactRow
             label="Email"
-            value={center.contact.email || "Not provided"}
-            verified={center.verified}
+            value={(center.contact.email || "Not provided").trim()}
+            verified={center.verified === true}
           />
           <ContactRow
             label="Phone"
-            value={center.contact.phone || "Not provided"}
-            verified={center.verified}
+            value={
+              center.contact.phone && center.contact.phone.trim() !== ""
+          ? center.contact.phone.trim()
+          : "+__-__________"
+            }
+            verified={center.verified === true && center.contact.phone && center.contact.phone.trim() !== ""}
           />
           <ContactRow
             label="Office"
-            value={`${center.contact.office_hours?.start || "0000"} - ${
-              center.contact.office_hours?.end || "0000"
-            }`}
+            value={`${(center.contact.office_hours?.start || "____").trim()} - ${(center.contact.office_hours?.end || "____").trim()}`}
           />
           <ContactRow
             label="Fees"
-            value={center.fees_structure || "Not provided"}
+            value={(center.fees_structure || "Not provided").trim()}
           />
         </Column>
         <Column flex={2} horizontal="start" vertical="start">
@@ -534,19 +582,22 @@ function TableSection({
             ) : null
           }
         />
-        <Select
-          id="searchable-select"
-          label="Choose a category"
-          disabled
-          height="s"
-          style={{ maxWidth: "250px" }}
-          value={category}
-          options={[
-            { label: "Institutions", value: "institutions" },
-            { label: "Consultants", value: "consultants" },
-          ]}
-          onSelect={setCategory}
-        />
+        <Flex className="selectCategory">
+          <Select
+            id="searchable-select"
+            label="Choose a category"
+            disabled
+            height="s"
+            style={{ maxWidth: "250px" }}
+            value={category}
+            options={[
+              { label: "Institutions", value: "institutions" },
+              { label: "Consultants", value: "consultants" },
+            ]}
+            onSelect={setCategory}
+          />
+        </Flex>
+
         <Button weight="default" variant="primary" size="l" disabled={true}>
           Filters
         </Button>
