@@ -234,7 +234,7 @@ export default function Page() {
               <Spinner size="xl"></Spinner>
             </div>
           ) : (
-            <Column paddingX="0" fillWidth>
+            <Column paddingX="32"   fitWidth minWidth={60} horizontal="start" className="minWidth60">
               <RevealFx>
                 <Flex fitHeight style={{ minHeight: "fit-content !important" }}>
                   <HeroSection
@@ -253,8 +253,9 @@ export default function Page() {
               <Flex
                 fillWidth
                 maxWidth={60}
+                minWidth={60}
                 center
-                className="segmentedControlEdu"
+                className="segmentedControlEdu minWidth60"
               >
                 <RevealFx>
                   <SegmentedControl
@@ -657,8 +658,7 @@ function HeroSection({
           wrap
         >
           <Column fillWidth fitHeight vertical="center" horizontal="start">
-           
-                        <AboutBadge/>
+            <AboutBadge />
 
             <Flex fillWidth height={0.5} />
             <Column>
@@ -765,7 +765,7 @@ function HeroSection({
                 {heroText.trim() || text.trim() || "No description available."}
               </Text>
 
-              <Row gap="16" wrap={true}>
+              <Row gap="16"fillWidth className="heroButtonsRow">
                 {isUser && (
                   <Button
                     id="arrow-button-1"
@@ -1327,7 +1327,13 @@ function AboutSchool({
         <Column fillWidth gap="12">
           {/* Year Established */}
           {isUser ? (
-            <Flex fillWidth horizontal="start" wrap={true} gap="20" className="basicInformationColumn">
+            <Flex
+              fillWidth
+              horizontal="start"
+              wrap={true}
+              gap="20"
+              className="basicInformationColumn"
+            >
               <Row flex={1}>
                 <Text
                   onBackground="neutral-weak"
@@ -1363,7 +1369,7 @@ function AboutSchool({
                 <Kbd
                   background="neutral-medium"
                   border="neutral-medium"
-                    onBackground="neutral-medium"
+                  onBackground="neutral-medium"
                   style={{ minWidth: "fit-content", whiteSpace: "nowrap" }}
                 >
                   1. Year Established :
@@ -1381,7 +1387,13 @@ function AboutSchool({
 
           {/* Institution Type */}
           {isUser ? (
-            <Flex fillWidth horizontal="start" wrap={true} gap="20"className="basicInformationColumn">
+            <Flex
+              fillWidth
+              horizontal="start"
+              wrap={true}
+              gap="20"
+              className="basicInformationColumn"
+            >
               <Row flex={1}>
                 <Text
                   onBackground="neutral-weak"
@@ -1415,7 +1427,7 @@ function AboutSchool({
                 <Kbd
                   background="neutral-medium"
                   border="neutral-medium"
-                    onBackground="neutral-medium"
+                  onBackground="neutral-medium"
                   style={{ minWidth: "fit-content", whiteSpace: "nowrap" }}
                 >
                   2. Institution Type :
@@ -1433,7 +1445,13 @@ function AboutSchool({
 
           {/* Gender */}
           {isUser ? (
-            <Flex fillWidth horizontal="start" wrap={true} gap="20"className="basicInformationColumn">
+            <Flex
+              fillWidth
+              horizontal="start"
+              wrap={true}
+              gap="20"
+              className="basicInformationColumn"
+            >
               <Row flex={1}>
                 <Text
                   onBackground="neutral-weak"
@@ -1467,7 +1485,7 @@ function AboutSchool({
                 <Kbd
                   background="neutral-medium"
                   border="neutral-medium"
-                    onBackground="neutral-medium"
+                  onBackground="neutral-medium"
                   style={{ minWidth: "fit-content", whiteSpace: "nowrap" }}
                 >
                   3. Institution gender :
@@ -1485,7 +1503,13 @@ function AboutSchool({
 
           {/* Boarding Type */}
           {isUser ? (
-            <Flex fillWidth horizontal="start" wrap={true} gap="20"className="basicInformationColumn">
+            <Flex
+              fillWidth
+              horizontal="start"
+              wrap={true}
+              gap="20"
+              className="basicInformationColumn"
+            >
               <Row flex={1}>
                 <Text
                   onBackground="neutral-weak"
@@ -1519,7 +1543,7 @@ function AboutSchool({
                 <Kbd
                   background="neutral-medium"
                   border="neutral-medium"
-                    onBackground="neutral-medium"
+                  onBackground="neutral-medium"
                   style={{ minWidth: "fit-content", whiteSpace: "nowrap" }}
                 >
                   4. Boarding Type :
@@ -1537,7 +1561,13 @@ function AboutSchool({
 
           {/* Classes Offered */}
           {isUser ? (
-            <Flex fillWidth horizontal="start" wrap={true} gap="20"className="basicInformationColumn">
+            <Flex
+              fillWidth
+              horizontal="start"
+              wrap={true}
+              gap="20"
+              className="basicInformationColumn"
+            >
               <Row flex={1}>
                 <Text
                   onBackground="neutral-weak"
@@ -1553,7 +1583,12 @@ function AboutSchool({
                   </Kbd>
                 </Text>
               </Row>
-              <Row flex={3} fillWidth gap="8" className="basicInformationColumn">
+              <Row
+                flex={3}
+                fillWidth
+                gap="8"
+                className="basicInformationColumn"
+              >
                 <Input
                   id=""
                   placeholder="e.g. 1st/2nd"
@@ -1577,7 +1612,7 @@ function AboutSchool({
                 <Kbd
                   background="neutral-medium"
                   border="neutral-medium"
-                    onBackground="neutral-medium"
+                  onBackground="neutral-medium"
                   style={{ minWidth: "fit-content", whiteSpace: "nowrap" }}
                 >
                   5. Classes offered:
@@ -1595,7 +1630,13 @@ function AboutSchool({
 
           {/* Affiliation Boards */}
           {isUser ? (
-            <Flex fillWidth horizontal="start" wrap={true} gap="20"className="basicInformationColumn">
+            <Flex
+              fillWidth
+              horizontal="start"
+              wrap={true}
+              gap="20"
+              className="basicInformationColumn"
+            >
               <Row flex={1}>
                 <Text
                   onBackground="neutral-weak"
@@ -1640,7 +1681,7 @@ function AboutSchool({
                   background="neutral-medium"
                   style={{ minWidth: "fit-content", whiteSpace: "nowrap" }}
                   border="neutral-medium"
-                    onBackground="neutral-medium"
+                  onBackground="neutral-medium"
                 >
                   6. Affiliation :
                 </Kbd>
@@ -1657,7 +1698,13 @@ function AboutSchool({
 
           {/* Affiliation Type */}
           {isUser ? (
-            <Flex fillWidth horizontal="start" wrap={true} gap="20"className="basicInformationColumn">
+            <Flex
+              fillWidth
+              horizontal="start"
+              wrap={true}
+              gap="20"
+              className="basicInformationColumn"
+            >
               <Row flex={1}>
                 <Text
                   onBackground="neutral-weak"
@@ -1691,7 +1738,7 @@ function AboutSchool({
                 <Kbd
                   background="neutral-medium"
                   border="neutral-medium"
-                    onBackground="neutral-medium"
+                  onBackground="neutral-medium"
                   style={{ minWidth: "fit-content", whiteSpace: "nowrap" }}
                 >
                   7. Affiliation Type :
@@ -1709,7 +1756,13 @@ function AboutSchool({
 
           {/* Student Population */}
           {isUser ? (
-            <Flex fillWidth horizontal="start" wrap={true} gap="20"className="basicInformationColumn">
+            <Flex
+              fillWidth
+              horizontal="start"
+              wrap={true}
+              gap="20"
+              className="basicInformationColumn"
+            >
               <Row flex={1}>
                 <Text
                   onBackground="neutral-weak"
@@ -1743,7 +1796,7 @@ function AboutSchool({
                 <Kbd
                   background="neutral-medium"
                   border="neutral-medium"
-                    onBackground="neutral-medium"
+                  onBackground="neutral-medium"
                   style={{ minWidth: "fit-content", whiteSpace: "nowrap" }}
                 >
                   8. Total population :
@@ -1803,7 +1856,7 @@ function AboutSchool({
         gap="12"
       >
         <Accordion
-          open = {!isUser}
+          open={!isUser}
           title={
             <Text
               variant="body-default-xl"
@@ -2087,34 +2140,34 @@ function Admission({
                 <Text variant="body-default-m" onBackground="neutral-medium">
                   {idx + 1}.
                 </Text>
-                <Flex fillWidth direction="row" className="qnaColumn" gap="4">      
-                <Input
-                  disabled
-                  id=""
-                  placeholder="Class"
-                  value={row[0]}
-                  onChange={(e) =>
-                    handleClassesRowChange(idx, 0, e.target.value)
-                  }
-                />
-                <Input
-                  disabled
-                  id=""
-                  placeholder="Minimum Age"
-                  value={row[1]}
-                  onChange={(e) =>
-                    handleClassesRowChange(idx, 1, e.target.value)
-                  }
-                />
-                <Input
-                  disabled
-                  id=""
-                  placeholder="Maximum Age"
-                  value={row[2]}
-                  onChange={(e) =>
-                    handleClassesRowChange(idx, 2, e.target.value)
-                  }
-                />
+                <Flex fillWidth direction="row" className="qnaColumn" gap="4">
+                  <Input
+                    disabled
+                    id=""
+                    placeholder="Class"
+                    value={row[0]}
+                    onChange={(e) =>
+                      handleClassesRowChange(idx, 0, e.target.value)
+                    }
+                  />
+                  <Input
+                    disabled
+                    id=""
+                    placeholder="Minimum Age"
+                    value={row[1]}
+                    onChange={(e) =>
+                      handleClassesRowChange(idx, 1, e.target.value)
+                    }
+                  />
+                  <Input
+                    disabled
+                    id=""
+                    placeholder="Maximum Age"
+                    value={row[2]}
+                    onChange={(e) =>
+                      handleClassesRowChange(idx, 2, e.target.value)
+                    }
+                  />
                 </Flex>
               </Row>
             ))}
@@ -2165,34 +2218,35 @@ function Admission({
               <Row gap="12" key={idx}>
                 <Text variant="body-default-m" onBackground="neutral-medium">
                   {idx + 1}.
-                </Text><Flex fillWidth direction="row" className="qnaColumn" gap="4">      
-                <Input
-                  id=""
-                  disabled
-                  placeholder="Class"
-                  value={row[0]}
-                  onChange={(e) =>
-                    handleAdmissionRowChange(idx, 0, e.target.value)
-                  }
-                />
-                <Input
-                  id=""
-                  placeholder="Particulars"
-                  value={row[1]}
-                  disabled
-                  onChange={(e) =>
-                    handleAdmissionRowChange(idx, 1, e.target.value)
-                  }
-                />
-                <Input
-                  id=""
-                  placeholder="Date"
-                  value={row[2]}
-                  disabled
-                  onChange={(e) =>
-                    handleAdmissionRowChange(idx, 2, e.target.value)
-                  }
-                />
+                </Text>
+                <Flex fillWidth direction="row" className="qnaColumn" gap="4">
+                  <Input
+                    id=""
+                    disabled
+                    placeholder="Class"
+                    value={row[0]}
+                    onChange={(e) =>
+                      handleAdmissionRowChange(idx, 0, e.target.value)
+                    }
+                  />
+                  <Input
+                    id=""
+                    placeholder="Particulars"
+                    value={row[1]}
+                    disabled
+                    onChange={(e) =>
+                      handleAdmissionRowChange(idx, 1, e.target.value)
+                    }
+                  />
+                  <Input
+                    id=""
+                    placeholder="Date"
+                    value={row[2]}
+                    disabled
+                    onChange={(e) =>
+                      handleAdmissionRowChange(idx, 2, e.target.value)
+                    }
+                  />
                 </Flex>
               </Row>
             ))}
@@ -2243,35 +2297,44 @@ function Admission({
               <Row gap="12" key={idx}>
                 <Text variant="body-default-m" onBackground="neutral-medium">
                   {idx + 1}.
-                </Text><Flex fillWidth direction="row" className="qnaColumn" gap="4">      
-                <Input
-                  id=""
-                  placeholder="Class"
-                  value={row[0]}
-                  disabled
-                  onChange={(e) => handleFeesRowChange(idx, 0, e.target.value)}
-                />
-                <Input
-                  id=""
-                  disabled
-                  placeholder="Admission Fee"
-                  value={row[1]}
-                  onChange={(e) => handleFeesRowChange(idx, 1, e.target.value)}
-                />
-                <Input
-                  id=""
-                  disabled
-                  placeholder="Tuition Fee (Monthly)"
-                  value={row[2]}
-                  onChange={(e) => handleFeesRowChange(idx, 2, e.target.value)}
-                />
-                <Input
-                  id=""
-                  disabled
-                  placeholder="Total Annual Fee"
-                  value={row[3]}
-                  onChange={(e) => handleFeesRowChange(idx, 3, e.target.value)}
-                />
+                </Text>
+                <Flex fillWidth direction="row" className="qnaColumn" gap="4">
+                  <Input
+                    id=""
+                    placeholder="Class"
+                    value={row[0]}
+                    disabled
+                    onChange={(e) =>
+                      handleFeesRowChange(idx, 0, e.target.value)
+                    }
+                  />
+                  <Input
+                    id=""
+                    disabled
+                    placeholder="Admission Fee"
+                    value={row[1]}
+                    onChange={(e) =>
+                      handleFeesRowChange(idx, 1, e.target.value)
+                    }
+                  />
+                  <Input
+                    id=""
+                    disabled
+                    placeholder="Tuition Fee (Monthly)"
+                    value={row[2]}
+                    onChange={(e) =>
+                      handleFeesRowChange(idx, 2, e.target.value)
+                    }
+                  />
+                  <Input
+                    id=""
+                    disabled
+                    placeholder="Total Annual Fee"
+                    value={row[3]}
+                    onChange={(e) =>
+                      handleFeesRowChange(idx, 3, e.target.value)
+                    }
+                  />
                 </Flex>
               </Row>
             ))}
@@ -2907,37 +2970,41 @@ function Academics({ isUser, tables, slug, extra_links }: AcademicsProps) {
                 <Text variant="body-default-m" onBackground="neutral-medium">
                   {idx + 1}.
                 </Text>
-<Flex fillWidth direction="row" className="qnaColumn" gap="4">                <Input
-                  id=""
-                  disabled
-                  placeholder="Class e.g. 12th"
-                  value={row[0]}
-                  onChange={(e) => handleTimeRowChange(idx, 0, e.target.value)}
-                />
-                <Flex gap="4">
-                  <Input
-                    disabled
-                    id=""
-                    placeholder="Start"
-                    value={row[1]}
-                    description=" 24-hour format"
-                    onChange={(e) =>
-                      handleTimeRowChange(idx, 1, e.target.value)
-                    }
-                    hasSuffix={<Text onBackground="neutral-weak">24HR</Text>}
-                  />
+                <Flex fillWidth direction="row" className="qnaColumn" gap="4">
+                  {" "}
                   <Input
                     id=""
                     disabled
-                    placeholder="End"
-                    description=" 24-hour format"
-                    value={row[2]}
+                    placeholder="Class e.g. 12th"
+                    value={row[0]}
                     onChange={(e) =>
-                      handleTimeRowChange(idx, 2, e.target.value)
+                      handleTimeRowChange(idx, 0, e.target.value)
                     }
-                    hasSuffix={<Text onBackground="neutral-weak">24HR</Text>}
                   />
-                </Flex>
+                  <Flex gap="4">
+                    <Input
+                      disabled
+                      id=""
+                      placeholder="Start"
+                      value={row[1]}
+                      description=" 24-hour format"
+                      onChange={(e) =>
+                        handleTimeRowChange(idx, 1, e.target.value)
+                      }
+                      hasSuffix={<Text onBackground="neutral-weak">24HR</Text>}
+                    />
+                    <Input
+                      id=""
+                      disabled
+                      placeholder="End"
+                      description=" 24-hour format"
+                      value={row[2]}
+                      onChange={(e) =>
+                        handleTimeRowChange(idx, 2, e.target.value)
+                      }
+                      hasSuffix={<Text onBackground="neutral-weak">24HR</Text>}
+                    />
+                  </Flex>
                 </Flex>
               </Row>
             ))}
@@ -2993,68 +3060,73 @@ function Academics({ isUser, tables, slug, extra_links }: AcademicsProps) {
                 <Text variant="body-default-m" onBackground="neutral-medium">
                   {idx + 1}.
                 </Text>
-                <Flex fillWidth direction="row" className="qnaColumn" gap="4">      
-                <Input
-                  id=""
-                  disabled
-                  placeholder="Vacation"
-                  value={row[0]}
-                  onChange={(e) =>
-                    handleVacationRowChange(idx, 0, e.target.value)
-                  }
-                />
-                <DateRangeInput
-                  id=""
-                  startLabel="Start Date"
-                  height="s"
-                  disabled
-                  style={{ minWidth: "300px" }}
-                  cursor="interactive"
-                  endLabel="End Date"
-                  value={{
-                    startDate: row[1] ? new Date(row[1]) : undefined,
-                    endDate: row[2] ? new Date(row[2]) : undefined,
-                  }}
-                  onChange={(value) => {
-                    handleVacationRowChange(
-                      idx,
-                      1,
-                      value.startDate instanceof Date &&
-                        !isNaN(value.startDate.getTime())
-                        ? value.startDate.toISOString()
-                        : ""
-                    );
-                    handleVacationRowChange(
-                      idx,
-                      2,
-                      value.endDate instanceof Date &&
-                        !isNaN(value.endDate.getTime())
-                        ? value.endDate.toISOString()
-                        : ""
-                    );
-                    // Calculate total days between start and end date
-                    if (
-                      value.startDate instanceof Date &&
-                      value.endDate instanceof Date &&
-                      !isNaN(value.startDate.getTime()) &&
-                      !isNaN(value.endDate.getTime())
-                    ) {
-                      const msPerDay = 1000 * 60 * 60 * 24;
-                      const diff =
-                        Math.round(
-                          (value.endDate.getTime() -
-                            value.startDate.getTime()) /
-                            msPerDay
-                        ) + 1;
+                <Flex fillWidth direction="row" className="qnaColumn" gap="4">
+                  <Input
+                    id=""
+                    disabled
+                    placeholder="Vacation"
+                    value={row[0]}
+                    onChange={(e) =>
+                      handleVacationRowChange(idx, 0, e.target.value)
+                    }
+                  />
+                  <DateRangeInput
+                    id=""
+                    startLabel="Start Date"
+                    height="s"
+                    disabled
+                    style={{ minWidth: "300px" }}
+                    cursor="interactive"
+                    endLabel="End Date"
+                    value={{
+                      startDate: row[1] ? new Date(row[1]) : undefined,
+                      endDate: row[2] ? new Date(row[2]) : undefined,
+                    }}
+                    onChange={(value) => {
                       handleVacationRowChange(
                         idx,
-                        3,
-                        diff > 0 ? diff.toString() : ""
+                        1,
+                        value.startDate instanceof Date &&
+                          !isNaN(value.startDate.getTime())
+                          ? value.startDate.toISOString()
+                          : ""
                       );
-                    }
-                  }}
-                />
-                <Input id="" placeholder="Total days" value={row[3]} disabled />
+                      handleVacationRowChange(
+                        idx,
+                        2,
+                        value.endDate instanceof Date &&
+                          !isNaN(value.endDate.getTime())
+                          ? value.endDate.toISOString()
+                          : ""
+                      );
+                      // Calculate total days between start and end date
+                      if (
+                        value.startDate instanceof Date &&
+                        value.endDate instanceof Date &&
+                        !isNaN(value.startDate.getTime()) &&
+                        !isNaN(value.endDate.getTime())
+                      ) {
+                        const msPerDay = 1000 * 60 * 60 * 24;
+                        const diff =
+                          Math.round(
+                            (value.endDate.getTime() -
+                              value.startDate.getTime()) /
+                              msPerDay
+                          ) + 1;
+                        handleVacationRowChange(
+                          idx,
+                          3,
+                          diff > 0 ? diff.toString() : ""
+                        );
+                      }
+                    }}
+                  />
+                  <Input
+                    id=""
+                    placeholder="Total days"
+                    value={row[3]}
+                    disabled
+                  />
                 </Flex>
               </Row>
             ))}
@@ -3116,21 +3188,25 @@ function Academics({ isUser, tables, slug, extra_links }: AcademicsProps) {
                 <Text variant="body-default-m" onBackground="neutral-medium">
                   {idx + 1}.
                 </Text>
-                <Flex fillWidth direction="row" className="qnaColumn" gap="4">      
-                <Input
-                  id=""
-                  disabled
-                  placeholder="Level"
-                  value={row[0]}
-                  onChange={(e) => handleClassRowChange(idx, 0, e.target.value)}
-                />
-                <Input
-                  id=""
-                  disabled
-                  placeholder="Classes"
-                  value={row[1]}
-                  onChange={(e) => handleClassRowChange(idx, 1, e.target.value)}
-                />
+                <Flex fillWidth direction="row" className="qnaColumn" gap="4">
+                  <Input
+                    id=""
+                    disabled
+                    placeholder="Level"
+                    value={row[0]}
+                    onChange={(e) =>
+                      handleClassRowChange(idx, 0, e.target.value)
+                    }
+                  />
+                  <Input
+                    id=""
+                    disabled
+                    placeholder="Classes"
+                    value={row[1]}
+                    onChange={(e) =>
+                      handleClassRowChange(idx, 1, e.target.value)
+                    }
+                  />
                 </Flex>
               </Row>
             ))}
@@ -3192,47 +3268,54 @@ function Academics({ isUser, tables, slug, extra_links }: AcademicsProps) {
                   <Text variant="body-default-m" onBackground="neutral-medium">
                     {link.id}.
                   </Text>
-                  <Column fillWidth direction="row" className="qnaColumn" gap="8"> <Flex flex={2}>
-                    <Input
-                      id=""
-                      placeholder="Enter the affiliation "
-                      value={link.label}
-                      onChange={(e) => {
-                        setExtraLinks((prev) => ({
-                          ...prev,
-                          academics: prev.academics.map(
-                            (l: ExtraLinkItem, i: number) =>
-                              i === idx ? { ...l, label: e.target.value } : l
-                          ),
-                        }));
-                      }}
-                    />
-                  </Flex>
-                  <Flex flex={5}>
-                    <Input
-                      id=""
-                      placeholder="Enter the official website link"
-                      value={link.url}
-                      hasPrefix={
-                        <Text
-                          onBackground="neutral-weak"
-                          variant="label-default-s"
-                        >
-                          <i className="ri-links-line"></i>
-                        </Text>
-                      }
-                      onChange={(e) => {
-                        setExtraLinks((prev) => ({
-                          ...prev,
-                          academics: prev.academics.map(
-                            (l: ExtraLinkItem, i: number) =>
-                              i === idx ? { ...l, url: e.target.value } : l
-                          ),
-                        }));
-                      }}
-                    />
-                  </Flex></Column>
-                 
+                  <Column
+                    fillWidth
+                    direction="row"
+                    className="qnaColumn"
+                    gap="8"
+                  >
+                    {" "}
+                    <Flex flex={2}>
+                      <Input
+                        id=""
+                        placeholder="Enter the affiliation "
+                        value={link.label}
+                        onChange={(e) => {
+                          setExtraLinks((prev) => ({
+                            ...prev,
+                            academics: prev.academics.map(
+                              (l: ExtraLinkItem, i: number) =>
+                                i === idx ? { ...l, label: e.target.value } : l
+                            ),
+                          }));
+                        }}
+                      />
+                    </Flex>
+                    <Flex flex={5}>
+                      <Input
+                        id=""
+                        placeholder="Enter the official website link"
+                        value={link.url}
+                        hasPrefix={
+                          <Text
+                            onBackground="neutral-weak"
+                            variant="label-default-s"
+                          >
+                            <i className="ri-links-line"></i>
+                          </Text>
+                        }
+                        onChange={(e) => {
+                          setExtraLinks((prev) => ({
+                            ...prev,
+                            academics: prev.academics.map(
+                              (l: ExtraLinkItem, i: number) =>
+                                i === idx ? { ...l, url: e.target.value } : l
+                            ),
+                          }));
+                        }}
+                      />
+                    </Flex>
+                  </Column>
                 </Flex>
               ))}
             </Column>
@@ -3416,7 +3499,7 @@ function FAQs({ isUser, faqs, slug }: FAQsProps) {
               fontWeight: "500",
               marginBottom: "16px",
             }}
-            className={dmsans.className+ " eduTitle"}
+            className={dmsans.className + " eduTitle"}
           >
             Q&A
           </Text>
@@ -3431,24 +3514,25 @@ function FAQs({ isUser, faqs, slug }: FAQsProps) {
               <Text variant="body-default-m" onBackground="neutral-strong">
                 <b>{faq.id}.</b>
               </Text>
-              <Flex gap="8" direction="row" fillWidth className="qnaColumn"><Row flex={2}>
-                <Input
-                  id=""
-                  placeholder="Enter the question"
-                  value={faq.title}
-                  onChange={(e) => handleChange(idx, "title", e.target.value)}
-                />
-              </Row>
-              <Row flex={5}>
-                <Textarea
-                  id=""
-                  placeholder="Enter the answer"
-                  style={{ minHeight: "200px" }}
-                  value={faq.text}
-                  onChange={(e) => handleChange(idx, "text", e.target.value)}
-                />
-              </Row></Flex>
-              
+              <Flex gap="8" direction="row" fillWidth className="qnaColumn">
+                <Row flex={2}>
+                  <Input
+                    id=""
+                    placeholder="Enter the question"
+                    value={faq.title}
+                    onChange={(e) => handleChange(idx, "title", e.target.value)}
+                  />
+                </Row>
+                <Row flex={5}>
+                  <Textarea
+                    id=""
+                    placeholder="Enter the answer"
+                    style={{ minHeight: "200px" }}
+                    value={faq.text}
+                    onChange={(e) => handleChange(idx, "text", e.target.value)}
+                  />
+                </Row>
+              </Flex>
             </Row>
           ))}
           <Row fillWidth horizontal="end" gap="4" marginTop="16">
@@ -3508,14 +3592,15 @@ function FAQs({ isUser, faqs, slug }: FAQsProps) {
   );
 }
 
-
 function AboutBadge() {
   const [session, setSession] = useState<any>(null);
   const [profile, setProfile] = useState<any>(null);
 
   useEffect(() => {
     async function getSessionAndProfile() {
-      const { data: { session } } = await supabase.auth.getSession();
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
       setSession(session);
 
       if (session?.user) {

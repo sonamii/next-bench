@@ -315,4 +315,17 @@ html {
     flex-direction: column !important;
     
   }
+
+  .heroButtonsRow {
+    flex-wrap: wrap !important;
+  }
+
+ 
+}
+
+@media (max-width: 1050px) {
+ 
+  .minWidth60 {
+    min-width: 100% !important;
+  }
 }
