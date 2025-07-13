@@ -125,7 +125,7 @@ function FooterSection({
           direction="row"
           className="footerBottom"
         >
-          <Row fillHeight fillWidth gap="64" >
+          <Row fillHeight fillWidth gap="64" className="footerLinksColumn">
             {footerLinks.map((group: string[], idx: number) => (
               <Column gap="2" key={idx}>
                 {group.map((item: string, i: number) => (

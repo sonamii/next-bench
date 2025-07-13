@@ -147,14 +147,16 @@ html {
 
 @media (max-width: 875px) {
 
-  .logo{
+  .logo {
     width: 40px !important;
     height: 30px !important;
   }
+
   .logoText {
     font-size: 14px !important;
     margin-top: 5px !important;
-    }
+  }
+
   .titleTexts {
     font-size: 45px !important;
   }
@@ -224,22 +226,24 @@ html {
   .footerTop {
     flex-direction: column !important;
   }
-  .footerTitle{
+
+  .footerTitle {
     text-align: center !important;
     align-items: center !important;
     justify-content: center !important;
   }
 
-  .footerBottom{
+  .footerBottom {
     flex-direction: column !important;
     align-items: center !important;
     justify-content: center !important;
   }
 
-  .footerAvatar{
-    scale: 0.7  !important;
+  .footerAvatar {
+    scale: 1 !important;
   }
-  .footerAvatarGroup{
+
+  .footerAvatarGroup {
     flex-direction: row !important;
     flex-wrap: wrap !important;
     margin-top: 20px;
@@ -247,22 +251,27 @@ html {
     justify-content: center !important;
   }
 
-  .footerGroup{
+  .footerLinksColumn {
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  .footerGroup {
     align-content: center !important;
     align-items: center !important;
     justify-content: center !important;
 
   }
 
-.footerLinkTexts{
-  font-size: 15px !important;
-}
+  .footerLinkTexts {
+    font-size: 15px !important;
+  }
 
 
 
   /* ========================================= */
 
-  .profileFullName{
+  .profileFullName {
     font-size: 33px !important;
   }
 
@@ -271,15 +280,29 @@ html {
 
   /* ======= */
 
-  .findDescriptionColumn{
+  .findDescriptionColumn {
     margin-top: 20px !important;
   }
 
-  .findInstitutionColumn{
+  .findInstitutionColumn {
     padding-inline: 12px;
   }
 
-  .selectCategory{
+  .selectCategory {
     display: none !important;
+  }
+
+  /* ================ */
+  .segmentedControlEdu {
+    max-width: 90vw !important;
+  }
+
+  .eduTitle {
+    font-size: 30px !important;
+
+  }
+
+  .eduText {
+    font-size: 14px !important;
   }
 }

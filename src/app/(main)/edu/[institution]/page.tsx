@@ -230,7 +230,7 @@ export default function Page() {
               <Spinner size="xl"></Spinner>
             </div>
           ) : (
-            <Column>
+            <Column paddingX="0" fillWidth>
               <RevealFx>
                 <Flex fitHeight style={{ minHeight: "fit-content !important" }}>
                   <HeroSection
@@ -246,7 +246,12 @@ export default function Page() {
 
               <Flex fillWidth height={3}></Flex>
 
-              <Flex fillWidth maxWidth={60} center>
+              <Flex
+                fillWidth
+                maxWidth={60}
+                center
+                className="segmentedControlEdu"
+              >
                 <RevealFx>
                   <SegmentedControl
                     buttons={[
@@ -262,7 +267,6 @@ export default function Page() {
                       { value: "qna", label: "Q&A" },
                     ]}
                     onToggle={(value) => setActiveTab(value)}
-                    maxWidth={60}
                   />
                 </RevealFx>
               </Flex>
@@ -670,7 +674,7 @@ function HeroSection({
                       fontWeight: "500",
                       letterSpacing: ".3px",
                     }}
-                    className={dmsans.className}
+                    className={dmsans.className + " titleTexts"}
                   >
                     {newInstitution.name || basicInfo.name},
                     <span style={{ color: "#626F45" }}>
@@ -704,13 +708,18 @@ function HeroSection({
                 ]}
               />
               <Line vert width={0.2} height={4} background="neutral-medium" />
-              <Column horizontal="end" vertical="start" fitHeight>
+              <Column
+                horizontal="end"
+                vertical="start"
+                fitHeight
+                className="statsColumn"
+              >
                 <Text
                   style={{
                     color: "#181A1D",
                     fontSize: "41px",
                   }}
-                  className={dmsans.className}
+                  className={dmsans.className + " statsTexts"}
                 >
                   +{basicInfo.student_population}
                 </Text>
@@ -723,13 +732,18 @@ function HeroSection({
                   Students and Teachers
                 </Text>
               </Column>
-              <Column horizontal="end" vertical="start" fillHeight>
+              <Column
+                horizontal="end"
+                vertical="start"
+                fillHeight
+                className="statsColumn"
+              >
                 <Text
                   style={{
                     color: "#181A1D",
                     fontSize: "41px",
                   }}
-                  className={dmsans.className}
+                  className={dmsans.className + " statsTexts"}
                 >
                   {rating}/5
                 </Text>
@@ -753,7 +767,7 @@ function HeroSection({
                 {heroText.trim() || text.trim() || "No description available."}
               </Text>
 
-              <Row gap="20">
+              <Row gap="16" wrap={true}>
                 {isUser && (
                   <Button
                     id="arrow-button-1"
@@ -820,7 +834,6 @@ function HeroSection({
                   onMouseLeave={(e: React.MouseEvent<HTMLButtonElement>) =>
                     (e.currentTarget.style.backgroundColor = "#F2F2EF")
                   }
-                  
                 >
                   <i className="ri-user-smile-line"></i>&nbsp;Connect with
                   Students
@@ -1258,11 +1271,10 @@ function AboutSchool({
             fontSize: "25px",
             fontWeight: "500",
           }}
-          className={dmsans.className}
+          className={dmsans.className + " eduTitle"}
         >
           About School
         </Text>
-        <Text style={{ fontSize: "17px" }} onBackground="neutral-weak"></Text>
         {isUser ? (
           <Textarea
             id=""
@@ -1273,7 +1285,11 @@ function AboutSchool({
             onChange={(e) => setAboutText(e.target.value)}
           />
         ) : aboutText.trim() ? (
-          <Text style={{ fontSize: "17px" }} onBackground="neutral-weak">
+          <Text
+            style={{ fontSize: "17px" }}
+            onBackground="neutral-weak"
+            className={"eduText" + " "}
+          >
             {aboutText.split("\n").map((line, idx) => (
               <React.Fragment key={idx}>
                 {line}
@@ -1285,6 +1301,7 @@ function AboutSchool({
           <Text
             style={{ fontSize: "17px", color: "#888" }}
             onBackground="neutral-weak"
+            className="eduText"
           >
             No information provided.
           </Text>
@@ -1305,7 +1322,7 @@ function AboutSchool({
             fontSize: "25px",
             fontWeight: "500",
           }}
-          className={dmsans.className}
+          className={dmsans.className + " eduTitle"}
         >
           Basic Information about School
         </Text>
@@ -1316,7 +1333,8 @@ function AboutSchool({
               <Row flex={1}>
                 <Text
                   onBackground="neutral-weak"
-                  style={{ fontSize: "17px !important" }}
+                  style={{ fontSize: "17px" }}
+                  className="eduText"
                 >
                   <Kbd
                     background="neutral-medium"
@@ -1341,7 +1359,8 @@ function AboutSchool({
             <Row fillWidth horizontal="start" gap="12" vertical="center">
               <Text
                 onBackground="neutral-weak"
-                style={{ fontSize: "17px !important" }}
+                style={{ fontSize: "17px " }}
+                className="eduText"
               >
                 <Kbd
                   background="neutral-medium"
@@ -1355,7 +1374,7 @@ function AboutSchool({
               <Text
                 onBackground="neutral-weak"
                 style={{ fontSize: "16px" }}
-                className={dmsans.className}
+                className={dmsans.className + " eduText"}
               >
                 {yearEstablished}
               </Text>
@@ -1407,7 +1426,7 @@ function AboutSchool({
               <Text
                 onBackground="neutral-weak"
                 style={{ fontSize: "16px" }}
-                className={dmsans.className}
+                className={dmsans.className + " eduText"}
               >
                 {institutionType}
               </Text>
@@ -1459,7 +1478,7 @@ function AboutSchool({
               <Text
                 onBackground="neutral-weak"
                 style={{ fontSize: "16px" }}
-                className={dmsans.className}
+                className={dmsans.className + " eduText"}
               >
                 {gender}
               </Text>
@@ -1511,7 +1530,7 @@ function AboutSchool({
               <Text
                 onBackground="neutral-weak"
                 style={{ fontSize: "16px" }}
-                className={dmsans.className}
+                className={dmsans.className + " eduText"}
               >
                 {boardingType}
               </Text>
@@ -1569,7 +1588,7 @@ function AboutSchool({
               <Text
                 onBackground="neutral-weak"
                 style={{ fontSize: "16px" }}
-                className={dmsans.className}
+                className={dmsans.className + " eduText"}
               >
                 {minClass} to {maxClass}
               </Text>
@@ -1631,7 +1650,7 @@ function AboutSchool({
               <Text
                 onBackground="neutral-weak"
                 style={{ fontSize: "16px" }}
-                className={dmsans.className}
+                className={dmsans.className + " eduText"}
               >
                 {affiliationBoards}
               </Text>
@@ -1683,7 +1702,7 @@ function AboutSchool({
               <Text
                 onBackground="neutral-weak"
                 style={{ fontSize: "16px" }}
-                className={dmsans.className}
+                className={dmsans.className + " eduText"}
               >
                 {affiliationType}
               </Text>
@@ -1735,7 +1754,7 @@ function AboutSchool({
               <Text
                 onBackground="neutral-weak"
                 style={{ fontSize: "16px" }}
-                className={dmsans.className}
+                className={dmsans.className + " eduText"}
               >
                 {studentPopulation}
               </Text>
@@ -1786,7 +1805,7 @@ function AboutSchool({
         gap="12"
       >
         <Accordion
-        open
+          open
           title={
             <Text
               variant="body-default-xl"
@@ -2005,7 +2024,7 @@ function Admission({
             fontSize: "25px",
             fontWeight: "500",
           }}
-          className={dmsans.className}
+          className={dmsans.className + " eduTitle"}
         >
           Admission procedure
         </Text>
@@ -2023,6 +2042,7 @@ function Admission({
               fontSize: "17px",
             }}
             onBackground="neutral-weak"
+            className={"eduText" + " "}
           >
             {admissionText.split("\n").map((line, idx) => (
               <React.Fragment key={idx}>
@@ -2038,6 +2058,7 @@ function Admission({
               color: "#888",
             }}
             onBackground="neutral-weak"
+            className="eduText"
           >
             No information provided.
           </Text>
@@ -2057,7 +2078,7 @@ function Admission({
             fontSize: "25px",
             fontWeight: "500",
           }}
-          className={dmsans.className}
+          className={dmsans.className + " eduTitle"}
         >
           Age Requirements
         </Text>
@@ -2134,7 +2155,7 @@ function Admission({
             fontSize: "25px",
             fontWeight: "500",
           }}
-          className={dmsans.className}
+          className={dmsans.className + " eduTitle"}
         >
           Important Dates for Admission
         </Text>
@@ -2211,7 +2232,7 @@ function Admission({
             fontSize: "25px",
             fontWeight: "500",
           }}
-          className={dmsans.className}
+          className={dmsans.className + " eduTitle"}
         >
           Fee details and procedure
         </Text>
@@ -2288,7 +2309,7 @@ function Admission({
               fontSize: "25px",
               fontWeight: "500",
             }}
-            className={dmsans.className}
+            className={dmsans.className + " eduTitle"}
           >
             Extra links
           </Text>
@@ -2516,7 +2537,7 @@ function Facilities({
                 fontSize: "25px",
                 fontWeight: "500",
               }}
-              className={dmsans.className}
+              className={dmsans.className + " eduTitle"}
             >
               {capitalize(sectionKey.replace(/([A-Z])/g, " $1"))} Facilities
             </Text>
@@ -2674,7 +2695,7 @@ function Extracurricular({ isUser, text, slug }: ExtracurricularProps) {
             fontSize: "25px",
             fontWeight: "500",
           }}
-          className={dmsans.className}
+          className={dmsans.className + " eduTitle"}
         >
           Extra Curricular Activities
         </Text>
@@ -2693,6 +2714,7 @@ function Extracurricular({ isUser, text, slug }: ExtracurricularProps) {
               fontSize: "17px",
             }}
             onBackground="neutral-weak"
+            className={"eduText" + " "}
           >
             {extraCurricular.split("\n").map((line, idx) => (
               <React.Fragment key={idx}>
@@ -2708,6 +2730,7 @@ function Extracurricular({ isUser, text, slug }: ExtracurricularProps) {
               color: "#888",
             }}
             onBackground="neutral-weak"
+            className="eduText"
           >
             No information provided.
           </Text>
@@ -2871,7 +2894,7 @@ function Academics({ isUser, tables, slug, extra_links }: AcademicsProps) {
             fontSize: "25px",
             fontWeight: "500",
           }}
-          className={dmsans.className}
+          className={dmsans.className + " eduTitle"}
         >
           School Timings
         </Text>
@@ -2956,7 +2979,7 @@ function Academics({ isUser, tables, slug, extra_links }: AcademicsProps) {
             fontSize: "25px",
             fontWeight: "500",
           }}
-          className={dmsans.className}
+          className={dmsans.className + " eduTitle"}
         >
           Vacation Schedule
         </Text>
@@ -3077,7 +3100,7 @@ function Academics({ isUser, tables, slug, extra_links }: AcademicsProps) {
             fontSize: "25px",
             fontWeight: "500",
           }}
-          className={dmsans.className}
+          className={dmsans.className + " eduTitle"}
         >
           School Levels and Classes
         </Text>
@@ -3144,9 +3167,9 @@ function Academics({ isUser, tables, slug, extra_links }: AcademicsProps) {
             fontSize: "25px",
             fontWeight: "500",
           }}
-          className={dmsans.className}
+          className={dmsans.className + " eduTitle"}
         >
-          Academic Affiliation
+          Academic Affiliation(s)
         </Text>
         {isUser ? (
           <>
@@ -3385,7 +3408,7 @@ function FAQs({ isUser, faqs, slug }: FAQsProps) {
               fontWeight: "500",
               marginBottom: "16px",
             }}
-            className={dmsans.className}
+            className={dmsans.className+ " eduTitle"}
           >
             Q&A
           </Text>
@@ -3464,6 +3487,7 @@ function FAQs({ isUser, faqs, slug }: FAQsProps) {
                   fontSize: "16px",
                 }}
                 onBackground="neutral-weak"
+                className="eduText"
               >
                 {faq.text}
               </Text>
