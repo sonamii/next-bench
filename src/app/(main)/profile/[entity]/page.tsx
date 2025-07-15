@@ -42,6 +42,9 @@ import {
   HeadingLink,
   ThemeSwitcher,
   TagInput,
+  Feedback,
+  StatusIndicator,
+  SmartLink,
 } from "@once-ui-system/core";
 import { useRouter } from "next/navigation";
 import {
@@ -164,12 +167,13 @@ export default function ProfilePage() {
       { data: profileData },
       { data: socialsData },
       { data: institutionsData },
+      { data: consultantData },
       { data: sessionData },
     ] = await Promise.all([
       supabase
         .from("user_profiles")
         .select(
-          "profile_details, username, joined_at, last_login, primary_email, is_public, pfp, count, subscription, is_admin, is_consultant"
+          "uuid, profile_details, username, joined_at, last_login, primary_email, is_public, pfp, count, subscription, is_admin, is_consultant"
         )
         .eq("uuid", uuid)
         .maybeSingle(),
@@ -183,6 +187,11 @@ export default function ProfilePage() {
         .select("edu_id, basic_info, is_published, uuid")
         .eq("uuid", uuid)
         .order("created_at", { ascending: false }),
+      supabase
+        .from("consultants")
+        .select("is_consultant")
+        .eq("uuid", uuid)
+        .maybeSingle(),
       supabase.auth.getSession(),
     ]);
 
@@ -192,6 +201,7 @@ export default function ProfilePage() {
       const pd = profileData.profile_details || {};
       // New profile_details structure (flat, only new structure is accepted)
       profile = {
+        uuid: profileData.uuid ?? "",
         fullName: pd.personal_details.full_name ?? "",
         introduction: pd.personal_details.introduction ?? "",
         dob: pd.personal_details.dob ? new Date(pd.personal_details.dob) : null,
@@ -201,7 +211,6 @@ export default function ProfilePage() {
         phoneNumber: pd.contact.phone_number ?? "",
         email: pd.contact.email ?? "",
         accountVisibility: profileData.is_public ?? false,
-        isConsultant: profileData.is_consultant ?? false,
         userName: profileData.username ?? "",
         accountCreated: profileData.joined_at
           ? new Date(profileData.joined_at)
@@ -260,8 +269,9 @@ export default function ProfilePage() {
     }
 
     // Set isConsultant
-    if (profileData && profileData.is_consultant) {
-      setIsConsultant(profileData.is_consultant);
+
+    if (consultantData && consultantData.is_consultant) {
+      setIsConsultant(consultantData.is_consultant);
     } else {
       setIsConsultant(false);
     }
@@ -334,9 +344,25 @@ export default function ProfilePage() {
       )
       .subscribe();
 
+    const consultantChannel = supabase
+      .channel(`consultant-profile-${uuid}`)
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "consultants",
+          filter: `uuid=eq.${uuid}`,
+        },
+        () => {
+          fetchAllUserData(uuid);
+        }
+      )
+      .subscribe();
     return () => {
       supabase.removeChannel(channel);
       supabase.removeChannel(eduChannel);
+      supabase.removeChannel(consultantChannel);
     };
   }, [uuid, fetchAllUserData]);
 
@@ -376,7 +402,7 @@ export default function ProfilePage() {
       personal_details: {
         full_name: profile.fullName,
         introduction: profile.introduction,
-        dob: profile.dob ? formatPostgresTimestamp(profile.dob) : null,
+        // dob: profile.dob ? formatPostgresTimestamp(profile.dob) : null,
         gender: profile.gender,
       },
       contact: {
@@ -396,7 +422,7 @@ export default function ProfilePage() {
         username: profile.userName,
         is_public: profile.accountVisibility,
         subscription: profile.membershipStatus,
-        is_consultant: profile.isConsultant,
+        // is_consultant: profile.isConsultant,
       })
       .eq("uuid", uuid);
     if (error) {
@@ -629,8 +655,8 @@ export default function ProfilePage() {
   );
 }
 
-// --- Types ---
 type UserProfile = {
+  uuid: string;
   fullName: string;
   introduction: string;
   dob: Date | null;
@@ -640,7 +666,6 @@ type UserProfile = {
   phoneNumber: string;
   email: string;
   accountVisibility: boolean;
-  isConsultant: boolean;
   userName: string;
   accountCreated: Date | null;
   lastLogin: Date | null;
@@ -744,10 +769,14 @@ function ProfileHeader({
         className={dmsansClass}
       >
         <Row center gap="12" wrap={true} fillWidth>
-            <Row center style={{ textAlign: "center", width: "100%" }} className="profileFullName" fillWidth>
+          <Row
+            center
+            style={{ textAlign: "center", width: "100%" }}
+            className="profileFullName"
+            fillWidth
+          >
             {profile?.fullName}
-
-            </Row>
+          </Row>
           {profile && (
             <>
               <Text
@@ -798,7 +827,10 @@ function ProfileHeader({
           ) : null}
         </Row>
       )}
-      <Text onBackground="neutral-weak" style={{ fontSize: "14px",textAlign:"center" }} >
+      <Text
+        onBackground="neutral-weak"
+        style={{ fontSize: "14px", textAlign: "center" }}
+      >
         {profile?.introduction?.trim()
           ? profile.introduction
           : "User at Next Bench"}
@@ -842,12 +874,20 @@ function ProfileEdit({
 
   return (
     <RevealFx fillWidth direction="column">
-      <Grid fillWidth padding="m" fitHeight columns={2} gap="104" className="personal-account-details-grid">
+      <Grid
+        fillWidth
+        padding="m"
+        fitHeight
+        columns={2}
+        gap="104"
+        className="personal-account-details-grid"
+      >
         <PersonalDetails
           countries={countries}
           form={form}
           onChange={handleChange}
           isCurrentUser={isCurrentUser}
+          uuid={profile?.uuid || ""}
         />
         <AccountDetails
           form={form}
@@ -888,12 +928,198 @@ function PersonalDetails({
   form,
   onChange,
   isCurrentUser,
+  uuid,
 }: {
   countries: { label: string; value: string }[];
   form: UserProfile;
   onChange: (field: keyof UserProfile, value: any) => void;
   isCurrentUser: boolean;
+  uuid: string;
 }) {
+  const [isConsultantDialog, setIsConsultantDialog] = useState(false);
+  const [eduCodes, setEduCodes] = useState<string[]>([]);
+  const [formData, setFormData] = useState<{
+    motivation: string;
+    dob: Date | null;
+    country: string;
+    phoneNumber: string;
+    address: string;
+    email: string;
+  }>({
+    motivation: "",
+    dob: null,
+    country: "",
+    phoneNumber: "",
+    address: "",
+    email: "",
+  });
+  const [errorText, setErrorText] = useState<string | null>(null);
+  const [isNotification, setIsNotification] = useState<boolean>(false);
+  const [isConsultant, setIsConsultant] = useState<boolean>(false);
+  const [loading, setLoading] = useState(false);
+  const [hasSubmitted, setHasSubmitted] = useState<boolean>(false);
+  const [isWithdrawingLoading, setIsWithdrawingLoading] = useState(false);
+
+  const { addToast } = useToast();
+
+  useEffect(() => {
+    // Fetch consultant application data for this user
+    async function fetchConsultantData() {
+      if (!uuid) return;
+      const { data, error } = await supabase
+        .from("consultants")
+        .select("*")
+        .eq("uuid", uuid)
+        .maybeSingle();
+
+      if (data) {
+        setFormData((prev) => ({
+          ...prev,
+          motivation: data.consultant_form ?? "",
+          dob: data.basic_info?.dob ? new Date(data.basic_info.dob) : null,
+          country: data.basic_info?.country ?? "",
+          phoneNumber: data.basic_info?.phoneNumber ?? "",
+          address: data.basic_info?.address ?? "",
+          email: data.basic_info?.email ?? "",
+        }));
+        setEduCodes(Array.isArray(data.edu_codes) ? data.edu_codes : []);
+        setErrorText(data.error_text ?? null);
+        setIsNotification(data.is_notification ?? false);
+        setIsConsultant(data.is_consultant);
+        setHasSubmitted(data.has_submitted ?? false);
+      }
+
+      if (error) {
+        // Optionally handle error
+        setErrorText("Failed to load consultant data.");
+      }
+    }
+    fetchConsultantData();
+  }, [uuid]);
+  // Consultant application submit handler
+  const handleConsultantApplication = async () => {
+    setLoading(true);
+    // Validate: at least one edu code and motivation
+    if (eduCodes.length === 0 || !formData.motivation.trim()) {
+      addToast({
+        message:
+          "Please enter at least one institute code and your motivation.",
+        variant: "danger",
+      });
+      setLoading(false);
+      return;
+    }
+    // Prepare payload
+    // Helper to format date as YYYY-MM-DD (only day, month, year)
+    function formatSimpleDate(date: Date): string {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const day = String(date.getDate()).padStart(2, "0");
+      return `${year}-${month}-${day}`;
+    }
+
+    const payload = {
+      uuid: uuid,
+      is_consultant: false,
+      consultant_form: formData.motivation,
+      edu_codes: eduCodes,
+      basic_info: {
+        dob: formData.dob ? formatSimpleDate(formData.dob) : null,
+        country: form.country,
+        phoneNumber: formData.phoneNumber,
+        address: formData.address,
+        email: form.email,
+      },
+      is_notification: false,
+      error_text: null,
+      date_submitted_or_updated: new Date().toISOString(),
+      has_submitted: true,
+    };
+    // Upsert into consultants table
+    try {
+      const { error } = await supabase
+        .from("consultants")
+        .upsert([payload], { onConflict: "uuid" });
+      if (error) throw error;
+      setIsConsultantDialog(false);
+      addToast({
+        message: "Consultant application submitted successfully!",
+        variant: "success",
+      });
+    } catch (err) {
+      console.error("Error submitting consultant application:", err);
+      addToast({
+        message: "Failed to submit consultant application. Please try again.",
+        variant: "danger",
+      });
+    }
+    setLoading(false);
+  };
+
+ 
+  // Withdraw current application
+  const withdrawCurrentApplication = async () => {
+    setIsWithdrawingLoading(true);
+    if (!uuid) return;
+    setTimeout(async () => {
+      try {
+        // First set is_consultant = false
+        const { error: updateError } = await supabase
+          .from("consultants")
+          .update({ is_consultant: false })
+          .eq("uuid", uuid);
+        if (updateError) throw updateError;
+
+        // Then delete the row
+        const { error: deleteError } = await supabase
+          .from("consultants")
+          .delete()
+          .eq("uuid", uuid);
+        if (deleteError) throw deleteError;
+
+        setIsConsultant(false);
+        addToast({
+          message: "Your consultant application has been withdrawn.",
+          variant: "success",
+        });
+      } catch (err) {
+        console.error("Error withdrawing application:", err);
+        addToast({
+          message: "Failed to withdraw application. Please try again.",
+          variant: "danger",
+        });
+      } finally {
+        setIsWithdrawingLoading(false);
+      }
+    }, 1000);
+  };
+
+   // Listen for consultant status changes in realtime
+  useEffect(() => {
+    if (!uuid) return;
+    const channel = supabase
+      .channel(`consultant-status-${uuid}`)
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "consultants",
+          filter: `uuid=eq.${uuid}`,
+        },
+        (event) => {
+          // If consultant row is deleted, set isConsultant to false
+          if (event.eventType === "DELETE") {
+            setIsConsultant(false);
+          }
+          
+        }
+      )
+      .subscribe();
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [uuid]);
   return (
     <Column fillWidth horizontal="start" vertical="start" gap="20">
       <Text
@@ -924,17 +1150,9 @@ function PersonalDetails({
           disabled={!isCurrentUser}
         />
       </ProfileRow>
-      <ProfileRow label="Date of Birth:">
-        <DateInput
-          id="date-dob"
-          height="m"
-          placeholder="When were you born?"
-          cursor="interactive"
-          value={form.dob === null ? undefined : form.dob}
-          onChange={(v: Date | null) => onChange("dob", v)}
-          disabled={!isCurrentUser}
-        />
-      </ProfileRow>
+      {/* <ProfileRow label="Date of Birth:">
+      
+      </ProfileRow> */}
       <ProfileRow label="Gender:">
         <Select
           height="m"
@@ -959,43 +1177,13 @@ function PersonalDetails({
         />
       </ProfileRow>
 
-      {isCurrentUser && (
-        <ProfileRow label="Address:">
-          <Textarea
-            id="textarea-address"
-            placeholder="Where do you live?"
-            resize="vertical"
-            description={
-              <Text onBackground="neutral-weak">
-                <i className="ri-information-line"></i>&nbsp;Your address will
-                not be shared with anyone.
-              </Text>
-            }
-            value={form.address}
-            onChange={(e: any) => onChange("address", e.target.value)}
-            disabled={!isCurrentUser}
-          />
-        </ProfileRow>
+      {/* {isCurrentUser && (
+        
       )}
       {isCurrentUser && (
-        <ProfileRow label="Phone Number:">
-          <Input
-            id="input-phone"
-            height="m"
-            spellCheck={false}
-            placeholder="Your phone number"
-            description={
-              <Text onBackground="neutral-weak">
-                <i className="ri-information-line"></i>&nbsp;Your phone number
-                will not be shared with anyone.
-              </Text>
-            }
-            value={form.phoneNumber}
-            onChange={(e: any) => onChange("phoneNumber", e.target.value)}
-            disabled={!isCurrentUser}
-          />
+       
         </ProfileRow>
-      )}
+      )} */}
       {isCurrentUser && (
         <ProfileRow label="Email:">
           <Input
@@ -1014,6 +1202,226 @@ function PersonalDetails({
             onChange={(e: any) => onChange("email", e.target.value)}
           />
         </ProfileRow>
+      )}
+      {isCurrentUser && (
+        <ProfileRow label="Account visiblity:">
+          <Switch
+            label={
+              <Text onBackground="neutral-weak" variant="label-default-m">
+                {form.accountVisibility ? "Public" : "Private"}
+              </Text>
+            }
+            isChecked={form.accountVisibility}
+            onToggle={() =>
+              onChange("accountVisibility", !form.accountVisibility)
+            }
+            disabled={!isCurrentUser}
+          />
+        </ProfileRow>
+      )}
+
+      {isCurrentUser && (
+        <>
+          <ProfileRow label="Apply for consultant:">
+            {!isConsultant ? (
+              <Flex>
+                <Button size="m" onClick={() => setIsConsultantDialog(true)}>
+                  Click to apply
+                </Button>
+
+                {isNotification && <StatusIndicator color="yellow" size="m" />}
+              </Flex>
+            ) : (
+              <Row gap="8" fitHeight>
+                {" "}
+                <Tag variant="gradient">You are a consultant!</Tag>
+                <Button
+                  size="m"
+                  weight="default"
+                  onClick={withdrawCurrentApplication}
+                >
+                  {isWithdrawingLoading ? (
+                    <>
+                      Withdrawing...&nbsp;
+                      <Spinner size="s" />
+                    </>
+                  ) : (
+                    "Withdraw"
+                  )}
+                </Button>
+              </Row>
+            )}
+          </ProfileRow>
+
+          <Dialog
+            isOpen={isConsultantDialog}
+            onClose={() => setIsConsultantDialog(false)}
+            title="Consultant Application"
+            description="Please fill out the form to apply for consultant status."
+            footer={
+              <Row fillWidth horizontal="start" vertical="center">
+                <Text
+                  variant="label-default-xs"
+                  onBackground="neutral-weak"
+                  style={{ fontSize: "13px" }}
+                >
+                  <i className="ri-information-line"></i>&nbsp; Please fill out
+                  the form to apply for consultant status.
+                </Text>
+              </Row>
+            }
+          >
+            <Column fillWidth gap="16" marginTop="16">
+              {errorText && (
+                <Feedback
+                  variant="danger"
+                  title="Error"
+                  description={errorText}
+                />
+              )}
+              {hasSubmitted && !errorText && (
+                <Feedback
+                  variant="info"
+                  title="Reviewing"
+                  description={"Application is under review."}
+                />
+              )}
+              <Column fillWidth vertical="center" gap="4">
+                <Textarea
+                  spellCheck={false}
+                  id="consultant-application"
+                  placeholder="Provide a brief explanation of your motivation and qualifications."
+                  description={
+                    <>
+                      <i className="ri-information-line"></i>&nbsp; Your
+                      response will be reviewed by our team.
+                    </>
+                  }
+                  value={formData.motivation}
+                  onChange={(e: any) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      motivation: e.target.value,
+                    }))
+                  }
+                  lines={7}
+                />
+              </Column>{" "}
+              <Column fillWidth vertical="center" gap="4">
+                {" "}
+                <DateInput
+                  id="date-dob"
+                  height="m"
+                  placeholder="When were you born?"
+                  cursor="interactive"
+                  value={formData.dob === null ? undefined : formData.dob}
+                  onChange={(v: Date | null) =>
+                    setFormData((prev) => ({ ...prev, dob: v }))
+                  }
+                  description={
+                    <Text onBackground="neutral-weak">
+                      <i className="ri-information-line"></i>&nbsp;Enter your
+                      date of birth.
+                    </Text>
+                  }
+                />
+              </Column>
+              <Row fillWidth vertical="center" gap="4">
+                {" "}
+                <Select
+                  height="m"
+                  searchable={true}
+                  id="country-select"
+                  placeholder="Where do you reside?"
+                  value={form.country}
+                  options={countries}
+                  onSelect={(v: any) => onChange("country", v)}
+                  disabled={true}
+                />
+                <Input
+                  id="input-phone"
+                  height="m"
+                  spellCheck={false}
+                  placeholder="Enter your phone number"
+                  value={formData.phoneNumber}
+                  onChange={(e: any) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      phoneNumber: e.target.value,
+                    }))
+                  }
+                />
+              </Row>
+              <Column fillWidth vertical="start" gap="16">
+                <Textarea
+                  id="textarea-address"
+                  placeholder="Where do you live?"
+                  resize="vertical"
+                  description={
+                    <Text onBackground="neutral-weak">
+                      <i className="ri-information-line"></i>&nbsp;Your address
+                      will not be shared with anyone.
+                    </Text>
+                  }
+                  value={formData.address}
+                  onChange={(e: any) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      address: e.target.value,
+                    }))
+                  }
+                />
+              </Column>
+              <Column fillWidth vertical="center" gap="4">
+                <TagInput
+                  id=""
+                  value={eduCodes}
+                  onChange={(v: string[]) => setEduCodes(v)}
+                  placeholder="Enter institute code(s)"
+                  hasSuffix={
+                    <Kbd position="absolute" top="12" right="12">
+                      Enter
+                    </Kbd>
+                  }
+                  description={
+                    <Text onBackground="neutral-weak">
+                      <i className="ri-question-line"></i>&nbsp;Click
+                      <SmartLink href="/edu/codes">here</SmartLink> to find the
+                      codes.
+                    </Text>
+                  }
+                ></TagInput>
+              </Column>
+              <Row fillWidth horizontal="end" gap="4">
+                {" "}
+                {hasSubmitted && (
+                  <Button onClick={withdrawCurrentApplication}>
+                    Withdraw Application
+                  </Button>
+                )}
+                <Button
+                  onClick={handleConsultantApplication}
+                  disabled={
+                    eduCodes.length === 0 ||
+                    !formData.motivation.trim() ||
+                    !formData.dob ||
+                    !formData.phoneNumber ||
+                    !formData.address
+                  }
+                >
+                  {loading ? (
+                    <>
+                      Sending...&nbsp;
+                      <Spinner size="s" />
+                    </>
+                  ) : (
+                    "Send for review"
+                  )}
+                </Button>
+              </Row>
+            </Column>
+          </Dialog>
+        </>
       )}
     </Column>
   );
@@ -1137,39 +1545,6 @@ function AccountDetails({
           disabled={!isCurrentUser}
         />
       </ProfileRow>
-      {isCurrentUser && (
-        <ProfileRow label="Account visiblity:">
-          <Switch
-            label={
-              <Text onBackground="neutral-weak" variant="label-default-m">
-                {form.accountVisibility ? "Public" : "Private"}
-              </Text>
-            }
-            isChecked={form.accountVisibility}
-            onToggle={() =>
-              onChange("accountVisibility", !form.accountVisibility)
-            }
-            disabled={!isCurrentUser}
-          />
-        </ProfileRow>
-      )}
-
-      {isCurrentUser && (
-        <ProfileRow label="Apply for consultant:">
-          <Switch
-            label={
-              <Text onBackground="neutral-weak" variant="label-default-m">
-                {form.isConsultant
-                  ? "In consultant programme"
-                  : "Out of Consultant programme"}
-              </Text>
-            }
-            isChecked={form.isConsultant}
-            onToggle={() => onChange("isConsultant", !form.isConsultant)}
-            disabled={!isCurrentUser}
-          />
-        </ProfileRow>
-      )}
     </Column>
   );
 }
@@ -1300,7 +1675,13 @@ function CreatedInstitutions({
               inst.name.toLowerCase().includes(searchValue.toLowerCase())
             );
             return found ? (
-              <Grid fillWidth fitHeight columns={2} gap="16"  className="personal-account-details-grid">
+              <Grid
+                fillWidth
+                fitHeight
+                columns={2}
+                gap="16"
+                className="personal-account-details-grid"
+              >
                 <InstitutionCard
                   key={found.id}
                   institution={found}
@@ -1321,7 +1702,13 @@ function CreatedInstitutions({
             <Text onBackground="neutral-medium">No institution found.</Text>
           </Flex>
         ) : (
-          <Grid fillWidth fitHeight columns={2} gap="4"  className="personal-account-details-grid">
+          <Grid
+            fillWidth
+            fitHeight
+            columns={2}
+            gap="4"
+            className="personal-account-details-grid"
+          >
             {institutions.map((inst) => (
               <InstitutionCard
                 key={inst.id}
@@ -1604,13 +1991,12 @@ function InstitutionCard({
       background="transparent"
       id={institution.name.toLowerCase().replace(/\s+/g, "-").trim() + "-card"}
     >
-       <Row gap="12" vertical="center" > <Text
-          onBackground="neutral-strong"
-          style={{ fontSize: "18px" }}
-          
-        >
+      <Row gap="12" vertical="center">
+        {" "}
+        <Text onBackground="neutral-strong" style={{ fontSize: "18px" }}>
           {institution.name}
-        </Text>{" "}<IconButton
+        </Text>{" "}
+        <IconButton
           variant="secondary"
           onClick={() => {
             router.push(`/edu/${institution.id}`);
@@ -1620,7 +2006,8 @@ function InstitutionCard({
             className="ri-arrow-right-up-line"
             style={{ fontSize: "23px" }}
           ></i>
-        </IconButton></Row>
+        </IconButton>
+      </Row>
       {/* <InstitutionRow label="Type:">{institution.type}</InstitutionRow>
 
       <InstitutionRow label="Short address:">
@@ -1704,7 +2091,14 @@ function Socials({
 
   return (
     <>
-      <Grid fillWidth padding="m" fitHeight columns={2} gap="104"  className="personal-account-details-grid">
+      <Grid
+        fillWidth
+        padding="m"
+        fitHeight
+        columns={2}
+        gap="104"
+        className="personal-account-details-grid"
+      >
         <SocialsSection
           title="Social Details"
           rows={[
@@ -1910,7 +2304,14 @@ function Security() {
   }
 
   return (
-    <Grid fillWidth padding="m" fitHeight columns={2} gap="104"  className="personal-account-details-grid">
+    <Grid
+      fillWidth
+      padding="m"
+      fitHeight
+      columns={2}
+      gap="104"
+      className="personal-account-details-grid"
+    >
       {/* Account Deletion */}
       <Column fillWidth horizontal="start" vertical="start" gap="20">
         <Text

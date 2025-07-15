@@ -438,6 +438,14 @@ function InstitutionCard({ data }: { data: any }) {
             icon="ri-store-2-line"
             text={center.facilities || "NOT PROVIDED"}
           />
+          <InfoRow
+            icon="ri-links-line"
+            background="brand-weak"
+            style={{fontWeight: "400"}}
+            text={
+              center.edu_url_name
+            }
+            />
         </Column>
         <Column flex={2} gap="8" className="findInstitutionColumn">
           <ContactRow
@@ -472,7 +480,7 @@ function InstitutionCard({ data }: { data: any }) {
 }
 
 // Info Row
-function InfoRow({ icon, text }: { icon: string; text: string }) {
+function InfoRow({ icon, text,background,style }: { icon: string; text: string, background?: string, style?: React.CSSProperties }) {
   return (
     <Row fillWidth horizontal="center" gap="12" vertical="center">
       <Row flex={1}>
@@ -482,8 +490,33 @@ function InfoRow({ icon, text }: { icon: string; text: string }) {
       </Row>
       <Row flex={12}>
         <Text
-          onBackground="neutral-medium"
-          style={{ fontSize: "14px" }}
+        style={{ fontSize: "14px", ...style }}
+          onBackground={
+            background as
+              | "neutral-weak"
+              | "neutral-strong"
+              | "neutral-medium"
+              | "brand-strong"
+              | "brand-weak"
+              | "brand-medium"
+              | "accent-strong"
+              | "accent-weak"
+              | "accent-medium"
+              | "info-strong"
+              | "info-weak"
+              | "info-medium"
+              | "success-strong"
+              | "success-weak"
+              | "success-medium"
+              | "warning-strong"
+              | "warning-weak"
+              | "warning-medium"
+              | "danger-strong"
+              | "danger-weak"
+              | "danger-medium"
+              | undefined
+            || "neutral-medium"
+          }
           className={dmsans.className}
         >
           {text}
