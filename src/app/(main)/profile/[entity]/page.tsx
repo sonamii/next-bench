@@ -1,4 +1,5 @@
 "use client";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import {
   Heading,
   Text,
@@ -47,19 +48,7 @@ import {
   SmartLink,
 } from "@once-ui-system/core";
 import { useRouter } from "next/navigation";
-import {
-  Lato,
-  Montserrat,
-  Montserrat_Alternates,
-  Outfit,
-  Unica_One,
-  Work_Sans,
-  Poppins,
-  Inter,
-  Roboto,
-  Open_Sans,
-} from "next/font/google";
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { Outfit } from "next/font/google";
 import { useToast } from "@once-ui-system/core";
 import NavBar from "./../../components/NavBar";
 import Footer from "./../../components/Footer";
@@ -108,11 +97,63 @@ const countries = countriesOptionsJSON.map((country) => ({
   value: country.value,
 }));
 
+// --- Types ---
+type UserProfile = {
+  uuid: string;
+  fullName: string;
+  introduction: string;
+  dob: Date | null;
+  gender: string;
+  country: string;
+  address: string;
+  phoneNumber: string;
+  email: string;
+  accountVisibility: boolean;
+  userName: string;
+  accountCreated: Date | null;
+  lastLogin: Date | null;
+  membershipStatus: string;
+  languagePreference: string;
+  timezone: string;
+  avatarSrc: string;
+  count: number;
+};
+type UserSocials = {
+  phone: string;
+  email: string;
+  whatsapp: string;
+  instagram: string;
+  linkedin: string;
+};
+type Institution = {
+  id: string;
+  name: string;
+  type: string;
+  address: string;
+  affiliation: string[];
+  contact: string;
+  email: string;
+  isPublished: boolean;
+  uuid: string;
+  city?: string;
+  country?: string;
+  affiliationType?: string;
+};
+type InstitutionInput = {
+  name: string;
+  type: string;
+  affiliation: string[];
+  phoneNumber: string;
+  email: string;
+  city: string;
+  country: string;
+};
+
 // --- Main Page ---
 export default function ProfilePage() {
   const [activeTab, setActiveTab] = useState("profile");
-  const [uuid, setUuid] = useState<string | undefined>(undefined);
-  const [sessionId, setSessionId] = useState<string | undefined>(undefined);
+  const [uuid, setUuid] = useState<string | undefined>();
+  const [sessionId, setSessionId] = useState<string | undefined>();
   const [userXP, setUserXP] = useState<number>(0);
   const [isConsultant, setIsConsultant] = useState<boolean>(false);
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
@@ -138,31 +179,23 @@ export default function ProfilePage() {
 
   const { addToast } = useToast();
 
-  // Segmented tabs, security tab is only for current user
+  // Tabs
   const segmentedTabs = useMemo(() => {
-    const baseTabs = [
+    const tabs = [
       { value: "profile", label: "Profile", disabled: false },
       { value: "socials", label: "Socials", disabled: false },
       { value: "creations", label: "Edu Centers", disabled: false },
-      { value: "security", label: "Security", disabled: true },
+      { value: "security", label: "Security", disabled: !userData.isCurrentUser },
     ];
-    if (userData.isCurrentUser) {
-      baseTabs.forEach((tab) => {
-        if (tab.value === "security") {
-          tab.disabled = false;
-        }
-      });
-    }
-    return baseTabs;
+    return tabs;
   }, [userData.isCurrentUser]);
 
-  // Fetch all user data at once
+  // Fetch all user data
   const fetchAllUserData = useCallback(async (uuid: string) => {
-    setLoadingProfile(false);
-    setLoadingSocials(false);
-    setLoadingInstitutions(false);
+    setLoadingProfile(true);
+    setLoadingSocials(true);
+    setLoadingInstitutions(true);
 
-    // Fetch profile, socials, institutions, and session in parallel
     const [
       { data: profileData },
       { data: socialsData },
@@ -199,17 +232,16 @@ export default function ProfilePage() {
     let profile: UserProfile | null = null;
     if (profileData) {
       const pd = profileData.profile_details || {};
-      // New profile_details structure (flat, only new structure is accepted)
       profile = {
         uuid: profileData.uuid ?? "",
-        fullName: pd.personal_details.full_name ?? "",
-        introduction: pd.personal_details.introduction ?? "",
-        dob: pd.personal_details.dob ? new Date(pd.personal_details.dob) : null,
-        gender: pd.personal_details.gender ?? "none",
-        country: pd.contact.country ?? "",
-        address: pd.contact.address ?? "",
-        phoneNumber: pd.contact.phone_number ?? "",
-        email: pd.contact.email ?? "",
+        fullName: pd.personal_details?.full_name ?? "",
+        introduction: pd.personal_details?.introduction ?? "",
+        dob: pd.personal_details?.dob ? new Date(pd.personal_details.dob) : null,
+        gender: pd.personal_details?.gender ?? "none",
+        country: pd.contact?.country ?? "",
+        address: pd.contact?.address ?? "",
+        phoneNumber: pd.contact?.phone_number ?? "",
+        email: pd.contact?.email ?? "",
         accountVisibility: profileData.is_public ?? false,
         userName: profileData.username ?? "",
         accountCreated: profileData.joined_at
@@ -219,8 +251,8 @@ export default function ProfilePage() {
           ? new Date(profileData.last_login)
           : null,
         membershipStatus: pd.membershipStatus ?? "A",
-        languagePreference: pd.contact.language_preference ?? "English",
-        timezone: pd.contact.timezone ?? "Select timezone",
+        languagePreference: pd.contact?.language_preference ?? "English",
+        timezone: pd.contact?.timezone ?? "Select timezone",
         avatarSrc: profileData.pfp ?? "",
         count: profileData.count ?? 0,
       };
@@ -239,7 +271,6 @@ export default function ProfilePage() {
     }
 
     // Prepare institutions
-    // update this thing mf
     let institutions: Institution[] = [];
     if (institutionsData && Array.isArray(institutionsData)) {
       institutions = institutionsData.map((row) => ({
@@ -247,10 +278,10 @@ export default function ProfilePage() {
         type: row.basic_info?.type || "",
         name: row.basic_info?.name || "",
         address:
-          row.basic_info?.location?.city +
-            ", " +
-            row.basic_info?.location?.country || "",
-        affiliation: row.basic_info?.affiliation?.boards || "",
+          (row.basic_info?.location?.city || "") +
+          ", " +
+          (row.basic_info?.location?.country || ""),
+        affiliation: row.basic_info?.affiliation?.boards || [],
         contact: row.basic_info?.contact?.phone || "",
         email: row.basic_info?.contact?.email || "",
         isPublished: row.is_published || false,
@@ -261,29 +292,10 @@ export default function ProfilePage() {
       }));
     }
 
-    // Set user XP
-    if (socialsData && socialsData.xp) {
-      setUserXP(socialsData.xp);
-    } else {
-      setUserXP(0);
-    }
+    setUserXP(socialsData?.xp || 0);
+    setIsConsultant(consultantData?.is_consultant || false);
+    setIsAdmin(profileData?.is_admin || false);
 
-    // Set isConsultant
-
-    if (consultantData && consultantData.is_consultant) {
-      setIsConsultant(consultantData.is_consultant);
-    } else {
-      setIsConsultant(false);
-    }
-
-    // Set isAdmin
-    if (profileData && profileData.is_admin) {
-      setIsAdmin(profileData.is_admin);
-    } else {
-      setIsAdmin(false);
-    }
-
-    // Check if current user
     const sessionUserId = sessionData?.session?.user?.id;
     setSessionId(sessionUserId);
     const isCurrentUser = sessionUserId === uuid;
@@ -297,9 +309,7 @@ export default function ProfilePage() {
 
     setLoadingProfile(false);
     setLoadingSocials(false);
-    setTimeout(() => {
-      setLoadingInstitutions(false);
-    }, 1000);
+    setTimeout(() => setLoadingInstitutions(false), 1000);
   }, []);
 
   // On mount, set uuid and fetch all data
@@ -312,57 +322,49 @@ export default function ProfilePage() {
   // Realtime subscription for user profile and institutions
   useEffect(() => {
     if (!uuid) return;
-    const channel = supabase
-      .channel(`user-profile-${uuid}`)
-      .on(
-        "postgres_changes",
-        {
-          event: "*",
-          schema: "public",
-          table: "user_profiles",
-          filter: `uuid=eq.${uuid}`,
-        },
-        () => {
-          fetchAllUserData(uuid);
-        }
-      )
-      .subscribe();
-
-    const eduChannel = supabase
-      .channel(`edu-centers-${uuid}`)
-      .on(
-        "postgres_changes",
-        {
-          event: "*",
-          schema: "public",
-          table: "edu_centers",
-          filter: `uuid=eq.${uuid}`,
-        },
-        () => {
-          fetchAllUserData(uuid);
-        }
-      )
-      .subscribe();
-
-    const consultantChannel = supabase
-      .channel(`consultant-profile-${uuid}`)
-      .on(
-        "postgres_changes",
-        {
-          event: "*",
-          schema: "public",
-          table: "consultants",
-          filter: `uuid=eq.${uuid}`,
-        },
-        () => {
-          fetchAllUserData(uuid);
-        }
-      )
-      .subscribe();
+    const channels = [
+      supabase
+        .channel(`user-profile-${uuid}`)
+        .on(
+          "postgres_changes",
+          {
+            event: "*",
+            schema: "public",
+            table: "user_profiles",
+            filter: `uuid=eq.${uuid}`,
+          },
+          () => fetchAllUserData(uuid)
+        )
+        .subscribe(),
+      supabase
+        .channel(`edu-centers-${uuid}`)
+        .on(
+          "postgres_changes",
+          {
+            event: "*",
+            schema: "public",
+            table: "edu_centers",
+            filter: `uuid=eq.${uuid}`,
+          },
+          () => fetchAllUserData(uuid)
+        )
+        .subscribe(),
+      supabase
+        .channel(`consultant-profile-${uuid}`)
+        .on(
+          "postgres_changes",
+          {
+            event: "*",
+            schema: "public",
+            table: "consultants",
+            filter: `uuid=eq.${uuid}`,
+          },
+          () => fetchAllUserData(uuid)
+        )
+        .subscribe(),
+    ];
     return () => {
-      supabase.removeChannel(channel);
-      supabase.removeChannel(eduChannel);
-      supabase.removeChannel(consultantChannel);
+      channels.forEach((ch) => supabase.removeChannel(ch));
     };
   }, [uuid, fetchAllUserData]);
 
@@ -370,39 +372,11 @@ export default function ProfilePage() {
   const handleSaveProfile = async (profile: UserProfile) => {
     if (!uuid) return;
 
-    let subscription: string | null = null;
-    const { data: userDataRow } = await supabase
-      .from("user_data")
-      .select("subscription,is_consultant")
-      .eq("uuid", uuid)
-      .maybeSingle();
-
-    if (userDataRow && userDataRow.subscription) {
-      subscription = userDataRow.subscription;
-    }
-
     // Convert UserProfile to new profile_details structure
-    // Helper to format date as 'YYYY-MM-DD HH:mm:ss.SSSSSS+00'
-    function formatPostgresTimestamp(date: Date): string {
-      // Pad helper
-      const pad = (n: number, z = 2) => String(n).padStart(z, "0");
-      const year = date.getUTCFullYear();
-      const month = pad(date.getUTCMonth() + 1);
-      const day = pad(date.getUTCDate());
-      const hour = pad(date.getUTCHours());
-      const min = pad(date.getUTCMinutes());
-      const sec = pad(date.getUTCSeconds());
-      const ms = String(date.getUTCMilliseconds()).padStart(3, "0");
-      // Generate 6 digits for microseconds (pad with 0s)
-      const micro = ms + "000";
-      return `${year}-${month}-${day} ${hour}:${min}:${sec}.${micro}+00`;
-    }
-
     const profileDetails = {
       personal_details: {
         full_name: profile.fullName,
         introduction: profile.introduction,
-        // dob: profile.dob ? formatPostgresTimestamp(profile.dob) : null,
         gender: profile.gender,
       },
       contact: {
@@ -422,7 +396,6 @@ export default function ProfilePage() {
         username: profile.userName,
         is_public: profile.accountVisibility,
         subscription: profile.membershipStatus,
-        // is_consultant: profile.isConsultant,
       })
       .eq("uuid", uuid);
     if (error) {
@@ -494,36 +467,18 @@ export default function ProfilePage() {
         basic_info: {
           name: newInstitution.name.trim(),
           type: newInstitution.type.trim(),
-          year_established: null, // You may want to collect this in your form
-          boarding_type: "", // You may want to collect this in your form
           affiliation: {
-            boards: newInstitution.affiliation, // You may want to collect this in your form
-            type: "", // You may want to collect this in your form
+            boards: newInstitution.affiliation,
+            type: "",
           },
-          classes_offered: {
-            min: "", // You may want to collect this in your form
-            max: "", // You may want to collect this in your form
-          },
-          student_population: 0, // You may want to collect this in your form
-          star_rating: 0, // You may want to collect this in your form
-
           location: {
             city: newInstitution.city.trim(),
-            country: newInstitution.country.trim(), // You may want to collect this in your form
+            country: newInstitution.country.trim(),
           },
           contact: {
             email: newInstitution.email.trim(),
             phone: newInstitution.phoneNumber.trim(),
-            office_hours: {
-              start: "", // You may want to collect this in your form
-              end: "", // You may want to collect this in your form
-            },
           },
-          facilities: "", // You may want to collect this in your form
-          fees_structure: "", // You may want to collect this in your form
-          is_published: false,
-          uuid,
-          edu_url_name: urlName,
         },
         is_published: false,
         uuid: uuid,
@@ -572,12 +527,7 @@ export default function ProfilePage() {
         backgroundColor: "#FDFDF9",
       }}
     >
-      <Column
-        style={{ maxWidth: "1550px" }}
-        fillWidth
-        fitHeight
-        horizontal="center"
-      >
+      <Column style={{ maxWidth: "1550px" }} fillWidth fitHeight horizontal="center">
         <NavBar />
         <Flex fillWidth height={2}></Flex>
         <Column
@@ -655,57 +605,6 @@ export default function ProfilePage() {
   );
 }
 
-type UserProfile = {
-  uuid: string;
-  fullName: string;
-  introduction: string;
-  dob: Date | null;
-  gender: string;
-  country: string;
-  address: string;
-  phoneNumber: string;
-  email: string;
-  accountVisibility: boolean;
-  userName: string;
-  accountCreated: Date | null;
-  lastLogin: Date | null;
-  membershipStatus: string;
-  languagePreference: string;
-  timezone: string;
-  avatarSrc: string;
-  count: number;
-};
-type UserSocials = {
-  phone: string;
-  email: string;
-  whatsapp: string;
-  instagram: string;
-  linkedin: string;
-};
-type Institution = {
-  id: string;
-  name: string;
-  type: string;
-  address: string;
-  affiliation: string[];
-  contact: string;
-  email: string;
-  isPublished: boolean;
-  uuid: string;
-  city?: string;
-  country?: string;
-  affiliationType?: string;
-};
-type InstitutionInput = {
-  name: string;
-  type: string;
-  affiliation: string[];
-  phoneNumber: string;
-  email: string;
-  city: string;
-  country: string;
-};
-
 // --- Profile Header ---
 function ProfileHeader({
   dmsansClass,
@@ -724,7 +623,7 @@ function ProfileHeader({
   xp?: number;
   isConsultant?: boolean;
   isAdmin?: boolean;
-  segmentedTabs: { value: string; label: string }[];
+  segmentedTabs: { value: string; label: string; disabled?: boolean }[];
 }) {
   return (
     <Column
@@ -746,20 +645,14 @@ function ProfileHeader({
         borderWidth={1}
         loading={!profile}
       />
-
       {!profile ? (
         <>
-          <Column center gap="8" fillWidth paddingTop="2">
-            {" "}
-          </Column>
-
+          <Column center gap="8" fillWidth paddingTop="2" />
           <Skeleton shape="line" delay="1" width="s" height="xl" />
           <Skeleton shape="line" delay="1" width="xs" maxWidth={6} height="l" />
-
           <Skeleton shape="line" delay="1" width="xs" height="xs" />
         </>
       ) : null}
-
       <Text
         style={{
           color: "#181A1D",
@@ -768,34 +661,16 @@ function ProfileHeader({
         }}
         className={dmsansClass}
       >
-        <Row center gap="12" wrap={true} fillWidth>
-          <Row
-            center
-            style={{ textAlign: "center", width: "100%" }}
-            className="profileFullName"
-            fillWidth
-          >
+        <Row center gap="12" wrap fillWidth>
+          <Row center style={{ textAlign: "center", width: "100%" }} className="profileFullName" fillWidth>
             {profile?.fullName}
           </Row>
           {profile && (
             <>
-              <Text
-                style={{
-                  fontSize: "21px",
-                  fontWeight: "500",
-                }}
-                onBackground="neutral-weak"
-                className={dmsansClass}
-              >
+              <Text style={{ fontSize: "21px", fontWeight: "500" }} onBackground="neutral-weak" className={dmsansClass}>
                 <Kbd>#{profile?.count}</Kbd>
               </Text>
-              <Text
-                style={{
-                  fontSize: "21px",
-                  fontWeight: "500",
-                }}
-                className={dmsansClass}
-              >
+              <Text style={{ fontSize: "21px", fontWeight: "500" }} className={dmsansClass}>
                 <Tag variant="gradient">+{xp} XP</Tag>
               </Text>
             </>
@@ -804,40 +679,22 @@ function ProfileHeader({
       </Text>
       {profile && (
         <Row center fillWidth gap="4">
-          {" "}
-          <Text
-            style={{
-              fontSize: "21px",
-              fontWeight: "500",
-            }}
-            className={dmsansClass}
-          >
+          <Text style={{ fontSize: "21px", fontWeight: "500" }} className={dmsansClass}>
             <Tag variant="neutral">{isConsultant ? "CNLT" : "USER"}</Tag>
           </Text>
-          {isAdmin ? (
-            <Text
-              style={{
-                fontSize: "21px",
-                fontWeight: "500",
-              }}
-              className={dmsansClass}
-            >
-              <Tag variant="accent">ADMIN </Tag>
+          {isAdmin && (
+            <Text style={{ fontSize: "21px", fontWeight: "500" }} className={dmsansClass}>
+              <Tag variant="accent">ADMIN</Tag>
             </Text>
-          ) : null}
+          )}
         </Row>
       )}
-      <Text
-        onBackground="neutral-weak"
-        style={{ fontSize: "14px", textAlign: "center" }}
-      >
-        {profile?.introduction?.trim()
-          ? profile.introduction
-          : "User at Next Bench"}
+      <Text onBackground="neutral-weak" style={{ fontSize: "14px", textAlign: "center" }}>
+        {profile?.introduction?.trim() ? profile.introduction : "User at Next Bench"}
       </Text>
       <Flex fillWidth center paddingY="8">
         <SegmentedControl
-          fillWidth={true}
+          fillWidth
           maxWidth={40}
           buttons={segmentedTabs}
           defaultSelected="profile"
@@ -861,27 +718,16 @@ function ProfileEdit({
   onSave: (profile: UserProfile) => void;
 }) {
   const [form, setForm] = useState<UserProfile>(profile);
-
-  useEffect(() => {
-    setForm(profile);
-  }, [profile]);
+  useEffect(() => setForm(profile), [profile]);
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (field: keyof UserProfile, value: any) => {
     setForm((prev) => ({ ...prev, [field]: value }));
   };
 
-  const [loading, setLoading] = useState(false);
-
   return (
     <RevealFx fillWidth direction="column">
-      <Grid
-        fillWidth
-        padding="m"
-        fitHeight
-        columns={2}
-        gap="104"
-        className="personal-account-details-grid"
-      >
+      <Grid fillWidth padding="m" fitHeight columns={2} gap="104">
         <PersonalDetails
           countries={countries}
           form={form}
@@ -902,9 +748,7 @@ function ProfileEdit({
             onClick={() => {
               setLoading(true);
               onSave(form);
-              setTimeout(() => {
-                setLoading(false);
-              }, 1000);
+              setTimeout(() => setLoading(false), 1000);
             }}
             disabled={loading}
           >
@@ -923,6 +767,7 @@ function ProfileEdit({
   );
 }
 
+// --- Personal Details ---
 function PersonalDetails({
   countries,
   form,
@@ -936,18 +781,12 @@ function PersonalDetails({
   isCurrentUser: boolean;
   uuid: string;
 }) {
+  // Consultant dialog state
   const [isConsultantDialog, setIsConsultantDialog] = useState(false);
   const [eduCodes, setEduCodes] = useState<string[]>([]);
-  const [formData, setFormData] = useState<{
-    motivation: string;
-    dob: Date | null;
-    country: string;
-    phoneNumber: string;
-    address: string;
-    email: string;
-  }>({
+  const [formData, setFormData] = useState({
     motivation: "",
-    dob: null,
+    dob: null as Date | null,
     country: "",
     phoneNumber: "",
     address: "",
@@ -963,7 +802,6 @@ function PersonalDetails({
   const { addToast } = useToast();
 
   useEffect(() => {
-    // Fetch consultant application data for this user
     async function fetchConsultantData() {
       if (!uuid) return;
       const { data, error } = await supabase
@@ -988,36 +826,28 @@ function PersonalDetails({
         setIsConsultant(data.is_consultant);
         setHasSubmitted(data.has_submitted ?? false);
       }
-
-      if (error) {
-        // Optionally handle error
-        setErrorText("Failed to load consultant data.");
-      }
+      if (error) setErrorText("Failed to load consultant data.");
     }
     fetchConsultantData();
   }, [uuid]);
+
   // Consultant application submit handler
   const handleConsultantApplication = async () => {
     setLoading(true);
-    // Validate: at least one edu code and motivation
     if (eduCodes.length === 0 || !formData.motivation.trim()) {
       addToast({
-        message:
-          "Please enter at least one institute code and your motivation.",
+        message: "Please enter at least one institute code and your motivation.",
         variant: "danger",
       });
       setLoading(false);
       return;
     }
-    // Prepare payload
-    // Helper to format date as YYYY-MM-DD (only day, month, year)
     function formatSimpleDate(date: Date): string {
       const year = date.getFullYear();
       const month = String(date.getMonth() + 1).padStart(2, "0");
       const day = String(date.getDate()).padStart(2, "0");
       return `${year}-${month}-${day}`;
     }
-
     const payload = {
       uuid: uuid,
       is_consultant: false,
@@ -1035,7 +865,6 @@ function PersonalDetails({
       date_submitted_or_updated: new Date().toISOString(),
       has_submitted: true,
     };
-    // Upsert into consultants table
     try {
       const { error } = await supabase
         .from("consultants")
@@ -1047,7 +876,6 @@ function PersonalDetails({
         variant: "success",
       });
     } catch (err) {
-      console.error("Error submitting consultant application:", err);
       addToast({
         message: "Failed to submit consultant application. Please try again.",
         variant: "danger",
@@ -1056,34 +884,26 @@ function PersonalDetails({
     setLoading(false);
   };
 
- 
   // Withdraw current application
   const withdrawCurrentApplication = async () => {
     setIsWithdrawingLoading(true);
     if (!uuid) return;
     setTimeout(async () => {
       try {
-        // First set is_consultant = false
-        const { error: updateError } = await supabase
+        await supabase
           .from("consultants")
           .update({ is_consultant: false })
           .eq("uuid", uuid);
-        if (updateError) throw updateError;
-
-        // Then delete the row
-        const { error: deleteError } = await supabase
+        await supabase
           .from("consultants")
           .delete()
           .eq("uuid", uuid);
-        if (deleteError) throw deleteError;
-
         setIsConsultant(false);
         addToast({
           message: "Your consultant application has been withdrawn.",
           variant: "success",
         });
       } catch (err) {
-        console.error("Error withdrawing application:", err);
         addToast({
           message: "Failed to withdraw application. Please try again.",
           variant: "danger",
@@ -1094,7 +914,7 @@ function PersonalDetails({
     }, 1000);
   };
 
-   // Listen for consultant status changes in realtime
+  // Listen for consultant status changes in realtime
   useEffect(() => {
     if (!uuid) return;
     const channel = supabase
@@ -1108,11 +928,7 @@ function PersonalDetails({
           filter: `uuid=eq.${uuid}`,
         },
         (event) => {
-          // If consultant row is deleted, set isConsultant to false
-          if (event.eventType === "DELETE") {
-            setIsConsultant(false);
-          }
-          
+          if (event.eventType === "DELETE") setIsConsultant(false);
         }
       )
       .subscribe();
@@ -1120,12 +936,11 @@ function PersonalDetails({
       supabase.removeChannel(channel);
     };
   }, [uuid]);
+
   return (
+    <>
     <Column fillWidth horizontal="start" vertical="start" gap="20">
-      <Text
-        onBackground="neutral-strong"
-        style={{ fontSize: "16px", marginBottom: "12px" }}
-      >
+      <Text onBackground="neutral-strong" style={{ fontSize: "16px", marginBottom: "12px" }}>
         Personal details
       </Text>
       <ProfileRow label="Full name:">
@@ -1150,9 +965,6 @@ function PersonalDetails({
           disabled={!isCurrentUser}
         />
       </ProfileRow>
-      {/* <ProfileRow label="Date of Birth:">
-      
-      </ProfileRow> */}
       <ProfileRow label="Gender:">
         <Select
           height="m"
@@ -1167,7 +979,7 @@ function PersonalDetails({
       <ProfileRow label="Country:">
         <Select
           height="m"
-          searchable={true}
+          searchable
           id="country-select"
           placeholder="Where do you reside?"
           value={form.country}
@@ -1176,14 +988,6 @@ function PersonalDetails({
           disabled={!isCurrentUser}
         />
       </ProfileRow>
-
-      {/* {isCurrentUser && (
-        
-      )}
-      {isCurrentUser && (
-       
-        </ProfileRow>
-      )} */}
       {isCurrentUser && (
         <ProfileRow label="Email:">
           <Input
@@ -1192,8 +996,7 @@ function PersonalDetails({
             spellCheck={false}
             description={
               <Text onBackground="neutral-weak">
-                <i className="ri-information-line"></i>&nbsp;Your email will be
-                used for account verification and notifications.
+                <i className="ri-information-line"></i>&nbsp;Your email will be used for account verification and notifications.
               </Text>
             }
             disabled
@@ -1212,14 +1015,11 @@ function PersonalDetails({
               </Text>
             }
             isChecked={form.accountVisibility}
-            onToggle={() =>
-              onChange("accountVisibility", !form.accountVisibility)
-            }
+            onToggle={() => onChange("accountVisibility", !form.accountVisibility)}
             disabled={!isCurrentUser}
           />
         </ProfileRow>
       )}
-
       {isCurrentUser && (
         <>
           <ProfileRow label="Apply for consultant:">
@@ -1228,18 +1028,12 @@ function PersonalDetails({
                 <Button size="m" onClick={() => setIsConsultantDialog(true)}>
                   Click to apply
                 </Button>
-
                 {isNotification && <StatusIndicator color="yellow" size="m" />}
               </Flex>
             ) : (
               <Row gap="8" fitHeight>
-                {" "}
                 <Tag variant="gradient">You are a consultant!</Tag>
-                <Button
-                  size="m"
-                  weight="default"
-                  onClick={withdrawCurrentApplication}
-                >
+                <Button size="m" weight="default" onClick={withdrawCurrentApplication}>
                   {isWithdrawingLoading ? (
                     <>
                       Withdrawing...&nbsp;
@@ -1252,7 +1046,6 @@ function PersonalDetails({
               </Row>
             )}
           </ProfileRow>
-
           <Dialog
             isOpen={isConsultantDialog}
             onClose={() => setIsConsultantDialog(false)}
@@ -1260,31 +1053,16 @@ function PersonalDetails({
             description="Please fill out the form to apply for consultant status."
             footer={
               <Row fillWidth horizontal="start" vertical="center">
-                <Text
-                  variant="label-default-xs"
-                  onBackground="neutral-weak"
-                  style={{ fontSize: "13px" }}
-                >
-                  <i className="ri-information-line"></i>&nbsp; Please fill out
-                  the form to apply for consultant status.
+                <Text variant="label-default-xs" onBackground="neutral-weak" style={{ fontSize: "13px" }}>
+                  <i className="ri-information-line"></i>&nbsp; Please fill out the form to apply for consultant status.
                 </Text>
               </Row>
             }
           >
             <Column fillWidth gap="16" marginTop="16">
-              {errorText && (
-                <Feedback
-                  variant="danger"
-                  title="Error"
-                  description={errorText}
-                />
-              )}
+              {errorText && <Feedback variant="danger" title="Error" description={errorText} />}
               {hasSubmitted && !errorText && (
-                <Feedback
-                  variant="info"
-                  title="Reviewing"
-                  description={"Application is under review."}
-                />
+                <Feedback variant="info" title="Reviewing" description={"Application is under review."} />
               )}
               <Column fillWidth vertical="center" gap="4">
                 <Textarea
@@ -1293,50 +1071,39 @@ function PersonalDetails({
                   placeholder="Provide a brief explanation of your motivation and qualifications."
                   description={
                     <>
-                      <i className="ri-information-line"></i>&nbsp; Your
-                      response will be reviewed by our team.
+                      <i className="ri-information-line"></i>&nbsp; Your response will be reviewed by our team.
                     </>
                   }
                   value={formData.motivation}
-                  onChange={(e: any) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      motivation: e.target.value,
-                    }))
-                  }
+                  onChange={(e: any) => setFormData((prev) => ({ ...prev, motivation: e.target.value }))}
                   lines={7}
                 />
-              </Column>{" "}
+              </Column>
               <Column fillWidth vertical="center" gap="4">
-                {" "}
                 <DateInput
                   id="date-dob"
                   height="m"
                   placeholder="When were you born?"
                   cursor="interactive"
                   value={formData.dob === null ? undefined : formData.dob}
-                  onChange={(v: Date | null) =>
-                    setFormData((prev) => ({ ...prev, dob: v }))
-                  }
+                  onChange={(v: Date | null) => setFormData((prev) => ({ ...prev, dob: v }))}
                   description={
                     <Text onBackground="neutral-weak">
-                      <i className="ri-information-line"></i>&nbsp;Enter your
-                      date of birth.
+                      <i className="ri-information-line"></i>&nbsp;Enter your date of birth.
                     </Text>
                   }
                 />
               </Column>
               <Row fillWidth vertical="center" gap="4">
-                {" "}
                 <Select
                   height="m"
-                  searchable={true}
+                  searchable
                   id="country-select"
                   placeholder="Where do you reside?"
                   value={form.country}
                   options={countries}
                   onSelect={(v: any) => onChange("country", v)}
-                  disabled={true}
+                  disabled
                 />
                 <Input
                   id="input-phone"
@@ -1344,12 +1111,7 @@ function PersonalDetails({
                   spellCheck={false}
                   placeholder="Enter your phone number"
                   value={formData.phoneNumber}
-                  onChange={(e: any) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      phoneNumber: e.target.value,
-                    }))
-                  }
+                  onChange={(e: any) => setFormData((prev) => ({ ...prev, phoneNumber: e.target.value }))}
                 />
               </Row>
               <Column fillWidth vertical="start" gap="16">
@@ -1359,17 +1121,11 @@ function PersonalDetails({
                   resize="vertical"
                   description={
                     <Text onBackground="neutral-weak">
-                      <i className="ri-information-line"></i>&nbsp;Your address
-                      will not be shared with anyone.
+                      <i className="ri-information-line"></i>&nbsp;Your address will not be shared with anyone.
                     </Text>
                   }
                   value={formData.address}
-                  onChange={(e: any) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      address: e.target.value,
-                    }))
-                  }
+                  onChange={(e: any) => setFormData((prev) => ({ ...prev, address: e.target.value }))}
                 />
               </Column>
               <Column fillWidth vertical="center" gap="4">
@@ -1386,18 +1142,14 @@ function PersonalDetails({
                   description={
                     <Text onBackground="neutral-weak">
                       <i className="ri-question-line"></i>&nbsp;Click
-                      <SmartLink href="/edu/codes">here</SmartLink> to find the
-                      codes.
+                      <SmartLink href="/edu/codes">here</SmartLink> to find the codes.
                     </Text>
                   }
-                ></TagInput>
+                />
               </Column>
               <Row fillWidth horizontal="end" gap="4">
-                {" "}
                 {hasSubmitted && (
-                  <Button onClick={withdrawCurrentApplication}>
-                    Withdraw Application
-                  </Button>
+                  <Button onClick={withdrawCurrentApplication}>Withdraw Application</Button>
                 )}
                 <Button
                   onClick={handleConsultantApplication}
@@ -1424,9 +1176,11 @@ function PersonalDetails({
         </>
       )}
     </Column>
+    </>
   );
 }
 
+// --- Account Details ---
 function AccountDetails({
   form,
   onChange,
@@ -1436,50 +1190,35 @@ function AccountDetails({
   onChange: (field: keyof UserProfile, value: any) => void;
   isCurrentUser: boolean;
 }) {
-  // Only show each row if isCurrentUser is true
   return (
     <Column fillWidth horizontal="start" vertical="start" gap="20">
-      <Text
-        onBackground="neutral-strong"
-        style={{ fontSize: "16px", marginBottom: "12px" }}
-      >
+      <Text onBackground="neutral-strong" style={{ fontSize: "16px", marginBottom: "12px" }}>
         Account Details
       </Text>
-      {isCurrentUser ? (
-        <ProfileRow label="User Name:">
-          <Input
-            placeholder="Enter your username"
-            spellCheck={false}
-            description={
+      <ProfileRow label="User Name:">
+        <Input
+          placeholder="Enter your username"
+          spellCheck={false}
+          description={
+            isCurrentUser ? (
               <Text onBackground="neutral-weak">
-                <i className="ri-information-line"></i>&nbsp;Your username will
-                be visible to other users.
+                <i className="ri-information-line"></i>&nbsp;Your username will be visible to other users.
               </Text>
-            }
-            hasSuffix={
+            ) : undefined
+          }
+          hasSuffix={
+            isCurrentUser ? (
               <Kbd cursor="interactive" onClick={() => {}}>
                 Change
               </Kbd>
-            }
-            id="input-username"
-            value={form.userName}
-            onChange={(e: any) => onChange("userName", e.target.value)}
-            disabled={!isCurrentUser}
-          />
-        </ProfileRow>
-      ) : (
-        <ProfileRow label="User Name:">
-          <Input
-            placeholder="Enter your username"
-            spellCheck={false}
-            id="input-username"
-            value={form.userName}
-            onChange={(e: any) => onChange("userName", e.target.value)}
-            disabled={!isCurrentUser}
-          />
-        </ProfileRow>
-      )}
-
+            ) : undefined
+          }
+          id="input-username"
+          value={form.userName}
+          onChange={(e: any) => onChange("userName", e.target.value)}
+          disabled={!isCurrentUser}
+        />
+      </ProfileRow>
       <ProfileRow label="Account Created:">
         <DateInput
           id="date-account-created"
@@ -1490,7 +1229,6 @@ function AccountDetails({
           disabled
         />
       </ProfileRow>
-
       <ProfileRow label="Last Login:">
         <DateInput
           id="date-last-login"
@@ -1501,7 +1239,6 @@ function AccountDetails({
           disabled
         />
       </ProfileRow>
-
       {isCurrentUser && (
         <ProfileRow label="Membership Status:">
           <Select
@@ -1520,7 +1257,6 @@ function AccountDetails({
           <Tag variant="gradient">Verified</Tag>
         </ProfileRow>
       )}
-
       <ProfileRow label="Language Preference:">
         <Select
           height="m"
@@ -1532,7 +1268,6 @@ function AccountDetails({
           disabled={!isCurrentUser}
         />
       </ProfileRow>
-
       <ProfileRow label="Time Zone:">
         <Select
           height="m"
@@ -1549,6 +1284,7 @@ function AccountDetails({
   );
 }
 
+// --- Profile Row ---
 function ProfileRow({
   label,
   children,
@@ -1585,7 +1321,6 @@ function CreatedInstitutions({
   const [isTermsOpen, setIsTermsOpen] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
 
-  // New institution form
   const [newInstitution, setNewInstitution] = useState<InstitutionInput>({
     name: "",
     type: "",
@@ -1596,7 +1331,6 @@ function CreatedInstitutions({
     country: "",
   });
 
-  // Terms checkboxes
   const [terms, setTerms] = useState([
     { id: 1, label: "Terms of Service", checked: false },
     { id: 2, label: "Privacy Policy", checked: false },
@@ -1634,6 +1368,14 @@ function CreatedInstitutions({
     setTerms(terms.map((t) => ({ ...t, checked: false })));
   };
 
+  // Filter institutions by search
+  const filteredInstitutions =
+    searchValue.trim() !== ""
+      ? institutions.filter((inst) =>
+          inst.name.toLowerCase().includes(searchValue.toLowerCase())
+        )
+      : institutions;
+
   return (
     <>
       <Column fillWidth horizontal="center" gap="32">
@@ -1668,48 +1410,13 @@ function CreatedInstitutions({
             </Button>
           )}
         </Row>
-        {/* Show only the institution card where id includes search text */}
-        {searchValue.trim() !== "" ? (
-          (() => {
-            const found = institutions.find((inst) =>
-              inst.name.toLowerCase().includes(searchValue.toLowerCase())
-            );
-            return found ? (
-              <Grid
-                fillWidth
-                fitHeight
-                columns={2}
-                gap="16"
-                className="personal-account-details-grid"
-              >
-                <InstitutionCard
-                  key={found.id}
-                  institution={found}
-                  onPublish={onPublish}
-                  isCurrentUser={isCurrentUser}
-                />
-              </Grid>
-            ) : (
-              <Flex fillWidth center paddingY="32">
-                <Text onBackground="neutral-medium">
-                  No institution found with that ID.
-                </Text>
-              </Flex>
-            );
-          })()
-        ) : institutions.length === 0 ? (
+        {filteredInstitutions.length === 0 ? (
           <Flex fillWidth center paddingY="32">
             <Text onBackground="neutral-medium">No institution found.</Text>
           </Flex>
         ) : (
-          <Grid
-            fillWidth
-            fitHeight
-            columns={2}
-            gap="4"
-            className="personal-account-details-grid"
-          >
-            {institutions.map((inst) => (
+          <Grid fillWidth fitHeight columns={2} gap="4">
+            {filteredInstitutions.map((inst) => (
               <InstitutionCard
                 key={inst.id}
                 institution={inst}
@@ -1729,13 +1436,8 @@ function CreatedInstitutions({
         base={isTermsOpen}
         footer={
           <Row fillWidth horizontal="start" vertical="center">
-            <Text
-              variant="label-default-xs"
-              onBackground="neutral-weak"
-              style={{ fontSize: "13px" }}
-            >
-              <i className="ri-information-line"></i>&nbsp;These details are
-              required to verify your institution and create a new page for it.
+            <Text variant="label-default-xs" onBackground="neutral-weak" style={{ fontSize: "13px" }}>
+              <i className="ri-information-line"></i>&nbsp;These details are required to verify your institution and create a new page for it.
             </Text>
           </Row>
         }
@@ -1748,14 +1450,11 @@ function CreatedInstitutions({
               label="e.g. ABC School"
               description={
                 <>
-                  <i className="ri-information-line"></i>&nbsp;Enter the name of
-                  your institution
+                  <i className="ri-information-line"></i>&nbsp;Enter the name of your institution
                 </>
               }
               value={newInstitution.name}
-              onChange={(e: any) =>
-                setNewInstitution((prev) => ({ ...prev, name: e.target.value }))
-              }
+              onChange={(e: any) => setNewInstitution((prev) => ({ ...prev, name: e.target.value }))}
               disabled={!isCurrentUser}
             />
           </Row>
@@ -1770,27 +1469,20 @@ function CreatedInstitutions({
                 </>
               }
               value={newInstitution.city}
-              onChange={(e: any) =>
-                setNewInstitution((prev) => ({ ...prev, city: e.target.value }))
-              }
+              onChange={(e: any) => setNewInstitution((prev) => ({ ...prev, city: e.target.value }))}
               disabled={!isCurrentUser}
             />
             <Input
               spellCheck={false}
-              id="city"
+              id="country"
               label="e.g. India"
               description={
                 <>
-                  <i className="ri-information-line"></i>&nbsp;Enter the coutry
+                  <i className="ri-information-line"></i>&nbsp;Enter the country
                 </>
               }
               value={newInstitution.country}
-              onChange={(e: any) =>
-                setNewInstitution((prev) => ({
-                  ...prev,
-                  country: e.target.value,
-                }))
-              }
+              onChange={(e: any) => setNewInstitution((prev) => ({ ...prev, country: e.target.value }))}
               disabled={!isCurrentUser}
             />
           </Row>
@@ -1801,14 +1493,11 @@ function CreatedInstitutions({
               spellCheck={false}
               description={
                 <>
-                  <i className="ri-information-line"></i>&nbsp;Enter the type of
-                  your institution
+                  <i className="ri-information-line"></i>&nbsp;Enter the type of your institution
                 </>
               }
               value={newInstitution.type}
-              onChange={(e: any) =>
-                setNewInstitution((prev) => ({ ...prev, type: e.target.value }))
-              }
+              onChange={(e: any) => setNewInstitution((prev) => ({ ...prev, type: e.target.value }))}
               disabled={!isCurrentUser}
             />
           </Row>
@@ -1816,12 +1505,7 @@ function CreatedInstitutions({
             <TagInput
               id="affiliation"
               value={newInstitution.affiliation}
-              onChange={(tags: string[]) =>
-                setNewInstitution((prev) => ({
-                  ...prev,
-                  affiliation: tags,
-                }))
-              }
+              onChange={(tags: string[]) => setNewInstitution((prev) => ({ ...prev, affiliation: tags }))}
               placeholder="e.g. ICSE/CBSE/IB"
               hasSuffix={
                 <Kbd position="absolute" top="12" right="12">
@@ -1838,17 +1522,11 @@ function CreatedInstitutions({
               spellCheck={false}
               description={
                 <>
-                  <i className="ri-information-line"></i>&nbsp;Enter the
-                  institution's phone number
+                  <i className="ri-information-line"></i>&nbsp;Enter the institution's phone number
                 </>
               }
               value={newInstitution.phoneNumber}
-              onChange={(e: any) =>
-                setNewInstitution((prev) => ({
-                  ...prev,
-                  phoneNumber: e.target.value,
-                }))
-              }
+              onChange={(e: any) => setNewInstitution((prev) => ({ ...prev, phoneNumber: e.target.value }))}
               disabled={!isCurrentUser}
             />
           </Row>
@@ -1859,17 +1537,11 @@ function CreatedInstitutions({
               spellCheck={false}
               description={
                 <>
-                  <i className="ri-information-line"></i>&nbsp;Enter the
-                  institution's email address
+                  <i className="ri-information-line"></i>&nbsp;Enter the institution's email address
                 </>
               }
               value={newInstitution.email}
-              onChange={(e: any) =>
-                setNewInstitution((prev) => ({
-                  ...prev,
-                  email: e.target.value,
-                }))
-              }
+              onChange={(e: any) => setNewInstitution((prev) => ({ ...prev, email: e.target.value }))}
               disabled={!isCurrentUser}
             />
           </Row>
@@ -1880,7 +1552,7 @@ function CreatedInstitutions({
               disabled={
                 !isCurrentUser ||
                 !newInstitution.name ||
-                !newInstitution.affiliation ||
+                !newInstitution.affiliation.length ||
                 !newInstitution.phoneNumber ||
                 !newInstitution.email ||
                 !newInstitution.type ||
@@ -1901,13 +1573,8 @@ function CreatedInstitutions({
         stack
         footer={
           <Row fillWidth horizontal="start" vertical="center">
-            <Text
-              variant="label-default-xs"
-              onBackground="neutral-weak"
-              style={{ fontSize: "13px" }}
-            >
-              <i className="ri-information-line"></i>&nbsp;These details are
-              required to verify your institution and create a new page for it.
+            <Text variant="label-default-xs" onBackground="neutral-weak" style={{ fontSize: "13px" }}>
+              <i className="ri-information-line"></i>&nbsp;These details are required to verify your institution and create a new page for it.
             </Text>
           </Row>
         }
@@ -1956,6 +1623,7 @@ function CreatedInstitutions({
   );
 }
 
+// --- Institution Card ---
 function InstitutionCard({
   institution,
   onPublish,
@@ -1966,6 +1634,7 @@ function InstitutionCard({
   isCurrentUser: boolean;
 }) {
   const [published, setPublished] = useState(institution.isPublished);
+  const router = useRouter();
 
   const handleToggle = () => {
     setPublished((prev) => {
@@ -1974,10 +1643,8 @@ function InstitutionCard({
     });
   };
 
-  if (!isCurrentUser && !published) {
-    return null;
-  }
-  const router = useRouter();
+  if (!isCurrentUser && !published) return null;
+
   return (
     <Card
       fillWidth
@@ -1992,50 +1659,26 @@ function InstitutionCard({
       id={institution.name.toLowerCase().replace(/\s+/g, "-").trim() + "-card"}
     >
       <Row gap="12" vertical="center">
-        {" "}
         <Text onBackground="neutral-strong" style={{ fontSize: "18px" }}>
           {institution.name}
-        </Text>{" "}
+        </Text>
         <IconButton
           variant="secondary"
-          onClick={() => {
-            router.push(`/edu/${institution.id}`);
-          }}
+          onClick={() => router.push(`/edu/${institution.id}`)}
         >
-          <i
-            className="ri-arrow-right-up-line"
-            style={{ fontSize: "23px" }}
-          ></i>
+          <i className="ri-arrow-right-up-line" style={{ fontSize: "23px" }}></i>
         </IconButton>
       </Row>
-      {/* <InstitutionRow label="Type:">{institution.type}</InstitutionRow>
-
-      <InstitutionRow label="Short address:">
-        {institution.address}
-      </InstitutionRow>
-      <InstitutionRow label="Affiliations:">
-        {Array.isArray(institution.affiliation)
-          ? institution.affiliation.join("/").toUpperCase()
-          : String(institution.affiliation).toUpperCase()}
-      </InstitutionRow>
-      <InstitutionRow label="Contact:">
-        <InlineCode radius="xs-4">{institution.contact}</InlineCode>
-      </InstitutionRow>
-      <InstitutionRow label="Email:">
-        <InlineCode radius="xs-4">{institution.email}</InlineCode>
-      </InstitutionRow> */}
       {isCurrentUser && (
-        <>
-          {" "}
-          <InstitutionRow label="Is published?">
-            <Switch isChecked={published} onToggle={handleToggle} />
-          </InstitutionRow>
-        </>
+        <InstitutionRow label="Is published?">
+          <Switch isChecked={published} onToggle={handleToggle} />
+        </InstitutionRow>
       )}
     </Card>
   );
 }
 
+// --- Institution Row ---
 function InstitutionRow({
   label,
   children,
@@ -2044,6 +1687,7 @@ function InstitutionRow({
   children: React.ReactNode;
 }) {
   return (
+    <>
     <Row fillWidth horizontal="space-between">
       <Flex flex={5}>
         <Text onBackground="neutral-weak" style={{ fontSize: "14px" }}>
@@ -2056,6 +1700,7 @@ function InstitutionRow({
         </Text>
       </Flex>
     </Row>
+    </>
   );
 }
 
@@ -2072,9 +1717,7 @@ function Socials({
   const [form, setForm] = useState<UserSocials>(socials);
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    setForm(socials);
-  }, [socials]);
+  useEffect(() => setForm(socials), [socials]);
 
   const handleChange = (field: keyof UserSocials, value: string) => {
     setForm((prev) => ({ ...prev, [field]: value }));
@@ -2083,22 +1726,12 @@ function Socials({
   const handleSave = async () => {
     setLoading(true);
     await onSave(form);
-
-    setTimeout(() => {
-      setLoading(false);
-    }, 1000);
+    setTimeout(() => setLoading(false), 1000);
   };
 
   return (
     <>
-      <Grid
-        fillWidth
-        padding="m"
-        fitHeight
-        columns={2}
-        gap="104"
-        className="personal-account-details-grid"
-      >
+      <Grid fillWidth padding="m" fitHeight columns={2} gap="104">
         <SocialsSection
           title="Social Details"
           rows={[
@@ -2111,16 +1744,13 @@ function Socials({
                   description={
                     isCurrentUser ? (
                       <Text onBackground="neutral-weak">
-                        <i className="ri-information-line"></i>&nbsp;This will
-                        be visible to other users. (optional)
+                        <i className="ri-information-line"></i>&nbsp;This will be visible to other users. (optional)
                       </Text>
                     ) : undefined
                   }
                   id="input-delete-account"
                   value={form.phone}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                    handleChange("phone", e.target.value)
-                  }
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChange("phone", e.target.value)}
                   disabled={!isCurrentUser}
                 />
               ),
@@ -2139,8 +1769,7 @@ function Socials({
                   description={
                     isCurrentUser ? (
                       <Text onBackground="neutral-weak">
-                        <i className="ri-information-line"></i>&nbsp;This will
-                        be visible to other users.
+                        <i className="ri-information-line"></i>&nbsp;This will be visible to other users.
                       </Text>
                     ) : undefined
                   }
@@ -2166,15 +1795,12 @@ function Socials({
                   description={
                     isCurrentUser ? (
                       <Text onBackground="neutral-weak">
-                        <i className="ri-information-line"></i>&nbsp;This will
-                        be visible to other users.
+                        <i className="ri-information-line"></i>&nbsp;This will be visible to other users.
                       </Text>
                     ) : undefined
                   }
                   value={form.whatsapp}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                    handleChange("whatsapp", e.target.value)
-                  }
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChange("whatsapp", e.target.value)}
                   disabled={!isCurrentUser}
                 />
               ),
@@ -2192,15 +1818,12 @@ function Socials({
                   description={
                     isCurrentUser ? (
                       <Text onBackground="neutral-weak">
-                        <i className="ri-information-line"></i>&nbsp;This will
-                        be visible to other users.
+                        <i className="ri-information-line"></i>&nbsp;This will be visible to other users.
                       </Text>
                     ) : undefined
                   }
                   value={form.instagram}
-                  onChange={(e: any) =>
-                    handleChange("instagram", e.target.value)
-                  }
+                  onChange={(e: any) => handleChange("instagram", e.target.value)}
                   disabled={!isCurrentUser}
                 />
               ),
@@ -2218,15 +1841,12 @@ function Socials({
                   description={
                     isCurrentUser ? (
                       <Text onBackground="neutral-weak">
-                        <i className="ri-information-line"></i>&nbsp;This will
-                        be visible to other users.
+                        <i className="ri-information-line"></i>&nbsp;This will be visible to other users.
                       </Text>
                     ) : undefined
                   }
                   value={form.linkedin}
-                  onChange={(e: any) =>
-                    handleChange("linkedin", e.target.value)
-                  }
+                  onChange={(e: any) => handleChange("linkedin", e.target.value)}
                   disabled={!isCurrentUser}
                 />
               ),
@@ -2236,7 +1856,7 @@ function Socials({
       </Grid>
       {isCurrentUser && (
         <Row paddingY="12" fillWidth horizontal="end">
-          <Button size="m" onClick={() => handleSave()} disabled={loading}>
+          <Button size="m" onClick={handleSave} disabled={loading}>
             {loading ? (
               <>
                 Saving...&nbsp;
@@ -2252,6 +1872,7 @@ function Socials({
   );
 }
 
+// --- Socials Section Helper ---
 function SocialsSection({
   title,
   rows,
@@ -2261,10 +1882,7 @@ function SocialsSection({
 }) {
   return (
     <Column fillWidth horizontal="start" vertical="start" gap="20">
-      <Text
-        onBackground="neutral-strong"
-        style={{ fontSize: "16px", marginBottom: "12px" }}
-      >
+      <Text onBackground="neutral-strong" style={{ fontSize: "16px", marginBottom: "12px" }}>
         {title}
       </Text>
       {rows.map((row) => (
@@ -2291,33 +1909,16 @@ function Security() {
     setLoading(true);
     setTimeout(async () => {
       const { error } = await supabase.auth.signOut();
-      if (error) {
-        console.error("Error logging out:", error.message);
-      } else {
-        window.location.href = "/";
-      }
-    }, 1000);
-
-    setTimeout(() => {
+      if (!error) window.location.href = "/";
       setLoading(false);
     }, 1000);
   }
 
   return (
-    <Grid
-      fillWidth
-      padding="m"
-      fitHeight
-      columns={2}
-      gap="104"
-      className="personal-account-details-grid"
-    >
-      {/* Account Deletion */}
+    <>
+    <Grid fillWidth padding="m" fitHeight columns={2} gap="104">
       <Column fillWidth horizontal="start" vertical="start" gap="20">
-        <Text
-          onBackground="neutral-strong"
-          style={{ fontSize: "16px", marginBottom: "12px" }}
-        >
+        <Text onBackground="neutral-strong" style={{ fontSize: "16px", marginBottom: "12px" }}>
           Account Deletion
         </Text>
         <Row fillWidth horizontal="space-between">
@@ -2333,8 +1934,7 @@ function Security() {
               disabled
               description={
                 <Text onBackground="neutral-weak">
-                  <i className="ri-information-line"></i>&nbsp;This is a safety
-                  feature
+                  <i className="ri-information-line"></i>&nbsp;This is a safety feature
                 </Text>
               }
               hasSuffix={<Kbd>Once</Kbd>}
@@ -2348,12 +1948,8 @@ function Security() {
           </Flex>
         </Row>
       </Column>
-      {/* Institutions Deletion */}
       <Column fillWidth horizontal="start" vertical="start" gap="20">
-        <Text
-          onBackground="neutral-strong"
-          style={{ fontSize: "16px", marginBottom: "12px" }}
-        >
+        <Text onBackground="neutral-strong" style={{ fontSize: "16px", marginBottom: "12px" }}>
           Institutions Deletion
         </Text>
         <Row fillWidth horizontal="space-between">
@@ -2369,8 +1965,7 @@ function Security() {
               disabled
               description={
                 <Text onBackground="neutral-weak">
-                  <i className="ri-information-line"></i>&nbsp;This is a safety
-                  feature
+                  <i className="ri-information-line"></i>&nbsp;This is a safety feature
                 </Text>
               }
               hasSuffix={<Kbd>Once</Kbd>}
@@ -2384,12 +1979,8 @@ function Security() {
           </Flex>
         </Row>
       </Column>
-      {/* Others */}
       <Column fillWidth horizontal="start" vertical="start" gap="20">
-        <Text
-          onBackground="neutral-strong"
-          style={{ fontSize: "16px", marginBottom: "12px" }}
-        >
+        <Text onBackground="neutral-strong" style={{ fontSize: "16px", marginBottom: "12px" }}>
           Others
         </Text>
         <Row fillWidth horizontal="space-between">
@@ -2442,5 +2033,6 @@ function Security() {
         </Row>
       </Column>
     </Grid>
+    </>
   );
 }
