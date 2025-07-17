@@ -194,10 +194,10 @@ function HeroSection() {
           }}
           className={dmsans.className + " titleTexts"}
         >
-          Next Bench by <span style={{ color: "#626F45" }}>Sonamii</span>
+          MekoAI by <span style={{ color: "#626F45" }}>Next Bench</span>
         </Text>
         <Text variant="body-default-m" onBackground="neutral-weak">
-          Find exactly who you're looking for, in seconds.{" "}
+          Find exactly who you're looking for, in seconds with MekoAI.
           <SmartLink href="#">See how it works.</SmartLink>
         </Text>
       </Column>
@@ -272,6 +272,7 @@ function HeroSection() {
             placeholder="Top 10 universities in India for B.Tech in Computer Science with a minimum rating of 4.5 and maximum fees of ₹2,00,000."
           />
           <Button
+          weight="default"
             style={{
               maxWidth: "40px",
               minWidth: "40px",
@@ -304,6 +305,11 @@ function HeroSection() {
           <Chip label="" background="neutral-strong">
             <i className="ri-check-line"></i>&nbsp;Fees
           </Chip>
+          <Tag>
+            {" "}
+            <i className="ri-brain-fill"></i>&nbsp;AI can make mistakes. Please
+            verify the results.
+          </Tag>
         </Row>
       </Column>
     </Column>

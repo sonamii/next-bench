@@ -48,7 +48,8 @@ import { useRouter } from "next/navigation";
 
 import Footer from "./components/Footer";
 import NavBar from "./components/NavBar";
-// import { Plans3 } from "./components/Plans";
+import { Plans3 } from "./components/Plans";
+
 import { Cookie } from "./components/once-ui-pro/Cookie";
 import { supabase } from "../utils/supabase/client";
 // Font setup
@@ -577,49 +578,48 @@ function FAQSection() {
 }
 
 
-function Plans() {
-  return (
-    <Column
-      horizontal="center"
-      vertical="center"
-      fillWidth
-      
-    >
-      <Text
-        style={{
-          color: "#181A1D",
-          fontSize: "70px",
-          lineHeight: "1em",
-          fontWeight: "500",
-          letterSpacing: ".3px",
-          textAlign: "center",
-        }}
-        className={dmsans.className + " titleTexts"}
-      >
-        <span style={{ color: "#626F45" }}>Frequently</span> Asked,&nbsp;
-        <span style={{ color: "#626F45" }}>Clearly</span> Answered
-      </Text>
-      <Flex fillWidth height={1}></Flex>
-      <Text
-        style={{
-          fontSize: "18px",
-          fontWeight: "400",
-          textAlign: "center",
-          maxWidth: "800px",
-        }}
-        onBackground="neutral-weak"
-        className={dmsans.className + " faqText"}
-      >
-        Explore our comprehensive FAQ section to find answers to your questions
-        about our platform, services, and more. If you need further assistance,
-        feel free to reach out to our support team.
-      </Text>
-      <Column fitWidth fillHeight paddingTop="32">
-       <Plans />
-      </Column>
-    </Column>
-  );
-}
+ function Plans() {
+   return (
+     <Column
+       horizontal="center"
+       vertical="center"
+       fillWidth    
+     >
+       <Text
+         style={{
+           color: "#181A1D",
+           fontSize: "70px",
+           lineHeight: "1em",
+           fontWeight: "500",
+           letterSpacing: ".3px",
+           textAlign: "center",
+         }}
+         className={dmsans.className + " titleTexts"}
+       >
+         Plans and         <span style={{ color: "#626F45" }}>Pricing</span> 
+
+       </Text>
+       <Flex fillWidth height={1}></Flex>
+       <Text
+         style={{
+           fontSize: "18px",
+           fontWeight: "400",
+           textAlign: "center",
+           maxWidth: "800px",
+         }}
+         onBackground="neutral-weak"
+         className={dmsans.className + " faqText"}
+       >
+          Explore our comprehensive pricing plans designed to cater to your
+          educational needs. Choose the plan that suits you best and unlock a
+          world of learning opportunities.
+       </Text>
+       <Column fitWidth fillHeight paddingTop="64">
+       <Plans3/>
+       </Column>
+     </Column>
+   );
+ }
 // Card Data
 const cardAProps = {
   bg: "#F0F1EC",
@@ -1238,8 +1238,14 @@ export default function Home() {
           </Flex>
           <Flex fillWidth height={3}></Flex>
           <FAQSection />
+             <Flex fillWidth height={1}></Flex>             <Flex fillWidth height={1}></Flex>
+
+          <Flex center fillWidth fitHeight>
+            <Line fillWidth maxWidth={5} height={0.1}></Line>
+          </Flex>
           <Flex height={3}></Flex>
           <Plans />
+         
           <Flex fillWidth height={3}></Flex>
           <Footer />
         </Row>
