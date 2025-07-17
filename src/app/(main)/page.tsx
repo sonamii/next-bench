@@ -1236,16 +1236,16 @@ export default function Home() {
           <Flex center fillWidth fitHeight>
             <Line fillWidth maxWidth={5} height={0.1}></Line>
           </Flex>
-          <Flex fillWidth height={3}></Flex>
-          <FAQSection />
+          <Flex fillWidth height={2}></Flex>
+                  <Plans />
+
              <Flex fillWidth height={1}></Flex>             <Flex fillWidth height={1}></Flex>
 
           <Flex center fillWidth fitHeight>
             <Line fillWidth maxWidth={5} height={0.1}></Line>
           </Flex>
           <Flex height={3}></Flex>
-          <Plans />
-         
+          <FAQSection /> 
           <Flex fillWidth height={3}></Flex>
           <Footer />
         </Row>
