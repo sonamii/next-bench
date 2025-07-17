@@ -45,6 +45,43 @@ export interface ToolRequest {
 }
 
 export class ToolsService {
+  private isEducationRelated(message: string): boolean {
+    const educationKeywords = [
+      'school', 'college', 'university', 'education', 'admission', 'degree', 'course', 'study',
+      'exam', 'test', 'student', 'learning', 'teaching', 'academic', 'scholarship', 'tuition',
+      'campus', 'faculty', 'curriculum', 'syllabus', 'grade', 'semester', 'graduation', 'diploma',
+      'certificate', 'enrollment', 'application', 'career', 'job', 'placement', 'internship',
+      'research', 'thesis', 'project', 'assignment', 'homework', 'nextbench', 'next bench',
+      'engineering', 'medical', 'management', 'arts', 'science', 'commerce', 'law', 'mba',
+      'btech', 'mbbs', 'neet', 'jee', 'cat', 'gate', 'upsc', 'ssc', 'banking', 'railway'
+    ];
+
+    const inappropriateKeywords = [
+      'sex', 'sexual', 'porn', 'adult', 'xxx', 'nude', 'naked', 'erotic', 'dating', 'hookup',
+      'violence', 'weapon', 'drug', 'alcohol', 'gambling', 'hack', 'illegal', 'criminal',
+      'suicide', 'self-harm', 'depression', 'politics', 'election', 'vote', 'government',
+      'religion', 'god', 'allah', 'jesus', 'hindu', 'muslim', 'christian', 'race', 'racism'
+    ];
+
+    const lowerMessage = message.toLowerCase();
+    
+    // Check for inappropriate content
+    const hasInappropriateContent = inappropriateKeywords.some(keyword => 
+      lowerMessage.includes(keyword)
+    );
+    
+    if (hasInappropriateContent) {
+      return false;
+    }
+
+    // Check for education-related content
+    const hasEducationContent = educationKeywords.some(keyword => 
+      lowerMessage.includes(keyword)
+    );
+
+    return hasEducationContent;
+  }
+
   public detectToolRequest(message: string): ToolType | null {
     const lowerMessage = message.toLowerCase();
     

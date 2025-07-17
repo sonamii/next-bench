@@ -26,9 +26,59 @@ export class AIService {
     }
   }
 
+  private isEducationRelated(message: string): boolean {
+    const educationKeywords = [
+      'school', 'college', 'university', 'education', 'admission', 'degree', 'course', 'study',
+      'exam', 'test', 'student', 'learning', 'teaching', 'academic', 'scholarship', 'tuition',
+      'campus', 'faculty', 'curriculum', 'syllabus', 'grade', 'semester', 'graduation', 'diploma',
+      'certificate', 'enrollment', 'application', 'career', 'job', 'placement', 'internship',
+      'research', 'thesis', 'project', 'assignment', 'homework', 'nextbench', 'next bench',
+      'engineering', 'medical', 'management', 'arts', 'science', 'commerce', 'law', 'mba',
+      'btech', 'mbbs', 'neet', 'jee', 'cat', 'gate', 'upsc', 'ssc', 'banking', 'railway'
+    ];
+
+    const inappropriateKeywords = [
+      'sex', 'sexual', 'porn', 'adult', 'xxx', 'nude', 'naked', 'erotic', 'dating', 'hookup',
+      'violence', 'weapon', 'drug', 'alcohol', 'gambling', 'hack', 'illegal', 'criminal',
+      'suicide', 'self-harm', 'depression', 'politics', 'election', 'vote', 'government',
+      'religion', 'god', 'allah', 'jesus', 'hindu', 'muslim', 'christian', 'race', 'racism'
+    ];
+
+    const lowerMessage = message.toLowerCase();
+    
+    // Check for inappropriate content
+    const hasInappropriateContent = inappropriateKeywords.some(keyword => 
+      lowerMessage.includes(keyword)
+    );
+    
+    if (hasInappropriateContent) {
+      return false;
+    }
+
+    // Check for education-related content
+    const hasEducationContent = educationKeywords.some(keyword => 
+      lowerMessage.includes(keyword)
+    );
+
+    // Also allow general greetings and platform-related queries
+    const allowedGeneralTerms = ['hello', 'hi', 'help', 'what', 'how', 'can', 'about', 'nextbench'];
+    const hasAllowedGeneral = allowedGeneralTerms.some(term => 
+      lowerMessage.includes(term)
+    );
+
+    return hasEducationContent || hasAllowedGeneral;
+  }
+
   private generateSystemPrompt(customPrompt?: string): string {
     const basePrompt = `
 You are Next-AI, an educational assistant for Next Bench platform.
+
+STRICT GUIDELINES:
+- Only respond to education-related queries about schools, colleges, universities, courses, admissions, exams, and career guidance
+- Only answer questions about Next Bench platform and its services
+- Politely decline any non-educational topics with: "I'm designed to help with educational queries and Next Bench services only. Please ask about schools, colleges, courses, admissions, or career guidance."
+- Never discuss inappropriate, adult, political, religious, or harmful content
+- Focus on helping students with their educational journey
 
 Next Bench helps students find and compare schools, colleges, and universities.
 Provide helpful information about educational institutions, admissions, and academic guidance.
@@ -38,6 +88,7 @@ Respond with:
 - Use HTML tags for formatting (bold, italic, underline)
 - Include emojis when appropriate
 - Keep responses friendly and informative
+- Always stay within educational context
 `;
 
     return customPrompt || basePrompt;
@@ -71,6 +122,13 @@ Respond with:
 
   public async getCompletion(options: AIRequestOptions): Promise<AIResponse> {
     const { message, systemPrompt, maxTokens = 2048 } = options;
+
+    // Content filtering - check if message is education-related
+    if (!this.isEducationRelated(message)) {
+      return {
+        reply: "I'm designed to help with educational queries and Next Bench services only. Please ask about schools, colleges, courses, admissions, or career guidance. 📚✨"
+      };
+    }
 
     try {
       const prompt = this.generateSystemPrompt(systemPrompt);

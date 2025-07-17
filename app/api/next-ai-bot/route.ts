@@ -6,6 +6,18 @@ interface RequestBody {
   message: string;
 }
 
+function isContentAppropriate(message: string): boolean {
+  const inappropriateKeywords = [
+    'sex', 'sexual', 'porn', 'adult', 'xxx', 'nude', 'naked', 'erotic', 'dating', 'hookup',
+    'violence', 'weapon', 'drug', 'alcohol', 'gambling', 'hack', 'illegal', 'criminal',
+    'suicide', 'self-harm', 'politics', 'election', 'vote', 'government',
+    'religion', 'god', 'allah', 'jesus', 'hindu', 'muslim', 'christian', 'race', 'racism'
+  ];
+
+  const lowerMessage = message.toLowerCase();
+  return !inappropriateKeywords.some(keyword => lowerMessage.includes(keyword));
+}
+
 export async function POST(req: Request): Promise<Response> {
   try {
     const body = (await req.json()) as Partial<RequestBody>;
@@ -16,6 +28,13 @@ export async function POST(req: Request): Promise<Response> {
         { error: "Message is required." },
         { status: 400 }
       );
+    }
+
+    // Content filtering check
+    if (!isContentAppropriate(userMessage)) {
+      return NextResponse.json({
+        reply: "I'm designed to help with educational queries and Next Bench services only. Please ask about schools, colleges, courses, admissions, or career guidance. 📚✨"
+      });
     }
 
     const toolType = ToolsService.detectToolRequest(userMessage);
