@@ -4,5 +4,6 @@
         "ICSE",
         "PCMB",
         "PCMBH"
-    ]
+    ],
+    "github.copilot.nextEditSuggestions.enabled": true
 }

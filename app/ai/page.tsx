@@ -1,7 +1,7 @@
 "use client";
 
 import "./style.css";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Nav } from "@/custom-components/nav/nav";
 import { Particles } from "@/components/magicui/particles";
 import { SparklesText } from "@/components/magicui/sparkles-text";
@@ -10,12 +10,20 @@ import Swal from "sweetalert2";
 import Image from "next/image";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Bot, Send } from "lucide-react";
+import { Bot, Send, Search, Calendar, FileText, FileDown, Table2, School } from "lucide-react";
 import Avvvatars from "avvvatars-react";
 import { marked } from "marked";
 import { toast } from "sonner";
 import Link from "next/link";
 import supabase from "@/services/supabase";
+
+interface Tool {
+  id: string;
+  name: string;
+  description: string;
+  icon: React.ReactNode;
+  params?: Record<string, string>;
+}
 
 export default function AiPage() {
   const [isVisible, setIsVisible] = useState(false);
@@ -28,6 +36,70 @@ export default function AiPage() {
   const [isVerified, setIsVerified] = useState(false);
   const [userID, setUserID] = useState("");
   const [emailID, setEmailID] = useState("");
+  const [isSearching, setIsSearching] = useState(false);
+  const [isTyping, setIsTyping] = useState(false);
+  const [activeTool, setActiveTool] = useState<string | null>(null);
+  const [toolParams, setToolParams] = useState<Record<string, string>>({});
+  const chatContainerRef = useRef<HTMLDivElement>(null);
+  
+  const tools: Tool[] = [
+    {
+      id: "date-checker",
+      name: "Exam/Admission Date Checker",
+      description: "Check important dates for exams and admissions",
+      icon: <Calendar className="h-5 w-5" />,
+      params: { exam: "", institution: "" }
+    },
+    {
+      id: "institution-comparison",
+      name: "School/College Comparison",
+      description: "Compare institutions by fees, rankings, and more",
+      icon: <School className="h-5 w-5" />,
+      params: { institutions: "" }
+    },
+    {
+      id: "document-generator",
+      name: "Document Generator",
+      description: "Create study plans, application drafts, and more",
+      icon: <FileText className="h-5 w-5" />,
+      params: { documentType: "", topic: "" }
+    },
+    {
+      id: "pdf-formatter",
+      name: "PDF Formatter",
+      description: "Format content for clean PDF downloads",
+      icon: <FileDown className="h-5 w-5" />,
+      params: { content: "" }
+    },
+    {
+      id: "tabular-comparison",
+      name: "Tabular College Comparison",
+      description: "View colleges in an easy-to-read table format",
+      icon: <Table2 className="h-5 w-5" />,
+      params: { colleges: "" }
+    }
+  ];
+  
+  const handleToolActivation = (toolId: string) => {
+    const tool = tools.find(t => t.id === toolId);
+    if (tool) {
+      setActiveTool(toolId);
+      setToolParams(tool.params || {});
+      setInput(`Use ${tool.name} tool to `);
+    }
+  };
+  
+  const handleParamChange = (paramName: string, value: string) => {
+    setToolParams(prev => ({
+      ...prev,
+      [paramName]: value
+    }));
+  };
+  
+  const resetToolState = () => {
+    setActiveTool(null);
+    setToolParams({});
+  };
 
   useEffect(() => {
     const getSessionAndUserID = async () => {
@@ -85,7 +157,6 @@ export default function AiPage() {
     }
     const chatIntroHeading = document.getElementById("chatIntroHeading");
 
-    // Animate and hide the chat introduction heading
     if (chatIntroHeading) {
       chatIntroHeading.style.animation = "fadeUps 1.0s ease-in-out";
 
@@ -99,7 +170,7 @@ export default function AiPage() {
     }
 
     const trimmedInput = input.trim();
-    if (!trimmedInput) return; // Prevent sending empty messages
+    if (!trimmedInput) return;
 
     // Add user's message to chat history
     if (isFirstMessageSent) {
@@ -116,27 +187,46 @@ export default function AiPage() {
       }, 800);
       setIsFirstMessageSent(true);
     }
-    setInput(""); // Clear input field
+    setInput("");
+    resetToolState();
 
     try {
       // Scroll to the bottom of the chat log
       setTimeout(() => {
-        const scrollBottom = document.getElementById("scrollBottom");
-        if (scrollBottom) {
-          scrollBottom.scrollIntoView({ behavior: "smooth" });
+        if (chatContainerRef.current) {
+          chatContainerRef.current.scrollIntoView({ behavior: "smooth" });
         }
       }, 0);
 
-      // Send a POST request to the AI API
+      // Show typing indicator
+      setIsTyping(true);
+      
+      // Prepare request payload
+      const payload: { message: string; tool?: { type: string; id?: string; params: Record<string, unknown> } } = { message: trimmedInput };
+      
+      // Add tool parameters if a tool is active
+      if (activeTool) {
+        payload.tool = {
+          type: activeTool,
+          id: activeTool,
+          params: toolParams
+        };
+      }
+
       const res = await fetch("/api/next-ai-bot", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: trimmedInput }),
+        body: JSON.stringify(payload),
       });
+
+      // Hide typing indicator
+      setIsTyping(false);
 
       if (res.ok) {
         const data = await res.json();
-        // Append AI's response to chat history
+        // Check if search was performed
+        setIsSearching(data.searchPerformed || false);
+        
         setChatHistory((prev) => [
           ...prev,
           { sender: "bot", message: data.reply },
@@ -148,8 +238,12 @@ export default function AiPage() {
           { sender: "bot", message: "⚠️ Error: Unable to fetch response." },
         ]);
       }
-    } catch {
+    } catch (error) {
+      // Hide typing indicator
+      setIsTyping(false);
+      
       // Handle network or other errors
+      console.error("Error sending message:", error);
       setChatHistory((prev) => [
         ...prev,
         { sender: "bot", message: "❌ AI is currently unavailable." },
@@ -213,6 +307,25 @@ export default function AiPage() {
       <div className="background"></div>
       {/* Main container that contains the chat */}
       <div className={`containerMain ${isVisible ? "fade-in" : ""}`}>
+        {/* Tools sidebar */}
+        <div className="tools-sidebar">
+          <div className="tools-header">Smart Tools</div>
+          <div className="tools-list">
+            {tools.map((tool) => (
+              <div 
+                key={tool.id} 
+                className={`tool-item ${activeTool === tool.id ? 'active' : ''}`}
+                onClick={() => handleToolActivation(tool.id)}
+              >
+                <div className="tool-icon">{tool.icon}</div>
+                <div className="tool-info">
+                  <div className="tool-name">{tool.name}</div>
+                  <div className="tool-description">{tool.description}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
         <div className="chatCont">
           {/* Top section of the chat that contains the intro text and heading */}
           <div className="top">
@@ -298,15 +411,67 @@ export default function AiPage() {
                   </div>
                 </div>
               ))}
+              {/* Typing indicator in chat */}
+              {isTyping && (
+                <div className="chat-typing-indicator">
+                  <div className="typing-avatar">
+                    <Image
+                      src="/pfpChat.png"
+                      alt="BOT"
+                      width={100}
+                      height={100}
+                      className="w-[30px] h-[30px] object-cover rounded-full"
+                    />
+                  </div>
+                  <div className="typing-bubble">
+                    <span className="dot"></span>
+                    <span className="dot"></span>
+                    <span className="dot"></span>
+                  </div>
+                </div>
+              )}
+              
               {/* Scroll to the bottom of the chat */}
-              <div className="scrollBottom" id="scrollBottom"></div>
+              <div className="scrollBottom" ref={chatContainerRef}></div>
             </div>
           </div>
 
           {/* Bottom section of the chat that contains the input field */}
           <div className="bottom">
+            {/* Tool parameters section (shown when a tool is active) */}
+            {activeTool && (
+              <div className="tool-params-container">
+                <div className="tool-params-header">
+                  {tools.find(t => t.id === activeTool)?.name} Parameters
+                  <button className="tool-close-btn" onClick={resetToolState}>×</button>
+                </div>
+                <div className="tool-params-fields">
+                  {Object.entries(toolParams).map(([paramName, paramValue]) => (
+                    <div key={paramName} className="tool-param-field">
+                      <label htmlFor={`param-${paramName}`}>{paramName.charAt(0).toUpperCase() + paramName.slice(1)}:</label>
+                      <Input
+                        id={`param-${paramName}`}
+                        value={paramValue}
+                        onChange={(e) => handleParamChange(paramName, e.target.value)}
+                        placeholder={`Enter ${paramName}...`}
+                        className="tool-param-input"
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+            
             {/* Container for the input field */}
             <div className="inputContainer fade-item">
+              {/* Search indicator */}
+              {isSearching && (
+                <div className="search-indicator">
+                  <Search className="h-4 w-4" />
+                  <span>Searching web...</span>
+                </div>
+              )}
+              
               {/* Input field */}
               <Input
                 className="input"
@@ -319,20 +484,38 @@ export default function AiPage() {
                   }
                 }}
                 spellCheck={false}
-                placeholder="Type a message..."
+                placeholder={activeTool 
+                  ? `Describe what you need with the ${tools.find(t => t.id === activeTool)?.name}...` 
+                  : "Type a message..."}
               />
-              {/* Send button */}
-              <Button onClick={onSendMessage}>
-                <Send />
-              </Button>
+              
+              {/* Typing indicator or send button */}
+              {isTyping ? (
+                <div className="typing-indicator">
+                  <span className="dot"></span>
+                  <span className="dot"></span>
+                  <span className="dot"></span>
+                </div>
+              ) : (
+                <Button onClick={onSendMessage}>
+                  <Send />
+                </Button>
+              )}
             </div>
-            {/* Text that says "Bot may make mistakes" */}
-            <div className="releaseDate fade-item">
-              <Bot
-                style={{ marginRight: "5px", marginLeft: "3px" }}
-                size={15}
-              />
-              Bot may make mistakes
+            
+            {/* Status indicators */}
+            <div className="status-indicators fade-item">
+              {/* Bot indicator */}
+              <div className="bot-indicator">
+                <Bot style={{ marginRight: "5px" }} size={15} />
+                Bot may make mistakes
+              </div>
+              
+              {/* Search capability indicator */}
+              <div className="search-capability">
+                <Search style={{ marginRight: "5px" }} size={15} />
+                Web search enabled
+              </div>
             </div>
           </div>
         </div>
