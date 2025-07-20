@@ -30,6 +30,8 @@ import {
   Icon,
   Skeleton,
   RevealFx,
+  PasswordInput,
+  Spinner,
 } from "@once-ui-system/core";
 import { useEffect, useState } from "react";
 import {
@@ -577,49 +579,43 @@ function FAQSection() {
   );
 }
 
-
- function Plans() {
-   return (
-     <Column
-       horizontal="center"
-       vertical="center"
-       fillWidth    
-     >
-       <Text
-         style={{
-           color: "#181A1D",
-           fontSize: "70px",
-           lineHeight: "1em",
-           fontWeight: "500",
-           letterSpacing: ".3px",
-           textAlign: "center",
-         }}
-         className={dmsans.className + " titleTexts"}
-       >
-         Plans and         <span style={{ color: "#626F45" }}>Pricing</span> 
-
-       </Text>
-       <Flex fillWidth height={1}></Flex>
-       <Text
-         style={{
-           fontSize: "18px",
-           fontWeight: "400",
-           textAlign: "center",
-           maxWidth: "800px",
-         }}
-         onBackground="neutral-weak"
-         className={dmsans.className + " faqText"}
-       >
-          Explore our comprehensive pricing plans designed to cater to your
-          educational needs. Choose the plan that suits you best and unlock a
-          world of learning opportunities.
-       </Text>
-       <Column fitWidth fillHeight paddingTop="64">
-       <Plans3/>
-       </Column>
-     </Column>
-   );
- }
+function Plans() {
+  return (
+    <Column horizontal="center" vertical="center" fillWidth>
+      <Text
+        style={{
+          color: "#181A1D",
+          fontSize: "70px",
+          lineHeight: "1em",
+          fontWeight: "500",
+          letterSpacing: ".3px",
+          textAlign: "center",
+        }}
+        className={dmsans.className + " titleTexts"}
+      >
+        Plans and <span style={{ color: "#626F45" }}>Pricing</span>
+      </Text>
+      <Flex fillWidth height={1}></Flex>
+      <Text
+        style={{
+          fontSize: "18px",
+          fontWeight: "400",
+          textAlign: "center",
+          maxWidth: "800px",
+        }}
+        onBackground="neutral-weak"
+        className={dmsans.className + " faqText"}
+      >
+        Explore our comprehensive pricing plans designed to cater to your
+        educational needs. Choose the plan that suits you best and unlock a
+        world of learning opportunities.
+      </Text>
+      <Column fitWidth fillHeight paddingTop="64">
+        <Plans3 />
+      </Column>
+    </Column>
+  );
+}
 // Card Data
 const cardAProps = {
   bg: "#F0F1EC",
@@ -1194,7 +1190,48 @@ function CardD({
 
 // Main Page
 export default function Home() {
-  const router = useRouter();
+  const [mainPassword, setMainPassword] = useState<string>("");
+  const [inputPassword, setInputPassword] = useState<string>("");
+  const [isMainPasswordProtected, setIsMainPasswordProtected] = useState<
+    boolean | null
+  >(null);
+  const [passwordErrorMessage, setPasswordErrorMessage] = useState<
+    string | null
+  >(null);
+
+  useEffect(() => {
+    supabase
+      .from("security")
+      .select(
+        "main_password, is_main_password_protected, password_error_message",
+        { head: false }
+      )
+      .eq("id", 2)
+      .single()
+      .then(({ data }) => {
+        if (data) {
+          setMainPassword(data.main_password ?? "");
+          setIsMainPasswordProtected(data.is_main_password_protected ?? null);
+          setPasswordErrorMessage(data.password_error_message ?? null);
+        }
+      });
+  }, []);
+
+  const [isErrorTorF, setIsErrorTorF] = useState<boolean>(false);
+  const checkPassword = () => {
+    if (mainPassword === "") {
+      return;
+    }
+    // Add your password checking logic here
+    if (inputPassword === mainPassword) {
+      setPasswordErrorMessage(null);
+      setIsMainPasswordProtected(false);
+    } else {
+      setIsErrorTorF(true);
+    }
+  };
+
+  console.log("Main Password:", mainPassword);
   return (
     <Column
       fillWidth
@@ -1209,47 +1246,198 @@ export default function Home() {
     >
       <Column style={{ maxWidth: "1550px" }} fillWidth fitHeight>
         <Cookie />
-
-        <NavBar />
-        <Flex height={3} minHeight={3}></Flex>
-        <AboutBadge />
-        <HeroSection />
-        <Flex height={7}></Flex>
-        <Row
-          fillWidth
-          fitHeight
-          horizontal="center"
-          vertical="center"
-          gap="16"
-          style={{ maxWidth: "1600px" }}
-          wrap={true}
-          className="cardRow"
-        >
-          <CardA {...cardAProps} />
-          <CardB {...cardBProps} />
-          <CardC {...cardCProps} />
-          <CardD {...cardDProps} />
-          <Flex height={3}></Flex>
-          <TrustedSection />
-          <Flex height={2}></Flex>
-          <Flex fillWidth height={1}></Flex>
-          <Flex center fillWidth fitHeight>
-            <Line fillWidth maxWidth={5} height={0.1}></Line>
+        {/* Render password prompt if main password protection is enabled */}
+        {isMainPasswordProtected === null ? (
+          <Flex
+            center
+            fillWidth
+            fillHeight
+            style={{ minHeight: "90svh", minWidth: "100%" }}
+          >
+            <Spinner size="xl" />
           </Flex>
-          <Flex fillWidth height={2}></Flex>
-                  <Plans />
-
-             <Flex fillWidth height={1}></Flex>             <Flex fillWidth height={1}></Flex>
-
-          <Flex center fillWidth fitHeight>
-            <Line fillWidth maxWidth={5} height={0.1}></Line>
-          </Flex>
-          <Flex height={3}></Flex>
-          <FAQSection /> 
-          <Flex fillWidth height={3}></Flex>
-          <Footer />
-        </Row>
+        ) : isMainPasswordProtected ? (
+          <Column
+            center
+            fillWidth
+            fillHeight
+            vertical="center"
+            style={{
+              alignItems: "center !important",
+              justifyContent: "center !important",
+            }}
+          >
+            <PasswordPrompt
+              password={inputPassword}
+              onPasswordChange={setInputPassword}
+              onSubmit={() => checkPassword()} // Provide your submit handler here
+              disabled={false}
+              isError={isErrorTorF}
+            />
+          </Column>
+        ) : (
+          <Main />
+        )}
       </Column>
     </Column>
+  );
+}
+
+function Main() {
+  return (
+    <>
+      {" "}
+      <NavBar />
+      <Flex height={3} minHeight={3}></Flex>
+      <AboutBadge />
+      <HeroSection />
+      <Flex height={7}></Flex>
+      <Row
+        fillWidth
+        fitHeight
+        horizontal="center"
+        vertical="center"
+        gap="16"
+        style={{ maxWidth: "1600px" }}
+        wrap={true}
+        className="cardRow"
+      >
+        <CardA {...cardAProps} />
+        <CardB {...cardBProps} />
+        <CardC {...cardCProps} />
+        <CardD {...cardDProps} />
+        <Flex height={3}></Flex>
+        <TrustedSection />
+        <Flex height={2}></Flex>
+        <Flex fillWidth height={1}></Flex>
+        <Flex center fillWidth fitHeight>
+          <Line fillWidth maxWidth={5} height={0.1}></Line>
+        </Flex>
+        <Flex fillWidth height={2}></Flex>
+        <Plans />
+        <Flex fillWidth height={1}></Flex> <Flex fillWidth height={1}></Flex>
+        <Flex center fillWidth fitHeight>
+          <Line fillWidth maxWidth={5} height={0.1}></Line>
+        </Flex>
+        <Flex height={3}></Flex>
+        <FAQSection />
+        <Flex fillWidth height={3}></Flex>
+        <Footer />
+      </Row>
+    </>
+  );
+}
+interface PasswordPromptProps {
+  password: string;
+  isError?: boolean;
+  onPasswordChange: (value: string) => void;
+  onSubmit: () => void;
+  disabled?: boolean;
+}
+
+function PasswordPrompt({
+  password,
+  isError,
+  onPasswordChange,
+  onSubmit,
+}: PasswordPromptProps) {
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<boolean>(false);
+  const [errorText, setErrorText] = useState<string>("");
+  const error_message = error ? "Invalid password, please try again. 😏" : "";
+
+  useEffect(() => {
+    if (!password) {
+      setError(isError ?? false);
+      setErrorText("What are you trying to do?");
+    }
+  }, [password]);
+
+  // Show error if password is not correct after submit
+
+  return (
+    <div
+      style={{
+        width: "100%",
+        height: "90vh",
+        position: "absolute",
+        top: 0,
+        left: 0,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
+      <div
+        className="password-prompt-container"
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "flex-start",
+          justifyContent: "center",
+          maxWidth: "37.5rem",
+          width: "100%",
+          height: "100%",
+          gap: "1rem",
+        }}
+      >
+        <Column
+          maxWidth={37.5}
+          vertical="center"
+          horizontal="start"
+          fillWidth
+          fillHeight
+          gap="4"
+        >
+          <Text
+            variant="heading-strong-xl"
+            className={`${dmsans.className} text-responsive-heading`}
+            style={{
+              lineHeight: "1.4",
+              fontSize: "30px",
+              letterSpacing: "-0.1px",
+              color: "#333",
+            }}
+          >
+            Password Protected <span style={{ color: "#626F45" }}>Area</span>
+          </Text>
+          <Text variant="label-default-s" className="text-big-darker">
+            Please enter the password to access this page.
+          </Text>
+
+          <Flex fillWidth height={0.5} />
+          <PasswordInput
+            id=""
+            type="text"
+            placeholder="Enter password"
+            className="password-input"
+            onChange={(e) => onPasswordChange(e.target.value)}
+            error={isError}
+            errorMessage={error_message}
+          />
+          <Flex fillWidth height={0.5} />
+          <Button
+            onClick={async () => {
+              setLoading(true);
+              setTimeout(() => {
+                onSubmit();
+              }, 2000);
+              setTimeout(() => setLoading(false), 0);
+            }}
+            disabled={loading}
+          >
+            {loading ? (
+              <Row center gap="4">
+                {" "}
+                Submitting
+                <Spinner size="s" />
+              </Row>
+            ) : (
+              "Submit"
+            )}
+          </Button>
+        </Column>
+      </div>
+    </div>
   );
 }
