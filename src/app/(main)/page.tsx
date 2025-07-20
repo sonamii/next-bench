@@ -1206,7 +1206,7 @@ export default function Home() {
         "main_password, is_main_password_protected, password_error_message",
         { head: false }
       )
-      .eq("id", 2)
+      .eq("id", 1)
       .single()
       .then(({ data }) => {
         if (data) {
@@ -1422,7 +1422,7 @@ function PasswordPrompt({
               setTimeout(() => {
                 onSubmit();
               }, 2000);
-              setTimeout(() => setLoading(false), 0);
+              setTimeout(() => setLoading(false), 1000);
             }}
             disabled={loading}
           >
