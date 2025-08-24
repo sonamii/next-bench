@@ -1247,7 +1247,7 @@ export default function Home() {
       <Column style={{ maxWidth: "1550px" }} fillWidth fitHeight>
         <Cookie />
         {/* Render password prompt if main password protection is enabled */}
-        {isMainPasswordProtected === null ? (
+        {/* {isMainPasswordProtected === null ? (
           <Flex
             center
             fillWidth
@@ -1277,7 +1277,8 @@ export default function Home() {
           </Column>
         ) : (
           <Main />
-        )}
+        )} */}
+         <Main />
       </Column>
     </Column>
   );
