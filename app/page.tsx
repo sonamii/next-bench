@@ -195,18 +195,19 @@ export default function Home() {
         <div className="space-xs"></div>
         {/* HEADING */}
         <div className="textTop fade-item">
-          Find the perfect school that fits your child.{" "}
+          Get a Roadmap to your Dream University{" "}
         </div>
         <div className="space-xs"></div>
         {/* PARAGRAPH */}
         <div className="textBottom fade-item">
-          Finding the right school should be easy. Whether it&apos;s K-12,
-          college, or grad school, we simplify your search.
+          Get Step by Step guidance<br/>
+          🤝 1:1 sessions for your queries<br/>
+          ⏰ Save months on research<br/>
         </div>
         <div className="space-s"></div>
         {/* FORM */}
         <form
-          className="inputContainer  fade-item"
+          className="inputContainer fade-item"
           onSubmit={(e) => e.preventDefault()}
         >
           <Button onClick={() => (window.location.href = "/dashboard")}>
@@ -551,7 +552,7 @@ export default function Home() {
             </div>
 
             {/* Heading of the section */}
-            <div className="textTop2  fade-item">
+            <div className="textTop2 fade-item">
               Explore Our Trusted Partnerships{" "}
             </div>
             {/* Text describing the partnerships */}
@@ -589,7 +590,7 @@ export default function Home() {
               Testimonials
             </div>
 
-            <div className="textTop2  fade-item">Coming Soon </div>
+            <div className="textTop2 fade-item">Coming Soon </div>
           </div>
         </div> */}
         {/*TESTIMONIALS END */}
@@ -600,7 +601,7 @@ export default function Home() {
               <ShieldQuestion size={15} style={{ marginRight: "5px" }} />
               FAQs
             </div>
-            <div className="textTop2  fade-item">Coming Soon </div>
+            <div className="textTop2 fade-item">Coming Soon </div>
           </div>
         </div> */}
         {/*FAQS END */}
