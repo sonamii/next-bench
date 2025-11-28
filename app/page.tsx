@@ -202,7 +202,7 @@ export default function Home() {
         <div className="textBottom fade-item">
           Get Step by Step guidance<br/>
           🤝 1:1 sessions for your queries<br/>
-          ⏰ Save months on research<br/>
+          ⏰ Save months of research<br/>
         </div>
         <div className="space-s"></div>
         {/* FORM */}
