@@ -12,6 +12,10 @@ import {companyLogo,mono} from "@/resources/next-bench.config";
 
 
 export function Footer() {
+    const theme = localStorage.getItem("data-theme") as
+    | "light"
+    | "dark"
+    | "system";
   return (
     <Column fillWidth maxWidth={"m"}>
         <Row fillWidth padding="16" horizontal="between" id="footer">
@@ -23,7 +27,7 @@ export function Footer() {
                 alt=""
                 width={40}
                 height={40}
-                style={{ filter: "invert(0)", borderRadius: "30%" }}
+            style={{ filter: theme === "dark" ? "invert(0)" : "invert(1)", borderRadius: "30%" }}
               ></Image>
               <Text variant="body-default-xl" align="center">
                 {" "}

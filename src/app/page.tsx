@@ -162,6 +162,7 @@ export default function Home() {
               size="m"
               suffixIcon="arrowRight"
               id="hiddenButtonNav"
+              href="/auth"
             >
               <Text variant="body-default-l">Get Access</Text>
             </Button>
@@ -202,7 +203,8 @@ export default function Home() {
             <Button variant="secondary" size="m">
               <Text variant="body-default-l">Login</Text>
             </Button>
-            <Button variant="primary" size="m" suffixIcon="arrowRight">
+            <Button variant="primary" size="m" suffixIcon="arrowRight"               href="/auth"
+>
               <Text variant="body-default-l">Get Access</Text>
             </Button>
           </Flex>
