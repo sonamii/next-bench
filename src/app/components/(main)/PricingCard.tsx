@@ -8,18 +8,21 @@ import {
   Row,
   Icon,
   Kbd,
+  Arrow,
 } from "@once-ui-system/core";
 
 export function PricingCard({
-  icon= "",
+  icon = "",
   iconText = "",
-  popular = true,
+  tagText = "",
   monthlyPrice = "29",
   originalPrice = "39",
   title = "Ideal for group of students",
   description = "Agentic AI automation, Priority call support, Application tracking, Personalized advice, 24/7 support, Career prospects, Admission updates, Interview preparation, Counseling",
   buttonText = "Get Started",
+  buttonId = "arrow-trigger-1",
   buttonLink = "/",
+  toc = false,
 }) {
   return (
     <Row>
@@ -29,14 +32,13 @@ export function PricingCard({
         vertical="start"
         border="neutral-alpha-medium"
         radius="l"
-        // shadow="xs"
+         shadow="xs"
         minWidth={20}
         fitHeight
         maxHeight={40}
         minHeight={32}
         gap="m"
       >
-        
         <Column
           background="neutral-alpha-weak"
           border="neutral-alpha-weak"
@@ -48,21 +50,17 @@ export function PricingCard({
         >
           <Row horizontal="between" marginBottom="l">
             <Flex center gap="4">
-              <Icon
-                name={icon}
-                size="s"
-                style={{ color: "#787878"}}
-              ></Icon>
+              <Icon name={icon} size="s" style={{ color: "#787878" }}></Icon>
               <Text onBackground="neutral-weak" variant="body-default-s">
                 {iconText}
               </Text>
             </Flex>
-            {popular && <Kbd data-scaling="110">Popular</Kbd>}
+            {tagText && <Kbd data-scaling="110">{tagText}</Kbd>}
           </Row>
           <Column fillWidth gap="8">
             <Row vertical="end" horizontal="between">
               <Flex horizontal="center" vertical="end">
-                <Text variant="display-strong-xs">
+                <Text variant="display-strong-xs" onBackground="neutral-strong">
                   {monthlyPrice === "Free" ? (
                     <b>{monthlyPrice}</b>
                   ) : (
@@ -82,8 +80,9 @@ export function PricingCard({
                 </Text>
               )}
             </Row>
-            <Button href={buttonLink} fillWidth size="m">
+            <Button href={buttonLink} fillWidth size="m" id={buttonId}>
               <Text variant="body-default-l">{buttonText}</Text>
+              <Arrow trigger={buttonId} color="onSolid" scale={1} />
             </Button>
           </Column>
         </Column>
@@ -91,7 +90,7 @@ export function PricingCard({
           <Flex fillWidth horizontal="start">
             <Text
               variant="body-default-s"
-              onBackground="neutral-weak"
+              onBackground="neutral-strong"
               align="left"
             >
               {title}
@@ -102,12 +101,13 @@ export function PricingCard({
           fillWidth
           horizontal="start"
           paddingX="12"
-          vertical="start"
+          vertical="between"
+          fillHeight
           gap="8"
         >
           {description.split(", ").map((desc) => (
             <Row vertical="center" gap="12" key={desc}>
-              <Icon name="circleCheckOutline" size="s"></Icon>
+              <Icon name="circleCheckOutline" size="s"onBackground="neutral-strong"></Icon>
               <Text
                 variant="body-default-s"
                 onBackground="neutral-weak"
@@ -117,8 +117,17 @@ export function PricingCard({
               </Text>
             </Row>
           ))}
-          <Flex id="end-space" height={0}></Flex>
-        </Column>
+          <Flex id="end-space" height={0}></Flex>{" "}
+        </Column>{" "}
+        <div style={{ position: "absolute", bottom: "10px", left: "25px" }}>
+          {toc === true ? (
+            <Row fillWidth fillHeight>
+              <Text variant="body-default-s" onBackground="warning-weak">
+                *toc{" "}
+              </Text>
+            </Row>
+          ) : null}
+        </div>
       </Column>
     </Row>
   );

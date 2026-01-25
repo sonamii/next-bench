@@ -1,5 +1,7 @@
 "use client";
 import "@/resources/custom.css";
+import Lenis from 'lenis'
+
 import {
   Heading,
   Text,
@@ -21,11 +23,15 @@ import {
   SmartLink,
   TypeFx,
   CountdownFx,
+  ThemeSwitcher,
 } from "@once-ui-system/core";
 import Image from "next/image";
 import { Geist, DM_Mono } from "next/font/google";
 import { PricingCard } from "../components/(main)/PricingCard";
-
+import React from "react";
+const lenis = new Lenis({
+  autoRaf: true,
+});
 const geist = Geist({ subsets: ["latin"] });
 const mono = DM_Mono({
   subsets: ["latin"],
@@ -36,7 +42,7 @@ const pricingPlans = [
   {
     icon: "userOutline",
     iconText: "Basic",
-    popular: false,
+  
     monthlyPrice: "Free",
     title: "Ideal for group of students",
     description:
@@ -48,7 +54,7 @@ const pricingPlans = [
   {
     icon: "luggageOutline",
     iconText: "Pro",
-    popular: true,
+    tagText: "Popular",
     monthlyPrice: "349",
     title: "Ideal for group of students",
     description:
@@ -60,7 +66,7 @@ const pricingPlans = [
   {
     icon: "buildingOutline",
     iconText: "Exceptional",
-    popular: false,
+    tagText: "Best Value",
     monthlyPrice: "749",
     originalPrice: "1549",
     title: "Ideal for group of students",
@@ -68,19 +74,53 @@ const pricingPlans = [
       "All feautres of PRO, Free counseling, Unlimited AI uses*, Unlimited outreach access*, Universitiy application tracking, NextAI access",
     buttonText: "Get Started",
     buttonLink: "/",
+    toc: true
   },
 ];
 
 const companyLogo =
   "https://media.licdn.com/dms/image/v2/D560BAQFyPNfJhr3kZw/company-logo_100_100/B56Zs1v9oTKIAM-/0/1766133325738?e=1770854400&v=beta&t=c7QJ4ZxcL1Q7BexaTjs_hyBo8SWCDgPMQA0BUDl5WlQ";
 export default function Home() {
+  const [theme, setTheme] = React.useState<"light" | "dark">(
+    window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light",
+  );
+
+  React.useEffect(() => {
+    const resolvedTheme =
+      window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+
+    document.documentElement.setAttribute("data-theme", resolvedTheme);
+    localStorage.setItem("data-theme", resolvedTheme);
+  }, []);
+
+  React.useEffect(() => {
+    document.documentElement.setAttribute("data-theme", theme);
+    localStorage.setItem("data-theme", theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    const nextTheme = theme === "light" ? "dark" : "light";
+    setTheme(nextTheme);
+  };
+
+
+
   return (
     <Column
       fillWidth
       vertical="start"
       horizontal="center"
       padding="m"
-      style={{ minHeight: "100vh", backgroundColor: "#F9F9F9" }}
+      style={{
+        minHeight: "100vh",
+
+        backgroundColor:
+          theme === "dark"
+            ? "#111111"
+            : theme === "light"
+              ? "#ffffff"
+              : "#F9F9F9",
+      }}
     >
       <Flex
         fillWidth
@@ -114,7 +154,7 @@ export default function Home() {
               alt=""
               width={40}
               height={40}
-              style={{ filter: "invert(1)", borderRadius: "30%" }}
+              style={{ filter: theme === "dark" ? "invert(1)" : "invert(0)", borderRadius: "30%" }}
             ></Image>
             <Line vert height={1.5}></Line>
 
@@ -135,8 +175,13 @@ export default function Home() {
             >
               <Text variant="body-default-l">Get Access</Text>
             </Button>
-                        <IconButton icon="sun" size="l" variant="secondary" id="hiddenButtonNav"/>
-
+            <IconButton
+              icon={theme === "dark" ? "sun" : "moon"}
+              size="l"
+              variant="secondary"
+              id="hiddenButtonNav"
+              onClick={toggleTheme}
+            />
           </Flex>
         </Flex>
 
@@ -158,7 +203,12 @@ export default function Home() {
             vertical="center"
             gap="8"
           >
-            <IconButton icon="sun" size="l" variant="secondary" />
+            <IconButton
+              icon={theme === "dark" ? "sun" : "moon"}
+              size="l"
+              variant="secondary"
+              onClick={toggleTheme}
+            />
             <Button variant="secondary" size="m">
               <Text variant="body-default-l">Login</Text>
             </Button>
@@ -175,8 +225,8 @@ export default function Home() {
         maxWidth={"m"}
         horizontal="center"
         paddingY="xl"
-        gap="m"          style={{ flexWrap: "wrap" }}
-
+        gap="m"
+        style={{ flexWrap: "wrap" }}
       >
         <Row gap="12">
           <AvatarGroup
@@ -229,8 +279,7 @@ export default function Home() {
             Looking for an efficient and convenient way to navigate the
             application process? Look no further!
           </Text>
-          <Row gap="16" center fillWidth           style={{ flexWrap: "wrap" }}
-> 
+          <Row gap="16" center fillWidth style={{ flexWrap: "wrap" }}>
             <Button variant="secondary">
               {" "}
               <Text variant="body-default-l">Try it now</Text>
@@ -264,7 +313,7 @@ export default function Home() {
             >
               Great
             </span>{" "}
-            pricing
+            pricings
           </Text>
         </Row>
         <Row
@@ -278,7 +327,7 @@ export default function Home() {
           <Flex data-scaling="100" id="pricingCard">
             <PricingCard {...pricingPlans[0]} />
           </Flex>
-          <Flex data-scaling="100" id="pricingCard">
+          <Flex data-scaling="10" id="pricingCard">
             {" "}
             <PricingCard {...pricingPlans[1]} />
           </Flex>
