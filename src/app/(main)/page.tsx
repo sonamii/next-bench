@@ -200,7 +200,7 @@ export default function Home() {
                 fontWeight: "normal",
               }}
             >
-              boost
+              <u>boost</u>
             </span>{" "}
             your education by getting admission in top universities?{" "}
           </Text>
@@ -209,13 +209,15 @@ export default function Home() {
             onBackground="neutral-weak"
             align="center"
           >
-            If you’re looking for efficient, scalable ways to navigate the
-            complex application process, you’re in the right place.
+            Looking for an efficient and convenient way to navigate the
+            application process? Look no further!
           </Text>
           <Row gap="16" center fillWidth>
-            <Button variant="secondary">
+            <Button variant="secondary" >
               {" "}
-              <Text variant="body-default-l">Try it now</Text>
+              <Text variant="body-default-l" >
+                Try it now
+              </Text>
             </Button>
             <Button suffixIcon="arrowTopRight">
               {" "}
@@ -254,7 +256,33 @@ export default function Home() {
           </Flex>
         </Row>
       </Column>
-      <Flex height={"40"}></Flex>
+      <Flex height={"80"}></Flex>
+      <Row fillWidth maxWidth={"m"} horizontal="between">
+        <Text variant="display-default-s">
+          <b>
+            Let your{" "}
+            <span
+              style={{
+                fontFamily: geist.className,
+                fontStyle: "italic",
+                fontWeight: "normal",
+              }}
+            >
+              <u>plans</u>
+            </span>{" "}
+            shape the future.
+          </b>
+        </Text>{" "}
+        <Flex direction="row" gap="12">
+          <Button size="l" variant="secondary" suffixIcon="arrowTopRight">
+            <Text variant="body-default-l">Try it now</Text>
+          </Button>
+          <Button size="l">
+            <Text variant="body-default-l">Contact Sales</Text>
+          </Button>
+        </Flex>
+      </Row>
+      <Flex height={"80"}></Flex>
       <Column fillWidth maxWidth={"m"}>
         <Row fillWidth padding="16" horizontal="between">
           <Flex fitWidth direction="column" gap="12">
