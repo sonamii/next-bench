@@ -68,13 +68,13 @@ const dataStyle = {
 const meta = {
   home: {
     path: "/",
-    title: "Once UI for Next.js",
+    title: "Next Bench - Comprehensive tool for students",
     description:
-      "An open-source design system and component library for Next.js that emphasizes easy styling and accessibility in UI development.",
+      "Next Bench is a comprehensive tool for students.",
     image: "/images/og/home.jpg",
-    canonical: "https://once-ui.com",
+    canonical: "https://next-bench-dev.vercel.app",
     robots: "index,follow",
-    alternates: [{ href: "https://once-ui.com", hrefLang: "en" }],
+    alternates: [{ href: "https://next-bench-dev.vercel.app", hrefLang: "en" }],
   },
   // add more routes and reference them in page.tsx
 };
@@ -83,15 +83,15 @@ const meta = {
 const schema = {
   logo: "",
   type: "Organization",
-  name: "Once UI",
+  name: "Next Bench",
   description: meta.home.description,
-  email: "lorant@once-ui.com",
+  email: "nextbench@nextbench.com",
 };
 
 // social links
 const social = {
-  twitter: "https://www.twitter.com/_onceui",
-  linkedin: "https://www.linkedin.com/company/once-ui/",
+  twitter: "https://www.twitter.com/nextbench",
+  linkedin: "https://www.linkedin.com/company/nextbench/",
   discord: "https://discord.com/invite/5EyAQ4eNdS",
 };
 
