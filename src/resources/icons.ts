@@ -1,4 +1,5 @@
 import { IconType } from "react-icons";
+import { AiOutlineApartment } from "react-icons/ai";
 import { CgArrowTopRight } from "react-icons/cg";
 import { CiCircleCheck } from "react-icons/ci";
 
@@ -10,7 +11,7 @@ import {
   HiStar,
 } from "react-icons/hi2";
 import { IoBagOutline } from "react-icons/io5";
-import { MdOutlineHouse } from "react-icons/md";
+import { MdOutlineHouse, MdOutlineLuggage } from "react-icons/md";
 import { RxArrowTopRight } from "react-icons/rx";
 import { TfiArrowTopRight } from "react-icons/tfi";
 import { TiUserOutline } from "react-icons/ti";
@@ -23,8 +24,8 @@ export const iconLibrary: Record<string, IconType> = {
   star:HiStar,
   arrowTopRight: RxArrowTopRight,
   userOutline: TiUserOutline,
-  luggageOutline:IoBagOutline,
-  buildingOutline: MdOutlineHouse,
+  luggageOutline:MdOutlineLuggage,
+  buildingOutline: AiOutlineApartment,
   circleCheckOutline: CiCircleCheck
 
 };

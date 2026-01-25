@@ -21,8 +21,45 @@ import {
 } from "@once-ui-system/core";
 import Image from "next/image";
 import { Geist } from "next/font/google";
+import { PricingCard } from "../components/(main)/PricingCard";
 
 const geist = Geist({ subsets: ["latin"] });
+
+const pricingPlans = [
+  {
+    icon: "userOutline",
+    iconText: "Basic",
+    popular: false,
+    monthlyPrice: "Free",
+    title: "Ideal for group of students",
+    description: "Institutes searching, Application tracking, Personalized advice, Support, Career prospects, Admission updates",
+    buttonText: "Get Started",
+    originalPrice: "",
+    buttonLink: "/",
+  },
+  {
+    icon: "luggageOutline",
+    iconText: "Pro",
+    popular: true,
+    monthlyPrice: "19",
+    title: "Ideal for group of students",
+    description: "All feautres of BASIC, Agentic AI automation, Priority call support, 24/7 support, Interview preparation, Outreach access, Admission updates, Career prospects, Counseling, Access to verified voting",
+    buttonText: "Get Started",
+    originalPrice: "49",
+    buttonLink: "/",
+  },
+  {
+    icon: "buildingOutline",
+    iconText: "Exceptional",
+    popular: false,
+    monthlyPrice: "39",
+    originalPrice: "99",
+    title: "Ideal for group of students",
+    description: "All feautres of PRO, Free counseling, Unlimited AI uses*, Unlimited outreach access*, Universitiy application tracking, NextAI access",
+    buttonText: "Get Started",
+    buttonLink: "/",
+  },
+];
 
 const companyLogo =
   "https://media.licdn.com/dms/image/v2/D560BAQFyPNfJhr3kZw/company-logo_100_100/B56Zs1v9oTKIAM-/0/1766133325738?e=1770854400&v=beta&t=c7QJ4ZxcL1Q7BexaTjs_hyBo8SWCDgPMQA0BUDl5WlQ";
@@ -107,6 +144,7 @@ export default function Home() {
           </Flex>
         </Flex>
       </Flex>
+      <Flex height={"80"}></Flex>
       <Column
         fillWidth
         fitHeight
@@ -115,7 +153,6 @@ export default function Home() {
         paddingY="xl"
         gap="m"
       >
-        <Flex height={"64"}></Flex>
         <Row gap="12">
           <AvatarGroup
             data-scaling="110"
@@ -134,7 +171,6 @@ export default function Home() {
               <Icon name="star" size="s"></Icon>
               <Icon name="star" size="s"></Icon>
               <Icon name="star" size="s"></Icon>
-             
               <Icon name="star" size="s"></Icon>{" "}
             </Row>
             <Row>
@@ -164,7 +200,6 @@ export default function Home() {
             variant="body-default-xl"
             onBackground="neutral-weak"
             align="center"
-            
           >
             If you’re looking for efficient, scalable ways to navigate the
             complex application process, you’re in the right place.
@@ -180,8 +215,37 @@ export default function Home() {
             </Button>
           </Row>
         </Column>
+      </Column>{" "}
+      <Flex height={"40"}></Flex>
+      <Column fillWidth horizontal="center" vertical="start" gap="24">
+        <Row>
+          <Text variant="display-default-s">
+            <span
+              style={{
+                fontFamily: geist.className,
+                fontStyle: "italic",
+                fontWeight: "normal",
+              }}
+            >
+              Great
+            </span>{" "}
+            pricing
+          </Text>
+        </Row>
+        <Row horizontal="even" fillWidth maxWidth={"m"}>
+          <Flex data-scaling="100">
+            <PricingCard {...pricingPlans[0]} />
+          </Flex>
+          <Flex data-scaling="110">
+            {" "}
+            <PricingCard {...pricingPlans[1]} />
+          </Flex>
+          <Flex data-scaling="100">
+            {" "}
+            <PricingCard {...pricingPlans[2]} />
+          </Flex>
+        </Row>
       </Column>
-
     </Column>
   );
 }
