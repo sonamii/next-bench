@@ -38,9 +38,9 @@ const fonts = {
 
 // default customization applied to the HTML in the main layout.tsx
 const style = {
-  theme: "system", // dark | light | system
+  theme: "light", // dark | light | system
   neutral: "gray", // sand | gray | slate
-  brand: "orange", // blue | indigo | violet | magenta | pink | red | orange | yellow | moss | green | emerald | aqua | cyan
+  brand: "blue", // blue | indigo | violet | magenta | pink | red | orange | yellow | moss | green | emerald | aqua | cyan
   accent: "indigo", // blue | indigo | violet | magenta | pink | red | orange | yellow | moss | green | emerald | aqua | cyan
   solid: "contrast", // color | contrast | inverse
   solidStyle: "flat", // flat | plastic
@@ -60,48 +60,7 @@ const dataStyle = {
   tick: {
     fill: "var(--neutral-on-background-weak)",
     fontSize: 11,
-    line: false,
-  },
-};
-
-const effects = {
-  mask: {
-    cursor: false,
-    x: 50,
-    y: 0,
-    radius: 100,
-  },
-  gradient: {
-    display: false,
-    x: 50,
-    y: 0,
-    width: 100,
-    height: 100,
-    tilt: 0,
-    colorStart: "brand-background-strong",
-    colorEnd: "static-transparent",
-    opacity: 50,
-  },
-  dots: {
-    display: true,
-    size: "2",
-    color: "brand-on-background-weak",
-    opacity: 40,
-  },
-  lines: {
-    display: false,
-    color: "neutral-alpha-weak",
-    opacity: 100,
-    thickness: 1,
-    angle: 45,
-    size: "8",
-  },
-  grid: {
-    display: false,
-    color: "neutral-alpha-weak",
-    opacity: 100,
-    width: "2",
-    height: "2",
+    line: false
   },
 };
 
@@ -109,7 +68,7 @@ const effects = {
 const meta = {
   home: {
     path: "/",
-    title: "Next Bench  ",
+    title: "Once UI for Next.js",
     description:
       "An open-source design system and component library for Next.js that emphasizes easy styling and accessibility in UI development.",
     image: "/images/og/home.jpg",
@@ -136,4 +95,4 @@ const social = {
   discord: "https://discord.com/invite/5EyAQ4eNdS",
 };
 
-export { baseURL, fonts, style, meta, schema, social, effects, dataStyle };
+export { baseURL, fonts, style, meta, schema, social, dataStyle };
