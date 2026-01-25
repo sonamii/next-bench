@@ -1,5 +1,5 @@
 "use client";
-
+import "@/resources/custom.css";
 import {
   Heading,
   Text,
@@ -19,6 +19,8 @@ import {
   Kbd,
   IconButton,
   SmartLink,
+  TypeFx,
+  CountdownFx,
 } from "@once-ui-system/core";
 import Image from "next/image";
 import { Geist, DM_Mono } from "next/font/google";
@@ -87,6 +89,7 @@ export default function Home() {
         padding="0"
         horizontal="between"
         vertical="center"
+        id="nav"
       >
         <Flex
           fitWidth
@@ -97,6 +100,7 @@ export default function Home() {
           gap="4"
           shadow="xs"
           radius="l"
+          id="nav1"
         >
           <Flex
             fitWidth
@@ -123,6 +127,16 @@ export default function Home() {
             <Button variant="tertiary" size="m">
               <Text variant="body-default-l">Agentic AI</Text>
             </Button>
+            <Button
+              variant="primary"
+              size="m"
+              suffixIcon="arrowRight"
+              id="hiddenButtonNav"
+            >
+              <Text variant="body-default-l">Get Access</Text>
+            </Button>
+                        <IconButton icon="sun" size="l" variant="secondary" id="hiddenButtonNav"/>
+
           </Flex>
         </Flex>
 
@@ -135,6 +149,7 @@ export default function Home() {
           gap="4"
           shadow="xs"
           radius="l"
+          id="nav2"
         >
           <Flex
             fitWidth
@@ -143,6 +158,7 @@ export default function Home() {
             vertical="center"
             gap="8"
           >
+            <IconButton icon="sun" size="l" variant="secondary" />
             <Button variant="secondary" size="m">
               <Text variant="body-default-l">Login</Text>
             </Button>
@@ -152,14 +168,15 @@ export default function Home() {
           </Flex>
         </Flex>
       </Flex>
-      <Flex height={"80"}></Flex>
+      <Flex height={"64"}></Flex>
       <Column
         fillWidth
         fitHeight
         maxWidth={"m"}
         horizontal="center"
         paddingY="xl"
-        gap="m"
+        gap="m"          style={{ flexWrap: "wrap" }}
+
       >
         <Row gap="12">
           <AvatarGroup
@@ -212,21 +229,29 @@ export default function Home() {
             Looking for an efficient and convenient way to navigate the
             application process? Look no further!
           </Text>
-          <Row gap="16" center fillWidth>
-            <Button variant="secondary" >
+          <Row gap="16" center fillWidth           style={{ flexWrap: "wrap" }}
+> 
+            <Button variant="secondary">
               {" "}
-              <Text variant="body-default-l" >
-                Try it now
-              </Text>
+              <Text variant="body-default-l">Try it now</Text>
             </Button>
             <Button suffixIcon="arrowTopRight">
               {" "}
               <Text variant="body-default-l">Search institutes</Text>
             </Button>
           </Row>
+          <Flex fillWidth center>
+            <Text variant="body-default-s">Launching soon! </Text>&nbsp;
+            <CountdownFx
+              onBackground="neutral-weak"
+              targetDate={new Date("July 1, 2026")}
+              variant="body-default-s"
+              format="DD:HH:MM:SS"
+            />
+          </Flex>
         </Column>
       </Column>{" "}
-      <Flex height={"40"}></Flex>
+      <Flex height={"32"}></Flex>
       <Column fillWidth horizontal="center" vertical="start" gap="24">
         <Row>
           <Text variant="display-default-s">
@@ -242,23 +267,30 @@ export default function Home() {
             pricing
           </Text>
         </Row>
-        <Row horizontal="even" fillWidth maxWidth={"m"}>
-          <Flex data-scaling="100">
+        <Row
+          horizontal="between"
+          fillWidth
+          maxWidth={"m"}
+          style={{ flexWrap: "wrap" }}
+          id="pricingGroup"
+          gap="16"
+        >
+          <Flex data-scaling="100" id="pricingCard">
             <PricingCard {...pricingPlans[0]} />
           </Flex>
-          <Flex data-scaling="110">
+          <Flex data-scaling="100" id="pricingCard">
             {" "}
             <PricingCard {...pricingPlans[1]} />
           </Flex>
-          <Flex data-scaling="100">
+          <Flex data-scaling="100" id="pricingCard">
             {" "}
             <PricingCard {...pricingPlans[2]} />
           </Flex>
         </Row>
       </Column>
       <Flex height={"80"}></Flex>
-      <Row fillWidth maxWidth={"m"} horizontal="between">
-        <Text variant="display-default-s">
+      <Row fillWidth maxWidth={"m"} horizontal="between" id="cta">
+        <Text variant="display-default-s" align="center">
           <b>
             Let your{" "}
             <span
@@ -270,7 +302,12 @@ export default function Home() {
             >
               <u>plans</u>
             </span>{" "}
-            shape the future.
+            <TypeFx
+              words={["shape the future.", "innovate with us."]}
+              speed={80}
+              hold={1000}
+              trigger="instant"
+            />
           </b>
         </Text>{" "}
         <Flex direction="row" gap="12">
@@ -284,7 +321,7 @@ export default function Home() {
       </Row>
       <Flex height={"80"}></Flex>
       <Column fillWidth maxWidth={"m"}>
-        <Row fillWidth padding="16" horizontal="between">
+        <Row fillWidth padding="16" horizontal="between" id="footer">
           <Flex fitWidth direction="column" gap="12">
             {" "}
             <Row vertical="center" gap="12">

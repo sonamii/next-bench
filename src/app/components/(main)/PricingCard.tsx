@@ -36,6 +36,7 @@ export function PricingCard({
         minHeight={32}
         gap="m"
       >
+        
         <Column
           background="neutral-alpha-weak"
           border="neutral-alpha-weak"
@@ -43,6 +44,7 @@ export function PricingCard({
           fillWidth
           padding="12"
           vertical="between"
+          minHeight={11}
         >
           <Row horizontal="between" marginBottom="l">
             <Flex center gap="4">

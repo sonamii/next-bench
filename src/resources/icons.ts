@@ -11,7 +11,7 @@ import {
   HiOutlineRocketLaunch,
   HiStar,
 } from "react-icons/hi2";
-import { IoBagOutline } from "react-icons/io5";
+import { IoBagOutline, IoMoonOutline, IoSunnyOutline } from "react-icons/io5";
 import { MdOutlineHouse, MdOutlineLuggage } from "react-icons/md";
 import { RxArrowTopRight } from "react-icons/rx";
 import { TbBrandFacebook, TbBrandGithub, TbBrandInstagram, TbBrandTwitter, TbMail, TbMailAi, TbX } from "react-icons/tb";
@@ -33,7 +33,9 @@ export const iconLibrary: Record<string, IconType> = {
   instagram:  TbBrandInstagram,
   github: TbBrandGithub,
   twitter: TbBrandTwitter,
-  mail: TbMail
+  mail: TbMail,
+  sun: IoSunnyOutline,
+  moon: IoMoonOutline
 
 };
 
