@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    domains: ['media.licdn.com'],
+    domains: ['randomuser.me', 'media.licdn.com'],
   },
   sassOptions: {
     compiler: "modern",
