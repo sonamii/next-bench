@@ -64,7 +64,7 @@ export function PricingCard({
                   {monthlyPrice === "Free" ? (
                     <b>{monthlyPrice}</b>
                   ) : (
-                    <b>${monthlyPrice}</b>
+                    <b>₹{monthlyPrice}</b>
                   )}
                   <Text onBackground="neutral-medium" variant="body-default-s">
                     /month
@@ -76,7 +76,7 @@ export function PricingCard({
                   onBackground="neutral-weak"
                   style={{ textDecoration: "line-through" }}
                 >
-                  <b>${originalPrice}</b>
+                  <b>₹{originalPrice}</b>
                 </Text>
               )}
             </Row>

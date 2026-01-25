@@ -2,6 +2,7 @@ import { IconType } from "react-icons";
 import { AiOutlineApartment } from "react-icons/ai";
 import { CgArrowTopRight } from "react-icons/cg";
 import { CiCircleCheck } from "react-icons/ci";
+import { FaFacebook, FaInstagram, FaTwitter } from "react-icons/fa";
 
 import {
   HiArrowRight,
@@ -13,6 +14,7 @@ import {
 import { IoBagOutline } from "react-icons/io5";
 import { MdOutlineHouse, MdOutlineLuggage } from "react-icons/md";
 import { RxArrowTopRight } from "react-icons/rx";
+import { TbBrandFacebook, TbBrandGithub, TbBrandInstagram, TbBrandTwitter, TbMail, TbMailAi, TbX } from "react-icons/tb";
 import { TfiArrowTopRight } from "react-icons/tfi";
 import { TiUserOutline } from "react-icons/ti";
 
@@ -26,7 +28,12 @@ export const iconLibrary: Record<string, IconType> = {
   userOutline: TiUserOutline,
   luggageOutline:MdOutlineLuggage,
   buildingOutline: AiOutlineApartment,
-  circleCheckOutline: CiCircleCheck
+  circleCheckOutline: CiCircleCheck,
+  facebook: TbBrandFacebook,
+  instagram:  TbBrandInstagram,
+  github: TbBrandGithub,
+  twitter: TbBrandTwitter,
+  mail: TbMail
 
 };
 
