@@ -1,10 +1,11 @@
 import { IconType } from "react-icons";
 import { AiOutlineApartment } from "react-icons/ai";
-import { BiSearch, BiSort } from "react-icons/bi";
+import { BiCross, BiSearch, BiSort, BiX } from "react-icons/bi";
 import { BsGoogle } from "react-icons/bs";
 import { CgArrowTopRight } from "react-icons/cg";
 import { CiCircleCheck, CiStethoscope } from "react-icons/ci";
 import { FaFacebook, FaInstagram, FaTwitter } from "react-icons/fa";
+import { HiX } from "react-icons/hi";
 
 import {
   HiArrowLeft,
@@ -48,7 +49,8 @@ export const iconLibrary: Record<string, IconType> = {
   sort: MdSort,
   earth: IoEarthOutline,
   stethoscope:CiStethoscope,
-  notepad: PiNotepad
+  notepad: PiNotepad,
+  cross: HiX
 
 
 };

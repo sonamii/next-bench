@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@once-ui-system/core": "latest",
+    "@supabase/supabase-js": "^2.91.1",
     "@tailwindcss/cli": "^4.1.18",
     "@tailwindcss/postcss": "^4.1.18",
     "classnames": "^2.5.1",

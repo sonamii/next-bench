@@ -39,7 +39,7 @@ export function SearchCard({
       radius="l"
       shadow="xs"
       fitHeight
-      minWidth={28}
+     fillWidth
       maxWidth={28}
       gap="xs"
     >
@@ -70,28 +70,28 @@ export function SearchCard({
             ))}
           </Row>
         </Row>
-        {/* <Image
+         {/* <Image
           alt="logo"
-          width={50}
-          height={50}
+          width={30}
+          height={30}
           src={institutionLogo}
           style={{borderRadius:"1000px"}}
-        /> */}
+        />  */}
         <Flex horizontal="between" vertical="end">
           <Text variant="display-strong-xs" onBackground="neutral-strong">
             <b>
               {institutionName.length > 11 ? institutionName.slice(0, 11) + "..." : institutionName}
             </b>{" "}
             <Text onBackground="neutral-medium" variant="body-default-s">
-              /{institutionLocation}
+              /{institutionLocation.length > 20 ? institutionLocation.slice(0, 20) + "..." : institutionLocation}
             </Text>
           </Text>
           <IconButton icon="arrowRight" size="l"></IconButton>
         </Flex>
       </Column>
-      <Row vertical="center" horizontal="between" fillWidth>
+      <Row vertical="center" horizontal="between" fillWidth  paddingLeft="2">
         <Text variant="body-default-m" onBackground="neutral-medium">
-          {institutionDescription}
+          {institutionDescription.length >30 ? institutionDescription.slice(0, 30) + "..." : institutionDescription}
         </Text>
         <Row>
           <Row>

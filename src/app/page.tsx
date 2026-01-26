@@ -98,16 +98,17 @@ export default function Home() {
       vertical="start"
       horizontal="center"
       padding="m"
-      style={{
-        minHeight: "100vh",
+      // style={{
+      //   minHeight: "100vh",
 
-        backgroundColor:
-          theme === "dark"
-            ? "#111111"
-            : theme === "light"
-              ? "#ffffff"
-              : "#F9F9F9",
-      }}
+      //   backgroundColor:
+      //     theme === "dark"
+      //       ? "#111111"
+      //       : theme === "light"
+      //         ? "#F9F9F9"
+      //         : "#F9F9F9",
+      // }}
+      onBackground="neutral-strong"
     >
       <Flex
         fillWidth
@@ -142,7 +143,7 @@ export default function Home() {
               width={40}
               height={40}
               style={{
-                filter: theme === "dark" ? "invert(1)" : "invert(0)",
+                filter: theme === "dark" ? "invert(0)" : "invert(1)",
                 borderRadius: "30%",
               }}
             ></Image>
@@ -166,13 +167,16 @@ export default function Home() {
             >
               <Text variant="body-default-l">Get Access</Text>
             </Button>
-            <IconButton
+            {
+              /* <IconButton
               icon={theme === "dark" ? "sun" : "moon"}
               size="l"
               variant="secondary"
               id="hiddenButtonNav"
               onClick={toggleTheme}
-            />
+            /> */
+              <ThemeSwitcher id="hiddenButtonNav" />
+            }
           </Flex>
         </Flex>
 
@@ -194,12 +198,13 @@ export default function Home() {
             vertical="center"
             gap="8"
           >
-            <IconButton
+            {/* <IconButton
               icon={theme === "dark" ? "sun" : "moon"}
               size="l"
               variant="secondary"
               onClick={toggleTheme}
-            />
+            /> */}
+            <ThemeSwitcher />
             <Button variant="secondary" size="m">
               <Text variant="body-default-l">Login</Text>
             </Button>

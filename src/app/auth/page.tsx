@@ -29,12 +29,31 @@ import {
 } from "@once-ui-system/core";
 import Image from "next/image";
 import { companyLogo } from "@/resources/next-bench.config";
+import supabase from "../supabase/client";
 
 export default function Auth() {
   const theme = localStorage.getItem("data-theme") as
     | "light"
     | "dark"
     | "system";
+
+
+  const handleGoogleSignIn = async () => {
+  try {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: `${window.location.origin}/auth/callback`
+      }
+    });
+    if (error) throw error;
+    // The user will be redirected to the callback page by Supabase
+  } catch (error) {
+    console.error("Error signing in with Google:", error);
+  }
+};
+
+      
   return (
     <Column
       fillWidth
@@ -89,7 +108,7 @@ export default function Auth() {
             login or create your next bench account
           </Text>
         </Column>
-        <Button variant="primary" size="l" fillWidth data-border="conservative">
+        <Button variant="primary" size="l" fillWidth data-border="conservative" onClick={ ()=> handleGoogleSignIn()}>
           <Row center gap="8">
             <Icon name="google" size="s" />
             <Text variant="body-default-l">Continue with Google</Text>
@@ -97,8 +116,8 @@ export default function Auth() {
         </Button>
         <Text variant="body-default-m" onBackground="neutral-weak">
           By clicking continue, you agree to our{" "}
-          <SmartLink href="#">Terms of Service</SmartLink> and{" "}
-          <SmartLink href="#">Privacy Policy</SmartLink>.
+          <SmartLink href="company/terms-of-service">Terms of Service</SmartLink> and{" "}
+          <SmartLink href="company/privacy-policy">Privacy Policy</SmartLink>.
         </Text>
       </Column>
     </Column>
