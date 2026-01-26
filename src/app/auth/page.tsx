@@ -41,7 +41,7 @@ export default function Auth() {
       fillHeight
       vertical="start"
       horizontal="center"
-      padding="16"
+      padding="24"
       style={{ minHeight: "100svh", overflow: "hidden" }}
     >
       <Particle
@@ -75,7 +75,7 @@ export default function Auth() {
             alt=""
             width={40}
             height={40}
-            style={{ filter: theme === "dark" ? "invert(0)" : "invert(1)", borderRadius: "30%" }}
+            style={{ filter: theme === "dark" ? "invert(1)" : "invert(0)", borderRadius: "30%" }}
           ></Image>
           <Text variant="body-default-xl" align="center">
             {" "}

@@ -203,8 +203,12 @@ export default function Home() {
             <Button variant="secondary" size="m">
               <Text variant="body-default-l">Login</Text>
             </Button>
-            <Button variant="primary" size="m" suffixIcon="arrowRight"               href="/auth"
->
+            <Button
+              variant="primary"
+              size="m"
+              suffixIcon="arrowRight"
+              href="/auth"
+            >
               <Text variant="body-default-l">Get Access</Text>
             </Button>
           </Flex>

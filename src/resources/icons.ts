@@ -1,8 +1,9 @@
 import { IconType } from "react-icons";
 import { AiOutlineApartment } from "react-icons/ai";
+import { BiSearch, BiSort } from "react-icons/bi";
 import { BsGoogle } from "react-icons/bs";
 import { CgArrowTopRight } from "react-icons/cg";
-import { CiCircleCheck } from "react-icons/ci";
+import { CiCircleCheck, CiStethoscope } from "react-icons/ci";
 import { FaFacebook, FaInstagram, FaTwitter } from "react-icons/fa";
 
 import {
@@ -11,10 +12,12 @@ import {
   HiArrowTopRightOnSquare,
   HiChevronDown,
   HiOutlineRocketLaunch,
+  HiOutlineStar,
   HiStar,
 } from "react-icons/hi2";
-import { IoBagOutline, IoMoonOutline, IoSunnyOutline } from "react-icons/io5";
-import { MdOutlineHouse, MdOutlineLuggage } from "react-icons/md";
+import { IoBagOutline, IoEarthOutline, IoMoonOutline, IoSunnyOutline } from "react-icons/io5";
+import { MdOutlineHouse, MdOutlineLuggage, MdSort } from "react-icons/md";
+import { PiNotepad } from "react-icons/pi";
 import { RxArrowTopRight } from "react-icons/rx";
 import { TbBrandFacebook, TbBrandGithub, TbBrandInstagram, TbBrandTwitter, TbMail, TbMailAi, TbX } from "react-icons/tb";
 import { TfiArrowTopRight, TfiGoogle } from "react-icons/tfi";
@@ -27,6 +30,7 @@ export const iconLibrary: Record<string, IconType> = {
   arrowLeft: HiArrowLeft,
   chevronDown: HiChevronDown,
   star:HiStar,
+  starOutline:HiOutlineStar,
   arrowTopRight: RxArrowTopRight,
   userOutline: TiUserOutline,
   luggageOutline:MdOutlineLuggage,
@@ -39,7 +43,12 @@ export const iconLibrary: Record<string, IconType> = {
   mail: TbMail,
   sun: IoSunnyOutline,
   moon: IoMoonOutline,
-  google:  BsGoogle
+  google:  BsGoogle,
+  search: BiSearch,
+  sort: MdSort,
+  earth: IoEarthOutline,
+  stethoscope:CiStethoscope,
+  notepad: PiNotepad
 
 
 };

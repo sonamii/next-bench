@@ -27,7 +27,7 @@ export function Footer() {
                 alt=""
                 width={40}
                 height={40}
-            style={{ filter: theme === "dark" ? "invert(0)" : "invert(1)", borderRadius: "30%" }}
+            style={{ filter: theme === "dark" ? "invert(1)" : "invert(0)", borderRadius: "30%" }}
               ></Image>
               <Text variant="body-default-xl" align="center">
                 {" "}

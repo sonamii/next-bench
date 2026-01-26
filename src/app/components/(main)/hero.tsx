@@ -80,7 +80,7 @@ export function HeroSection() {
             {" "}
             <Text variant="body-default-l">Try it now</Text>
           </Button>
-          <Button suffixIcon="arrowTopRight">
+          <Button suffixIcon="arrowTopRight"  href="/search">
             {" "}
             <Text variant="body-default-l">Search institutes</Text>
           </Button>
