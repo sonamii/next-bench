@@ -1,0 +1,27 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1769515118689,
+      "tag": "0000_classy_captain_universe",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1769515401175,
+      "tag": "0001_purple_mach_iv",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1769515969706,
+      "tag": "0002_handy_ender_wiggin",
+      "breakpoints": true
+    }
+  ]
+}

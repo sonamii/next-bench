@@ -40,7 +40,9 @@ export default function Callback() {
 
   useEffect(() => {
     const checkSession = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
       if (session && session.user) {
         router.replace("/me");
       }
@@ -48,10 +50,10 @@ export default function Callback() {
     checkSession();
   }, [router]);
 
+
   return (
     <Flex fillWidth fillHeight style={{ minHeight: "100vh" }} center>
       <Spinner size="l" />
     </Flex>
   );
 }
-

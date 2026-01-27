@@ -69,7 +69,7 @@ export default function Auth() {
       } = await supabase.auth.getSession();
       if (session && session.user) {
         setIsSession(true);
-        router.replace("/me");
+        router.replace("/auth/callback");
       } else {
         setIsSession(false);
       }
