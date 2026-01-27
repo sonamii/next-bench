@@ -4,10 +4,12 @@ import {companyLogo} from "@/resources/next-bench.config";
 import "@/resources/custom.css";
 import supabase from "@/app/supabase/client";
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 export function Navbar() {
 
   const [isSession, setIsSession] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     const getSession = async () => {
@@ -20,6 +22,18 @@ export function Navbar() {
     };
     getSession();
   }, []);
+
+
+  const handleLoginOrLogout = async () => {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (session && session.user) {
+      await supabase.auth.signOut();
+      setIsSession(false);
+      router.push("/");
+    } else {
+     router.push("/auth");
+    }
+  };
 
   return (
     <Flex
@@ -51,10 +65,12 @@ export function Navbar() {
         >
           <Image
             src={companyLogo}
+            onClick={() => window.location.href="/"}
             alt=""
             width={40}
             height={40}
-            style={{  borderRadius: "30%" }}
+            style={{  borderRadius: "30%",cursor:"pointer" }}
+            
           ></Image>
           <Line vert height={1.5}></Line>
 
@@ -70,7 +86,7 @@ export function Navbar() {
           <Button
             variant="primary"
             size="m"
-            suffixIcon={isSession ? "dashboard" : "arrowRight"}
+            suffixIcon={isSession ? "" : "arrowRight"}
             id="hiddenButtonNav"
             href={isSession ? "/me" : "/auth"}
           >
@@ -112,13 +128,13 @@ export function Navbar() {
             onClick={toggleTheme}
           /> */}
           <ThemeSwitcher />
-          <Button variant="secondary" size="m">
-            <Text variant="body-default-l">Login</Text>
+          <Button variant="secondary" size="m"  onClick={()  => handleLoginOrLogout()}>
+            <Text variant="body-default-l">{isSession ? "Logout" : "Login"}</Text>
           </Button>
             <Button
             variant="primary"
             size="m"
-            suffixIcon={isSession ? "dashboard" : "arrowRight"}
+            suffixIcon={isSession ? "" : "arrowRight"}
             href={isSession ? "/me" : "/auth"}
           >
             <Text variant="body-default-l">{isSession ? "Dashboard" : "Get Access"}</Text>
