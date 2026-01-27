@@ -1,6 +1,6 @@
 import { IconType } from "react-icons";
 import { AiOutlineApartment } from "react-icons/ai";
-import { BiCross, BiSearch, BiSort, BiX } from "react-icons/bi";
+import { BiCross, BiPlus, BiSearch, BiSort, BiX } from "react-icons/bi";
 import { BsGoogle } from "react-icons/bs";
 import { CgArrowTopRight } from "react-icons/cg";
 import { CiCircleCheck, CiStethoscope } from "react-icons/ci";
@@ -17,7 +17,7 @@ import {
   HiStar,
 } from "react-icons/hi2";
 import { IoBagOutline, IoEarthOutline, IoMoonOutline, IoSunnyOutline } from "react-icons/io5";
-import { MdDashboard, MdOutlineDashboard, MdOutlineEmail, MdOutlineHouse, MdOutlineLocationCity, MdOutlineLuggage, MdSort } from "react-icons/md";
+import { MdDashboard, MdOutlineDashboard, MdOutlineEmail, MdOutlineHouse, MdOutlineLocationCity, MdOutlineLuggage, MdOutlineSchool, MdSort } from "react-icons/md";
 import { PiNotepad } from "react-icons/pi";
 import { RxArrowTopRight } from "react-icons/rx";
 import { TbBrandFacebook, TbBrandGithub, TbBrandInstagram, TbBrandTwitter, TbMail, TbMailAi, TbX } from "react-icons/tb";
@@ -54,7 +54,9 @@ export const iconLibrary: Record<string, IconType> = {
   dashboard: MdOutlineDashboard,
   at: MdOutlineEmail,
   location: HiOutlineLocationMarker,
-  phone: HiOutlinePhone
+  phone: HiOutlinePhone,
+  plus: BiPlus,
+  school: MdOutlineSchool
 
 
 };
