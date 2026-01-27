@@ -33,6 +33,7 @@ import { CallToAction } from "./components/(main)/cta";
 import { Footer } from "./components/(global)/footer";
 import { PricingSection } from "./components/(main)/pricing";
 import { HeroSection } from "./components/(main)/hero";
+import { Navbar } from "./components/(global)/navbar";
 const lenis = new Lenis({
   autoRaf: true,
 });
@@ -110,115 +111,7 @@ export default function Home() {
       // }}
       onBackground="neutral-strong"
     >
-      <Flex
-        fillWidth
-        fitHeight
-        maxWidth={"m"}
-        padding="0"
-        horizontal="between"
-        vertical="center"
-        id="nav"
-      >
-        <Flex
-          fitWidth
-          fitHeight
-          padding="8"
-          horizontal="center"
-          vertical="center"
-          gap="4"
-          shadow="xs"
-          radius="l"
-          id="nav1"
-        >
-          <Flex
-            fitWidth
-            fitHeight
-            horizontal="center"
-            vertical="center"
-            gap="8"
-          >
-            <Image
-              src={companyLogo}
-              alt=""
-              width={40}
-              height={40}
-              style={{
-                filter: theme === "dark" ? "invert(0)" : "invert(1)",
-                borderRadius: "30%",
-              }}
-            ></Image>
-            <Line vert height={1.5}></Line>
-
-            <Button variant="tertiary" size="m" suffixIcon="chevronDown">
-              <Text variant="body-default-l">Product</Text>
-            </Button>
-            <Button variant="tertiary" size="m" suffixIcon="chevronDown">
-              <Text variant="body-default-l">Resources</Text>
-            </Button>
-            <Button variant="tertiary" size="m">
-              <Text variant="body-default-l">Agentic AI</Text>
-            </Button>
-            <Button
-              variant="primary"
-              size="m"
-              suffixIcon="arrowRight"
-              id="hiddenButtonNav"
-              href="/auth"
-            >
-              <Text variant="body-default-l">Get Access</Text>
-            </Button>
-            {
-              /* <IconButton
-              icon={theme === "dark" ? "sun" : "moon"}
-              size="l"
-              variant="secondary"
-              id="hiddenButtonNav"
-              onClick={toggleTheme}
-            /> */
-              <ThemeSwitcher id="hiddenButtonNav" />
-            }
-          </Flex>
-        </Flex>
-
-        <Flex
-          fitWidth
-          fitHeight
-          padding="8"
-          horizontal="center"
-          vertical="center"
-          gap="4"
-          shadow="xs"
-          radius="l"
-          id="nav2"
-        >
-          <Flex
-            fitWidth
-            fitHeight
-            horizontal="center"
-            vertical="center"
-            gap="8"
-          >
-            {/* <IconButton
-              icon={theme === "dark" ? "sun" : "moon"}
-              size="l"
-              variant="secondary"
-              onClick={toggleTheme}
-            /> */}
-            <ThemeSwitcher />
-            <Button variant="secondary" size="m">
-              <Text variant="body-default-l">Login</Text>
-            </Button>
-            <Button
-              variant="primary"
-              size="m"
-              suffixIcon="arrowRight"
-              href="/auth"
-            >
-              <Text variant="body-default-l">Get Access</Text>
-            </Button>
-          </Flex>
-        </Flex>
-      </Flex>
+   <Navbar/>
       <Flex height={"64"}></Flex>
       <HeroSection />
       <Flex height={"32"}></Flex>

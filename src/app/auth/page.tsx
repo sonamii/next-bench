@@ -26,34 +26,59 @@ import {
   ThemeSwitcher,
   MatrixFx,
   Particle,
+  Spinner,
 } from "@once-ui-system/core";
 import Image from "next/image";
 import { companyLogo } from "@/resources/next-bench.config";
 import supabase from "../supabase/client";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function Auth() {
-  const theme = localStorage.getItem("data-theme") as
-    | "light"
-    | "dark"
-    | "system";
-
+  const [theme, setTheme] = useState<"light" | "dark" | "system" | null>(
+    typeof window !== "undefined"
+      ? localStorage.getItem("data-theme") as
+        | "light"
+        | "dark"
+        | "system"
+        | null
+      : null
+  );
 
   const handleGoogleSignIn = async () => {
-  try {
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: {
-        redirectTo: `${window.location.origin}/auth/callback`
-      }
-    });
-    if (error) throw error;
-    // The user will be redirected to the callback page by Supabase
-  } catch (error) {
-    console.error("Error signing in with Google:", error);
-  }
-};
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: {
+          redirectTo: `${window.location.origin}/auth/callback`,
+        },
+      });
+      if (error) throw error;
+      // The user will be redirected to the callback page by Supabase
+    } catch (error) {
+      console.error("Error signing in with Google:", error);
+    }
+  };
 
-      
+  const [isSession, setIsSession] = useState(false);
+
+  useEffect(() => {
+    const getSession = async () => {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+      if (session && session.user) {
+        setIsSession(true);
+        router.replace("/me");
+      } else {
+        setIsSession(false);
+      }
+    };
+    getSession();
+  }, []);
+
+  const router = useRouter();
+
   return (
     <Column
       fillWidth
@@ -94,7 +119,10 @@ export default function Auth() {
             alt=""
             width={40}
             height={40}
-            style={{ filter: theme === "dark" ? "invert(1)" : "invert(0)", borderRadius: "30%" }}
+            style={{
+              filter: theme === "dark" ? "invert(1)" : "invert(0)",
+              borderRadius: "30%",
+            }}
           ></Image>
           <Text variant="body-default-xl" align="center">
             {" "}
@@ -108,15 +136,35 @@ export default function Auth() {
             login or create your next bench account
           </Text>
         </Column>
-        <Button variant="primary" size="l" fillWidth data-border="conservative" onClick={ ()=> handleGoogleSignIn()}>
+        <Button
+          variant="primary"
+          size="l"
+          fillWidth
+          data-border="conservative"
+          onClick={() => handleGoogleSignIn()}
+        >
           <Row center gap="8">
-            <Icon name="google" size="s" />
-            <Text variant="body-default-l">Continue with Google</Text>
+            {isSession ? (
+              <Row center gap="8">
+                {" "}
+                <Spinner size="s" />
+                <Text variant="body-default-l">Brewing thing up for you...</Text>
+              </Row>
+            ) : (
+              <Row center gap="8">
+                {" "}
+                <Icon name="google" size="s" />
+                <Text variant="body-default-l">Continue with Google</Text>
+              </Row>
+            )}
           </Row>
         </Button>
         <Text variant="body-default-m" onBackground="neutral-weak">
           By clicking continue, you agree to our{" "}
-          <SmartLink href="company/terms-of-service">Terms of Service</SmartLink> and{" "}
+          <SmartLink href="company/terms-of-service">
+            Terms of Service
+          </SmartLink>{" "}
+          and{" "}
           <SmartLink href="company/privacy-policy">Privacy Policy</SmartLink>.
         </Text>
       </Column>

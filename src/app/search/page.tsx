@@ -20,6 +20,8 @@ import Image from "next/image";
 import { Geist, DM_Mono } from "next/font/google";
 import React, { useState } from "react";
 import { SearchCard } from "../components/(main)/searchCard";
+import { Navbar } from "../components/(global)/navbar";
+import { Footer } from "../components/(global)/footer";
 
 const institutions = [
   {
@@ -205,120 +207,7 @@ export default function Home() {
       // }}
       onBackground="neutral-strong"
     >
-      <Flex
-        fillWidth
-        fitHeight
-        maxWidth={"m"}
-        padding="0"
-        horizontal="between"
-        vertical="center"
-        id="nav"
-      >
-        <Flex
-          fitWidth
-          fitHeight
-          padding="8"
-          horizontal="center"
-          vertical="center"
-          gap="4"
-          shadow="xs"
-          radius="l"
-          id="nav1"
-        >
-          <Flex
-            fitWidth
-            fitHeight
-            horizontal="center"
-            vertical="center"
-            gap="8"
-          >
-            <Image
-              src={companyLogo}
-              alt=""
-              width={40}
-              height={40}
-              style={{
-                filter: theme === "dark" ? "invert(0)" : "invert(1)",
-                borderRadius: "30%",
-              }}
-            ></Image>
-            <Line vert height={1.5}></Line>
-
-            <Input
-              id="input-1"
-              placeholder="Search"
-              height="s"
-              hasPrefix={
-                <Icon
-                  marginLeft="4"
-                  onBackground="neutral-weak"
-                  name="search"
-                  size="xs"
-                />
-              }
-              characterCount
-              maxLength={100}
-            />
-            <Button
-              variant="primary"
-              size="m"
-              suffixIcon="arrowRight"
-              id="hiddenButtonNav"
-              href="/auth"
-            >
-              <Text variant="body-default-l">Get Access</Text>
-            </Button>
-            {/* <IconButton
-              icon={theme === "dark" ? "sun" : "moon"}
-              size="l"
-              variant="secondary"
-              id="hiddenButtonNav"
-              onClick={toggleTheme}
-            /> */}
-
-            <ThemeSwitcher id="hiddenButtonNav" />
-          </Flex>
-        </Flex>
-
-        <Flex
-          fitWidth
-          fitHeight
-          padding="8"
-          horizontal="center"
-          vertical="center"
-          gap="4"
-          shadow="xs"
-          radius="l"
-          id="nav2"
-        >
-          <Flex
-            fitWidth
-            fitHeight
-            horizontal="center"
-            vertical="center"
-            gap="8"
-          >
-            {/* <IconButton
-              icon={theme === "dark" ? "sun" : "moon"}
-              size="l"
-              variant="secondary"
-              onClick={toggleTheme}
-            /> */}
-            <ThemeSwitcher />
-            <Button variant="secondary" size="m">
-              <Text variant="body-default-l">Login</Text>
-            </Button>
-            <Button
-              variant="primary"
-              size="m"
-              suffixIcon="arrowRight"
-              href="/auth"
-            >
-              <Text variant="body-default-l">Get Access</Text>
-            </Button>
-          </Flex>
-        </Flex>
-      </Flex>
+ <Navbar/>
       <Flex height={"64"}></Flex>
 
       <Column
@@ -449,6 +338,8 @@ export default function Home() {
       <Button size="m" variant="secondary">
         <Text variant="body-default-l">Load More</Text>
       </Button>
+      <Flex height={4}/>
+      <Footer/>
     </Column>
   );
 }

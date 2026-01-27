@@ -5,7 +5,7 @@ import { BsGoogle } from "react-icons/bs";
 import { CgArrowTopRight } from "react-icons/cg";
 import { CiCircleCheck, CiStethoscope } from "react-icons/ci";
 import { FaFacebook, FaInstagram, FaTwitter } from "react-icons/fa";
-import { HiX } from "react-icons/hi";
+import { HiOutlineLocationMarker, HiOutlinePhone, HiX } from "react-icons/hi";
 
 import {
   HiArrowLeft,
@@ -17,7 +17,7 @@ import {
   HiStar,
 } from "react-icons/hi2";
 import { IoBagOutline, IoEarthOutline, IoMoonOutline, IoSunnyOutline } from "react-icons/io5";
-import { MdOutlineHouse, MdOutlineLuggage, MdSort } from "react-icons/md";
+import { MdDashboard, MdOutlineDashboard, MdOutlineEmail, MdOutlineHouse, MdOutlineLocationCity, MdOutlineLuggage, MdSort } from "react-icons/md";
 import { PiNotepad } from "react-icons/pi";
 import { RxArrowTopRight } from "react-icons/rx";
 import { TbBrandFacebook, TbBrandGithub, TbBrandInstagram, TbBrandTwitter, TbMail, TbMailAi, TbX } from "react-icons/tb";
@@ -50,7 +50,11 @@ export const iconLibrary: Record<string, IconType> = {
   earth: IoEarthOutline,
   stethoscope:CiStethoscope,
   notepad: PiNotepad,
-  cross: HiX
+  cross: HiX,
+  dashboard: MdOutlineDashboard,
+  at: MdOutlineEmail,
+  location: HiOutlineLocationMarker,
+  phone: HiOutlinePhone
 
 
 };
