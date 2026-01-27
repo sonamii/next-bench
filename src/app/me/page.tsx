@@ -20,7 +20,8 @@ import {
   NumberInput,
   Select,
   Textarea,
-  useToast
+  useToast,
+  Spinner
 } from "@once-ui-system/core";
 import { Geist, DM_Mono } from "next/font/google";
 import React, { useState } from "react";
@@ -59,6 +60,7 @@ export default function Home() {
   const router = useRouter();
 const [user_id,setUser_Id] = useState("")
 const {addToast} = useToast()
+const[isUserDataAvailable,setIsUserDataAvailable]= useState(false)
 
 
   useEffect(() => {
@@ -96,7 +98,7 @@ const {addToast} = useToast()
           university2: (data?.universities?.[1] || "") as string,
           university3: (data?.universities?.[2] || "") as string,
         });
-        console.log(data.phone)
+        setIsUserDataAvailable(true)
       }
       if (error) {
         console.error("Error fetching user data:", error);
@@ -219,11 +221,13 @@ const {addToast} = useToast()
                     onChange={(e) => setUser({ ...user, name: e.target.value })}
                     maxLength={50}
                     hasPrefix={
-                      <Icon
+                      isUserDataAvailable? <Icon
                         name="userOutline"
                         size="xs"
                         onBackground="neutral-weak"
-                      />
+                      />:  <Spinner/>
+                     
+                     
                     }
                     height="m"
                     spellCheck={false}
@@ -256,9 +260,9 @@ const {addToast} = useToast()
                     onChange={(e) =>
                       setUser({ ...user, email: e.target.value })
                     }
-                    hasPrefix={
+                    hasPrefix={isUserDataAvailable?
                       <Icon name="at" size="xs" onBackground="neutral-weak" />
-                    }
+                    : <Spinner/>}
                     maxLength={100}
                     height="m"
                     spellCheck={false}
@@ -289,12 +293,12 @@ const {addToast} = useToast()
                     <Input
                       id="phone"
                       placeholder="Enter your phone number"
-                      hasPrefix={
+                      hasPrefix={isUserDataAvailable?
                         <Icon
                           name="phone"
                           size="xs"
                           onBackground="neutral-weak"
-                        />
+                        />: <Spinner/>
                       }
                       characterCount
                       value={Number(user.phone)}
@@ -330,12 +334,12 @@ const {addToast} = useToast()
                     maxLength={50}
                     value={user.city}
                     onChange={(e) => setUser({ ...user, city: e.target.value })}
-                    hasPrefix={
+                    hasPrefix={isUserDataAvailable?
                       <Icon
                         name="location"
                         size="xs"
                         onBackground="neutral-weak"
-                      />
+                      />: <Spinner/>
                     }
                     height="m"
                     spellCheck={false}
@@ -367,12 +371,12 @@ const {addToast} = useToast()
                     onChange={(e) =>
                       setUser({ ...user, state: e.target.value })
                     }
-                    hasPrefix={
+                    hasPrefix={isUserDataAvailable?
                       <Icon
                         name="location"
                         size="xs"
                         onBackground="neutral-weak"
-                      />
+                      />: <Spinner/>
                     }
                     characterCount
                     maxLength={50}
@@ -405,12 +409,12 @@ const {addToast} = useToast()
                     onChange={(e) =>
                       setUser({ ...user, country: e.target.value })
                     }
-                    hasPrefix={
+                    hasPrefix={isUserDataAvailable?
                       <Icon
                         name="location"
                         size="xs"
                         onBackground="neutral-weak"
-                      />
+                      />: <Spinner/>
                     }
                     characterCount
                     maxLength={50}
@@ -467,12 +471,12 @@ const {addToast} = useToast()
                       onChange={(e) =>
                         setUser({ ...user, university1: e.target.value })
                       }
-                      hasPrefix={
-                        <Icon
+                      hasPrefix={ isUserDataAvailable?
+                        <Icon 
                           name="school"
                           size="xs"
                           onBackground="neutral-weak"
-                        />
+                        />: <Spinner/>
                       }
                       maxLength={100}
                       radius="top"
@@ -488,12 +492,12 @@ const {addToast} = useToast()
                         setUser({ ...user, university2: e.target.value })
                       }
                       radius="none"
-                      hasPrefix={
+                      hasPrefix={isUserDataAvailable?
                         <Icon
                           name="school"
                           size="xs"
                           onBackground="neutral-weak"
-                        />
+                        />: <Spinner/>
                       }
                       maxLength={100}
                       height="m"
@@ -508,12 +512,12 @@ const {addToast} = useToast()
                       onChange={(e) =>
                         setUser({ ...user, university3: e.target.value })
                       }
-                      hasPrefix={
+                      hasPrefix={isUserDataAvailable?
                         <Icon
                           name="school"
                           size="xs"
                           onBackground="neutral-weak"
-                        />
+                        />: <Spinner/>
                       }
                       maxLength={100}
                       height="m"
