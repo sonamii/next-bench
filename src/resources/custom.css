@@ -95,7 +95,7 @@
 #hiddenButtonNav {
   display: none;
 }
-@media (max-width: 800px) {
+@media (max-width: 858px) {
   #nav2 {
     display: none;
   }
@@ -108,6 +108,10 @@
   #nav {
     align-items: center;
     justify-content: center;
+  }
+
+  #headingNavMe{
+    display:none;
   }
 }
 
@@ -128,6 +132,20 @@
     flex-direction: column;
     gap: 20;
   }
+
+  #containerMe{
+    flex-direction: column !important;
+    display: flex !important;
+    gap: 16px;
+  }
+  
+  #paddingRightContainer{
+    padding-right: none !important;
+  }
+}
+
+#paddingRightContainer{
+  padding-right: 24px !important;
 }
 
 @media (max-width: 900px) {

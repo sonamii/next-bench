@@ -20,6 +20,7 @@ import {
   NumberInput,
   Select,
   Textarea,
+  useToast
 } from "@once-ui-system/core";
 import { Geist, DM_Mono } from "next/font/google";
 import React, { useState } from "react";
@@ -56,30 +57,53 @@ export default function Home() {
     university3: "",
   });
   const router = useRouter();
+const [user_id,setUser_Id] = useState("")
+const {addToast} = useToast()
+
 
   useEffect(() => {
-    const fetchData = async () => {
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
+    const fetchUserId = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
       if (session && session.user) {
-        const { user } = session;
+        setUser_Id(session.user.id);
+        
+      }
+    };
+    fetchUserId();
+  }, []);
+
+
+
+
+  
+
+  useEffect(() => {
+    if (!user_id) return;
+    const fetchData = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session || !session.user) return;
+      const { data, error } = await supabase.from("profiles").select("*").eq("id", session.user.id).single();
+      if (data) {
         setUser({
-          name: (user?.user_metadata?.full_name || "") as string,
-          email: (user?.email || "") as string,
-          phone: (user?.user_metadata?.phone || "") as number,
-          city: (user?.user_metadata?.city || "") as string,
-          state: (user?.user_metadata?.state || "") as string,
-          country: (user?.user_metadata?.country || "") as string,
-          goal: "",
-          university1: (user?.user_metadata?.university1 || "") as string,
-          university2: (user?.user_metadata?.university2 || "") as string,
-          university3: (user?.user_metadata?.university3 || "") as string,
+          name: (data?.name ||"") as string,
+          email: (data?.email || session.user.email || "") as string,
+          phone: Number(data?.phone),
+          city: (data?.city || session.user.user_metadata?.city || "") as string,
+          state: (data?.state || session.user.user_metadata?.state || "") as string,
+          country: (data?.country || session.user.user_metadata?.country || "") as string,
+          goal: data?.goal || "",
+          university1: (data?.universities?.[0] || "") as string,
+          university2: (data?.universities?.[1] || "") as string,
+          university3: (data?.universities?.[2] || "") as string,
         });
+        console.log(data.phone)
+      }
+      if (error) {
+        console.error("Error fetching user data:", error);
       }
     };
     fetchData();
-  }, []);
+  }, [user_id]);
 
   useEffect(() => {
     const checkSession = async () => {
@@ -90,6 +114,59 @@ export default function Home() {
     };
     checkSession();
   }, [router]);
+
+
+  const savePersonalDetailsToSupabase = async () => {
+    const { data, error } = await supabase.from("profiles").upsert([
+      {
+        id: user_id,
+        name: user.name,
+        email: user.email,
+        city: user.city,
+        state: user.state,
+        country: user.country,
+        phone: user.phone,
+      },
+    ]);
+    if (error) {
+      console.error("Error saving profile:", error);
+       addToast({
+      variant: "danger",
+      message: "Profile was not saved",
+      })
+       
+    } else {
+      console.log("Profile saved:", data);
+      addToast({
+        variant: "success",
+        message: "Profile was saved",
+      })
+
+    }
+  };
+
+  const saveGoalsToSupabase = async () => {
+    const { data, error } = await supabase.from("profiles").upsert([
+      {
+        id: user_id,
+        goal: user.goal,
+        universities: [user.university1, user.university2, user.university3],
+      },
+    ]);
+    if (error) {
+      console.error("Error saving goals:", error); addToast({
+      variant: "danger",
+      message: "Goals were not saved",
+      })
+    } else {
+      console.log("Goals saved:", data); addToast({
+        variant: "success",
+        message: "Goals were saved",
+      })
+    }
+  };
+
+
 
   return (
     <Column
@@ -103,7 +180,7 @@ export default function Home() {
       <Flex height={"64"}></Flex>
       <Column fillWidth vertical="start" maxWidth={"l"} gap="20">
         <Column fillWidth gap="20" horizontal="start">
-          <Column gap="12">
+          <Column gap="4">
             {" "}
             <Text variant="heading-default-m">Account dashboard</Text>
             <Text variant="body-default-m" onBackground="neutral-weak">
@@ -114,17 +191,17 @@ export default function Home() {
         </Column>
 
         <Row fillWidth horizontal="between" vertical="start">
-          <Column fillWidth paddingRight="32" gap="16">
+          <Column fillWidth gap="16" id="paddingRightContainer">
             <HeadingLink as="h2" id="personal-details" marginY="xs">
               Personal Details
             </HeadingLink>
-            <Row padding="1" radius="l" border="neutral-weak" fillWidth>
+            <Row padding="1" radius="l" border="neutral-weak" fillWidth  >
               <Row
                 fillWidth
                 vertical="center"
                 padding="40"
                 radius="l"
-                border="neutral-medium"
+                border="neutral-medium"id="containerMe"
               >
                 <Column gap="12" horizontal="start" fillWidth>
                   {" "}
@@ -155,12 +232,12 @@ export default function Home() {
               </Row>
             </Row>
             {/*  */}
-            <Row padding="1" radius="l" border="neutral-weak" fillWidth>
+            <Row padding="1" radius="l" border="neutral-weak" fillWidth  >
               <Row
                 fillWidth
                 vertical="center"
                 padding="40"
-                radius="l"
+                radius="l"id="containerMe"
                 border="neutral-medium"
               >
                 <Column gap="12" horizontal="start" fillWidth>
@@ -190,11 +267,11 @@ export default function Home() {
               </Row>
             </Row>
             {/*  */}
-            <Row padding="1" radius="l" border="neutral-weak" fillWidth>
+            <Row padding="1" radius="l" border="neutral-weak" fillWidth  >
               <Row
                 fillWidth
                 vertical="center"
-                padding="40"
+                padding="40"id="containerMe"
                 radius="l"
                 border="neutral-medium"
               >
@@ -209,7 +286,7 @@ export default function Home() {
                 </Column>
                 <Column fillWidth>
                   <Row>
-                    <NumberInput
+                    <Input
                       id="phone"
                       placeholder="Enter your phone number"
                       hasPrefix={
@@ -220,20 +297,20 @@ export default function Home() {
                         />
                       }
                       characterCount
-                      value={user.phone}
-                      onChange={(e) => setUser({ ...user, phone: e })}
+                      value={Number(user.phone)}
+                      onChange={(e) => setUser({ ...user, phone: Number(e.target.value) })}
                       height="m"
                       spellCheck={false}
-                    ></NumberInput>
+                    ></Input>
                   </Row>
                 </Column>
               </Row>
             </Row>
             {/*  */}
-            <Row padding="1" radius="l" border="neutral-weak" fillWidth>
+            <Row padding="1" radius="l" border="neutral-weak" fillWidth  >
               <Row
                 fillWidth
-                vertical="center"
+                vertical="center"id="containerMe"
                 padding="40"
                 radius="l"
                 border="neutral-medium"
@@ -267,9 +344,9 @@ export default function Home() {
               </Row>
             </Row>
             {/*  */}
-            <Row padding="1" radius="l" border="neutral-weak" fillWidth>
+            <Row padding="1" radius="l" border="neutral-weak" fillWidth  >
               <Row
-                fillWidth
+                fillWidth id="containerMe"
                 vertical="center"
                 padding="40"
                 radius="l"
@@ -305,11 +382,11 @@ export default function Home() {
                 </Column>
               </Row>
             </Row>
-            <Row padding="1" radius="l" border="neutral-weak" fillWidth>
+            <Row padding="1" radius="l" border="neutral-weak" fillWidth  >
               <Row
                 fillWidth
                 vertical="center"
-                padding="40"
+                padding="40"id="containerMe"
                 radius="l"
                 border="neutral-medium"
               >
@@ -344,7 +421,7 @@ export default function Home() {
               </Row>
             </Row>
             <Row fillWidth horizontal="end">
-              <Button size="l">
+              <Button size="l" onClick={ savePersonalDetailsToSupabase}>
                 <Text variant="body-default-m">Save Changes</Text>
               </Button>
             </Row>
@@ -352,10 +429,10 @@ export default function Home() {
             <HeadingLink as="h2" id="goals" marginY="xs">
               Goals
             </HeadingLink>
-            <Row padding="1" radius="l" border="neutral-weak" fillWidth>
+            <Row padding="1" radius="l" border="neutral-weak" fillWidth  >
               <Row
                 fillWidth
-                vertical="start"
+                vertical="start"id="containerMe"
                 padding="40"
                 radius="l"
                 border="neutral-medium"
@@ -447,7 +524,7 @@ export default function Home() {
               </Row>
             </Row>{" "}
             <Row fillWidth horizontal="end">
-              <Button size="l">
+              <Button size="l" onClick={saveGoalsToSupabase}>
                 <Text variant="body-default-m">Save Changes</Text>
               </Button>
             </Row>
@@ -455,12 +532,12 @@ export default function Home() {
             <HeadingLink as="h2" id="roadmaps" marginY="xs">
               Roadmaps
             </HeadingLink>
-            <Row padding="1" radius="l" border="neutral-weak" fillWidth>
+            <Row padding="1" radius="l" border="neutral-weak" fillWidth >
               <Row
                 fillWidth
                 vertical="start"
                 padding="40"
-                radius="l"
+                radius="l"id="containerMe"
                 border="neutral-medium"
               >
                 <Column gap="12" horizontal="start" fillWidth>
@@ -491,6 +568,7 @@ export default function Home() {
             position="sticky"
             top="64"
             fitHeight
+            id="headingNavMe"
             data-scaling="110"
           />
         </Row>

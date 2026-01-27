@@ -38,7 +38,7 @@ const fonts = {
 
 // default customization applied to the HTML in the main layout.tsx
 const style = {
-  theme: "system", // dark | light | system
+  theme: "system", // dark | light | system 
   neutral: "gray", // sand | gray | slate
   brand: "orange", // blue | indigo | violet | magenta | pink | red | orange | yellow | moss | green | emerald | aqua | cyan
   accent: "indigo", // blue | indigo | violet | magenta | pink | red | orange | yellow | moss | green | emerald | aqua | cyan
@@ -54,7 +54,7 @@ const dataStyle = {
   variant: "gradient", // flat | gradient | outline
   mode: "categorical", // categorical | divergent | sequential
   height: 24, // default chart height
-  axis: {
+  axis: { 
     stroke: "var(--neutral-alpha-weak)",
   },
   tick: {
@@ -66,7 +66,7 @@ const dataStyle = {
 
 // metadata for pages
 const meta = {
-  home: {
+  home: { 
     path: "/",
     title: "Next Bench - Comprehensive tool for students",
     description:
@@ -78,17 +78,17 @@ const meta = {
   },
   // add more routes and reference them in page.tsx
 };
-
+ 
 // default schema data
 const schema = {
   logo: "",
-  type: "Organization",
+  type: "Startup",
   name: "Next Bench",
   description: meta.home.description,
-  email: "nextbench@nextbench.com",
+  email: "nextbench@nextbench.com", 
 };
 
-// social links
+// social links 
 const social = {
   twitter: "https://www.twitter.com/nextbench",
   linkedin: "https://www.linkedin.com/company/nextbench/",
