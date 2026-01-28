@@ -783,7 +783,7 @@ export default function Home() {
           />
         </Row>
       </Column>
-      <Flex height={12}/>
+      <Flex height={13} />
     </Column>
   );
 }

@@ -79,14 +79,13 @@ export function SearchCard({
         />  */}
         <Flex horizontal="between" vertical="end">
           <Text variant="display-strong-xs" onBackground="neutral-strong">
-            <b>
-              {institutionName.length > 11 ? institutionName.slice(0, 11) + "..." : institutionName}
-            </b>{" "}
+             <b> {institutionName.length > 11 ? institutionName.slice(0, 11) + "..." : institutionName}</b>
+            {" "}
             <Text onBackground="neutral-medium" variant="body-default-s">
               /{institutionLocation.length > 20 ? institutionLocation.slice(0, 20) + "..." : institutionLocation}
             </Text>
           </Text>
-          <IconButton icon="arrowRight" size="l"></IconButton>
+          <IconButton icon="arrowRight" size="l" href={"/edu/"+institutionName}></IconButton>
         </Flex>
       </Column>
       <Row vertical="center" horizontal="between" fillWidth  paddingLeft="2">
