@@ -3,13 +3,13 @@ import {
   Text,
   Button,
   Column,
-  
   Flex,
   AvatarGroup,
   Row,
   Icon,
-  
   CountdownFx,
+  Mask,
+  MatrixFx,
 } from "@once-ui-system/core";
 import { geist } from "@/resources/next-bench.config";
 
@@ -23,7 +23,29 @@ export function HeroSection() {
       paddingY="xl"
       gap="m"
       style={{ flexWrap: "wrap" }}
-    >
+    >    <Mask
+        fill
+        height={24}
+        x={50}
+        y={50}
+        radius={33}
+        opacity={30}
+        style={{
+          position: "absolute",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+          zIndex: 0,
+        }}
+      >
+        <MatrixFx
+          height={24}
+          colors={["brand-solid-strong", "neutral-solid-strong"]}
+          trigger="mount"
+          flicker
+        />
+      </Mask>
+      
       <Row gap="12">
         <AvatarGroup
           data-scaling="110"
@@ -80,7 +102,7 @@ export function HeroSection() {
             {" "}
             <Text variant="body-default-l">Try it now</Text>
           </Button>
-          <Button suffixIcon="arrowTopRight"  href="/search">
+          <Button suffixIcon="arrowTopRight" href="/search">
             {" "}
             <Text variant="body-default-l">Search institutes</Text>
           </Button>

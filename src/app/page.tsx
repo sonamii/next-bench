@@ -24,6 +24,8 @@ import {
   TypeFx,
   CountdownFx,
   ThemeSwitcher,
+  Mask,
+  MatrixFx,
 } from "@once-ui-system/core";
 import Image from "next/image";
 import { Geist, DM_Mono } from "next/font/google";
@@ -111,15 +113,18 @@ export default function Home() {
       // }}
       onBackground="neutral-strong"
     >
-   <Navbar/>
-      <Flex height={"64"}></Flex>
-      <HeroSection />
-      <Flex height={"32"}></Flex>
-      <PricingSection />
-      <Flex height={"80"}></Flex>
-      <CallToAction />
-      <Flex height={"80"}></Flex>
-      <Footer />
+  
+      <div style={{ zIndex: "99" }}>
+        <Navbar />
+        <Flex height={"64"}></Flex>
+        <HeroSection />
+        <Flex height={"32"}></Flex>
+        <PricingSection />
+        <Flex height={"80"}></Flex>
+        <CallToAction />
+        <Flex height={"80"}></Flex>
+        <Footer />
+      </div>
     </Column>
   );
 }
