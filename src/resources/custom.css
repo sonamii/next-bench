@@ -116,6 +116,18 @@
 }
 
 
+
+#paddingRightContainer{
+  padding-right: 24px !important;
+}
+
+
+@media (min-width: 656px) {
+  #paddingRightContainerEdu {
+    padding-right: 56px !important ;
+  }
+}
+
 @media (max-width: 655px) {
   #hiddenButtonNav {
     display: none;
@@ -142,11 +154,12 @@
   #paddingRightContainer{
     padding-right: none !important;
   }
+
+   
 }
 
-#paddingRightContainer{
-  padding-right: 24px !important;
-}
+
+
 
 @media (max-width: 900px) {
   #cta {
@@ -156,4 +169,15 @@
     justify-content: center;
     gap: 20;
   }
+}
+
+@media (max-width: 1000px) {
+
+#populationGraphContainer{
+  flex-wrap: wrap;
+}
+
+#reviewsGraphContainer{
+flex-wrap:wrap;
+}
 }

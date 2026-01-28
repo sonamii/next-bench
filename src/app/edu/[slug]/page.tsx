@@ -93,7 +93,7 @@ export default function Home() {
     >
       <Navbar />
       <Flex height={"64"}></Flex>
-      <Column fillWidth vertical="start" maxWidth={"l"} gap="56">
+      <Column fillWidth vertical="start" maxWidth={"l"} gap="56" >
         <Column fillWidth gap="20" horizontal="start">
           <Column gap="12">
             {" "}
@@ -110,7 +110,12 @@ export default function Home() {
           {/* <Line fillWidth></Line> */}
         </Column>
         <Row fillWidth horizontal="between">
-          <Column gap="48" fillWidth paddingRight="xl">
+          <Column
+            gap="48"
+            fillWidth
+            id="paddingRightContainerEdu"
+          >
+            <Line fillWidth />
             <Column gap="20">
               <HeadingLink as="h2" id="description">
                 Description
@@ -172,7 +177,7 @@ export default function Home() {
                 10,000 students, with a few hundred faculty members and staff.
               </Text>
 
-              <Row fillWidth gap="32">
+              <Row fillWidth gap="32" id="populationGraphContainer">
                 <BarChart
                   title="Number of Students/Teachers"
                   axis="none"
@@ -230,7 +235,7 @@ export default function Home() {
               >
                 Here are some reviews from the alumni of this university:
               </Text>
-              <Row fillWidth gap="32">
+              <Row fillWidth gap="32" id="reviewsGraphContainer">
                 <LineBarChart
                   fillHeight
                   title="CEO vs Employee Paycheck"
@@ -623,7 +628,7 @@ export default function Home() {
               </Row>
             </Column>
             <Column gap="20">
-              <HeadingLink as="h2" id="Next Rating">
+              <HeadingLink as="h2" id="next-rating">
                 Next Rating
               </HeadingLink>
               <Text
@@ -771,7 +776,7 @@ export default function Home() {
                 />
               </Column>
             </Column>
-            {/*  */}
+            
           </Column>
           <HeadingNav
             width={12}
