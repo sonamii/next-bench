@@ -604,7 +604,7 @@ const Block: React.FC<{
     case "text":
       return <BodyText>{block.value}</BodyText>;
     case "table":
-      if (block.tableName === "location" || block.tableName ==="contact") {
+      if (block.tableName === "location" || block.tableName ==="contact" || block.tableName==="basicDetails") {
         // Handle custom table with specific structure
         return (
           <div>
@@ -626,27 +626,28 @@ const Block: React.FC<{
           </div>
         );
       }
+      else if (block.tableName ==="admissions"){
+
+        ret
+      }
+        else if(block.tableName === "nextRating")
+      else return(<Flex>  
+        
+        <Table
+          data={{
+            headers: block.headers.map((header:any) => ({
+              content: header,
+              key: header,
+              sortable: true,
+            })),
+            rows: block.rows.map((row:any) => Object.values(row)),
+          }}
+        />
+              
+              </Flex>)
   
       // Handle regular table
-      return (
-        <div>
-          {block.rows.map((row: any, index: any) => (
-            <Flex wrap key={index}>
-              <Text
-                variant="body-default-l"
-                data-scaling="110"
-                onBackground="neutral-weak"
-                style={{ lineHeight: "2" }}
-              >
-                {index + 1}.{" "}
-                {row.key?.charAt(0).toUpperCase() + row.key?.slice(1)}:{" "}
-                <SmartLink href="#">{row.value}</SmartLink>
-              </Text>
-              <br />
-            </Flex>
-          ))}
-        </div>
-      );
+      
 
     default:
       return <div>Unknown block type: {type}</div>;
