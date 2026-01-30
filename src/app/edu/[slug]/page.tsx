@@ -192,7 +192,7 @@ const eduData = {
         {
           type: "table",
           custom: false,
-          tableName: "next-rating",
+          tableName: "nextRating",
           headers: ["key", "value"],
           rows: [
             {
@@ -647,9 +647,42 @@ const Block: React.FC<{
             })}
           </Row>
         );
-      } else if (block.tableName === "nextRating") {
-        return <Flex></Flex>;
-      } else
+      } 
+
+      else if (block.tableName === "nextRating") {
+        return (
+          <Flex style={{ display: "grid", gridTemplateColumns: "1fr 5fr", gap: "32px" }} fillWidth>
+            {block.rows.map((row: any) => (
+            <>
+                <Column gap="20" vertical="start">
+                  <Text
+                    variant="body-default-s"
+                    data-scaling="110"
+                    onBackground="neutral-medium"
+                  >
+                    {row.key && (
+                      <SmartLink href="#">
+                        {row.key.charAt(0).toUpperCase() + row.key.slice(1)}
+                      </SmartLink>
+                    )}
+                  </Text>
+                
+                </Column>
+                <LinearGauge
+                  maxWidth={30}
+                  fillWidth
+                  height={15}
+                  maxHeight={3}
+                  value={parseInt(row.value)}
+                  labels={["Low", "Med", "High", "Max"]}
+                />
+              </>
+            ))}
+          </Flex>
+        );
+      }
+      
+      else
         return (
           <Flex>
             <Table
@@ -665,8 +698,8 @@ const Block: React.FC<{
           </Flex>
         );
 
-    // Handle regular table
-
+    case "chart":
+      return({"A": "B"});
     default:
       return <div>Unknown block type: {type}</div>;
   }
