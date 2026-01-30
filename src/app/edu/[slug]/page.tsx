@@ -325,12 +325,12 @@ const eduData = {
             {
               key: "Admission",
               link: "https://www.iith.ac.in/admissions",
-              linkText: "Admission",
+              linkText: "Here",
             },
             {
               key: "Process",
               link: "https://www.iith.ac.in/admissions/process",
-              linkText: "Process",
+              linkText: "Here",
             },
           ],
           isClosed: true,
@@ -604,7 +604,12 @@ const Block: React.FC<{
     case "text":
       return <BodyText>{block.value}</BodyText>;
     case "table":
-      if (block.tableName === "location" || block.tableName ==="contact" || block.tableName==="basicDetails") {
+      if (
+        block.tableName === "location" ||
+        block.tableName === "contact" ||
+        block.tableName === "basicDetails" ||
+        block.tableName === "admissions"
+      ) {
         // Handle custom table with specific structure
         return (
           <div>
@@ -618,36 +623,49 @@ const Block: React.FC<{
                 >
                   {index + 1}.{" "}
                   {row.key?.charAt(0).toUpperCase() + row.key?.slice(1)}:{" "}
-                  <SmartLink href="#">{row.value}</SmartLink>
+                  <SmartLink href={row.link || "#"}>
+                    {row.value || row.linkText}
+                  </SmartLink>
                 </Text>
                 <br />
               </Flex>
             ))}
           </div>
         );
-      }
-      else if (block.tableName ==="admissions"){
+      } else if (block.tableName === "facilities") {
+        return (
+          <Row fillWidth gap="12" wrap>
+            {block.rows.map((row: any) => {
+              return row.available.map((available: any) => (
+                <Chip key={available} label={available}></Chip>
+              ));
+            })}
+            {block.rows.map((row: any) => {
+              return row.notAvailable.map((notAvailable: any) => (
+                <Chip key={notAvailable} label={notAvailable} selected></Chip>
+              ));
+            })}
+          </Row>
+        );
+      } else if (block.tableName === "nextRating") {
+        return <Flex></Flex>;
+      } else
+        return (
+          <Flex>
+            <Table
+              data={{
+                headers: block.headers.map((header: any) => ({
+                  content: header,
+                  key: header,
+                  sortable: true,
+                })),
+                rows: block.rows.map((row: any) => Object.values(row)),
+              }}
+            />
+          </Flex>
+        );
 
-        ret
-      }
-        else if(block.tableName === "nextRating")
-      else return(<Flex>  
-        
-        <Table
-          data={{
-            headers: block.headers.map((header:any) => ({
-              content: header,
-              key: header,
-              sortable: true,
-            })),
-            rows: block.rows.map((row:any) => Object.values(row)),
-          }}
-        />
-              
-              </Flex>)
-  
-      // Handle regular table
-      
+    // Handle regular table
 
     default:
       return <div>Unknown block type: {type}</div>;
