@@ -15,6 +15,8 @@ import {
   Input,
   ThemeSwitcher,
   AvatarGroup,
+  Mask,
+  MatrixFx,
 } from "@once-ui-system/core";
 import Image from "next/image";
 import { Geist, DM_Mono } from "next/font/google";
@@ -328,6 +330,28 @@ export default function Home() {
             </Row>
           </Row>
         </Column>
+         <Mask
+        fill
+        height={24}
+        x={50}
+        y={50}
+        radius={23}
+        opacity={30}
+        style={{
+          position: "absolute",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+          zIndex: 0,
+        }}
+      >
+        <MatrixFx
+          height={24}
+          colors={["brand-solid-strong", "neutral-solid-strong"]}
+          trigger="mount"
+          flicker
+        />
+      </Mask>
       </Column>
       <Row fillWidth maxWidth={"xl"} style={{ flexWrap: "wrap" }} gap="32" horizontal="center">
         {institutions.map((institution) => (
