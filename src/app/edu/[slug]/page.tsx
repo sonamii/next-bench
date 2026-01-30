@@ -73,26 +73,7 @@ const eduData = {
         {
           type: "text",
           value:
-            "IIT Hyderabad (IITH) is a premier engineering institute in Telangana, India, renowned for",
-        },
-        {
-          type: "text",
-          value:
-            "its focus on research, innovation, and hands-on learning. It offers undergraduate",
-        },
-        {
-          type: "text",
-          value:
-            "and postgraduate programs in fields like AI, biotechnology, and design, while fostering",
-        },
-        {
-          type: "text",
-          value:
-            "entrepreneurship through startup incubators and global collaborations, especially with Japanese",
-        },
-        {
-          type: "text",
-          value: "universities.",
+            "IIT Hyderabad (IITH) is a premier engineering institute in Telangana, India, renowned for its focus on research, innovation, and hands-on learning. It offers undergraduate and postgraduate programs in fields like AI, biotechnology, and design, while fostering entrepreneurship through startup incubators and global collaborations, especially with Japanese",
           isClosed: true,
         },
       ],
@@ -153,14 +134,9 @@ const eduData = {
         {
           type: "text",
           value:
-            "IIT Hyderabad is located in Hyderabad, Telangana, India. It is situated in the heart of the city,",
+            "IIT Hyderabad is located in Hyderabad, Telangana, India. It is situated in the heart of the city, in the vicinity of the Hyderabad International Airport and the Hyderabad Railway Station.",
         },
-        {
-          type: "text",
-          value:
-            "in the vicinity of the Hyderabad International Airport and the Hyderabad Railway Station.",
-          isClosed: true,
-        },
+
         {
           type: "table",
           custom: false,
@@ -168,9 +144,8 @@ const eduData = {
           headers: ["key", "value"],
           rows: [
             {
-              key: "map_url",
-              value:
-                "https://www.google.com/maps/place/IIT+Hyderabad/@17.4444444,78.4666667,17z/data=!3m1!4b1!4m5!3m4!1s0x3bcb999999999999:0x3bcb999999999999!8m2!3d17.4444444!4d78.4666667",
+              key: "map",
+              value: "https://www.google.com/maps/place/IIT+Hyderabad",
             },
             {
               key: "railway",
@@ -196,12 +171,7 @@ const eduData = {
         {
           type: "text",
           value:
-            "IIT Hyderabad is equipped with state-of-the-art facilities to support its academic and",
-        },
-        {
-          type: "text",
-          value: "research programs. Some of the facilities include:",
-          isClosed: true,
+            "IIT Hyderabad is equipped with state-of-the-art facilities to support its academic and research programs. Some of the facilities include:",
         },
       ],
     },
@@ -597,11 +567,97 @@ const eduData = {
     },
   ],
 };
+const Heading = ({
+  as,
+  id,
+  children,
+}: {
+  as: "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
+  id: string;
+  children: React.ReactNode;
+}) => {
+  return (
+    <HeadingLink as={as} id={id}>
+      {children}
+    </HeadingLink>
+  );
+};
 
-const [pageMeta, setPageMeta] = useState<any>({});
-const [pageSections, setPageSections] = useState<any[]>([]);
+const BodyText = ({ children }: { children: React.ReactNode }) => {
+  return (
+    <Text
+      variant="body-default-l"
+      data-scaling="110"
+      onBackground="neutral-weak"
+      style={{ lineHeight: "2" }}
+    >
+      {children}
+    </Text>
+  );
+};
 
-useEffect(() => {
+const Block: React.FC<{
+  block: any;
+  type: string;
+}> = ({ block, type }) => {
+  switch (type) {
+    case "text":
+      return <BodyText>{block.value}</BodyText>;
+    case "table":
+      if (block.tableName === "location" || block.tableName ==="contact") {
+        // Handle custom table with specific structure
+        return (
+          <div>
+            {block.rows.map((row: any, index: any) => (
+              <Flex wrap key={index}>
+                <Text
+                  variant="body-default-l"
+                  data-scaling="110"
+                  onBackground="neutral-weak"
+                  style={{ lineHeight: "2" }}
+                >
+                  {index + 1}.{" "}
+                  {row.key?.charAt(0).toUpperCase() + row.key?.slice(1)}:{" "}
+                  <SmartLink href="#">{row.value}</SmartLink>
+                </Text>
+                <br />
+              </Flex>
+            ))}
+          </div>
+        );
+      }
+  
+      // Handle regular table
+      return (
+        <div>
+          {block.rows.map((row: any, index: any) => (
+            <Flex wrap key={index}>
+              <Text
+                variant="body-default-l"
+                data-scaling="110"
+                onBackground="neutral-weak"
+                style={{ lineHeight: "2" }}
+              >
+                {index + 1}.{" "}
+                {row.key?.charAt(0).toUpperCase() + row.key?.slice(1)}:{" "}
+                <SmartLink href="#">{row.value}</SmartLink>
+              </Text>
+              <br />
+            </Flex>
+          ))}
+        </div>
+      );
+
+    default:
+      return <div>Unknown block type: {type}</div>;
+  }
+};
+
+export default function Home() {
+  const [pageMeta, setPageMeta] = useState<any>({});
+  const [pageSections, setPageSections] = useState<any[]>([]);
+
+  useEffect(() => {
     if (eduData) {
       // Extract metadata (updatedAt, name, type, etc.)
       setPageMeta(eduData.metadata);
@@ -610,8 +666,6 @@ useEffect(() => {
       setPageSections(eduData.containers);
     }
   }, [eduData]);
-
-export default function Home() {
   return (
     <Column
       fillWidth
@@ -629,9 +683,7 @@ export default function Home() {
             <Text variant="body-default-m" onBackground="neutral-medium">
               {pageMeta.updatedAt}
             </Text>
-            <Text variant="display-strong-m">
-              {pageMeta.type}
-            </Text>
+            <Text variant="display-strong-m">{pageMeta.type}</Text>
             <Text variant="body-default-l" onBackground="neutral-weak">
               {pageMeta.name}
             </Text>
@@ -641,8 +693,20 @@ export default function Home() {
         <Row fillWidth horizontal="between">
           <Column gap="48" fillWidth id="paddingRightContainerEdu">
             <Line fillWidth />
-
-            
+            {pageSections.map((sectionItem) => (
+              <Column key={sectionItem.section} gap="20">
+                <Heading as="h2" id={sectionItem.section}>
+                  {sectionItem.heading.title}
+                </Heading>
+                {sectionItem.content.map((block: any, idx: any) => (
+                  <Block
+                    key={block + "-" + block.type + "-" + idx}
+                    block={block}
+                    type={block.type}
+                  />
+                ))}
+              </Column>
+            ))}
             <Column gap="20">
               <HeadingLink as="h2" id="description">
                 Description
