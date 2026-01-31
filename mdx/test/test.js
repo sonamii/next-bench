@@ -173,7 +173,7 @@ and pre-placement offers from internships.
 
 | dataPoint | Elon Musk                                   | Hungary      | Tesla           |
 | --------- | ------------------------------------------- | ------------ | --------------- |
-| date      | new Date(),new Date(),new Date(),new Date() | new Date()   | new Date()      |
+| date      | new Date(), | new Date()   | new Date()      |
 | value     | 50,36,90,19,100                             | 46           | 33              |
 | color     | yellow                                      | cyan         | red             |
 | label     | Number of Elon                              | Total number | Number of Tesla |
@@ -214,4 +214,3 @@ and pre-placement offers from internships.
 
 
 `;
-
