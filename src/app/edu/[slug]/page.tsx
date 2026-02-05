@@ -1,6 +1,5 @@
 "use client";
 import "@/resources/custom.css";
-import Lenis from "lenis";
 import { parseMDXToDynamicJSON } from "../../../../next-parser/parser";
 
 import {

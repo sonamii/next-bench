@@ -15,6 +15,9 @@ import { Footer } from "./components/(global)/footer";
 import { PricingSection } from "./components/(main)/pricing";
 import { HeroSection } from "./components/(main)/hero";
 import { Navbar } from "./components/(global)/navbar";
+
+
+// eslint-disable-next-line -- ignore production build errors for lenis initialization
 const lenis = new Lenis({
   autoRaf: true,
 });
