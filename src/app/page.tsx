@@ -21,40 +21,42 @@ const lenis = new Lenis({
 });
 
 export default function Home() {
-  const storedTheme = localStorage.getItem("data-theme") as
-    | "light"
-    | "dark"
-    | "system";
-  const [theme, setTheme] = React.useState<"light" | "dark">(
-    storedTheme === "system"
+  const [mounted, setMounted] = React.useState(false);
+  const [theme, setTheme] = React.useState<"light" | "dark">("light");
+
+  React.useEffect(() => {
+    setMounted(true);
+    const storedTheme = localStorage.getItem("data-theme") as
+      | "light"
+      | "dark"
+      | "system"
+      | null;
+    
+    const initialTheme = storedTheme === "system"
       ? window.matchMedia("(prefers-color-scheme: dark)").matches
         ? "dark"
         : "light"
-      : storedTheme,
-  );
-
-  React.useEffect(() => {
-    const resolvedTheme =
-      storedTheme === "system"
-        ? window.matchMedia("(prefers-color-scheme: dark)").matches
-          ? "dark"
-          : "light"
-        : storedTheme;
-
-    document.documentElement.setAttribute("data-theme", resolvedTheme);
-    localStorage.setItem(
-      "data-theme",
-      storedTheme === "system" ? resolvedTheme : storedTheme,
-    );
+      : storedTheme ?? "light";
+    
+    setTheme(initialTheme);
+    document.documentElement.setAttribute("data-theme", initialTheme);
   }, []);
 
   React.useEffect(() => {
+    if (!mounted) return;
+    
     document.documentElement.setAttribute("data-theme", theme);
+    const storedTheme = localStorage.getItem("data-theme") as
+      | "light"
+      | "dark"
+      | "system"
+      | null;
+    
     localStorage.setItem(
       "data-theme",
-      storedTheme === "system" ? theme : storedTheme,
+      storedTheme === "system" ? theme : storedTheme ?? "light",
     );
-  }, [theme]);
+  }, [theme, mounted]);
 
 
 

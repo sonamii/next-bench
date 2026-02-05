@@ -25,17 +25,22 @@ import { useRouter } from "next/navigation";
 
 export default function Auth() {
   const{addToast} = useToast()
-  const [theme, setTheme] = useState<"light" | "dark" | "system" | null>(
-    typeof window !== "undefined"
-      ? localStorage.getItem("data-theme") as
-        | "light"
-        | "dark"
-        | "system"
-        | null
-      : null
-  );
+  const [mounted, setMounted] = useState(false);
+  const [theme, setTheme] = useState<"light" | "dark" | "system" | null>(null);
+
+  useEffect(() => {
+    setMounted(true);
+    const storedTheme = localStorage.getItem("data-theme") as
+      | "light"
+      | "dark"
+      | "system"
+      | null;
+    setTheme(storedTheme);
+  }, []);
 
   const handleGoogleSignIn = async () => {
+    if (!mounted) return;
+    
     try {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: "google",

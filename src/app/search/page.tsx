@@ -48,19 +48,27 @@ type Institution = {
 
 
   export default function Home() {
-  const storedTheme = localStorage.getItem("data-theme") as
-    | "light"
-    | "dark"
-    | "system";
-  const [theme, setTheme] = React.useState<"light" | "dark">(
-    storedTheme === "system"
+  const [mounted, setMounted] = React.useState(false);
+  const [theme, setTheme] = React.useState<"light" | "dark">("light");
+  const [institutions, setInstitutions] = React.useState<Institution[]>([]);
+
+  React.useEffect(() => {
+    setMounted(true);
+    const storedTheme = localStorage.getItem("data-theme") as
+      | "light"
+      | "dark"
+      | "system"
+      | null;
+    
+    const initialTheme = storedTheme === "system"
       ? window.matchMedia("(prefers-color-scheme: dark)").matches
         ? "dark"
         : "light"
-      : storedTheme,
-  );
-
-  const [institutions, setInstitutions] = React.useState<Institution[]>([]);
+      : storedTheme ?? "light";
+    
+    setTheme(initialTheme);
+    document.documentElement.setAttribute("data-theme", initialTheme);
+  }, []);
 
   React.useEffect(() => {
     async function fetchData() {
@@ -74,7 +82,7 @@ type Institution = {
         institutionLocation: `${item.city}, ${item.state}`,
         institutionRating: item.ratings,
         institutionDescription: item.desc,
-        institutionPopularity: item.tags.split(','),
+        institutionPopularity: item.tags ? item.tags.split(',') : [],
         institutionWebsite: item.slug,
         institutionSlug: item.slug
       }));
@@ -84,31 +92,29 @@ type Institution = {
     fetchData();
   }, []);
 
-
   React.useEffect(() => {
-    const resolvedTheme =
-      storedTheme === "system"
-        ? window.matchMedia("(prefers-color-scheme: dark)").matches
-          ? "dark"
-          : "light"
-        : storedTheme;
-
-    document.documentElement.setAttribute("data-theme", resolvedTheme);
-    localStorage.setItem(
-      "data-theme",
-      storedTheme === "system" ? resolvedTheme : storedTheme,
-    );
-  }, []);
-
-  React.useEffect(() => {
+    if (!mounted) return;
+    
     document.documentElement.setAttribute("data-theme", theme);
+    const storedTheme = localStorage.getItem("data-theme") as
+      | "light"
+      | "dark"
+      | "system"
+      | null;
+    
     localStorage.setItem(
       "data-theme",
-      storedTheme === "system" ? theme : storedTheme,
+      storedTheme === "system" ? theme : storedTheme ?? "light",
     );
-  }, [theme]);
+  }, [theme, mounted]);
 
   const toggleTheme = () => {
+    const storedTheme = localStorage.getItem("data-theme") as
+      | "light"
+      | "dark"
+      | "system"
+      | null;
+    
     const nextTheme =
       storedTheme === "system"
         ? theme === "light"
