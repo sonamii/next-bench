@@ -1,5 +1,5 @@
 // IMPORTANT: Replace with your own domain address - it's used for SEO in meta tags and schema
-const baseURL = "https://demo.once-ui.com";
+const baseURL = "https://next-bench-dev.vercel.app";
 
 // Import and set font for each variant
 import { Geist } from "next/font/google";
@@ -64,58 +64,17 @@ const dataStyle = {
   },
 };
 
-const effects = {
-  mask: {
-    cursor: false,
-    x: 50,
-    y: 0,
-    radius: 100,
-  },
-  gradient: {
-    display: false,
-    x: 50,
-    y: 0,
-    width: 100,
-    height: 100,
-    tilt: 0,
-    colorStart: "brand-background-strong",
-    colorEnd: "static-transparent",
-    opacity: 50,
-  },
-  dots: {
-    display: true,
-    size: "2",
-    color: "brand-on-background-weak",
-    opacity: 40,
-  },
-  lines: {
-    display: false,
-    color: "neutral-alpha-weak",
-    opacity: 100,
-    thickness: 1,
-    angle: 45,
-    size: "8",
-  },
-  grid: {
-    display: false,
-    color: "neutral-alpha-weak",
-    opacity: 100,
-    width: "2",
-    height: "2",
-  },
-};
-
 // metadata for pages
 const meta = {
   home: {
     path: "/",
-    title: "Next Bench  ",
+    title: "Next Bench - Comprehensive Tool for students",
     description:
-      "An open-source design system and component library for Next.js that emphasizes easy styling and accessibility in UI development.",
-    image: "/images/og/home.jpg",
-    canonical: "https://once-ui.com",
+      "Next Bench is a comprehensive tool for students, that enables them to find the best universities and courses based on their preferences. ",
+    image: "/images/og/og.png",
+    canonical: "https://next-bench-dev.vercel.app",
     robots: "index,follow",
-    alternates: [{ href: "https://once-ui.com", hrefLang: "en" }],
+    alternates: [{ href: "https://next-bench-dev.vercel.app", hrefLang: "en" }],
   },
   // add more routes and reference them in page.tsx
 };
@@ -123,17 +82,17 @@ const meta = {
 // default schema data
 const schema = {
   logo: "",
-  type: "Organization",
-  name: "Once UI",
+  type: "Startup",
+  name: "Next Bench",
   description: meta.home.description,
-  email: "lorant@once-ui.com",
+  email: "nextbench@nextbench.com",
 };
 
 // social links
 const social = {
-  twitter: "https://www.twitter.com/_onceui",
-  linkedin: "https://www.linkedin.com/company/once-ui/",
+  twitter: "https://www.twitter.com/nextbench",
+  linkedin: "https://www.linkedin.com/company/nextbench/",
   discord: "https://discord.com/invite/5EyAQ4eNdS",
 };
 
-export { baseURL, fonts, style, meta, schema, social, effects, dataStyle };
+export { baseURL, fonts, style, meta, schema, social, dataStyle };
