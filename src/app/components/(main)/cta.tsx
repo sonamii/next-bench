@@ -37,10 +37,10 @@ export function CallToAction() {
         </b>
       </Text>{" "}
       <Flex direction="row" gap="12">
-        <Button size="l" variant="secondary" suffixIcon="arrowTopRight">
+        <Button size="l" variant="secondary" suffixIcon="arrowTopRight" href="/search">
           <Text variant="body-default-l">Try it now</Text>
         </Button>
-        <Button size="l">
+        <Button size="l" href="#">
           <Text variant="body-default-l">Contact Sales</Text>
         </Button>
       </Flex>

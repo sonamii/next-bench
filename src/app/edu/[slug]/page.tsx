@@ -333,7 +333,8 @@ const RenderMetadata: React.FC<{
   updatedAt: string;
   name: string;
   type: string;
-}> = ({ slug, updatedAt, name, type }) => (
+  isAdmin: boolean;
+}> = ({ slug, updatedAt, name, type, isAdmin }) => (
   <Column fillWidth gap="12" id={slug} className={slug + "-metadata"}>
     <Text variant="body-default-m" onBackground="neutral-medium">
       {new Date(updatedAt || "").toLocaleDateString()}
@@ -342,7 +343,10 @@ const RenderMetadata: React.FC<{
     <Text variant="body-default-l" onBackground="neutral-weak">
       {name || ""}
     </Text>
-    <SmartLink href="/search">Back</SmartLink>
+    <Row gap="20">
+      <SmartLink href="/search">Back</SmartLink>
+      {isAdmin ? <SmartLink href="/~/admin">Edit</SmartLink> : ""}
+    </Row>
   </Column>
 );
 interface EduData {
@@ -399,6 +403,11 @@ export default function Home() {
             minHeight="80"
           />{" "}
           <Skeleton shape="line" delay="2" width="m" height="s" />
+          <Row gap="20" maxWidth={12}>
+            {" "}
+            <Skeleton shape="line" delay="3" width="xs" height="s" />
+            <Skeleton shape="line" delay="1" width="xs" height="s" />
+          </Row>
         </Column>
       </>
     );
@@ -418,11 +427,11 @@ export default function Home() {
               fillWidth
               minHeight="32"
             />{" "}
+            <Skeleton shape="line" delay="1" fillWidth height="m" width="xl" />
+            <Skeleton shape="line" delay="3" fillWidth height="m" width="xl" />
             <Skeleton shape="line" delay="2" fillWidth height="m" width="xl" />
-            <Skeleton shape="line" delay="2" fillWidth height="m" width="xl" />
-            <Skeleton shape="line" delay="2" fillWidth height="m" width="xl" />
-            <Skeleton shape="line" delay="2" fillWidth height="m" width="xl" />
-            <Skeleton shape="line" delay="2" fillWidth height="m" width="xl" />
+            <Skeleton shape="line" delay="1" fillWidth height="m" width="xl" />
+            <Skeleton shape="line" delay="3" fillWidth height="m" width="xl" />
           </Column>
           <Column gap="20" fillWidth>
             {" "}
@@ -452,6 +461,31 @@ export default function Home() {
       </>
     );
   }
+
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    const fetchSessionId = async () => {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+      if (session && session.user) {
+        const { data, error } = await supabase
+          .from("profiles")
+          .select("is_admin")
+          .eq("id", session.user.id)
+          .single();
+        if (data) {
+          setIsAdmin(data.is_admin);
+        }
+        if (error) {
+          console.error("Error fetching session id:", error);
+        }
+      }
+    };
+    fetchSessionId();
+  }, []);
+
   return (
     <Column
       fillWidth
@@ -470,6 +504,7 @@ export default function Home() {
             updatedAt={eduData.metadata.updatedAt}
             name={eduData.metadata.name}
             type={eduData.metadata.type}
+            isAdmin={isAdmin}
           />
         ) : (
           <LoadingMetaData />

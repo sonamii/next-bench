@@ -82,7 +82,7 @@ export default function Home() {
     desc: "",
     name: "",
     id: uuidv4(),
-    tags:["best"],
+    tags:["TEMP"],
     city:"",
     state:""
   });
@@ -224,50 +224,30 @@ export default function Home() {
           schema: "public",
           table: "edu",
         },
-        (payload) => {
-          if (
-            payload.eventType === "INSERT" &&
-            payload.new &&
-            typeof payload.new === "object" &&
-            "name" in payload.new &&
-            "description" in payload.new
-          ) {
-            // Handle new item insertion
-            const newOptions = options.concat({
-              label: payload.new.slug || payload.new.name,
-              value: payload.new.slug || payload.new.name,
-              description: payload.new.name,
-            });
+        async (payload) => {
+          // Fetch data again
+          const { data, error } = await supabase
+            .from("edu")
+            .select("slug, mdx, ratings, desc,name,city,state,tags");
+          if (error) {
+            console.error("Error fetching data:", error);
+          } else {
+            const newOptions = data.map((option) => ({
+              label: option.slug,
+              value: option.slug ,
+              description: option.name,
+             
+            }));
             setOptions(newOptions);
-          } else if (
-            payload.eventType === "DELETE" &&
-            payload.old &&
-            typeof payload.old === "object" &&
-            "slug" in payload.old
-          ) {
-            // Handle item deletion
-            setOptions((prevOptions) =>
-              prevOptions.filter((option) => option.value !== payload.old.slug),
-            );
-          } else if (
-            payload.eventType === "UPDATE" &&
-            payload.new &&
-            typeof payload.new === "object" &&
-            "name" in payload.new &&
-            "description" in payload.new
-          ) {
-            // Handle item update
-            setOptions((prevOptions) =>
-              prevOptions.map((option) =>
-                option.value === (payload.new.slug || payload.new.name)
-                  ? {
-                      label: payload.new.slug || payload.new.name,
-                      value: payload.new.slug || payload.new.name,
-                      description: payload.new.name,
-                    }
-                  : option,
-              ),
-            );
+            setOptions((prevOptions) => [
+            {
+              label: "add-new",
+              value: "new",
+              description: "Add a new institute",
+            },
+            ...newOptions,
+          ]);
+            console.log(newOptions)
           }
         },
       )
@@ -277,7 +257,7 @@ export default function Home() {
     return () => {
       subscription.unsubscribe();
     };
-  }, [options]);
+  }, []);
 
   return (
     <>
@@ -291,7 +271,7 @@ export default function Home() {
         <Navbar />
         <Flex height={"64"} />
 
-        <Column fillWidth vertical="start" maxWidth={"l"} gap="56">
+        <Column fillWidth vertical="start" maxWidth={"l"} gap="32">
           <Column fillWidth gap="12" id={"slug"}>
             <Text variant="body-default-m" onBackground="neutral-medium">
               Admin Panel
@@ -303,9 +283,11 @@ export default function Home() {
               </Text>
               <StatusIndicator size="m" color="green" />
             </Row>
+                <SmartLink href="/me">Back</SmartLink>
+            
           </Column>
           <Line fillWidth></Line>
-          <Row fillWidth gap="32">
+          <Row fillWidth gap="32" id="adminRowEdit">
             <Column fillWidth gap="20">
               <Input
                 id="id"
@@ -320,7 +302,7 @@ export default function Home() {
                 }
                 required
               ></Input>{" "}
-              <Row gap="20">
+              <Row gap="20" id="nameSlugRatingContainer">
                 {" "}
                 <Input
                   id="name"
@@ -337,10 +319,10 @@ export default function Home() {
                     })
                   }
                 ></Input>{" "}
-                <Input
+              <Row gap="20" id="slugRatingContainer" fillWidth>  <Input
                   id="slug"
                   placeholder="Slug"
-                  description="A short memorizable name for this educational university"
+                  description="Short slug"
                   value={eduAdminDetails.slug}
                   spellCheck={false}
                   error={eduAdminDetails.slug === ""}
@@ -367,10 +349,10 @@ export default function Home() {
                     })
                   }
                   required
-                  style={{ maxWidth: "140px" }}
-                ></NumberInput>
+                  
+                ></NumberInput></Row>
               </Row>
-              <Row gap="20">
+              <Row gap="20" id="cityStateContainer">
   <Input
                   id="city"
                   placeholder="City"
@@ -488,12 +470,14 @@ export default function Home() {
                 isOpen={isOpen}
                 onOpenChange={setIsOpen}
                 minHeight={200}
+                
                 trigger={
                   <Button
                     variant="primary"
                     size="l"
                     suffixIcon="chevronDown"
                     onClick={() => setIsOpen(!isOpen)}
+                    id="eduDropButton"
                   >
                     <Text variant="body-default-m">
                       {/* 172px */}
@@ -507,7 +491,7 @@ export default function Home() {
                   </Button>
                 }
                 dropdown={
-                  <Column fillWidth minWidth={12} maxWidth={20}>
+                  <Column fillWidth minWidth={12} maxWidth={20} >
                     <Column
                       padding="4"
                       fillWidth

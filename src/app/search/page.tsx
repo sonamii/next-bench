@@ -17,6 +17,7 @@ import {
   AvatarGroup,
   Mask,
   MatrixFx,
+  Spinner,
 } from "@once-ui-system/core";
 import Image from "next/image";
 import { Geist, DM_Mono } from "next/font/google";
@@ -219,6 +220,11 @@ type Institution = {
         </Text>
           <Flex height={"20"}></Flex>
           <Row gap="16" center fillWidth style={{ flexWrap: "wrap" }}>
+            <Input id="searchEdu" height="s" style={{zIndex:"9999"}} placeholder="Search for Institutes..." hasPrefix={<Icon
+                          name="search"
+                          size="xs"
+                          onBackground="neutral-weak"
+                        />}></Input>
             <Row radius="s" shadow="xs" padding="8" vertical="center" gap="8">
               <Row vertical="center" gap="2">
                 <Icon name="sort" size="xs"></Icon>
@@ -279,10 +285,14 @@ type Institution = {
         />
       </Mask>
       </Column>
-      <Row fillWidth maxWidth={"xl"} style={{ flexWrap: "wrap" }} gap="32" horizontal="center">
-        {institutions.map((institution) => (
-          <SearchCard {...institution} key={institution.institutionName} />
-        ))}
+      <Row fillWidth maxWidth={"xl"} style={{ flexWrap: "wrap" }} gap="32" horizontal="start">
+       {institutions && institutions.length > 0 ? (
+          institutions.map((institution) => (
+            <SearchCard {...institution} key={institution.institutionName} />
+          ))
+        ) : (
+          <Row fillWidth center><Spinner size="xl"/></Row>
+        )}
       </Row>
       <Flex height="40" />
       <Button size="m" variant="secondary">

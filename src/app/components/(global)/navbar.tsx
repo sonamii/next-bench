@@ -71,7 +71,7 @@ export function Navbar() {
           <Button variant="tertiary" size="m" suffixIcon="chevronDown">
             <Text variant="body-default-l">Resources</Text>
           </Button>
-          <Button variant="tertiary" size="m">
+          <Button variant="tertiary" size="m" suffixIcon="arrowTopRight">
             <Text variant="body-default-l">Agentic AI</Text>
           </Button>
           <Button

@@ -3,8 +3,8 @@
 /* :root {
   /*
   /* Example setup for custom colors */
-  /* Generate at: https://once-ui.com/customize */
-  /*
+/* Generate at: https://once-ui.com/customize */
+/*
   --scheme-brand-100: #08002f;
   --scheme-brand-200:  #04025c;
   --scheme-brand-300:  #1f398e;
@@ -79,7 +79,6 @@
   background-color: #555;
 }
 
-
 @media (max-width: 1100px) {
   #pricingGroup {
     display: flex;
@@ -110,17 +109,14 @@
     justify-content: center;
   }
 
-  #headingNavMe{
-    display:none;
+  #headingNavMe {
+    display: none;
   }
 }
 
-
-
-#paddingRightContainer{
+#paddingRightContainer {
   padding-right: 24px !important;
 }
-
 
 @media (min-width: 656px) {
   #paddingRightContainerEdu {
@@ -133,33 +129,28 @@
     display: none;
   }
 
-  #nav2{
+  #nav2 {
     display: flex !important;
   }
   #nav1 {
     display: none !important;
   }
 
-  #footer{
+  #footer {
     flex-direction: column;
     gap: 20;
   }
 
-  #containerMe{
+  #containerMe {
     flex-direction: column !important;
     display: flex !important;
     gap: 16px;
   }
-  
-  #paddingRightContainer{
+
+  #paddingRightContainer {
     padding-right: none !important;
   }
-
-   
 }
-
-
-
 
 @media (max-width: 900px) {
   #cta {
@@ -172,12 +163,41 @@
 }
 
 @media (max-width: 1000px) {
+  #populationGraphContainer {
+    flex-wrap: wrap;
+  }
 
-#populationGraphContainer{
-  flex-wrap: wrap;
+  #reviewsGraphContainer {
+    flex-wrap: wrap;
+  }
 }
 
-#reviewsGraphContainer{
-flex-wrap:wrap;
+@media (max-width: 1250px) {
+  #nameSlugRatingContainer {
+    flex-direction: column;
+  }
 }
+#ratings {
+  max-width: 140px;
+}
+
+@media (max-width: 850px) {
+  #slugRatingContainer {
+    flex-direction: column;
+  }
+
+  #ratings {
+    min-width: 100% !important;
+  }
+  #cityStateContainer {
+    flex-direction: column;
+  }
+
+  #adminRowEdit{
+    flex-direction: column-reverse;
+
+  }
+
+ 
+     
 }

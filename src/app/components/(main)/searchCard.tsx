@@ -63,12 +63,12 @@ export function SearchCard({
               style={{ color: "#787878" }}
             ></Icon>
             <Text onBackground="neutral-weak" variant="body-default-s">
-              Tuition
+              Institution
             </Text>
           </Flex>
           <Row gap="8">
             {institutionPopularity.map((popularity) => (
-              <Kbd data-scaling="110">{popularity}</Kbd>
+              <Kbd data-scaling="110" id={popularity+Math.floor(Math.random() * 100)}>{popularity}</Kbd>
             ))}
           </Row>
         </Row>
