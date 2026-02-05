@@ -115,7 +115,7 @@
 }
 
 #paddingRightContainer {
-  padding-right: 24px !important;
+  padding-right: 0;
 }
 
 @media (min-width: 656px) {
@@ -193,11 +193,7 @@
     flex-direction: column;
   }
 
-  #adminRowEdit{
+  #adminRowEdit {
     flex-direction: column-reverse;
-
   }
-
- 
-     
 }

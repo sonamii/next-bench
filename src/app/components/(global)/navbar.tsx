@@ -2,13 +2,33 @@ import { Button, ThemeSwitcher,Flex,Text, Line } from "@once-ui-system/core";
 import Image from "next/image";
 import {companyLogo} from "@/resources/next-bench.config";
 import "@/resources/custom.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import supabase from "@/app/supabase/client";
 
 export function Navbar() {
 
   const [isSession, setIsSession] = useState(false);
   const router = useRouter();
+
+  // Check session on component mount
+  useEffect(() => {
+    const checkSession = async () => {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+      setIsSession(!!session && !!session.user);
+    };
+
+    checkSession();
+
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setIsSession(!!session && !!session.user);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
 
  
 

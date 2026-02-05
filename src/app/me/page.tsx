@@ -9,25 +9,19 @@ import {
   Flex,
   Row,
   Icon,
-  
   Input,
- 
   HeadingNav,
   HeadingLink,
-
   Textarea,
   useToast,
   Spinner,
 } from "@once-ui-system/core";
-import  { useState } from "react";
+import { useState } from "react";
 import { Navbar } from "../components/(global)/navbar";
 import supabase from "../supabase/client";
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-
-
-
 
 export default function Me() {
   const [user, setUser] = useState({
@@ -47,6 +41,8 @@ export default function Me() {
   const [user_id, setUser_Id] = useState("");
   const { addToast } = useToast();
   const [isUserDataAvailable, setIsUserDataAvailable] = useState(false);
+  const [isFirstUser, setIsFirstUser] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchUserId = async () => {
@@ -93,9 +89,13 @@ export default function Me() {
           isAdmin: data?.is_admin || false,
         });
         setIsUserDataAvailable(true);
+        const allEmpty = Object.values(data).every((v) => v === "" || !v);
+        setIsFirstUser(allEmpty);
+        setIsLoading(false);
       }
       if (error) {
         console.error("Error fetching user data:", error);
+        setIsLoading(false);
       }
     };
     fetchData();
@@ -190,7 +190,7 @@ export default function Me() {
           <Line fillWidth></Line>
         </Column>
 
-        <Row fillWidth horizontal="between" vertical="start">
+        <Row fillWidth horizontal="between" vertical="start" gap="32">
           <Column fillWidth gap="16" id="paddingRightContainer">
             {user.isAdmin ? (
               <Column fillWidth gap="16">
@@ -216,8 +216,12 @@ export default function Me() {
                         Edit, add, update or delete items from the database.
                       </Text>
                     </Column>
-                    <Column fillWidth horizontal='end'>
-                      <Button size="l" fillWidth onClick={() => router.push("/~/admin")}>
+                    <Column fillWidth horizontal="end">
+                      <Button
+                        size="l"
+                        fillWidth
+                        onClick={() => router.push("/~/admin")}
+                      >
                         <Text variant="body-default-m">Go to Admin Panel</Text>
                       </Button>
                     </Column>
@@ -253,7 +257,7 @@ export default function Me() {
                     onChange={(e) => setUser({ ...user, name: e.target.value })}
                     maxLength={50}
                     hasPrefix={
-                      isUserDataAvailable ? (
+                      isUserDataAvailable || isFirstUser || !isLoading ? (
                         <Icon
                           name="userOutline"
                           size="xs"
@@ -296,7 +300,7 @@ export default function Me() {
                       setUser({ ...user, email: e.target.value })
                     }
                     hasPrefix={
-                      isUserDataAvailable ? (
+                      isUserDataAvailable || isFirstUser || !isLoading ? (
                         <Icon name="at" size="xs" onBackground="neutral-weak" />
                       ) : (
                         <Spinner />
@@ -334,7 +338,7 @@ export default function Me() {
                       id="phone"
                       placeholder="Enter your phone number"
                       hasPrefix={
-                        isUserDataAvailable ? (
+                        isUserDataAvailable || isFirstUser || !isLoading ? (
                           <Icon
                             name="phone"
                             size="xs"
@@ -382,7 +386,7 @@ export default function Me() {
                     value={user.city}
                     onChange={(e) => setUser({ ...user, city: e.target.value })}
                     hasPrefix={
-                      isUserDataAvailable ? (
+                      isUserDataAvailable || isFirstUser || !isLoading ? (
                         <Icon
                           name="location"
                           size="xs"
@@ -424,7 +428,7 @@ export default function Me() {
                       setUser({ ...user, state: e.target.value })
                     }
                     hasPrefix={
-                      isUserDataAvailable ? (
+                      isUserDataAvailable || isFirstUser || !isLoading ? (
                         <Icon
                           name="location"
                           size="xs"
@@ -467,7 +471,7 @@ export default function Me() {
                       setUser({ ...user, country: e.target.value })
                     }
                     hasPrefix={
-                      isUserDataAvailable ? (
+                      isUserDataAvailable || isFirstUser || !isLoading ? (
                         <Icon
                           name="location"
                           size="xs"
@@ -534,7 +538,7 @@ export default function Me() {
                         setUser({ ...user, university1: e.target.value })
                       }
                       hasPrefix={
-                        isUserDataAvailable ? (
+                        isUserDataAvailable || isFirstUser || !isLoading ? (
                           <Icon
                             name="school"
                             size="xs"
@@ -559,7 +563,7 @@ export default function Me() {
                       }
                       radius="none"
                       hasPrefix={
-                        isUserDataAvailable ? (
+                        isUserDataAvailable || isFirstUser || !isLoading ? (
                           <Icon
                             name="school"
                             size="xs"
@@ -583,7 +587,7 @@ export default function Me() {
                         setUser({ ...user, university3: e.target.value })
                       }
                       hasPrefix={
-                        isUserDataAvailable ? (
+                        isUserDataAvailable || isFirstUser || !isLoading ? (
                           <Icon
                             name="school"
                             size="xs"
@@ -642,7 +646,7 @@ export default function Me() {
               </Row>
             </Row>
             <Line fillWidth marginTop="s" />
-            <HeadingLink as="h2" id="roadmaps" marginY="xs">
+            <HeadingLink as="h2" id="deletion" marginY="xs">
               Deletion
             </HeadingLink>
             <Row padding="1" radius="l" border="neutral-weak" fillWidth>

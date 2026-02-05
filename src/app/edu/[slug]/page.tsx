@@ -481,7 +481,7 @@ export default function EduPage() {
         ) : (
           <LoadingMetaData />
         )}
-        <Row fillWidth horizontal="between" gap="40">
+        <Row fillWidth horizontal="between" gap="32">
           <Column gap="48" fillWidth id="paddingRightContainerEdu">
             <Line fillWidth />
             {eduData ? (

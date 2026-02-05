@@ -1,6 +1,5 @@
 "use client";
 import "@/resources/custom.css";
-import Lenis from "lenis";
 
 import {
   
@@ -19,39 +18,51 @@ import { Navbar } from "./components/(global)/navbar";
 export default function Home() {
   const [mounted, setMounted] = React.useState(false);
   const [theme, setTheme] = React.useState<"light" | "dark">("light");
+  
 
   React.useEffect(() => {
     setMounted(true);
-    const storedTheme = localStorage.getItem("data-theme") as
-      | "light"
-      | "dark"
-      | "system"
-      | null;
     
-    const initialTheme = storedTheme === "system"
-      ? window.matchMedia("(prefers-color-scheme: dark)").matches
+    const storedTheme = typeof window !== "undefined" 
+      ? localStorage.getItem("data-theme") as
+        | "light"
+        | "dark"
+        | "system"
+        | null
+      : null;
+    
+    const initialTheme = storedTheme === "system" && typeof window !== "undefined"
+      ? (window as any).matchMedia("(prefers-color-scheme: dark)").matches
         ? "dark"
         : "light"
-      : storedTheme ?? "light";
+      : (storedTheme === "light" || storedTheme === "dark") ? storedTheme : "light";
     
     setTheme(initialTheme);
-    document.documentElement.setAttribute("data-theme", initialTheme);
+    if (typeof document !== "undefined") {
+      document.documentElement.setAttribute("data-theme", initialTheme);
+    }
   }, []);
 
   React.useEffect(() => {
     if (!mounted) return;
     
-    document.documentElement.setAttribute("data-theme", theme);
-    const storedTheme = localStorage.getItem("data-theme") as
-      | "light"
-      | "dark"
-      | "system"
-      | null;
+    if (typeof document !== "undefined") {
+      document.documentElement.setAttribute("data-theme", theme);
+    }
+    const storedTheme = typeof window !== "undefined" 
+      ? localStorage.getItem("data-theme") as
+        | "light"
+        | "dark"
+        | "system"
+        | null
+      : null;
     
-    localStorage.setItem(
-      "data-theme",
-      storedTheme === "system" ? theme : storedTheme ?? "light",
-    );
+    if (typeof window !== "undefined") {
+      localStorage.setItem(
+        "data-theme",
+        storedTheme === "system" ? theme : storedTheme ?? "light",
+      );
+    }
   }, [theme, mounted]);
 
 

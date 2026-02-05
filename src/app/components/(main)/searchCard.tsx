@@ -64,7 +64,7 @@ export function SearchCard({
           </Flex>
           <Row gap="8">
             {institutionPopularity.map((popularity) => (
-              <Kbd data-scaling="110" id={popularity+Math.floor(Math.random() * 100)}>{popularity}</Kbd>
+              <Kbd key={popularity + institutionSlug} data-scaling="110" id={popularity+Math.floor(Math.random() * 100)}>{popularity}</Kbd>
             ))}
           </Row>
         </Row>
