@@ -10,7 +10,6 @@ const nextConfig = {
       'www.moe.gov.sg',
       'randomuser.me',
       'p.urbanpro.com'
-
     ],
   },
   sassOptions: {

@@ -13,7 +13,7 @@ import {
   Icon,
 
   SmartLink,
- 
+ useToast,
   Particle,
   Spinner,
 } from "@once-ui-system/core";
@@ -24,6 +24,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 export default function Auth() {
+  const{addToast} = useToast()
   const [theme, setTheme] = useState<"light" | "dark" | "system" | null>(
     typeof window !== "undefined"
       ? localStorage.getItem("data-theme") as
@@ -46,6 +47,11 @@ export default function Auth() {
       // The user will be redirected to the callback page by Supabase
     } catch (error) {
       console.error("Error signing in with Google:", error);
+      addToast({
+        
+        message: "Failed to sign in with Google",
+        variant: "danger",
+      });
     }
   };
 

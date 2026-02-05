@@ -2,8 +2,7 @@ import { Button, ThemeSwitcher,Flex,Text, Line } from "@once-ui-system/core";
 import Image from "next/image";
 import {companyLogo} from "@/resources/next-bench.config";
 import "@/resources/custom.css";
-import supabase from "@/app/supabase/client";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 export function Navbar() {
@@ -11,17 +10,7 @@ export function Navbar() {
   const [isSession, setIsSession] = useState(false);
   const router = useRouter();
 
-  useEffect(() => {
-    const getSession = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (session && session.user) {
-        setIsSession(true);
-      } else {
-        setIsSession(false);
-      }
-    };
-    getSession();
-  }, []);
+ 
 
 
 
@@ -56,7 +45,7 @@ export function Navbar() {
         >
           <Image
             src={companyLogo}
-            onClick={() => window.location.href="/"}
+            onClick={() => router.push("/")}
             alt=""
             width={40}
             height={40}
