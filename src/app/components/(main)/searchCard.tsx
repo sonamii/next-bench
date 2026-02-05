@@ -17,6 +17,7 @@ import {
 import Image from "next/image";
 export function SearchCard({
   institutionName,
+  institutionSlug,
   institutionLogo,
   institutionLocation,
   institutionRating,
@@ -24,6 +25,7 @@ export function SearchCard({
   institutionPopularity,
 }: {
   institutionName: string;
+  institutionSlug: string;
   institutionLogo: string;
   institutionLocation: string;
   institutionRating: number;
@@ -85,7 +87,7 @@ export function SearchCard({
               /{institutionLocation.length > 20 ? institutionLocation.slice(0, 20) + "..." : institutionLocation}
             </Text>
           </Text>
-          <IconButton icon="arrowRight" size="l" href={"/edu/"+institutionName}></IconButton>
+          <IconButton icon="arrowRight" size="l" href={"/edu/"+institutionSlug}></IconButton>
         </Flex>
       </Column>
       <Row vertical="center" horizontal="between" fillWidth  paddingLeft="2">

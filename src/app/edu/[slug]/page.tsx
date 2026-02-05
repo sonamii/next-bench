@@ -342,6 +342,7 @@ const RenderMetadata: React.FC<{
     <Text variant="body-default-l" onBackground="neutral-weak">
       {name || ""}
     </Text>
+    <SmartLink href="/search">Back</SmartLink>
   </Column>
 );
 interface EduData {
@@ -462,7 +463,7 @@ export default function Home() {
       <Navbar />
       <Flex height={"64"} />
 
-      <Column fillWidth vertical="start" maxWidth={"l"} gap="56">
+      <Column fillWidth vertical="start" maxWidth={"l"} gap="40">
         {eduData ? (
           <RenderMetadata
             slug={eduData.metadata.slug}
@@ -523,7 +524,7 @@ export default function Home() {
               fitHeight
               id="headingNavMe"
               data-scaling="110"
-              style={{opacity:"0"}}
+              style={{ opacity: "0" }}
             />
           )}
         </Row>

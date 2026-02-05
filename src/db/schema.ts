@@ -22,3 +22,17 @@ export const profiles = pgTable("profiles", {  // New table
 export const profilesRelations = relations(profiles, ({ one }) => ({
   authUser: one(authUsers, { fields: [profiles.uuid], references: [authUsers.uuid] }),
 }));
+
+
+export const edu = pgTable("edu", {
+  uuid: uuid("id").primaryKey().defaultRandom(),
+  slug: text("slug"),
+  mdx: text("mdx"),
+  createdAt: timestamp("created_at").defaultNow(),
+  ratings: text("ratings").default("0"),
+  desc: text("desc"),
+  name: text("name"),
+  city: text("city"),
+  state: text("state"),
+  tags: text("tags"),
+});
