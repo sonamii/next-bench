@@ -16,12 +16,6 @@ import { PricingSection } from "./components/(main)/pricing";
 import { HeroSection } from "./components/(main)/hero";
 import { Navbar } from "./components/(global)/navbar";
 
-
-// eslint-disable-next-line -- ignore production build errors for lenis initialization
-const lenis = new Lenis({
-  autoRaf: true,
-});
-
 export default function Home() {
   const [mounted, setMounted] = React.useState(false);
   const [theme, setTheme] = React.useState<"light" | "dark">("light");
