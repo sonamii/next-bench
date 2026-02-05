@@ -1,0 +1,1881 @@
+| updatedAt   | name          | type       | slug          |
+| ----------- | ------------- | ---------- | ------------- |
+| jan 29,2026 | IIT Hyderabad | University | iit-hyderabad |
+
+## Description
+
+IIT Hyderabad (IITH) is a premier engineering institute in Telangana, India, renowned forits focus on research, innovation, and hands-on learning. It offers undergraduateand postgraduate programs in fields like AI, biotechnology, and design, while fosteringentrepreneurship through startup incubators and global collaborations, especially with Japaneseuniversities.
+
+## Basic Details
+
+Some common details about the university/tuition/college are given below:
+
+> list > ul
+
+- Estabilishment Year: [2008](https://example.com)
+- Language: [English/Regional](https://example.com)
+- Board: [CBSE/ICSE](https://example.com)
+
+## Contact
+
+Get in touch with us for any queries, suggestions, or feedback. Our team is always here to help you.
+
+> list > ul
+
+- Email: [iith@iith.ac.in](mailto:iith@iith.ac.in)
+- Phone: [+91-1234567890](tel:+91-1234567890)
+- Fax: [+91-1234567890](fax:+91-1234567890)
+- Landline: [+91-1234567890](tel:+91-1234567890)
+- Website: [www.iith.ac.in](https://www.iith.ac.in)
+
+## Location
+
+IIT Hyderabad is located in Hyderabad, Telangana, India. It is situated in the heart of the city,in the vicinity of the Hyderabad International Airport and the Hyderabad Railway Station.
+
+> list > ul
+
+- Check out the map [here](https://www.google.com/maps/place/IIT+Hyderabad/@17.4444444,78.4666667,17z/data=!3m1!4b1!4m5!3m4!1s0x3bcb999999999999:0x3bcb999999999999!8m2!3d17.4444444!4d78.4666667)
+- Nearest Bus Stop: [here](https://www.google.com/maps/place/IIT+Hyderabad/@17.4444444,78.4666667,17z/data=!3m1!4b1!4m5!3m4!1s0x3bcb999999999999:0x3bcb999999999999!8m2!3d17.4444444!4d78.4666667)
+- Nearest Metro Station: [here](https://www.google.com/maps/place/IIT+Hyderabad/@17.4444444,78.4666667,17z/data=!3m1!4b1!4m5!3m4!1s0x3bcb999999999999:0x3bcb999999999999!8m2!3d17.4444444!4d78.4666667)
+
+## Facilities
+
+IIT Hyderabad is equipped with state-of-the-art facilities to support its academic andresearch programs. Some of the facilities include:
+
+> chip > primary
+
+sport,library,computer laboratory,research park,campus recreation center,sports complex,auditorium,student union,institute of pharmaceutical sciences,electronics and communication engineering, |
+
+> chip> secondary
+
+swimming pool, gym, library, hotel |
+
+## Next Rating
+
+Our Agentic AI calculate the ratings based on the data of the institutions. Please check before applying.
+
+> table
+
+| key                 | value |
+| ------------------- | ----- |
+| overall             | 78    |
+| infrastructure      | 96    |
+| job placement rates | 85    |
+| curriculum          | 80    |
+| ambiance            | 75    |
+
+## Courses Offered
+
+We offer a wide range of courses at IIT Hyderabad, including undergraduate, postgraduate, and research programs.
+
+> table > custom(courses)
+
+| Course Name                                            | Years Required | Specialization                                     |
+| ------------------------------------------------------ | -------------- | -------------------------------------------------- |
+| Bachelor of Science in Computer Science                | 4 years        | AI, ML, Web Development                            |
+| Master of Science in Artificial Intelligence           | 2 years        | NLP, Robotics                                      |
+| Bachelor of Science in Electrical Engineering          | 4 years        | Power Systems, Renewable Energy                    |
+| Master of Science in Materials Science and Engineering | 2 years        | Nanotechnology, Composite Materials                |
+| Bachelor of Science in Chemical Engineering            | 4 years        | Process Control, Environmental Engineering         |
+| Master of Science in Machine Learning                  | 2 years        | Recommendation Systems, Computer Vision            |
+| Bachelor of Science in Biotechnology                   | 4 years        | Molecular Biology, Bioinformatics                  |
+| Master of Science in Data Science                      | 2 years        | Data Mining, Predictive Analytics                  |
+| Bachelor of Science in Civil Engineering               | 4 years        | Structural Engineering, Transportation Engineering |
+| Master of Science in Cybersecurity                     | 2 years        | Network Security, Secure Coding                    |
+| Bachelor of Science in Mechanical Engineering          | 4 years        | Mechanical Design, Fluid Mechanics                 |
+
+## Admissions
+
+Admission to IIT Hyderabad is a highly competitive process that evaluates candidates based on their academic merit and other factors.
+
+> list > ol
+
+- Check out the admission [here](https://www.iith.ac.in/admissions)
+  --Note: Admission is highly competitive
+  --And it is also damn, nice
+- Check out the admission process [here](https://www.iith.ac.in/admissions-process)
+
+## Fee Structure
+
+The fee structure for the courses offered by IIT Hyderabad is as follows:
+
+> table > custom(classes)
+
+| Class | Semester Fee (in INR) | Annual Fee (in INR) |
+| :---- | :-------------------- | :------------------ |
+| 1     | 9000                  | 60000               |
+| 2     | 9000                  | 60000               |
+| 3     | 9000                  | 60000               |
+| 4     | 9000                  | 60000               |
+| 5     | 9000                  | 60000               |
+| 6     | 9000                  | 60000               |
+| 7     | 9000                  | 60000               |
+| 8     | 9000                  | 60000               |
+| 9     | 9000                  | 60000               |
+| 10    | 9000                  | 60000               |
+| 11    | 9000                  | 60000               |
+| 12    | 9000                  | 60000               |
+
+## Population
+
+The population of IIT Hyderabad currently stands at around 10,000 students, with a few hundred faculty members and staff.
+
+> chart > pie
+
+| key         | value                      |
+| ----------- | -------------------------- |
+| title       | Student and Teacher Number |
+| description | Student and Teacher Number |
+| legend      | bottom-center              |
+| ring        | 60, 70                     |
+| tooltip     | true                       |
+| gradiant    | flat,gradient,outline      |
+
+> chart > pie > data-table
+
+| key     | value | color |
+| -------- | ----- | ----- |
+| Students | 1000  | aqua  |
+| Teachers | 50    | green |
+
+> chart > bar
+
+| key         | value                       |
+| ----------- | --------------------------- |
+| title       | Number of Students/Teachers |
+| description | Number of Students/Teachers |
+| legend      | bottom-center               |
+| axis        | none                        |
+| grid        | both                        |
+| gradiant    | flat,gradient,outline       |
+
+> chart > bar > data-table
+
+| group         | key     | value | color  |
+| ------------- | ------- | ----- | ------ |
+| Main Campus   | Student | 1000  | red    |
+| Main Campus   | Teacher | 50    | yellow |
+| Research Wing | Student | 200   | purple |
+| Research Wing | Teacher | 20    | blue   |
+
+
+## Placements
+
+IIT Hyderabad boasts excellent placements with top companies recruiting across tech,engineering, and research sectors. The process attracts leading firms offering diverse roles,supported by a dedicated career services team. Students benefit from strong industry tiesand pre-placement offers from internships.
+
+> row(chart2:start)
+
+> chart > line
+
+| key         | value                       |
+| ----------- | --------------------------- |
+| title       | Number of Students/Teachers |
+| description | Number of Students/Teachers |
+| legend      | bottom-center               |
+| axis        | none                        |
+| grid        | both                        |
+| gradiant    | flat,gradient,outline       |
+
+> chart > line > data-table >
+
+| group         | key     | value | color  |
+| ------------- | ------- | ----- | ------ |
+| Main Campus   | Student | 1000  | red    |
+| Main Campus   | Teacher | 50    | yellow |
+| Research Wing | Student | 200   | purple |
+| Research Wing | Teacher | 20    | blue   |
+
+> chart > linebar
+
+| key         | value                       |
+| ----------- | --------------------------- |
+| title       | Number of Students/Teachers |
+| description | Number of Students/Teachers |
+| legend      | bottom-center               |
+| axis        | none                        |
+| grid        | both                        |
+| gradiant    | flat,gradient,outline       |
+
+> chart > linebar > data-table
+
+| group         | key     | value | color  |
+| ------------- | ------- | ----- | ------ |
+| Main Campus   | Student | 1000  | red    |
+| Main Campus   | Teacher | 50    | yellow |
+| Research Wing | Student | 200   | purple |
+| Research Wing | Teacher | 20    | blue   |
+
+> row(chart2:end)
+
+| updatedAt   | name          | type       | slug          |
+| ----------- | ------------- | ---------- | ------------- |
+| jan 29,2026 | IIT Hyderabad | University | iit-hyderabad |
+
+## Description
+
+IIT Hyderabad (IITH) is a premier engineering institute in Telangana, India, renowned forits focus on research, innovation, and hands-on learning. It offers undergraduateand postgraduate programs in fields like AI, biotechnology, and design, while fosteringentrepreneurship through startup incubators and global collaborations, especially with Japaneseuniversities.
+
+## Basic Details
+
+Some common details about the university/tuition/college are given below:
+
+> list > ul
+
+- Estabilishment Year: [2008](https://example.com)
+- Language: [English/Regional](https://example.com)
+- Board: [CBSE/ICSE](https://example.com)
+
+## Contact
+
+Get in touch with us for any queries, suggestions, or feedback. Our team is always here to help you.
+
+> list > ul
+
+- Email: [iith@iith.ac.in](mailto:iith@iith.ac.in)
+- Phone: [+91-1234567890](tel:+91-1234567890)
+- Fax: [+91-1234567890](fax:+91-1234567890)
+- Landline: [+91-1234567890](tel:+91-1234567890)
+- Website: [www.iith.ac.in](https://www.iith.ac.in)
+
+## Location
+
+IIT Hyderabad is located in Hyderabad, Telangana, India. It is situated in the heart of the city,in the vicinity of the Hyderabad International Airport and the Hyderabad Railway Station.
+
+> list > ul
+
+- Check out the map [here](https://www.google.com/maps/place/IIT+Hyderabad/@17.4444444,78.4666667,17z/data=!3m1!4b1!4m5!3m4!1s0x3bcb999999999999:0x3bcb999999999999!8m2!3d17.4444444!4d78.4666667)
+- Nearest Bus Stop: [here](https://www.google.com/maps/place/IIT+Hyderabad/@17.4444444,78.4666667,17z/data=!3m1!4b1!4m5!3m4!1s0x3bcb999999999999:0x3bcb999999999999!8m2!3d17.4444444!4d78.4666667)
+- Nearest Metro Station: [here](https://www.google.com/maps/place/IIT+Hyderabad/@17.4444444,78.4666667,17z/data=!3m1!4b1!4m5!3m4!1s0x3bcb999999999999:0x3bcb999999999999!8m2!3d17.4444444!4d78.4666667)
+
+## Facilities
+
+IIT Hyderabad is equipped with state-of-the-art facilities to support its academic andresearch programs. Some of the facilities include:
+
+> chip > primary
+
+sport,library,computer laboratory,research park,campus recreation center,sports complex,auditorium,student union,institute of pharmaceutical sciences,electronics and communication engineering
+
+> chip> secondary
+
+swimming pool, gym, library, hotel
+
+## Next Rating
+
+Our Agentic AI calculate the ratings based on the data of the institutions. Please check before applying.
+
+> table
+
+| key                 | value |
+| ------------------- | ----- |
+| overall             | 78    |
+| infrastructure      | 96    |
+| job placement rates | 85    |
+| curriculum          | 80    |
+| ambiance            | 75    |
+
+## Courses Offered
+
+We offer a wide range of courses at IIT Hyderabad, including undergraduate, postgraduate, and research programs.
+
+> table > custom(courses)
+
+| Course Name                                            | Years Required | Specialization                                     |
+| ------------------------------------------------------ | -------------- | -------------------------------------------------- |
+| Bachelor of Science in Computer Science                | 4 years        | AI, ML, Web Development                            |
+| Master of Science in Artificial Intelligence           | 2 years        | NLP, Robotics                                      |
+| Bachelor of Science in Electrical Engineering          | 4 years        | Power Systems, Renewable Energy                    |
+| Master of Science in Materials Science and Engineering | 2 years        | Nanotechnology, Composite Materials                |
+| Bachelor of Science in Chemical Engineering            | 4 years        | Process Control, Environmental Engineering         |
+| Master of Science in Machine Learning                  | 2 years        | Recommendation Systems, Computer Vision            |
+| Bachelor of Science in Biotechnology                   | 4 years        | Molecular Biology, Bioinformatics                  |
+| Master of Science in Data Science                      | 2 years        | Data Mining, Predictive Analytics                  |
+| Bachelor of Science in Civil Engineering               | 4 years        | Structural Engineering, Transportation Engineering |
+| Master of Science in Cybersecurity                     | 2 years        | Network Security, Secure Coding                    |
+| Bachelor of Science in Mechanical Engineering          | 4 years        | Mechanical Design, Fluid Mechanics                 |
+
+## Admissions
+
+Admission to IIT Hyderabad is a highly competitive process that evaluates candidates based on their academic merit and other factors.
+
+> list > ol
+
+- Check out the admission [here](https://www.iith.ac.in/admissions)
+  --Note: Admission is highly competitive
+  --And it is also damn, nice
+- Check out the admission process [here](https://www.iith.ac.in/admissions-process)
+
+## Fee Structure
+
+The fee structure for the courses offered by IIT Hyderabad is as follows:
+
+> table > custom(classes)
+
+| Class | Semester Fee (in INR) | Annual Fee (in INR) |
+| :---- | :-------------------- | :------------------ |
+| 1     | 9000                  | 60000               |
+| 2     | 9000                  | 60000               |
+| 3     | 9000                  | 60000               |
+| 4     | 9000                  | 60000               |
+| 5     | 9000                  | 60000               |
+| 6     | 9000                  | 60000               |
+| 7     | 9000                  | 60000               |
+| 8     | 9000                  | 60000               |
+| 9     | 9000                  | 60000               |
+| 10    | 9000                  | 60000               |
+| 11    | 9000                  | 60000               |
+| 12    | 9000                  | 60000               |
+
+## Population
+
+The population of IIT Hyderabad currently stands at around 10,000 students, with a few hundred faculty members and staff.
+
+> chart > pie
+
+| key         | value                      |
+| ----------- | -------------------------- |
+| title       | Student and Teacher Number |
+| description | Student and Teacher Number |
+| legend      | bottom-center              |
+| ring        | 60, 70                     |
+| tooltip     | true                       |
+| gradiant    | flat,gradient,outline      |
+
+> chart > pie > data-table
+
+| key     | value | color |
+| -------- | ----- | ----- |
+| Students | 1000  | aqua  |
+| Teachers | 50    | green |
+
+> chart > bar
+
+| key         | value                       |
+| ----------- | --------------------------- |
+| title       | Number of Students/Teachers |
+| description | Number of Students/Teachers |
+| legend      | bottom-center               |
+| axis        | none                        |
+| grid        | both                        |
+| gradiant    | flat,gradient,outline       |
+
+> chart > bar > data-table
+
+| group         | key     | value | color  |
+| ------------- | ------- | ----- | ------ |
+| Main Campus   | Student | 1000  | red    |
+| Main Campus   | Teacher | 50    | yellow |
+| Research Wing | Student | 200   | purple |
+| Research Wing | Teacher | 20    | blue   |
+
+
+## Placements
+
+IIT Hyderabad boasts excellent placements with top companies recruiting across tech,engineering, and research sectors. The process attracts leading firms offering diverse roles,supported by a dedicated career services team. Students benefit from strong industry tiesand pre-placement offers from internships.
+
+> row(chart2:start)
+
+> chart > line
+
+| key         | value                       |
+| ----------- | --------------------------- |
+| title       | Number of Students/Teachers |
+| description | Number of Students/Teachers |
+| legend      | bottom-center               |
+| axis        | none                        |
+| grid        | both                        |
+| gradiant    | flat,gradient,outline       |
+
+> chart > line > data-table >
+
+| group         | key     | value | color  |
+| ------------- | ------- | ----- | ------ || updatedAt   | name          | type       | slug          |
+| ----------- | ------------- | ---------- | ------------- |
+| jan 29,2026 | IIT Hyderabad | University | iit-hyderabad |
+
+## Description
+
+IIT Hyderabad (IITH) is a premier engineering institute in Telangana, India, renowned forits focus on research, innovation, and hands-on learning. It offers undergraduateand postgraduate programs in fields like AI, biotechnology, and design, while fosteringentrepreneurship through startup incubators and global collaborations, especially with Japaneseuniversities.
+
+## Basic Details
+
+Some common details about the university/tuition/college are given below:
+
+> list > ul
+
+- Estabilishment Year: [2008](https://example.com)
+- Language: [English/Regional](https://example.com)
+- Board: [CBSE/ICSE](https://example.com)
+
+## Contact
+
+Get in touch with us for any queries, suggestions, or feedback. Our team is always here to help you.
+
+> list > ul
+
+- Email: [iith@iith.ac.in](mailto:iith@iith.ac.in)
+- Phone: [+91-1234567890](tel:+91-1234567890)
+- Fax: [+91-1234567890](fax:+91-1234567890)
+- Landline: [+91-1234567890](tel:+91-1234567890)
+- Website: [www.iith.ac.in](https://www.iith.ac.in)
+
+## Location
+
+IIT Hyderabad is located in Hyderabad, Telangana, India. It is situated in the heart of the city,in the vicinity of the Hyderabad International Airport and the Hyderabad Railway Station.
+
+> list > ul
+
+- Check out the map [here](https://www.google.com/maps/place/IIT+Hyderabad/@17.4444444,78.4666667,17z/data=!3m1!4b1!4m5!3m4!1s0x3bcb999999999999:0x3bcb999999999999!8m2!3d17.4444444!4d78.4666667)
+- Nearest Bus Stop: [here](https://www.google.com/maps/place/IIT+Hyderabad/@17.4444444,78.4666667,17z/data=!3m1!4b1!4m5!3m4!1s0x3bcb999999999999:0x3bcb999999999999!8m2!3d17.4444444!4d78.4666667)
+- Nearest Metro Station: [here](https://www.google.com/maps/place/IIT+Hyderabad/@17.4444444,78.4666667,17z/data=!3m1!4b1!4m5!3m4!1s0x3bcb999999999999:0x3bcb999999999999!8m2!3d17.4444444!4d78.4666667)
+
+## Facilities
+
+IIT Hyderabad is equipped with state-of-the-art facilities to support its academic andresearch programs. Some of the facilities include:
+
+> chip > primary
+
+sport,library,computer laboratory,research park,campus recreation center,sports complex,auditorium,student union,institute of pharmaceutical sciences,electronics and communication engineering
+
+> chip> secondary
+
+swimming pool, gym, library, hotel
+
+## Next Rating
+
+Our Agentic AI calculate the ratings based on the data of the institutions. Please check before applying.
+
+> table
+
+| key                 | value |
+| ------------------- | ----- |
+| overall             | 78    |
+| infrastructure      | 96    |
+| job placement rates | 85    |
+| curriculum          | 80    |
+| ambiance            | 75    |
+
+## Courses Offered
+
+We offer a wide range of courses at IIT Hyderabad, including undergraduate, postgraduate, and research programs.
+
+> table > custom(courses)
+
+| Course Name                                            | Years Required | Specialization                                     |
+| ------------------------------------------------------ | -------------- | -------------------------------------------------- |
+| Bachelor of Science in Computer Science                | 4 years        | AI, ML, Web Development                            |
+| Master of Science in Artificial Intelligence           | 2 years        | NLP, Robotics                                      |
+| Bachelor of Science in Electrical Engineering          | 4 years        | Power Systems, Renewable Energy                    |
+| Master of Science in Materials Science and Engineering | 2 years        | Nanotechnology, Composite Materials                |
+| Bachelor of Science in Chemical Engineering            | 4 years        | Process Control, Environmental Engineering         |
+| Master of Science in Machine Learning                  | 2 years        | Recommendation Systems, Computer Vision            |
+| Bachelor of Science in Biotechnology                   | 4 years        | Molecular Biology, Bioinformatics                  |
+| Master of Science in Data Science                      | 2 years        | Data Mining, Predictive Analytics                  |
+| Bachelor of Science in Civil Engineering               | 4 years        | Structural Engineering, Transportation Engineering |
+| Master of Science in Cybersecurity                     | 2 years        | Network Security, Secure Coding                    |
+| Bachelor of Science in Mechanical Engineering          | 4 years        | Mechanical Design, Fluid Mechanics                 |
+
+## Admissions
+
+Admission to IIT Hyderabad is a highly competitive process that evaluates candidates based on their academic merit and other factors.
+
+> list > ol
+
+- Check out the admission [here](https://www.iith.ac.in/admissions)
+  --Note: Admission is highly competitive
+  --And it is also damn, nice
+- Check out the admission process [here](https://www.iith.ac.in/admissions-process)
+
+## Fee Structure
+
+The fee structure for the courses offered by IIT Hyderabad is as follows:
+
+> table > custom(classes)
+
+| Class | Semester Fee (in INR) | Annual Fee (in INR) |
+| :---- | :-------------------- | :------------------ |
+| 1     | 9000                  | 60000               |
+| 2     | 9000                  | 60000               |
+| 3     | 9000                  | 60000               |
+| 4     | 9000                  | 60000               |
+| 5     | 9000                  | 60000               |
+| 6     | 9000                  | 60000               |
+| 7     | 9000                  | 60000               |
+| 8     | 9000                  | 60000               |
+| 9     | 9000                  | 60000               |
+| 10    | 9000                  | 60000               |
+| 11    | 9000                  | 60000               |
+| 12    | 9000                  | 60000               |
+
+## Population
+
+The population of IIT Hyderabad currently stands at around 10,000 students, with a few hundred faculty members and staff.
+
+> chart > pie
+
+| key         | value                      |
+| ----------- | -------------------------- |
+| title       | Student and Teacher Number |
+| description | Student and Teacher Number |
+| legend      | bottom-center              |
+| ring        | 60, 70                     |
+| tooltip     | true                       |
+| gradiant    | flat,gradient,outline      |
+
+> chart > pie > data-table
+
+| key     | value | color |
+| -------- | ----- | ----- |
+| Students | 1000  | aqua  |
+| Teachers | 50    | green |
+
+> chart > bar
+
+| key         | value                       |
+| ----------- | --------------------------- |
+| title       | Number of Students/Teachers |
+| description | Number of Students/Teachers |
+| legend      | bottom-center               |
+| axis        | none                        |
+| grid        | both                        |
+| gradiant    | flat,gradient,outline       |
+
+> chart > bar > data-table
+
+| group         | key     | value | color  |
+| ------------- | ------- | ----- | ------ |
+| Main Campus   | Student | 1000  | red    |
+| Main Campus   | Teacher | 50    | yellow |
+| Research Wing | Student | 200   | purple |
+| Research Wing | Teacher | 20    | blue   |
+
+
+## Placements
+
+IIT Hyderabad boasts excellent placements with top companies recruiting across tech,engineering, and research sectors. The process attracts leading firms offering diverse roles,supported by a dedicated career services team. Students benefit from strong industry tiesand pre-placement offers from internships.
+
+> row(chart2:start)
+
+> chart > line
+
+| key         | value                       |
+| ----------- | --------------------------- |
+| title       | Number of Students/Teachers |
+| description | Number of Students/Teachers |
+| legend      | bottom-center               |
+| axis        | none                        |
+| grid        | both                        |
+| gradiant    | flat,gradient,outline       |
+
+> chart > line > data-table >
+
+| group         | key     | value | color  |
+| ------------- | ------- | ----- | ------ || updatedAt   | name          | type       | slug          |
+| ----------- | ------------- | ---------- | ------------- |
+| jan 29,2026 | IIT Hyderabad | University | iit-hyderabad |
+
+## Description
+
+IIT Hyderabad (IITH) is a premier engineering institute in Telangana, India, renowned forits focus on research, innovation, and hands-on learning. It offers undergraduateand postgraduate programs in fields like AI, biotechnology, and design, while fosteringentrepreneurship through startup incubators and global collaborations, especially with Japaneseuniversities.
+
+## Basic Details
+
+Some common details about the university/tuition/college are given below:
+
+> list > ul
+
+- Estabilishment Year: [2008](https://example.com)
+- Language: [English/Regional](https://example.com)
+- Board: [CBSE/ICSE](https://example.com)
+
+## Contact
+
+Get in touch with us for any queries, suggestions, or feedback. Our team is always here to help you.
+
+> list > ul
+
+- Email: [iith@iith.ac.in](mailto:iith@iith.ac.in)
+- Phone: [+91-1234567890](tel:+91-1234567890)
+- Fax: [+91-1234567890](fax:+91-1234567890)
+- Landline: [+91-1234567890](tel:+91-1234567890)
+- Website: [www.iith.ac.in](https://www.iith.ac.in)
+
+## Location
+
+IIT Hyderabad is located in Hyderabad, Telangana, India. It is situated in the heart of the city,in the vicinity of the Hyderabad International Airport and the Hyderabad Railway Station.
+
+> list > ul
+
+- Check out the map [here](https://www.google.com/maps/place/IIT+Hyderabad/@17.4444444,78.4666667,17z/data=!3m1!4b1!4m5!3m4!1s0x3bcb999999999999:0x3bcb999999999999!8m2!3d17.4444444!4d78.4666667)
+- Nearest Bus Stop: [here](https://www.google.com/maps/place/IIT+Hyderabad/@17.4444444,78.4666667,17z/data=!3m1!4b1!4m5!3m4!1s0x3bcb999999999999:0x3bcb999999999999!8m2!3d17.4444444!4d78.4666667)
+- Nearest Metro Station: [here](https://www.google.com/maps/place/IIT+Hyderabad/@17.4444444,78.4666667,17z/data=!3m1!4b1!4m5!3m4!1s0x3bcb999999999999:0x3bcb999999999999!8m2!3d17.4444444!4d78.4666667)
+
+## Facilities
+
+IIT Hyderabad is equipped with state-of-the-art facilities to support its academic andresearch programs. Some of the facilities include:
+
+> chip > primary
+
+sport,library,computer laboratory,research park,campus recreation center,sports complex,auditorium,student union,institute of pharmaceutical sciences,electronics and communication engineering
+
+> chip> secondary
+
+swimming pool, gym, library, hotel
+
+## Next Rating
+
+Our Agentic AI calculate the ratings based on the data of the institutions. Please check before applying.
+
+> table
+
+| key                 | value |
+| ------------------- | ----- |
+| overall             | 78    |
+| infrastructure      | 96    |
+| job placement rates | 85    |
+| curriculum          | 80    |
+| ambiance            | 75    |
+
+## Courses Offered
+
+We offer a wide range of courses at IIT Hyderabad, including undergraduate, postgraduate, and research programs.
+
+> table > custom(courses)
+
+| Course Name                                            | Years Required | Specialization                                     |
+| ------------------------------------------------------ | -------------- | -------------------------------------------------- |
+| Bachelor of Science in Computer Science                | 4 years        | AI, ML, Web Development                            |
+| Master of Science in Artificial Intelligence           | 2 years        | NLP, Robotics                                      |
+| Bachelor of Science in Electrical Engineering          | 4 years        | Power Systems, Renewable Energy                    |
+| Master of Science in Materials Science and Engineering | 2 years        | Nanotechnology, Composite Materials                |
+| Bachelor of Science in Chemical Engineering            | 4 years        | Process Control, Environmental Engineering         |
+| Master of Science in Machine Learning                  | 2 years        | Recommendation Systems, Computer Vision            |
+| Bachelor of Science in Biotechnology                   | 4 years        | Molecular Biology, Bioinformatics                  |
+| Master of Science in Data Science                      | 2 years        | Data Mining, Predictive Analytics                  |
+| Bachelor of Science in Civil Engineering               | 4 years        | Structural Engineering, Transportation Engineering |
+| Master of Science in Cybersecurity                     | 2 years        | Network Security, Secure Coding                    || updatedAt   | name          | type       | slug          |
+| ----------- | ------------- | ---------- | ------------- |
+| jan 29,2026 | IIT Hyderabad | University | iit-hyderabad |
+
+## Description
+
+IIT Hyderabad (IITH) is a premier engineering institute in Telangana, India, renowned forits focus on research, innovation, and hands-on learning. It offers undergraduateand postgraduate programs in fields like AI, biotechnology, and design, while fosteringentrepreneurship through startup incubators and global collaborations, especially with Japaneseuniversities.| updatedAt   | name          | type       | slug          |
+| ----------- | ------------- | ---------- | ------------- |
+| jan 29,2026 | IIT Hyderabad | University | iit-hyderabad |
+
+## Description
+
+IIT Hyderabad (IITH) is a premier engineering institute in Telangana, India, renowned forits focus on research, innovation, and hands-on learning. It offers undergraduateand postgraduate programs in fields like AI, biotechnology, and design, while fosteringentrepreneurship through startup incubators and global collaborations, especially with Japaneseuniversities.
+
+## Basic Details
+
+Some common details about the university/tuition/college are given below:
+
+> list > ul
+
+- Estabilishment Year: [2008](https://example.com)
+- Language: [English/Regional](https://example.com)
+- Board: [CBSE/ICSE](https://example.com)
+
+## Contact
+
+Get in touch with us for any queries, suggestions, or feedback. Our team is always here to help you.
+
+> list > ul
+
+- Email: [iith@iith.ac.in](mailto:iith@iith.ac.in)
+- Phone: [+91-1234567890](tel:+91-1234567890)
+- Fax: [+91-1234567890](fax:+91-1234567890)
+- Landline: [+91-1234567890](tel:+91-1234567890)
+- Website: [www.iith.ac.in](https://www.iith.ac.in)
+
+## Location
+
+IIT Hyderabad is located in Hyderabad, Telangana, India. It is situated in the heart of the city,in the vicinity of the Hyderabad International Airport and the Hyderabad Railway Station.
+
+> list > ul
+
+- Check out the map [here](https://www.google.com/maps/place/IIT+Hyderabad/@17.4444444,78.4666667,17z/data=!3m1!4b1!4m5!3m4!1s0x3bcb999999999999:0x3bcb999999999999!8m2!3d17.4444444!4d78.4666667)
+- Nearest Bus Stop: [here](https://www.google.com/maps/place/IIT+Hyderabad/@17.4444444,78.4666667,17z/data=!3m1!4b1!4m5!3m4!1s0x3bcb999999999999:0x3bcb999999999999!8m2!3d17.4444444!4d78.4666667)
+- Nearest Metro Station: [here](https://www.google.com/maps/place/IIT+Hyderabad/@17.4444444,78.4666667,17z/data=!3m1!4b1!4m5!3m4!1s0x3bcb999999999999:0x3bcb999999999999!8m2!3d17.4444444!4d78.4666667)
+
+## Facilities
+
+IIT Hyderabad is equipped with state-of-the-art facilities to support its academic andresearch programs. Some of the facilities include:
+
+> chip > primary
+
+sport,library,computer laboratory,research park,campus recreation center,sports complex,auditorium,student union,institute of pharmaceutical sciences,electronics and communication engineering
+
+> chip> secondary
+
+swimming pool, gym, library, hotel
+
+## Next Rating
+
+Our Agentic AI calculate the ratings based on the data of the institutions. Please check before applying.
+
+> table
+
+| key                 | value |
+| ------------------- | ----- |
+| overall             | 78    |
+| infrastructure      | 96    |
+| job placement rates | 85    |
+| curriculum          | 80    |
+| ambiance            | 75    |
+
+## Courses Offered
+
+We offer a wide range of courses at IIT Hyderabad, including undergraduate, postgraduate, and research programs.
+
+> table > custom(courses)
+
+| Course Name                                            | Years Required | Specialization                                     |
+| ------------------------------------------------------ | -------------- | -------------------------------------------------- |
+| Bachelor of Science in Computer Science                | 4 years        | AI, ML, Web Development                            |
+| Master of Science in Artificial Intelligence           | 2 years        | NLP, Robotics                                      |
+| Bachelor of Science in Electrical Engineering          | 4 years        | Power Systems, Renewable Energy                    |
+| Master of Science in Materials Science and Engineering | 2 years        | Nanotechnology, Composite Materials                |
+| Bachelor of Science in Chemical Engineering            | 4 years        | Process Control, Environmental Engineering         |
+| Master of Science in Machine Learning                  | 2 years        | Recommendation Systems, Computer Vision            |
+| Bachelor of Science in Biotechnology                   | 4 years        | Molecular Biology, Bioinformatics                  |
+| Master of Science in Data Science                      | 2 years        | Data Mining, Predictive Analytics                  |
+| Bachelor of Science in Civil Engineering               | 4 years        | Structural Engineering, Transportation Engineering |
+| Master of Science in Cybersecurity                     | 2 years        | Network Security, Secure Coding                    |
+| Bachelor of Science in Mechanical Engineering          | 4 years        | Mechanical Design, Fluid Mechanics                 |
+
+## Admissions
+
+Admission to IIT Hyderabad is a highly competitive process that evaluates candidates based on their academic merit and other factors.
+
+> list > ol
+
+- Check out the admission [here](https://www.iith.ac.in/admissions)
+  --Note: Admission is highly competitive
+  --And it is also damn, nice
+- Check out the admission process [here](https://www.iith.ac.in/admissions-process)
+
+## Fee Structure
+
+The fee structure for the courses offered by IIT Hyderabad is as follows:
+
+> table > custom(classes)
+
+| Class | Semester Fee (in INR) | Annual Fee (in INR) |
+| :---- | :-------------------- | :------------------ |
+| 1     | 9000                  | 60000               |
+| 2     | 9000                  | 60000               |
+| 3     | 9000                  | 60000               |
+| 4     | 9000                  | 60000               |
+| 5     | 9000                  | 60000               |
+| 6     | 9000                  | 60000               |
+| 7     | 9000                  | 60000               |
+| 8     | 9000                  | 60000               |
+| 9     | 9000                  | 60000               |
+| 10    | 9000                  | 60000               |
+| 11    | 9000                  | 60000               |
+| 12    | 9000                  | 60000               |
+
+## Population
+
+The population of IIT Hyderabad currently stands at around 10,000 students, with a few hundred faculty members and staff.
+
+> chart > pie
+
+| key         | value                      |
+| ----------- | -------------------------- |
+| title       | Student and Teacher Number |
+| description | Student and Teacher Number |
+| legend      | bottom-center              |
+| ring        | 60, 70                     |
+| tooltip     | true                       |
+| gradiant    | flat,gradient,outline      |
+
+> chart > pie > data-table
+
+| key     | value | color |
+| -------- | ----- | ----- |
+| Students | 1000  | aqua  |
+| Teachers | 50    | green |
+
+> chart > bar
+
+| key         | value                       |
+| ----------- | --------------------------- |
+| title       | Number of Students/Teachers |
+| description | Number of Students/Teachers |
+| legend      | bottom-center               |
+| axis        | none                        |
+| grid        | both                        |
+| gradiant    | flat,gradient,outline       |
+
+> chart > bar > data-table
+
+| group         | key     | value | color  |
+| ------------- | ------- | ----- | ------ |
+| Main Campus   | Student | 1000  | red    |
+| Main Campus   | Teacher | 50    | yellow |
+| Research Wing | Student | 200   | purple |
+| Research Wing | Teacher | 20    | blue   |
+
+
+## Placements
+
+IIT Hyderabad boasts excellent placements with top companies recruiting across tech,engineering, and research sectors. The process attracts leading firms offering diverse roles| updatedAt   | name          | type       | slug          |
+| ----------- | ------------- | ---------- | ------------- |
+| jan 29,2026 | IIT Hyderabad | University | iit-hyderabad |
+
+## Description
+
+IIT Hyderabad (IITH) is a premier engineering institute in Telangana, India, renowned forits focus on research, innovation, and hands-on learning. It offers undergraduateand postgraduate programs in fields like AI, biotechnology, and design, while fosteringentrepreneurship through startup incubators and global collaborations, especially with Japaneseuniversities.
+
+## Basic Details
+
+Some common details about the university/tuition/college are given below:
+
+> list > ul
+
+- Estabilishment Year: [2008](https://example.com)
+- Language: [English/Regional](https://example.com)
+- Board: [CBSE/ICSE](https://example.com)
+
+## Contact
+
+Get in touch with us for any queries, suggestions, or feedback. Our team is always here to help you.
+
+> list > ul
+
+- Email: [iith@iith.ac.in](mailto:iith@iith.ac.in)
+- Phone: [+91-1234567890](tel:+91-1234567890)
+- Fax: [+91-1234567890](fax:+91-1234567890)
+- Landline: [+91-1234567890](tel:+91-1234567890)
+- Website: [www.iith.ac.in](https://www.iith.ac.in)
+
+## Location
+
+IIT Hyderabad is located in Hyderabad, Telangana, India. It is situated in the heart of the city,in the vicinity of the Hyderabad International Airport and the Hyderabad Railway Station.
+
+> list > ul
+
+- Check out the map [here](https://www.google.com/maps/place/IIT+Hyderabad/@17.4444444,78.4666667,17z/data=!3m1!4b1!4m5!3m4!1s0x3bcb999999999999:0x3bcb999999999999!8m2!3d17.4444444!4d78.4666667)
+- Nearest Bus Stop: [here](https://www.google.com/maps/place/IIT+Hyderabad/@17.4444444,78.4666667,17z/data=!3m1!4b1!4m5!3m4!1s0x3bcb999999999999:0x3bcb999999999999!8m2!3d17.4444444!4d78.4666667)
+- Nearest Metro Station: [here](https://www.google.com/maps/place/IIT+Hyderabad/@17.4444444,78.4666667,17z/data=!3m1!4b1!4m5!3m4!1s0x3bcb999999999999:0x3bcb999999999999!8m2!3d17.4444444!4d78.4666667)
+
+## Facilities
+
+IIT Hyderabad is equipped with state-of-the-art facilities to support its academic andresearch programs. Some of the facilities include:
+
+> chip > primary
+
+sport,library,computer laboratory,research park,campus recreation center,sports complex,auditorium,student union,institute of pharmaceutical sciences,electronics and communication engineering
+
+> chip> secondary
+
+swimming pool, gym, library, hotel
+
+## Next Rating
+
+Our Agentic AI calculate the ratings based on the data of the institutions. Please check before applying.
+
+> table
+
+| key                 | value |
+| ------------------- | ----- |
+| overall             | 78    |
+| infrastructure      | 96    |
+| job placement rates | 85    |
+| curriculum          | 80    |
+| ambiance            | 75    |
+
+## Courses Offered
+
+We offer a wide range of courses at IIT Hyderabad, including undergraduate, postgraduate, and research programs.
+
+> table > custom(courses)
+
+| Course Name                                            | Years Required | Specialization                                     |
+| ------------------------------------------------------ | -------------- | -------------------------------------------------- |
+| Bachelor of Science in Computer Science                | 4 years        | AI, ML, Web Development                            |
+| Master of Science in Artificial Intelligence           | 2 years        | NLP, Robotics                                      |
+| Bachelor of Science in Electrical Engineering          | 4 years        | Power Systems, Renewable Energy                    |
+| Master of Science in Materials Science and Engineering | 2 years        | Nanotechnology, Composite Materials                |
+| Bachelor of Science in Chemical Engineering            | 4 years        | Process Control, Environmental Engineering         |
+| Master of Science in Machine Learning                  | 2 years        | Recommendation Systems, Computer Vision            |
+| Bachelor of Science in Biotechnology                   | 4 years        | Molecular Biology, Bioinformatics                  |
+| Master of Science in Data Science                      | 2 years        | Data Mining, Predictive Analytics                  |
+| Bachelor of Science in Civil Engineering               | 4 years        | Structural Engineering, Transportation Engineering |
+| Master of Science in Cybersecurity                     | 2 years        | Network Security, Secure Coding                    |
+| Bachelor of Science in Mechanical Engineering          | 4 years        | Mechanical Design, Fluid Mechanics                 |
+
+## Admissions
+
+Admission to IIT Hyderabad is a highly competitive process that evaluates candidates based on their academic merit and other factors.
+
+> list > ol
+
+- Check out the admission [here](https://www.iith.ac.in/admissions)
+  --Note: Admission is highly competitive
+  --And it is also damn, nice
+- Check out the admission process [here](https://www.iith.ac.in/admissions-process)
+
+## Fee Structure
+
+The fee structure for the courses offered by IIT Hyderabad is as follows:
+
+> table > custom(classes)
+
+| Class | Semester Fee (in INR) | Annual Fee (in INR) |
+| :---- | :-------------------- | :------------------ |
+| 1     | 9000                  | 60000               |
+| 2     | 9000                  | 60000               |
+| 3     | 9000                  | 60000               |
+| 4     | 9000                  | 60000               |
+| 5     | 9000                  | 60000               |
+| 6     | 9000                  | 60000               |
+| 7     | 9000                  | 60000               |
+| 8     | 9000                  | 60000               |
+| 9     | 9000                  | 60000               |
+| 10    | 9000                  | 60000               |
+| 11    | 9000                  | 60000               |
+| 12    | 9000                  | 60000               |
+
+## Population
+
+The population of IIT Hyderabad currently stands at around 10,000 students, with a few hundred faculty members and staff.
+
+> chart > pie
+
+| key         | value                      |
+| ----------- | -------------------------- |
+| title       | Student and Teacher Number |
+| description | Student and Teacher Number |
+| legend      | bottom-center              |
+| ring        | 60, 70                     |
+| tooltip     | true                       |
+| gradiant    | flat,gradient,outline      |
+
+> chart > pie > data-table
+
+| key     | value | color |
+| -------- | ----- | ----- |
+| Students | 1000  | aqua  |
+| Teachers | 50    | green |
+
+> chart > bar
+
+| key         | value                       |
+| ----------- | --------------------------- |
+| title       | Number of Students/Teachers |
+| description | Number of Students/Teachers |
+| legend      | bottom-center               |
+| axis        | none                        |
+| grid        | both                        |
+| gradiant    | flat,gradient,outline       |
+
+> chart > bar > data-table
+
+| group         | key     | value | color  |
+| ------------- | ------- | ----- | ------ |
+| Main Campus   | Student | 1000  | red    |
+| Main Campus   | Teacher | 50    | yellow |
+| Research Wing | Student | 200   | purple |
+| Research Wing | Teacher | 20    | blue   |
+
+
+## Placements
+
+IIT Hyderabad boasts excellent placements with top companies recruiting across tech,engineering, and research sectors. The process attracts leading firms offering diverse roles,supported by a dedicated career services team. Students benefit from strong industry tiesand pre-placement offers from internships.
+
+> row(chart2:start)
+
+> chart > line
+
+| key         | value                       |
+| ----------- | --------------------------- |
+| title       | Number of Students/Teachers |
+| description | Number of Students/Teachers |
+| legend      | bottom-center               |
+| axis        | none                        |
+| grid        | both                        |
+| gradiant    | flat,gradient,outline       |
+
+> chart > line > data-table >
+
+| group         | key     | value | color  |
+| ------------- | ------- | ----- | ------ |
+| Main Campus   | Student | 1000  | red    |
+| Main Campus   | Teacher | 50    | yellow |
+| Research Wing | Student | 200   | purple |
+| Research Wing | Teacher | 20    | blue   |
+
+> chart > linebar
+
+| key         | value                       |
+| ----------- | --------------------------- |
+| title       | Number of Students/Teachers |
+| description | Number of Students/Teachers |
+| legend      | bottom-center               |
+| axis        | none                        |
+| grid        | both                        |
+| gradiant    | flat,gradient,outline       |
+
+> chart > linebar > data-table
+
+| group         | key     | value | color  |
+| ------------- | ------- | ----- | ------ |
+| Main Campus   | Student | 1000  | red    |
+| Main Campus   | Teacher | 50    | yellow |
+| Research Wing | Student | 200   | purple |
+| Research Wing | Teacher | 20    | blue   |
+
+> row(chart2:end)
+
+,supported by a dedicated career services team. Students benefit from strong industry tiesand pre-placement offers from inter| updatedAt   | name          | type       | slug          |
+| ----------- | ------------- | ---------- | ------------- |
+| jan 29,2026 | IIT Hyderabad | University | iit-hyderabad |
+
+## Description
+
+IIT Hyderabad (IITH) is a premier engineering institute in Telangana, India, renowned forits focus on research, innovation, and hands-on learning. It offers undergraduateand postgraduate programs in fields like AI, biotechnology, and design, while fosteringentrepreneurship through startup incubators and global collaborations, especially with Japaneseuniversities.
+
+## Basic Details
+
+Some common details about the university/tuition/college are given below:
+
+> list > ul
+
+- Estabilishment Year: [2008](https://example.com)
+- Language: [English/Regional](https://example.com)
+- Board: [CBSE/ICSE](https://example.com)
+
+## Contact
+
+Get in touch with us for any queries, suggestions, or feedback. Our team is always here to help you.
+
+> list > ul
+
+- Email: [iith@iith.ac.in](mailto:iith@iith.ac.in)
+- Phone: [+91-1234567890](tel:+91-1234567890)
+- Fax: [+91-1234567890](fax:+91-1234567890)
+- Landline: [+91-1234567890](tel:+91-1234567890)
+- Website: [www.iith.ac.in](https://www.iith.ac.in)
+
+## Location
+
+IIT Hyderabad is located in Hyderabad, Telangana, India. It is situated in the heart of the city,in the vicinity of the Hyderabad International Airport and the Hyderabad Railway Station.
+
+> list > ul
+
+- Check out the map [here](https://www.google.com/maps/place/IIT+Hyderabad/@17.4444444,78.4666667,17z/data=!3m1!4b1!4m5!3m4!1s0x3bcb999999999999:0x3bcb999999999999!8m2!3d17.4444444!4d78.4666667)
+- Nearest Bus Stop: [here](https://www.google.com/maps/place/IIT+Hyderabad/@17.4444444,78.4666667,17z/data=!3m1!4b1!4m5!3m4!1s0x3bcb999999999999:0x3bcb999999999999!8m2!3d17.4444444!4d78.4666667)
+- Nearest Metro Station: [here](https://www.google.com/maps/place/IIT+Hyderabad/@17.4444444,78.4666667,17z/data=!3m1!4b1!4m5!3m4!1s0x3bcb999999999999:0x3bcb999999999999!8m2!3d17.4444444!4d78.4666667)
+
+## Facilities
+
+IIT Hyderabad is equipped with state-of-the-art facilities to support its academic andresearch programs. Some of the facilities include:
+
+> chip > primary
+
+sport,library,computer laboratory,research park,campus recreation center,sports complex,auditorium,student union,institute of pharmaceutical sciences,electronics and communication engineering
+
+> chip> secondary
+
+swimming pool, gym, library, hotel
+
+## Next Rating
+
+Our Agentic AI calculate the ratings based on the data of the institutions. Please check before applying.
+
+> table
+
+| key                 | value |
+| ------------------- | ----- |
+| overall             | 78    |
+| infrastructure      | 96    |
+| job placement rates | 85    |
+| curriculum          | 80    |
+| ambiance            | 75    |
+
+## Courses Offered
+
+We offer a wide range of courses at IIT Hyderabad, including undergraduate, postgraduate, and research programs.
+
+> table > custom(courses)
+
+| Course Name                                            | Years Required | Specialization                                     |
+| ------------------------------------------------------ | -------------- | -------------------------------------------------- |
+| Bachelor of Science in Computer Science                | 4 years        | AI, ML, Web Development                            |
+| Master of Science in Artificial Intelligence           | 2 years        | NLP, Robotics                                      |
+| Bachelor of Science in Electrical Engineering          | 4 years        | Power Systems, Renewable Energy                    |
+| Master of Science in Materials Science and Engineering | 2 years        | Nanotechnology, Composite Materials                |
+| Bachelor of Science in Chemical Engineering            | 4 years        | Process Control, Environmental Engineering         |
+| Master of Science in Machine Learning                  | 2 years        | Recommendation Systems, Computer Vision            |
+| Bachelor of Science in Biotechnology                   | 4 years        | Molecular Biology, Bioinformatics                  |
+| Master of Science in Data Science                      | 2 years        | Data Mining, Predictive Analytics                  |
+| Bachelor of Science in Civil Engineering               | 4 years        | Structural Engineering, Transportation Engineering |
+| Master of Science in Cybersecurity                     | 2 years        | Network Security, Secure Coding                    |
+| Bachelor of Science in Mechanical Engineering          | 4 years        | Mechanical Design, Fluid Mechanics                 |
+
+## Admissions
+
+Admission to IIT Hyderabad is a highly competitive process that evaluates candidates based on their academic merit and other factors.
+
+> list > ol
+
+- Check out the admission [here](https://www.iith.ac.in/admissions)
+  --Note: Admission is highly competitive
+  --And it is also damn, nice
+- Check out the admission process [here](https://www.iith.ac.in/admissions-process)
+
+## Fee Structure
+
+The fee structure for the courses offered by IIT Hyderabad is as follows:
+
+> table > custom(classes)
+
+| Class | Semester Fee (in INR) | Annual Fee (in INR) |
+| :---- | :-------------------- | :------------------ |
+| 1     | 9000                  | 60000               |
+| 2     | 9000                  | 60000               |
+| 3     | 9000                  | 60000               |
+| 4     | 9000                  | 60000               |
+| 5     | 9000                  | 60000               |
+| 6     | 9000                  | 60000               |
+| 7     | 9000                  | 60000               |
+| 8     | 9000                  | 60000               |
+| 9     | 9000                  | 60000               |
+| 10    | 9000                  | 60000               |
+| 11    | 9000                  | 60000               |
+| 12    | 9000                  | 60000               |
+
+## Population
+
+The population of IIT Hyderabad currently stands at around 10,000 students, with a few hundred faculty members and staff.
+
+> chart > pie
+
+| key         | value                      |
+| ----------- | -------------------------- |
+| title       | Student and Teacher Number |
+| description | Student and Teacher Number |
+| legend      | bottom-center              |
+| ring        | 60, 70                     |
+| tooltip     | true                       |
+| gradiant    | flat,gradient,outline      |
+
+> chart > pie > data-table
+
+| key     | value | color |
+| -------- | ----- | ----- |
+| Students | 1000  | aqua  |
+| Teachers | 50    | green |
+
+> chart > bar
+
+| key         | value                       |
+| ----------- | --------------------------- |
+| title       | Number of Students/Teachers |
+| description | Number of Students/Teachers |
+| legend      | bottom-center               |
+| axis        | none                        |
+| grid        | both                        |
+| gradiant    | flat,gradient,outline       |
+
+> chart > bar > data-table
+
+| group         | key     | value | color  |
+| ------------- | ------- | ----- | ------ |
+| Main Campus   | Student | 1000  | red    |
+| Main Campus   | Teacher | 50    | yellow |
+| Research Wing | Student | 200   | purple |
+| Research Wing | Teacher | 20    | blue   |
+
+
+## Placements
+
+IIT Hyderabad boasts excellent placements with top companies recruiting across tech,engineering, and research sectors. The process attracts leading firms offering diverse roles,supported by a dedicated career services team. Students benefit from strong industry tiesand pre-placement offers from internships.
+
+> row(chart2:start)
+
+> chart > line
+
+| key         | value                       |
+| ----------- | --------------------------- |
+| title       | Number of Students/Teachers |
+| description | Number of Students/Teachers |
+| legend      | bottom-center               |
+| axis        | none                        |
+| grid        | both                        |
+| gradiant    | flat,gradient,outline       |
+
+> chart > line > data-table >
+
+| group         | key     | value | color  |
+| ------------- | ------- | ----- | ------ |
+| Main Campus   | Student | 1000  | red    |
+| Main Campus   | Teacher | 50    | yellow |
+| Research Wing | Student | 200   | purple |
+| Research Wing | Teacher | 20    | blue   |
+
+> chart > linebar
+
+| key         | value                       |
+| ----------- | --------------------------- |
+| title       | Number of Students/Teachers |
+| description | Number of Students/Teachers |
+| legend      | bottom-center               |
+| axis        | none                        |
+| grid        | both                        |
+| gradiant    | flat,gradient,outline       |
+
+> chart > linebar > data-table
+
+| group         | key     | value | color  |
+| ------------- | ------- | ----- | ------ |
+| Main Campus   | Student | 1000  | red    |
+| Main Campus   | Teacher | 50    | yellow |
+| Research Wing | Student | 200   | purple |
+| Research Wing | Teacher | 20    | blue   |
+
+> row(chart2:end)
+
+nships.
+
+> row(chart2:start)
+
+> chart > line
+
+| key         | value                       |
+| ----------- | --------------------------- |
+| title       | Number of Students/Teachers |
+| description | Number of Students/Teachers |
+| legend      | bottom-center               |
+| axis        | none                        |
+| grid        | both                        |
+| gradiant    | flat,gradient,outline       |
+
+> chart > line > data-table >
+
+| group         | key     | value | color  |
+| ------------- | ------- | ----- | ------ |
+| Main Campus   | Student | 1000  | red    |
+| Main Campus   | Teacher | 50    | yellow |
+| Research Wing | Student | 200   | purple |
+| Research Wing | Teacher | 20    | blue   |
+
+> chart > linebar
+
+| key         | value                       |
+| ----------- | --------------------------- |
+| title       | Number of Students/Teachers |
+| description | Number of Students/Teachers |
+| legend      | bottom-center               |
+| axis        | none                        |
+| grid        | both                        |
+| gradiant    | flat,gradient,outline       |
+
+> chart > linebar > data-table
+
+| group         | key     | value | color  |
+| ------------- | ------- | ----- | ------ |
+| Main Campus   | Student | 1000  | red    |
+| Main Campus   | Teacher | 50    | yellow |
+| Research Wing | Student | 200   | purple |
+| Research Wing | Teacher | 20    | blue   |
+
+> row(chart2:end)
+
+
+
+## Basic Details
+
+Some common details about the university/tuition/college are given below:
+
+> list > ul
+
+- Estabilishment Year: [2008](https://example.com)
+- Language: [English/Regional](https://example.com)
+- Board: [CBSE/ICSE](https://example.com)
+
+## Contact
+
+Get in touch with us for any queries, suggestions, or feedback. Our team is always here to help you.
+
+> list > ul
+
+- Email: [iith@iith.ac.in](mailto:iith@iith.ac.in)
+- Phone: [+91-1234567890](tel:+91-1234567890)
+- Fax: [+91-1234567890](fax:+91-1234567890)
+- Landline: [+91-1234567890](tel:+91-1234567890)
+- Website: [www.iith.ac.in](https://www.iith.ac.in)
+
+## Location
+
+IIT Hyderabad is located in Hyderabad, Telangana, India. It is situated in the heart of the city,in the vicinity of the Hyderabad International Airport and the Hyderabad Railway Station.
+
+> list > ul
+
+- Check out the map [here](https://www.google.com/maps/place/IIT+Hyderabad/@17.4444444,78.4666667,17z/data=!3m1!4b1!4m5!3m4!1s0x3bcb999999999999:0x3bcb999999999999!8m2!3d17.4444444!4d78.4666667)
+- Nearest Bus Stop: [here](https://www.google.com/maps/place/IIT+Hyderabad/@17.4444444,78.4666667,17z/data=!3m1!4b1!4m5!3m4!1s0x3bcb999999999999:0x3bcb999999999999!8m2!3d17.4444444!4d78.4666667)
+- Nearest Metro Station: [here](https://www.google.com/maps/place/IIT+Hyderabad/@17.4444444,78.4666667,17z/data=!3m1!4b1!4m5!3m4!1s0x3bcb999999999999:0x3bcb999999999999!8m2!3d17.4444444!4d78.4666667)
+
+## Facilities
+
+IIT Hyderabad is equipped with state-of-the-art facilities to support its academic andresearch programs. Some of the facilities include:
+
+> chip > primary
+
+sport,library,computer laboratory,research park,campus recreation center,sports complex,auditorium,student union,institute of pharmaceutical sciences,electronics and communication engineering
+
+> chip> secondary
+
+swimming pool, gym, library, hotel
+
+## Next Rating
+
+Our Agentic AI calculate the ratings based on the data of the institutions. Please check before applying.
+
+> table
+
+| key                 | value |
+| ------------------- | ----- |
+| overall             | 78    |
+| infrastructure      | 96    |
+| job placement rates | 85    |
+| curriculum          | 80    |
+| ambiance            | 75    |
+
+## Courses Offered
+
+We offer a wide range of courses at IIT Hyderabad, including undergraduate, postgraduate, and research programs.
+
+> table > custom(courses)| updatedAt   | name          | type       | slug          |
+| ----------- | ------------- | ---------- | ------------- |
+| jan 29,2026 | IIT Hyderabad | University | iit-hyderabad |
+
+## Description
+
+IIT Hyderabad (IITH) is a premier engineering institute in Telangana, India, renowned forits focus on research, innovation, and hands-on learning. It offers undergraduateand postgraduate programs in fields like AI, biotechnology, and design, while fosteringentrepreneurship through startup incubators and global collaborations, especially with Japaneseuniversities.
+
+## Basic Details
+
+Some common details about the university/tuition/college are given below:
+
+> list > ul
+
+- Estabilishment Year: [2008](https://example.com)
+- Language: [English/Regional](https://example.com)
+- Board: [CBSE/ICSE](https://example.com)
+
+## Contact
+
+Get in touch with us for any queries, suggestions, or feedback. Our team is always here to help you.
+
+> list > ul
+
+- Email: [iith@iith.ac.in](mailto:iith@iith.ac.in)
+- Phone: [+91-1234567890](tel:+91-1234567890)
+- Fax: [+91-1234567890](fax:+91-1234567890)
+- Landline: [+91-1234567890](tel:+91-1234567890)
+- Website: [www.iith.ac.in](https://www.iith.ac.in)
+
+## Location
+
+IIT Hyderabad is located in Hyderabad, Telangana, India. It is situated in the heart of the city,in the vicinity of the Hyderabad International Airport and the Hyderabad Railway Station.
+
+> list > ul
+
+- Check out the map [here](https://www.google.com/maps/place/IIT+Hyderabad/@17.4444444,78.4666667,17z/data=!3m1!4b1!4m5!3m4!1s0x3bcb999999999999:0x3bcb999999999999!8m2!3d17.4444444!4d78.4666667)
+- Nearest Bus Stop: [here](https://www.google.com/maps/place/IIT+Hyderabad/@17.4444444,78.4666667,17z/data=!3m1!4b1!4m5!3m4!1s0x3bcb999999999999:0x3bcb999999999999!8m2!3d17.4444444!4d78.4666667)
+- Nearest Metro Station: [here](https://www.google.com/maps/place/IIT+Hyderabad/@17.4444444,78.4666667,17z/data=!3m1!4b1!4m5!3m4!1s0x3bcb999999999999:0x3bcb999999999999!8m2!3d17.4444444!4d78.4666667)
+
+## Facilities
+
+IIT Hyderabad is equipped with state-of-the-art facilities to support its academic andresearch programs. Some of the facilities include:
+
+> chip > primary
+
+sport,library,computer laboratory,research park,campus recreation center,sports complex,auditorium,student union,institute of pharmaceutical sciences,electronics and communication engineering
+
+> chip> secondary
+
+swimming pool, gym, library, hotel
+
+## Next Rating
+
+Our Agentic AI calculate the ratings based on the data of the institutions. Please check before applying.
+
+> table
+
+| key                 | value |
+| ------------------- | ----- |
+| overall             | 78    |
+| infrastructure      | 96    |
+| job placement rates | 85    |
+| curriculum          | 80    |
+| ambiance            | 75    |
+
+## Courses Offered
+
+We offer a wide range of courses at IIT Hyderabad, including undergraduate, postgraduate, and research programs.
+
+> table > custom(courses)
+
+| Course Name                                            | Years Required | Specialization                                     |
+| ------------------------------------------------------ | -------------- | -------------------------------------------------- |
+| Bachelor of Science in Computer Science                | 4 years        | AI, ML, Web Development                            |
+| Master of Science in Artificial Intelligence           | 2 years        | NLP, Robotics                                      |
+| Bachelor of Science in Electrical Engineering          | 4 years        | Power Systems, Renewable Energy                    |
+| Master of Science in Materials Science and Engineering | 2 years        | Nanotechnology, Composite Materials                |
+| Bachelor of Science in Chemical Engineering            | 4 years        | Process Control, Environmental Engineering         |
+| Master of Science in Machine Learning                  | 2 years        | Recommendation Systems, Computer Vision            |
+| Bachelor of Science in Biotechnology                   | 4 years        | Molecular Biology, Bioinformatics                  |
+| Master of Science in Data Science                      | 2 years        | Data Mining, Predictive Analytics                  |
+| Bachelor of Science in Civil Engineering               | 4 years        | Structural Engineering, Transportation Engineering |
+| Master of Science in Cybersecurity                     | 2 years        | Network Security, Secure Coding                    |
+| Bachelor of Science in Mechanical Engineering          | 4 years        | Mechanical Design, Fluid Mechanics                 |
+
+## Admissions
+
+Admission to IIT Hyderabad is a highly competitive process that evaluates candidates based on their academic merit and other factors.
+
+> list > ol
+
+- Check out the admission [here](https://www.iith.ac.in/admissions)
+  --Note: Admission is highly competitive
+  --And it is also damn, nice
+- Check out the admission process [here](https://www.iith.ac.in/admissions-process)
+
+## Fee Structure
+
+The fee structure for the courses offered by IIT Hyderabad is as follows:
+
+> table > custom(classes)
+
+| Class | Semester Fee (in INR) | Annual Fee (in INR) |
+| :---- | :-------------------- | :------------------ |
+| 1     | 9000                  | 60000               |
+| 2     | 9000                  | 60000               |
+| 3     | 9000                  | 60000               |
+| 4     | 9000                  | 60000               |
+| 5     | 9000                  | 60000               |
+| 6     | 9000                  | 60000               |
+| 7     | 9000                  | 60000               |
+| 8     | 9000                  | 60000               |
+| 9     | 9000                  | 60000               |
+| 10    | 9000                  | 60000               |
+| 11    | 9000                  | 60000               |
+| 12    | 9000                  | 60000               |
+
+## Population
+
+The population of IIT Hyderabad currently stands at around 10,000 students, with a few hundred faculty members and staff.
+
+> chart > pie
+
+| key         | value                      |
+| ----------- | -------------------------- |
+| title       | Student and Teacher Number |
+| description | Student and Teacher Number |
+| legend      | bottom-center              |
+| ring        | 60, 70                     |
+| tooltip     | true                       |
+| gradiant    | flat,gradient,outline      |
+
+> chart > pie > data-table
+
+| key     | value | color |
+| -------- | ----- | ----- |
+| Students | 1000  | aqua  |
+| Teachers | 50    | green |
+
+> chart > bar
+
+| key         | value                       |
+| ----------- | --------------------------- |
+| title       | Number of Students/Teachers |
+| description | Number of Students/Teachers |
+| legend      | bottom-center               |
+| axis        | none                        |
+| grid        | both                        |
+| gradiant    | flat,gradient,outline       |
+
+> chart > bar > data-table
+
+| group         | key     | value | color  |
+| ------------- | ------- | ----- | ------ |
+| Main Campus   | Student | 1000  | red    |
+| Main Campus   | Teacher | 50    | yellow |
+| Research Wing | Student | 200   | purple |
+| Research Wing | Teacher | 20    | blue   |
+
+
+## Placements
+
+IIT Hyderabad boasts excellent placements with top companies recruiting across tech,engineering, and research sectors. The process attracts leading firms offering diverse roles,supported by a dedicated career services team. Students benefit from strong industry tiesand pre-placement offers from internships.
+
+> row(chart2:start)
+
+> chart > line
+
+| key         | value                       |
+| ----------- | --------------------------- |
+| title       | Number of Students/Teachers |
+| description | Number of Students/Teachers |
+| legend      | bottom-center               |
+| axis        | none                        |
+| grid        | both                        |
+| gradiant    | flat,gradient,outline       |
+
+> chart > line > data-table >
+
+| group         | key     | value | color  |
+| ------------- | ------- | ----- | ------ |
+| Main Campus   | Student | 1000  | red    |
+| Main Campus   | Teacher | 50    | yellow |
+| Research Wing | Student | 200   | purple |
+| Research Wing | Teacher | 20    | blue   |
+
+> chart > linebar
+
+| key         | value                       |
+| ----------- | --------------------------- |
+| title       | Number of Students/Teachers |
+| description | Number of Students/Teachers |
+| legend      | bottom-center               |
+| axis        | none                        |
+| grid        | both                        |
+| gradiant    | flat,gradient,outline       |
+
+> chart > linebar > data-table
+
+| group         | key     | value | color  |
+| ------------- | ------- | ----- | ------ |
+| Main Campus   | Student | 1000  | red    |
+| Main Campus   | Teacher | 50    | yellow |
+| Research Wing | Student | 200   | purple |
+| Research Wing | Teacher | 20    | blue   |
+
+> row(chart2:end)
+
+
+
+| Course Name                                            | Years Required | Specialization                                     |
+| ------------------------------------------------------ | -------------- | -------------------------------------------------- |
+| Bachelor of Science in Computer Science                | 4 years        | AI, ML, Web Development                            |
+| Master of Science in Artificial Intelligence           | 2 years        | NLP, Robotics                                      |
+| Bachelor of Science in Electrical Engineering          | 4 years        | Power Systems, Renewable Energy                    |
+| Master of Science in Materials Science and Engineering | 2 years        | Nanotechnology, Composite Materials                |
+| Bachelor of Science in Chemical Engineering            | 4 years        | Process Control, Environmental Engineering         |
+| Master of Science in Machine Learning                  | 2 years        | Recommendation Systems, Computer Vision            |
+| Bachelor of Science in Biotechnology                   | 4 years        | Molecular Biology, Bioinformatics                  |
+| Master of Science in Data Science                      | 2 years        | Data Mining, Predictive Analytics                  |
+| Bachelor of Science in Civil Engineering               | 4 years        | Structural Engineering, Transportation Engineering |
+| Master of Science in Cybersecurity                     | 2 years        | Network Security, Secure Coding                    |
+| Bachelor of Science in Mechanical Engineering          | 4 years        | Mechanical Design, Fluid Mechanics                 |
+
+## Admissions
+
+Admission to IIT Hyderabad is a highly competitive process that evaluates candidates based on their academic merit and other factors.
+
+> list > ol
+
+- Check out the admission [here](https://www.iith.ac.in/admissions)
+  --Note: Admission is highly competitive
+  --And it is also damn, nice
+- Check out the admission process [here](https://www.iith.ac.in/admissions-process)
+
+## Fee Structure
+
+The fee structure for the courses offered by IIT Hyderabad is as follows:
+
+> table > custom(classes)
+
+| Class | Semester Fee (in INR) | Annual Fee (in INR) |
+| :---- | :-------------------- | :------------------ |
+| 1     | 9000                  | 60000               |
+| 2     | 9000                  | 60000               |
+| 3     | 9000                  | 60000               |
+| 4     | 9000                  | 60000               |
+| 5     | 9000                  | 60000               |
+| 6     | 9000                  | 60000               |
+| 7     | 9000                  | 60000               |
+| 8     | 9000                  | 60000               |
+| 9     | 9000                  | 60000               |
+| 10    | 9000                  | 60000               |
+| 11    | 9000                  | 60000               |
+| 12    | 9000                  | 60000               |
+
+## Population
+
+The population of IIT Hyderabad currently stands at around 10,000 students, with a few hundred faculty members and staff.
+
+> chart > pie
+
+| key         | value                      |
+| ----------- | -------------------------- |
+| title       | Student and Teacher Number |
+| description | Student and Teacher Number |
+| legend      | bottom-center              |
+| ring        | 60, 70                     |
+| tooltip     | true                       |
+| gradiant    | flat,gradient,outline      |
+
+> chart > pie > data-table
+
+| key     | value | color |
+| -------- | ----- | ----- |
+| Students | 1000  | aqua  |
+| Teachers | 50    | green |
+
+> chart > bar
+
+| key         | value                       |
+| ----------- | --------------------------- |
+| title       | Number of Students/Teachers |
+| description | Number of Students/Teachers |
+| legend      | bottom-center               |
+| axis        | none                        |
+| grid        | both                        |
+| gradiant    | flat,gradient,outline       |
+
+> chart > bar > data-table
+
+| group         | key     | value | color  |
+| ------------- | ------- | ----- | ------ |
+| Main Campus   | Student | 1000  | red    |
+| Main Campus   | Teacher | 50    | yellow |
+| Research Wing | Student | 200   | purple |
+| Research Wing | Teacher | 20    | blue   |
+
+
+## Placements
+
+IIT Hyderabad boasts excellent placements with top companies recruiting across tech,engineering, and research sectors. The process attracts leading firms offering diverse roles,supported by a dedicated career services team. Students benefit from strong industry tiesand pre-placement offers from internships.
+
+> row(chart2:start)
+
+> chart > line
+
+| key         | value                       |
+| ----------- | --------------------------- |
+| title       | Number of Students/Teachers |
+| description | Number of Students/Teachers |
+| legend      | bottom-center               |
+| axis        | none                        |
+| grid        | both                        |
+| gradiant    | flat,gradient,outline       |
+
+> chart > line > data-table >
+
+| group         | key     | value | color  |
+| ------------- | ------- | ----- | ------ |
+| Main Campus   | Student | 1000  | red    |
+| Main Campus   | Teacher | 50    | yellow |
+| Research Wing | Student | 200   | purple |
+| Research Wing | Teacher | 20    | blue   |
+
+> chart > linebar
+
+| key         | value                       |
+| ----------- | --------------------------- |
+| title       | Number of Students/Teachers |
+| description | Number of Students/Teachers |
+| legend      | bottom-center               |
+| axis        | none                        |
+| grid        | both                        |
+| gradiant    | flat,gradient,outline       |
+
+> chart > linebar > data-table
+
+| group         | key     | value | color  |
+| ------------- | ------- | ----- | ------ |
+| Main Campus   | Student | 1000  | red    |
+| Main Campus   | Teacher | 50    | yellow |
+| Research Wing | Student | 200   | purple |
+| Research Wing | Teacher | 20    | blue   |
+
+> row(chart2:end)
+
+
+| Bachelor of Science in Mechanical Engineering          | 4 years        | Mechanical Design, Fluid Mechanics                 |
+
+## Admissions
+
+Admission to IIT Hyderabad is a highly competitive process that evaluates candidates based on their academic merit and other factors.
+
+> list > ol
+
+- Check out the admission [here](https://www.iith.ac.in/admissions)
+  --Note: Admission is highly competitive
+  --And it is also damn, nice
+- Check out the admission process [here](https://www.iith.ac.in/admissions-process)
+
+## Fee Structure
+
+The fee structure for the courses offered by IIT Hyderabad is as follows:
+
+> table > custom(classes)
+
+| Class | Semester Fee (in INR) | Annual Fee (in INR) |
+| :---- | :-------------------- | :------------------ |
+| 1     | 9000                  | 60000               |
+| 2     | 9000                  | 60000               |
+| 3     | 9000                  | 60000               |
+| 4     | 9000                  | 60000               |
+| 5     | 9000                  | 60000               |
+| 6     | 9000                  | 60000               |
+| 7     | 9000                  | 60000               |
+| 8     | 9000                  | 60000               |
+| 9     | 9000                  | 60000               |
+| 10    | 9000                  | 60000               |
+| 11    | 9000                  | 60000               |
+| 12    | 9000                  | 60000               |
+
+## Population
+
+The population of IIT Hyderabad currently stands at around 10,000 students, with a few hundred faculty members and staff.
+
+> chart > pie
+
+| key         | value                      |
+| ----------- | -------------------------- |
+| title       | Student and Teacher Number |
+| description | Student and Teacher Number |
+| legend      | bottom-center              |
+| ring        | 60, 70                     |
+| tooltip     | true                       |
+| gradiant    | flat,gradient,outline      |
+
+> chart > pie > data-table
+
+| key     | value | color |
+| -------- | ----- | ----- |
+| Students | 1000  | aqua  |
+| Teachers | 50    | green |
+
+> chart > bar
+
+| key         | value                       |
+| ----------- | --------------------------- |
+| title       | Number of Students/Teachers |
+| description | Number of Students/Teachers |
+| legend      | bottom-center               |
+| axis        | none                        |
+| grid        | both                        |
+| gradiant    | flat,gradient,outline       |
+
+> chart > bar > data-table
+
+| group         | key     | value | color  |
+| ------------- | ------- | ----- | ------ |
+| Main Campus   | Student | 1000  | red    |
+| Main Campus   | Teacher | 50    | yellow |
+| Research Wing | Student | 200   | purple |
+| Research Wing | Teacher | 20    | blue   |
+
+
+## Placements
+
+IIT Hyderabad boasts excellent placements with top companies recruiting across tech,engineering, and research sectors. The process attracts leading firms offering diverse roles,supported by a dedicated career services team. Students benefit from strong industry tiesand pre-placement offers from internships.
+
+> row(chart2:start)
+
+> chart > line
+
+| key         | value                       |
+| ----------- | --------------------------- |
+| title       | Number of Students/Teachers |
+| description | Number of Students/Teachers |
+| legend      | bottom-center               |
+| axis        | none                        |
+| grid        | both                        |
+| gradiant    | flat,gradient,outline       |
+
+> chart > line > data-table >
+
+| group         | key     | value | color  |
+| ------------- | ------- | ----- | ------ |
+| Main Campus   | Student | 1000  | red    |
+| Main Campus   | Teacher | 50    | yellow |
+| Research Wing | Student | 200   | purple |
+| Research Wing | Teacher | 20    | blue   |
+
+> chart > linebar
+
+| key         | value                       |
+| ----------- | --------------------------- |
+| title       | Number of Students/Teachers |
+| description | Number of Students/Teachers |
+| legend      | bottom-center               |
+| axis        | none                        |
+| grid        | both                        |
+| gradiant    | flat,gradient,outline       |
+
+> chart > linebar > data-table
+
+| group         | key     | value | color  |
+| ------------- | ------- | ----- | ------ |
+| Main Campus   | Student | 1000  | red    |
+| Main Campus   | Teacher | 50    | yellow |
+| Research Wing | Student | 200   | purple |
+| Research Wing | Teacher | 20    | blue   |
+
+> row(chart2:end)
+
+
+| Main Campus   | Student | 1000  | red    |
+| Main Campus   | Teacher | 50    | yellow |
+| Research Wing | Student | 200   | purple |
+| Research Wing | Teacher | 20    | blue   |
+
+> chart > linebar
+
+| key         | value                       |
+| ----------- | --------------------------- |
+| title       | Number of Students/Teachers |
+| description | Number of Students/Teachers |
+| legend      | bottom-center               |
+| axis        | none                        |
+| grid        | both                        |
+| gradiant    | flat,gradient,outline       |
+
+> chart > linebar > data-table
+
+| group         | key     | value | color  |
+| ------------- | ------- | ----- | ------ |
+| Main Campus   | Student | 1000  | red    |
+| Main Campus   | Teacher | 50    | yellow |
+| Research Wing | Student | 200   | purple |
+| Research Wing | Teacher | 20    | blue   |
+
+> row(chart2:end)
+
+
+| Main Campus   | Student | 1000  | red    |
+| Main Campus   | Teacher | 50    | yellow |
+| Research Wing | Student | 200   | purple |
+| Research Wing | Teacher | 20    | blue   |
+
+> chart > linebar
+
+| key         | value                       |
+| ----------- | --------------------------- |
+| title       | Number of Students/Teachers |
+| description | Number of Students/Teachers |
+| legend      | bottom-center               |
+| axis        | none                        |
+| grid        | both                        |
+| gradiant    | flat,gradient,outline       |
+
+> chart > linebar > data-table
+
+| group         | key     | value | color  |
+| ------------- | ------- | ----- | ------ |
+| Main Campus   | Student | 1000  | red    |
+| Main Campus   | Teacher | 50    | yellow |
+| Research Wing | Student | 200   | purple |
+| Research Wing | Teacher | 20    | blue   |
+
+> row(chart2:end)
+

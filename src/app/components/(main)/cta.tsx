@@ -29,6 +29,7 @@ export function CallToAction() {
           </span>{" "}
           <TypeFx
             words={["shape the future.", "innovate with us."]}
+            
             speed={80}
             hold={1000}
             trigger="instant"

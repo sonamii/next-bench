@@ -21,7 +21,7 @@ import {
   Select,
   Textarea,
   useToast,
-  Spinner
+  Spinner,
 } from "@once-ui-system/core";
 import { Geist, DM_Mono } from "next/font/google";
 import React, { useState } from "react";
@@ -41,7 +41,6 @@ const lenis = new Lenis({
   autoRaf: true,
 });
 
-
 const companyLogo =
   "https://media.licdn.com/dms/image/v2/D560BAQFyPNfJhr3kZw/company-logo_100_100/B56Zs1v9oTKIAM-/0/1766133325738?e=1770854400&v=beta&t=c7QJ4ZxcL1Q7BexaTjs_hyBo8SWCDgPMQA0BUDl5WlQ";
 export default function Home() {
@@ -56,49 +55,58 @@ export default function Home() {
     university1: "",
     university2: "",
     university3: "",
+    isAdmin: false,
   });
   const router = useRouter();
-const [user_id,setUser_Id] = useState("")
-const {addToast} = useToast()
-const[isUserDataAvailable,setIsUserDataAvailable]= useState(false)
-
+  const [user_id, setUser_Id] = useState("");
+  const { addToast } = useToast();
+  const [isUserDataAvailable, setIsUserDataAvailable] = useState(false);
 
   useEffect(() => {
     const fetchUserId = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
       if (session && session.user) {
         setUser_Id(session.user.id);
-        
       }
     };
     fetchUserId();
   }, []);
 
-
-
-
-  
-
   useEffect(() => {
     if (!user_id) return;
     const fetchData = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
       if (!session || !session.user) return;
-      const { data, error } = await supabase.from("profiles").select("*").eq("id", session.user.id).single();
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("id", session.user.id)
+        .single();
       if (data) {
         setUser({
-          name: (data?.name ||"") as string,
+          name: (data?.name || "") as string,
           email: (data?.email || session.user.email || "") as string,
           phone: Number(data?.phone),
-          city: (data?.city || session.user.user_metadata?.city || "") as string,
-          state: (data?.state || session.user.user_metadata?.state || "") as string,
-          country: (data?.country || session.user.user_metadata?.country || "") as string,
+          city: (data?.city ||
+            session.user.user_metadata?.city ||
+            "") as string,
+          state: (data?.state ||
+            session.user.user_metadata?.state ||
+            "") as string,
+          country: (data?.country ||
+            session.user.user_metadata?.country ||
+            "") as string,
           goal: data?.goal || "",
           university1: (data?.universities?.[0] || "") as string,
           university2: (data?.universities?.[1] || "") as string,
           university3: (data?.universities?.[2] || "") as string,
+          isAdmin: data?.is_admin || false,
         });
-        setIsUserDataAvailable(true)
+        setIsUserDataAvailable(true);
       }
       if (error) {
         console.error("Error fetching user data:", error);
@@ -109,14 +117,15 @@ const[isUserDataAvailable,setIsUserDataAvailable]= useState(false)
 
   useEffect(() => {
     const checkSession = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
       if (!session || !session.user) {
         router.replace("/auth");
       }
     };
     checkSession();
   }, [router]);
-
 
   const savePersonalDetailsToSupabase = async () => {
     const { data, error } = await supabase.from("profiles").upsert([
@@ -132,18 +141,16 @@ const[isUserDataAvailable,setIsUserDataAvailable]= useState(false)
     ]);
     if (error) {
       console.error("Error saving profile:", error);
-       addToast({
-      variant: "danger",
-      message: "Profile was not saved",
-      })
-       
+      addToast({
+        variant: "danger",
+        message: "Profile was not saved",
+      });
     } else {
       console.log("Profile saved:", data);
       addToast({
         variant: "success",
         message: "Profile was saved",
-      })
-
+      });
     }
   };
 
@@ -156,19 +163,24 @@ const[isUserDataAvailable,setIsUserDataAvailable]= useState(false)
       },
     ]);
     if (error) {
-      console.error("Error saving goals:", error); addToast({
-      variant: "danger",
-      message: "Goals were not saved",
-      })
+      console.error("Error saving goals:", error);
+      addToast({
+        variant: "danger",
+        message: "Goals were not saved",
+      });
     } else {
-      console.log("Goals saved:", data); addToast({
+      console.log("Goals saved:", data);
+      addToast({
         variant: "success",
         message: "Goals were saved",
-      })
+      });
     }
   };
 
-
+  const handleLogOutFromSupabase = async () => {
+    await supabase.auth.signOut();
+    router.replace("/auth");
+  };
 
   return (
     <Column
@@ -194,16 +206,50 @@ const[isUserDataAvailable,setIsUserDataAvailable]= useState(false)
 
         <Row fillWidth horizontal="between" vertical="start">
           <Column fillWidth gap="16" id="paddingRightContainer">
+            {user.isAdmin ? (
+              <Column fillWidth gap="16">
+                <HeadingLink as="h2" id="admin-panel" marginY="xs">
+                  Admin Panel
+                </HeadingLink>
+                <Row padding="1" radius="l" border="neutral-weak" fillWidth>
+                  <Row
+                    fillWidth
+                    vertical="center"
+                    padding="40"
+                    radius="l"
+                    border="neutral-medium"
+                    id="containerMe"
+                  >
+                    <Column gap="12" horizontal="start" fillWidth>
+                      {" "}
+                      <Text variant="heading-default-s">Admin Panel</Text>
+                      <Text
+                        variant="body-default-s"
+                        onBackground="neutral-weak"
+                      >
+                        Edit, add, update or delete items from the database.
+                      </Text>
+                    </Column>
+                    <Column fillWidth horizontal='end'>
+                      <Button size="l" fillWidth onClick={() => router.push("/~/admin")}>
+                        <Text variant="body-default-m">Go to Admin Panel</Text>
+                      </Button>
+                    </Column>
+                  </Row>
+                </Row>
+              </Column>
+            ) : null}
             <HeadingLink as="h2" id="personal-details" marginY="xs">
               Personal Details
             </HeadingLink>
-            <Row padding="1" radius="l" border="neutral-weak" fillWidth  >
+            <Row padding="1" radius="l" border="neutral-weak" fillWidth>
               <Row
                 fillWidth
                 vertical="center"
                 padding="40"
                 radius="l"
-                border="neutral-medium"id="containerMe"
+                border="neutral-medium"
+                id="containerMe"
               >
                 <Column gap="12" horizontal="start" fillWidth>
                   {" "}
@@ -221,13 +267,15 @@ const[isUserDataAvailable,setIsUserDataAvailable]= useState(false)
                     onChange={(e) => setUser({ ...user, name: e.target.value })}
                     maxLength={50}
                     hasPrefix={
-                      isUserDataAvailable? <Icon
-                        name="userOutline"
-                        size="xs"
-                        onBackground="neutral-weak"
-                      />:  <Spinner/>
-                     
-                     
+                      isUserDataAvailable ? (
+                        <Icon
+                          name="userOutline"
+                          size="xs"
+                          onBackground="neutral-weak"
+                        />
+                      ) : (
+                        <Spinner />
+                      )
                     }
                     height="m"
                     spellCheck={false}
@@ -236,12 +284,13 @@ const[isUserDataAvailable,setIsUserDataAvailable]= useState(false)
               </Row>
             </Row>
             {/*  */}
-            <Row padding="1" radius="l" border="neutral-weak" fillWidth  >
+            <Row padding="1" radius="l" border="neutral-weak" fillWidth>
               <Row
                 fillWidth
                 vertical="center"
                 padding="40"
-                radius="l"id="containerMe"
+                radius="l"
+                id="containerMe"
                 border="neutral-medium"
               >
                 <Column gap="12" horizontal="start" fillWidth>
@@ -260,9 +309,13 @@ const[isUserDataAvailable,setIsUserDataAvailable]= useState(false)
                     onChange={(e) =>
                       setUser({ ...user, email: e.target.value })
                     }
-                    hasPrefix={isUserDataAvailable?
-                      <Icon name="at" size="xs" onBackground="neutral-weak" />
-                    : <Spinner/>}
+                    hasPrefix={
+                      isUserDataAvailable ? (
+                        <Icon name="at" size="xs" onBackground="neutral-weak" />
+                      ) : (
+                        <Spinner />
+                      )
+                    }
                     maxLength={100}
                     height="m"
                     spellCheck={false}
@@ -271,11 +324,12 @@ const[isUserDataAvailable,setIsUserDataAvailable]= useState(false)
               </Row>
             </Row>
             {/*  */}
-            <Row padding="1" radius="l" border="neutral-weak" fillWidth  >
+            <Row padding="1" radius="l" border="neutral-weak" fillWidth>
               <Row
                 fillWidth
                 vertical="center"
-                padding="40"id="containerMe"
+                padding="40"
+                id="containerMe"
                 radius="l"
                 border="neutral-medium"
               >
@@ -293,16 +347,22 @@ const[isUserDataAvailable,setIsUserDataAvailable]= useState(false)
                     <Input
                       id="phone"
                       placeholder="Enter your phone number"
-                      hasPrefix={isUserDataAvailable?
-                        <Icon
-                          name="phone"
-                          size="xs"
-                          onBackground="neutral-weak"
-                        />: <Spinner/>
+                      hasPrefix={
+                        isUserDataAvailable ? (
+                          <Icon
+                            name="phone"
+                            size="xs"
+                            onBackground="neutral-weak"
+                          />
+                        ) : (
+                          <Spinner />
+                        )
                       }
                       characterCount
                       value={Number(user.phone)}
-                      onChange={(e) => setUser({ ...user, phone: Number(e.target.value) })}
+                      onChange={(e) =>
+                        setUser({ ...user, phone: Number(e.target.value) })
+                      }
                       height="m"
                       spellCheck={false}
                     ></Input>
@@ -311,10 +371,11 @@ const[isUserDataAvailable,setIsUserDataAvailable]= useState(false)
               </Row>
             </Row>
             {/*  */}
-            <Row padding="1" radius="l" border="neutral-weak" fillWidth  >
+            <Row padding="1" radius="l" border="neutral-weak" fillWidth>
               <Row
                 fillWidth
-                vertical="center"id="containerMe"
+                vertical="center"
+                id="containerMe"
                 padding="40"
                 radius="l"
                 border="neutral-medium"
@@ -334,12 +395,16 @@ const[isUserDataAvailable,setIsUserDataAvailable]= useState(false)
                     maxLength={50}
                     value={user.city}
                     onChange={(e) => setUser({ ...user, city: e.target.value })}
-                    hasPrefix={isUserDataAvailable?
-                      <Icon
-                        name="location"
-                        size="xs"
-                        onBackground="neutral-weak"
-                      />: <Spinner/>
+                    hasPrefix={
+                      isUserDataAvailable ? (
+                        <Icon
+                          name="location"
+                          size="xs"
+                          onBackground="neutral-weak"
+                        />
+                      ) : (
+                        <Spinner />
+                      )
                     }
                     height="m"
                     spellCheck={false}
@@ -348,9 +413,10 @@ const[isUserDataAvailable,setIsUserDataAvailable]= useState(false)
               </Row>
             </Row>
             {/*  */}
-            <Row padding="1" radius="l" border="neutral-weak" fillWidth  >
+            <Row padding="1" radius="l" border="neutral-weak" fillWidth>
               <Row
-                fillWidth id="containerMe"
+                fillWidth
+                id="containerMe"
                 vertical="center"
                 padding="40"
                 radius="l"
@@ -371,12 +437,16 @@ const[isUserDataAvailable,setIsUserDataAvailable]= useState(false)
                     onChange={(e) =>
                       setUser({ ...user, state: e.target.value })
                     }
-                    hasPrefix={isUserDataAvailable?
-                      <Icon
-                        name="location"
-                        size="xs"
-                        onBackground="neutral-weak"
-                      />: <Spinner/>
+                    hasPrefix={
+                      isUserDataAvailable ? (
+                        <Icon
+                          name="location"
+                          size="xs"
+                          onBackground="neutral-weak"
+                        />
+                      ) : (
+                        <Spinner />
+                      )
                     }
                     characterCount
                     maxLength={50}
@@ -386,11 +456,12 @@ const[isUserDataAvailable,setIsUserDataAvailable]= useState(false)
                 </Column>
               </Row>
             </Row>
-            <Row padding="1" radius="l" border="neutral-weak" fillWidth  >
+            <Row padding="1" radius="l" border="neutral-weak" fillWidth>
               <Row
                 fillWidth
                 vertical="center"
-                padding="40"id="containerMe"
+                padding="40"
+                id="containerMe"
                 radius="l"
                 border="neutral-medium"
               >
@@ -409,12 +480,16 @@ const[isUserDataAvailable,setIsUserDataAvailable]= useState(false)
                     onChange={(e) =>
                       setUser({ ...user, country: e.target.value })
                     }
-                    hasPrefix={isUserDataAvailable?
-                      <Icon
-                        name="location"
-                        size="xs"
-                        onBackground="neutral-weak"
-                      />: <Spinner/>
+                    hasPrefix={
+                      isUserDataAvailable ? (
+                        <Icon
+                          name="location"
+                          size="xs"
+                          onBackground="neutral-weak"
+                        />
+                      ) : (
+                        <Spinner />
+                      )
                     }
                     characterCount
                     maxLength={50}
@@ -425,7 +500,7 @@ const[isUserDataAvailable,setIsUserDataAvailable]= useState(false)
               </Row>
             </Row>
             <Row fillWidth horizontal="end">
-              <Button size="l" onClick={ savePersonalDetailsToSupabase}>
+              <Button size="l" onClick={savePersonalDetailsToSupabase}>
                 <Text variant="body-default-m">Save Changes</Text>
               </Button>
             </Row>
@@ -433,10 +508,11 @@ const[isUserDataAvailable,setIsUserDataAvailable]= useState(false)
             <HeadingLink as="h2" id="goals" marginY="xs">
               Goals
             </HeadingLink>
-            <Row padding="1" radius="l" border="neutral-weak" fillWidth  >
+            <Row padding="1" radius="l" border="neutral-weak" fillWidth>
               <Row
                 fillWidth
-                vertical="start"id="containerMe"
+                vertical="start"
+                id="containerMe"
                 padding="40"
                 radius="l"
                 border="neutral-medium"
@@ -471,12 +547,16 @@ const[isUserDataAvailable,setIsUserDataAvailable]= useState(false)
                       onChange={(e) =>
                         setUser({ ...user, university1: e.target.value })
                       }
-                      hasPrefix={ isUserDataAvailable?
-                        <Icon 
-                          name="school"
-                          size="xs"
-                          onBackground="neutral-weak"
-                        />: <Spinner/>
+                      hasPrefix={
+                        isUserDataAvailable ? (
+                          <Icon
+                            name="school"
+                            size="xs"
+                            onBackground="neutral-weak"
+                          />
+                        ) : (
+                          <Spinner />
+                        )
                       }
                       maxLength={100}
                       radius="top"
@@ -492,12 +572,16 @@ const[isUserDataAvailable,setIsUserDataAvailable]= useState(false)
                         setUser({ ...user, university2: e.target.value })
                       }
                       radius="none"
-                      hasPrefix={isUserDataAvailable?
-                        <Icon
-                          name="school"
-                          size="xs"
-                          onBackground="neutral-weak"
-                        />: <Spinner/>
+                      hasPrefix={
+                        isUserDataAvailable ? (
+                          <Icon
+                            name="school"
+                            size="xs"
+                            onBackground="neutral-weak"
+                          />
+                        ) : (
+                          <Spinner />
+                        )
                       }
                       maxLength={100}
                       height="m"
@@ -512,12 +596,16 @@ const[isUserDataAvailable,setIsUserDataAvailable]= useState(false)
                       onChange={(e) =>
                         setUser({ ...user, university3: e.target.value })
                       }
-                      hasPrefix={isUserDataAvailable?
-                        <Icon
-                          name="school"
-                          size="xs"
-                          onBackground="neutral-weak"
-                        />: <Spinner/>
+                      hasPrefix={
+                        isUserDataAvailable ? (
+                          <Icon
+                            name="school"
+                            size="xs"
+                            onBackground="neutral-weak"
+                          />
+                        ) : (
+                          <Spinner />
+                        )
                       }
                       maxLength={100}
                       height="m"
@@ -536,12 +624,13 @@ const[isUserDataAvailable,setIsUserDataAvailable]= useState(false)
             <HeadingLink as="h2" id="roadmaps" marginY="xs">
               Roadmaps
             </HeadingLink>
-            <Row padding="1" radius="l" border="neutral-weak" fillWidth >
+            <Row padding="1" radius="l" border="neutral-weak" fillWidth>
               <Row
                 fillWidth
                 vertical="start"
                 padding="40"
-                radius="l"id="containerMe"
+                radius="l"
+                id="containerMe"
                 border="neutral-medium"
               >
                 <Column gap="12" horizontal="start" fillWidth>
@@ -562,6 +651,37 @@ const[isUserDataAvailable,setIsUserDataAvailable]= useState(false)
                     <Text variant="body-default-m">
                       This feature is currently not available
                     </Text>
+                  </Button>
+                </Column>
+              </Row>
+            </Row>
+            <Line fillWidth marginTop="s" />
+            <HeadingLink as="h2" id="roadmaps" marginY="xs">
+              Deletion
+            </HeadingLink>
+            <Row padding="1" radius="l" border="neutral-weak" fillWidth>
+              <Row
+                fillWidth
+                vertical="center"
+                id="containerMe"
+                padding="40"
+                radius="l"
+                border="neutral-medium"
+              >
+                <Column gap="12" horizontal="start" fillWidth>
+                  {" "}
+                  <Text variant="heading-default-s">Logout</Text>
+                  <Text variant="body-default-s" onBackground="neutral-weak">
+                    Click the button to logout safely.
+                  </Text>
+                </Column>
+                <Column fillWidth horizontal="end">
+                  <Button
+                    size="l"
+                    variant="danger"
+                    onClick={handleLogOutFromSupabase}
+                  >
+                    <Text variant="body-default-m">Logout</Text>
                   </Button>
                 </Column>
               </Row>

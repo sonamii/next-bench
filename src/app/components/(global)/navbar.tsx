@@ -24,16 +24,7 @@ export function Navbar() {
   }, []);
 
 
-  const handleLoginOrLogout = async () => {
-    const { data: { session } } = await supabase.auth.getSession();
-    if (session && session.user) {
-      await supabase.auth.signOut();
-      setIsSession(false);
-      router.push("/");
-    } else {
-     router.push("/auth");
-    }
-  };
+
 
   return (
     <Flex
@@ -128,8 +119,8 @@ export function Navbar() {
             onClick={toggleTheme}
           /> */}
           <ThemeSwitcher />
-          <Button variant="secondary" size="m"  onClick={()  => handleLoginOrLogout()}>
-            <Text variant="body-default-l">{isSession ? "Logout" : "Login"}</Text>
+          <Button variant="secondary" size="m"  onClick={() => router.push("/search")}>
+            <Text variant="body-default-l">Search</Text>
           </Button>
             <Button
             variant="primary"

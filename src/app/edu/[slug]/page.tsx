@@ -34,6 +34,7 @@ import {
   Chip,
   LinearGauge,
   DataPoint,
+  Skeleton,
 } from "@once-ui-system/core";
 import { Geist, DM_Mono } from "next/font/google";
 import React, { useState } from "react";
@@ -53,20 +54,9 @@ const lenis = new Lenis({
   autoRaf: true,
 });
 
-
-import path from "path";
-
 const companyLogo =
   "https://media.licdn.com/dms/image/v2/D560BAQFyPNfJhr3kZw/company-logo_100_100/B56Zs1v9oTKIAM-/0/1766133325738?e=1770854400&v=beta&t=c7QJ4ZxcL1Q7BexaTjs_hyBo8SWCDgPMQA0BUDl5WlQ";
 import { readFile } from "fs/promises";
-
-const eduData = parseMDXToDynamicJSON(
-  await readFile("../../../../mdx/school.mdx", "utf-8")
-);
-
-
-
-
 
 // --- Types ---
 type ContentItem = {
@@ -275,21 +265,19 @@ const renderContent = (
       return <RenderText value={item.value || ""} />;
     case "chip":
       return (
-        
-          <Row fillWidth gap="12" wrap>
-            {item.items?.map((label: string, i: number) => (
-              <Chip
-                key={i}
-                // Title cases the label (e.g., "mountain" -> "Mountain")
-                label={label.replace(/\b\w/g, (match: any) =>
-                  match.toUpperCase(),
-                )}
-                // Applies "selected" styling if the variant is "secondary"
-                selected={item.variant != "secondary"}
-              />
-            ))}
-          </Row>
-        
+        <Row fillWidth gap="12" wrap>
+          {item.items?.map((label: string, i: number) => (
+            <Chip
+              key={i}
+              // Title cases the label (e.g., "mountain" -> "Mountain")
+              label={label.replace(/\b\w/g, (match: any) =>
+                match.toUpperCase(),
+              )}
+              // Applies "selected" styling if the variant is "secondary"
+              selected={item.variant != "secondary"}
+            />
+          ))}
+        </Row>
       );
 
     case "list":
@@ -356,10 +344,113 @@ const RenderMetadata: React.FC<{
     </Text>
   </Column>
 );
+interface EduData {
+  metadata: Record<string, any>;
+  containers: Array<any>; // You can type this further for more strictness
+}
 
 export default function Home() {
-  if (!eduData) return null;
+  const [pageSlug, setPageSlug] = useState("");
+  const [eduData, setEduData] = useState<EduData | null>(null);
+  // 1. Get the slug from the URL
+  useEffect(() => {
+    const pathName = window.location.pathname;
+    const slug = pathName.split("/").pop();
+    if (slug) setPageSlug(slug);
+  }, []);
 
+  // 2. Fetch data ONLY when pageSlug is ready
+  useEffect(() => {
+    if (!pageSlug) return; // Don't fetch if slug isn't set yet
+
+    const fetchData = async () => {
+      const { data, error } = await supabase
+        .from("edu")
+        .select("mdx")
+        .eq("slug", pageSlug)
+        .maybeSingle();
+
+      if (error) {
+        console.error("Supabase Error:", error);
+      } else if (data?.mdx) {
+        // Parse the raw MDX string from DB into your JSON structure
+        const parsed = parseMDXToDynamicJSON(data.mdx);
+        setEduData(parsed);
+        console.log(parsed);
+      }
+    };
+
+    fetchData();
+  }, [pageSlug]); // This ensures it runs as soon as pageSlug is updated
+
+  function LoadingMetaData() {
+    return (
+      <>
+        {" "}
+        <Column gap="20">
+          {" "}
+          <Skeleton shape="line" delay="1" width="xs" height="xs" />
+          <Skeleton
+            shape="block"
+            delay="3"
+            width="s"
+            maxWidth={32}
+            minHeight="80"
+          />{" "}
+          <Skeleton shape="line" delay="2" width="m" height="s" />
+        </Column>
+      </>
+    );
+  }
+
+  function LoadingContent() {
+    return (
+      <>
+        <Column gap="48">
+          <Column gap="20" fillWidth>
+            {" "}
+            <Skeleton
+              shape="block"
+              delay="3"
+              width="s"
+              maxWidth={32}
+              fillWidth
+              minHeight="32"
+            />{" "}
+            <Skeleton shape="line" delay="2" fillWidth height="m" width="xl" />
+            <Skeleton shape="line" delay="2" fillWidth height="m" width="xl" />
+            <Skeleton shape="line" delay="2" fillWidth height="m" width="xl" />
+            <Skeleton shape="line" delay="2" fillWidth height="m" width="xl" />
+            <Skeleton shape="line" delay="2" fillWidth height="m" width="xl" />
+          </Column>
+          <Column gap="20" fillWidth>
+            {" "}
+            <Skeleton
+              shape="block"
+              delay="3"
+              width="s"
+              maxWidth={32}
+              fillWidth
+              minHeight="32"
+            />
+            <Row fillWidth wrap gap="20">
+              {" "}
+              {Array.from({ length: 10 }, (_, index) => (
+                <Skeleton
+                  key={index}
+                  shape="line"
+                  delay="2"
+                  height="m"
+                  width={"xs"}
+                  maxWidth={Math.floor(Math.random() * 56) + 1}
+                />
+              ))}
+            </Row>
+          </Column>
+        </Column>
+      </>
+    );
+  }
   return (
     <Column
       fillWidth
@@ -372,36 +463,69 @@ export default function Home() {
       <Flex height={"64"} />
 
       <Column fillWidth vertical="start" maxWidth={"l"} gap="56">
-      
+        {eduData ? (
+          <RenderMetadata
+            slug={eduData.metadata.slug}
+            updatedAt={eduData.metadata.updatedAt}
+            name={eduData.metadata.name}
+            type={eduData.metadata.type}
+          />
+        ) : (
+          <LoadingMetaData />
+        )}
         <Row fillWidth horizontal="between" gap="40">
           <Column gap="48" fillWidth id="paddingRightContainerEdu">
             <Line fillWidth />
-            {eduData.containers.map((container: Section) => (
-              <Column
-                key={container.section}
-                id={container.heading.id}
-                gap="20"
-              >
-                <RenderHeading {...container.heading} />
-                <Column gap="32" fillWidth>
-                  {container.content.map((item, index) => (
-                    <React.Fragment key={index}>
-                      {renderContent(item, container.section)}
-                    </React.Fragment>
-                  ))}
-                </Column>
-              </Column>
-            ))}
+            {eduData ? (
+              <>
+                {" "}
+                {eduData.containers.map((container: Section) => (
+                  <Column
+                    key={container.section}
+                    id={container.heading.id}
+                    gap="20"
+                  >
+                    <RenderHeading {...container.heading} />
+                    <Column gap="32" fillWidth>
+                      {container.content.map((item, index) => (
+                        <React.Fragment key={index}>
+                          {renderContent(item, container.section)}
+                        </React.Fragment>
+                      ))}
+                    </Column>
+                  </Column>
+                ))}
+              </>
+            ) : (
+              <LoadingContent />
+            )}
           </Column>
+          {eduData?.containers ? (
+            <HeadingNav
+              width={12}
+              position="sticky"
+              top="64"
+              fitHeight
+              id="headingNavMe"
+              data-scaling="110"
+            />
+          ) : (
+            <></>
+          )}
 
-          <HeadingNav
-            width={12}
-            position="sticky"
-            top="64"
-            fitHeight
-            id="headingNavMe"
-            data-scaling="110"
-          />
+          {eduData ? (
+            <></>
+          ) : (
+            <HeadingNav
+              width={12}
+              position="sticky"
+              top="64"
+              fitHeight
+              id="headingNavMe"
+              data-scaling="110"
+              style={{opacity:"0"}}
+            />
+          )}
         </Row>
       </Column>
       <Flex height={3} />

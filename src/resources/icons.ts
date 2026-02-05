@@ -5,7 +5,7 @@ import { BsGoogle } from "react-icons/bs";
 import { CgArrowTopRight } from "react-icons/cg";
 import { CiCircleCheck, CiStethoscope } from "react-icons/ci";
 import { FaFacebook, FaInstagram, FaTwitter } from "react-icons/fa";
-import { HiOutlineLocationMarker, HiOutlinePhone, HiX } from "react-icons/hi";
+import { HiOutlineLocationMarker, HiOutlinePhone, HiOutlineSparkles, HiSparkles, HiX } from "react-icons/hi";
 
 import {
   HiArrowLeft,
@@ -56,7 +56,8 @@ export const iconLibrary: Record<string, IconType> = {
   location: HiOutlineLocationMarker,
   phone: HiOutlinePhone,
   plus: BiPlus,
-  school: MdOutlineSchool
+  school: MdOutlineSchool,
+  sparklesOutline: HiOutlineSparkles
 
 
 };
