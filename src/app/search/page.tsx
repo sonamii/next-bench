@@ -23,15 +23,11 @@ import { SearchCard } from "../components/(main)/searchCard";
 import { Navbar } from "../components/(global)/navbar";
 import { Footer } from "../components/(global)/footer";
 
-const lenis = new Lenis({
-  autoRaf: true,
-});
+
 const geist = Geist({ subsets: ["latin"] });
 
 
 import supabase from "../supabase/client";
-const companyLogo =
-  "https://media.licdn.com/dms/image/v2/D560BAQFyPNfJhr3kZw/company-logo_100_100/B56Zs1v9oTKIAM-/0/1766133325738?e=1770854400&v=beta&t=c7QJ4ZxcL1Q7BexaTjs_hyBo8SWCDgPMQA0BUDl5WlQ";
 
 
 type Institution = {
@@ -47,7 +43,7 @@ type Institution = {
 
 
 
-  export default function Home() {
+  export default function Search() {
   const [mounted, setMounted] = React.useState(false);
   const [theme, setTheme] = React.useState<"light" | "dark">("light");
   const [institutions, setInstitutions] = React.useState<Institution[]>([]);

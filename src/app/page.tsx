@@ -9,7 +9,6 @@ import {
   Flex,
   
 } from "@once-ui-system/core";
-import { Geist, DM_Mono } from "next/font/google";
 import React from "react";
 import { CallToAction } from "./components/(main)/cta";
 import { Footer } from "./components/(global)/footer";

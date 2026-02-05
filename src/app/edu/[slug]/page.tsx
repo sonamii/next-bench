@@ -24,16 +24,13 @@ import {
   DataPoint,
   Skeleton,
 } from "@once-ui-system/core";
-import { Geist, DM_Mono } from "next/font/google";
 import React, { useState } from "react";
 import { Navbar } from "@/app/components/(global)/navbar";
 import supabase from "@/app/supabase/client";
 
 import { useEffect } from "react";
 
-const lenis = new Lenis({
-  autoRaf: true,
-});
+
 // --- Types ---
 type ContentItem = {
   type: string;
@@ -330,7 +327,7 @@ interface EduData {
   containers: Array<any>; 
 }
 
-export default function Home() {
+export default function EduPage() {
   const [pageSlug, setPageSlug] = useState("");
   const [eduData, setEduData] = useState<EduData | null>(null);
   // 1. Get the slug from the URL

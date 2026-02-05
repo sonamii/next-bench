@@ -20,7 +20,6 @@ import {
   useToast,
   Spinner,
 } from "@once-ui-system/core";
-import { Geist, DM_Mono } from "next/font/google";
 import  { useState } from "react";
 import { Navbar } from "../components/(global)/navbar";
 import supabase from "../supabase/client";
@@ -29,10 +28,9 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 
 
-const lenis = new Lenis({
-  autoRaf: true,
-});
-export default function Home() {
+
+
+export default function Me() {
   const [user, setUser] = useState({
     name: "",
     email: "",
