@@ -25,7 +25,6 @@ import {
   Dialog,
   TagInput,
 } from "@once-ui-system/core";
-import { Geist, DM_Mono } from "next/font/google";
 import  { useState } from "react";
 import { Navbar } from "@/app/components/(global)/navbar";
 import supabase from "@/app/supabase/client";
@@ -36,11 +35,7 @@ import { v4 as uuidv4 } from "uuid";
 
 
 
-const lenis = new Lenis({
-  autoRaf: true,
-});
-
-export default function Home() {
+export default function Admin() {
   const [isOpen, setIsOpen] = useState(false);
   const [selected, setSelected] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
