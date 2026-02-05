@@ -9,7 +9,6 @@ import {
   Icon,
   Kbd,
   Arrow,
-  MatrixFx,
 } from "@once-ui-system/core";
 
 export function PricingCard({

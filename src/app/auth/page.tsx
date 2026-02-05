@@ -3,28 +3,17 @@ import "@/resources/custom.css";
 import Lenis from "lenis";
 
 import {
-  Heading,
   Text,
   Button,
   Column,
-  Badge,
-  Logo,
-  Line,
-  LetterFx,
-  Background,
+
   Flex,
-  Media,
-  AvatarGroup,
+  
   Row,
   Icon,
-  Tag,
-  Kbd,
-  IconButton,
+
   SmartLink,
-  TypeFx,
-  CountdownFx,
-  ThemeSwitcher,
-  MatrixFx,
+ 
   Particle,
   Spinner,
 } from "@once-ui-system/core";

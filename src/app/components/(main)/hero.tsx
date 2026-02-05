@@ -1,5 +1,5 @@
 import {
-  Heading,
+  
   Text,
   Button,
   Column,

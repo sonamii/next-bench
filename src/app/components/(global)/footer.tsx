@@ -9,13 +9,18 @@ Column,
 } from "@once-ui-system/core";
 import Image from "next/image";
 import {companyLogo,mono} from "@/resources/next-bench.config";
+import React from "react";
 
 
 export function Footer() {
-    const theme = localStorage.getItem("data-theme") as
-    | "light"
-    | "dark"
-    | "system";
+    const [theme, setTheme] = React.useState<"light" | "dark" | "system">(
+      typeof window !== "undefined"
+        ? localStorage.getItem("data-theme") as
+            | "light"
+            | "dark"
+            | "system"
+        : "light"
+    );
   return (
     <Column fillWidth maxWidth={"m"}>
         <Row fillWidth padding="16" horizontal="between" id="footer">

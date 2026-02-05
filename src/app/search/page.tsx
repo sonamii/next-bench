@@ -11,15 +11,12 @@ import {
   Row,
   Icon,
   Kbd,
-  IconButton,
   Input,
-  ThemeSwitcher,
   AvatarGroup,
   Mask,
   MatrixFx,
   Spinner,
 } from "@once-ui-system/core";
-import Image from "next/image";
 import { Geist, DM_Mono } from "next/font/google";
 import React, { useState } from "react";
 import { SearchCard } from "../components/(main)/searchCard";
@@ -30,10 +27,7 @@ const lenis = new Lenis({
   autoRaf: true,
 });
 const geist = Geist({ subsets: ["latin"] });
-const mono = DM_Mono({
-  subsets: ["latin"],
-  weight: "300",
-});
+
 
 import supabase from "../supabase/client";
 const companyLogo =

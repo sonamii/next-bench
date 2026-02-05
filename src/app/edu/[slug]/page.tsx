@@ -351,7 +351,7 @@ const RenderMetadata: React.FC<{
 );
 interface EduData {
   metadata: Record<string, any>;
-  containers: Array<any>; // You can type this further for more strictness
+  containers: Array<any>; 
 }
 
 export default function Home() {

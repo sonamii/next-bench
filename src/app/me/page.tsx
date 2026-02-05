@@ -10,39 +10,28 @@ import {
   Flex,
   Row,
   Icon,
-  Kbd,
-  IconButton,
+  
   Input,
-  ThemeSwitcher,
-  AvatarGroup,
+ 
   HeadingNav,
   HeadingLink,
-  NumberInput,
-  Select,
+
   Textarea,
   useToast,
   Spinner,
 } from "@once-ui-system/core";
 import { Geist, DM_Mono } from "next/font/google";
-import React, { useState } from "react";
+import  { useState } from "react";
 import { Navbar } from "../components/(global)/navbar";
 import supabase from "../supabase/client";
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 
-const geist = Geist({ subsets: ["latin"] });
-const mono = DM_Mono({
-  subsets: ["latin"],
-  weight: "300",
-});
 
 const lenis = new Lenis({
   autoRaf: true,
 });
-
-const companyLogo =
-  "https://media.licdn.com/dms/image/v2/D560BAQFyPNfJhr3kZw/company-logo_100_100/B56Zs1v9oTKIAM-/0/1766133325738?e=1770854400&v=beta&t=c7QJ4ZxcL1Q7BexaTjs_hyBo8SWCDgPMQA0BUDl5WlQ";
 export default function Home() {
   const [user, setUser] = useState({
     name: "",

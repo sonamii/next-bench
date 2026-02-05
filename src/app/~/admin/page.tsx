@@ -1,7 +1,6 @@
 "use client";
 import "@/resources/custom.css";
 import Lenis from "lenis";
-import { parseMDXToDynamicJSON } from "../../../../../next-parser/parser.js";
 
 import {
   Text,
@@ -14,27 +13,12 @@ import {
   Kbd,
   IconButton,
   Input,
-  ThemeSwitcher,
-  AvatarGroup,
-  HeadingNav,
-  HeadingLink,
+
   NumberInput,
-  Select,
   Textarea,
-  useToast,
-  Spinner,
-  List,
-  ListItem,
+ 
   SmartLink,
-  LineChart,
-  BarChart,
-  LineBarChart,
-  PieChart,
-  Table,
-  Chip,
-  LinearGauge,
-  DataPoint,
-  Skeleton,
+ 
   StatusIndicator,
   Option,
   DropdownWrapper,
@@ -42,20 +26,15 @@ import {
   TagInput,
 } from "@once-ui-system/core";
 import { Geist, DM_Mono } from "next/font/google";
-import React, { useState } from "react";
+import  { useState } from "react";
 import { Navbar } from "@/app/components/(global)/navbar";
 import supabase from "@/app/supabase/client";
 
 import { useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { Footer } from "@/app/components/(global)/footer";
+
 import { v4 as uuidv4 } from "uuid";
 
-const geist = Geist({ subsets: ["latin"] });
-const mono = DM_Mono({
-  subsets: ["latin"],
-  weight: "300",
-});
+
 
 const lenis = new Lenis({
   autoRaf: true,

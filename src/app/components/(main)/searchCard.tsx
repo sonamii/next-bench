@@ -1,6 +1,5 @@
 import {
   Text,
-  Button,
   Column,
 
   Line,
@@ -14,11 +13,9 @@ import {
 
   Input,
 } from "@once-ui-system/core";
-import Image from "next/image";
 export function SearchCard({
   institutionName,
   institutionSlug,
-  institutionLogo,
   institutionLocation,
   institutionRating,
   institutionDescription,
@@ -26,7 +23,6 @@ export function SearchCard({
 }: {
   institutionName: string;
   institutionSlug: string;
-  institutionLogo: string;
   institutionLocation: string;
   institutionRating: number;
   institutionDescription: string;
