@@ -1,30 +1,18 @@
 "use client";
 import "@/resources/custom.css";
 import Lenis from "lenis";
-import { parseMDXToDynamicJSON } from "../../../../../next-parser/parser.js";
+import { parseMDXToDynamicJSON } from "../../../../next-parser/parser";
 
 import {
   Text,
-  Button,
   Column,
   Line,
   Flex,
   Row,
-  Icon,
-  Kbd,
-  IconButton,
-  Input,
-  ThemeSwitcher,
-  AvatarGroup,
+
   HeadingNav,
   HeadingLink,
-  NumberInput,
-  Select,
-  Textarea,
-  useToast,
-  Spinner,
-  List,
-  ListItem,
+
   SmartLink,
   LineChart,
   BarChart,
@@ -42,22 +30,10 @@ import { Navbar } from "@/app/components/(global)/navbar";
 import supabase from "@/app/supabase/client";
 
 import { useEffect } from "react";
-import { useRouter } from "next/navigation";
-
-const geist = Geist({ subsets: ["latin"] });
-const mono = DM_Mono({
-  subsets: ["latin"],
-  weight: "300",
-});
 
 const lenis = new Lenis({
   autoRaf: true,
 });
-
-const companyLogo =
-  "https://media.licdn.com/dms/image/v2/D560BAQFyPNfJhr3kZw/company-logo_100_100/B56Zs1v9oTKIAM-/0/1766133325738?e=1770854400&v=beta&t=c7QJ4ZxcL1Q7BexaTjs_hyBo8SWCDgPMQA0BUDl5WlQ";
-import { readFile } from "fs/promises";
-
 // --- Types ---
 type ContentItem = {
   type: string;
