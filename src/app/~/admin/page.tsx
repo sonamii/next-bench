@@ -156,7 +156,7 @@ export default function Home() {
         const { data, error } = await supabase.from("edu").upsert([
           {
             id: eduAdminDetails.id,
-            slug: eduAdminDetails.slug,
+            slug: eduAdminDetails.slug.trim().toLowerCase().replace(/\s+/g, '-'),
             mdx: eduAdminDetails.mdx,
             ratings: eduAdminDetails.ratings,
             desc: eduAdminDetails.desc,

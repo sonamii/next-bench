@@ -38,7 +38,7 @@ const fonts = {
 
 // default customization applied to the HTML in the main layout.tsx
 const style = {
-  theme: "system", // dark | light | system 
+  theme: "system", // dark | light | system
   neutral: "gray", // sand | gray | slate
   brand: "orange", // blue | indigo | violet | magenta | pink | red | orange | yellow | moss | green | emerald | aqua | cyan
   accent: "indigo", // blue | indigo | violet | magenta | pink | red | orange | yellow | moss | green | emerald | aqua | cyan
@@ -54,41 +54,41 @@ const dataStyle = {
   variant: "gradient", // flat | gradient | outline
   mode: "categorical", // categorical | divergent | sequential
   height: 24, // default chart height
-  axis: { 
+  axis: {
     stroke: "var(--neutral-alpha-weak)",
   },
   tick: {
     fill: "var(--neutral-on-background-weak)",
     fontSize: 11,
-    line: false
+    line: false,
   },
 };
 
 // metadata for pages
 const meta = {
-  home: { 
+  home: {
     path: "/",
-    title: "Next Bench - Comprehensive tool for students",
+    title: "Next Bench - Comprehensive Tool for students",
     description:
-      "Next Bench is a comprehensive tool for students.",
-    image: "/images/og/home.jpg",
+      "Next Bench is a comprehensive tool for students, that enables them to find the best universities and courses based on their preferences. ",
+    image: "/images/og/og.png",
     canonical: "https://next-bench-dev.vercel.app",
     robots: "index,follow",
     alternates: [{ href: "https://next-bench-dev.vercel.app", hrefLang: "en" }],
   },
   // add more routes and reference them in page.tsx
 };
- 
+
 // default schema data
 const schema = {
   logo: "",
   type: "Startup",
   name: "Next Bench",
   description: meta.home.description,
-  email: "nextbench@nextbench.com", 
+  email: "nextbench@nextbench.com",
 };
 
-// social links 
+// social links
 const social = {
   twitter: "https://www.twitter.com/nextbench",
   linkedin: "https://www.linkedin.com/company/nextbench/",
