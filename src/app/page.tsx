@@ -14,6 +14,7 @@ import { Footer } from "./components/(global)/footer";
 import { PricingSection } from "./components/(main)/pricing";
 import { HeroSection } from "./components/(main)/hero";
 import { Navbar } from "./components/(global)/navbar";
+import {motion} from "framer-motion"
 
 export default function Home() {
   const [mounted, setMounted] = React.useState(false);
@@ -78,7 +79,8 @@ export default function Home() {
     >
   
       <div style={{ zIndex: "99" }}>
-        <Navbar />
+            <Navbar />
+
         <Flex height={"64"}></Flex>
         <HeroSection />
         <Flex height={"32"}></Flex>
