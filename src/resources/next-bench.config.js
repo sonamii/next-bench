@@ -39,7 +39,7 @@ const pricingPlans = [
 ];
 
 const companyLogo =
-  "https://media.licdn.com/dms/image/v2/D560BAQFyPNfJhr3kZw/company-logo_100_100/B56Zs1v9oTKIAM-/0/1766133325738?e=1770854400&v=beta&t=c7QJ4ZxcL1Q7BexaTjs_hyBo8SWCDgPMQA0BUDl5WlQ";
+  "https://media.licdn.com/dms/image/v2/D560BAQFyPNfJhr3kZw/company-logo_200_200/B56Zs1v9oTKIAE-/0/1766133325738?e=1775692800&v=beta&t=80EjYLG_aYBBOGITmzkI3EV5qs7kqeMUhX8lg22B4mY";
 
 import { Geist,DM_Mono } from "next/font/google";
 
