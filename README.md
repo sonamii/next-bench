@@ -109,16 +109,6 @@ The institute page renderer can translate that stored content into reusable inte
 
 ---
 
-## 🖥️ Product Preview
-
-<div align="center">
-
-<img src="./public/images/og/home.jpg" alt="Next Bench preview" width="900" />
-
-</div>
-
----
-
 ## ⚙️ How it fits together
 
 ```mermaid
